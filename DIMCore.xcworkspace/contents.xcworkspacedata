@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:../mkm-objc/MingKeMing/MingKeMing.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:DIMCore/DIMCore.xcodeproj">
+   </FileRef>
+</Workspace>
