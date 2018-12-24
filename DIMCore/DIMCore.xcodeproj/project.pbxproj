@@ -28,9 +28,8 @@
 		E9F3AA8021CBD03C009690F6 /* DIMConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA6B21CBD03C009690F6 /* DIMConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AA8221CBD03C009690F6 /* DIMClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA6D21CBD03C009690F6 /* DIMClient.m */; };
 		E9F3AA8321CBD03C009690F6 /* DIMAmanuensis.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA6E21CBD03C009690F6 /* DIMAmanuensis.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9F3AA9821CBD1E5009690F6 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA9721CBD1E5009690F6 /* DaoKeDao.framework */; };
-		E9F3AA9A21CBD1E5009690F6 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA9921CBD1E5009690F6 /* MingKeMing.framework */; };
 		E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA9B21CC00B6009690F6 /* dimMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +39,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = E9F3AA3B21CBD02C009690F6;
 			remoteInfo = DIMCore;
+		};
+		E9F3AB9821D077D3009690F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E9F3A9B121CBC160009690F6;
+			remoteInfo = DaoKeDao;
+		};
+		E9F3AB9A21D077D3009690F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E9F3A9BA21CBC160009690F6;
+			remoteInfo = DaoKeDaoTests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -68,9 +81,8 @@
 		E9F3AA6B21CBD03C009690F6 /* DIMConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMConversation.h; sourceTree = "<group>"; };
 		E9F3AA6D21CBD03C009690F6 /* DIMClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMClient.m; sourceTree = "<group>"; };
 		E9F3AA6E21CBD03C009690F6 /* DIMAmanuensis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMAmanuensis.h; sourceTree = "<group>"; };
-		E9F3AA9721CBD1E5009690F6 /* DaoKeDao.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DaoKeDao.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9F3AA9921CBD1E5009690F6 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F3AA9B21CC00B6009690F6 /* dimMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dimMacros.h; sourceTree = "<group>"; };
+		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9F3AA9821CBD1E5009690F6 /* DaoKeDao.framework in Frameworks */,
-				E9F3AA9A21CBD1E5009690F6 /* MingKeMing.framework in Frameworks */,
+				E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +108,7 @@
 		E9F3AA3221CBD02C009690F6 = {
 			isa = PBXGroup;
 			children = (
+				E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */,
 				E9F3AA5821CBD03C009690F6 /* Classes */,
 				E9F3AA3E21CBD02C009690F6 /* DIMCore */,
 				E9F3AA4921CBD02C009690F6 /* DIMCoreTests */,
@@ -178,10 +190,17 @@
 		E9F3AA9621CBD1E5009690F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9F3AA9721CBD1E5009690F6 /* DaoKeDao.framework */,
-				E9F3AA9921CBD1E5009690F6 /* MingKeMing.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E9F3AB9321D077D2009690F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */,
+				E9F3AB9B21D077D3009690F6 /* DaoKeDaoTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +290,12 @@
 			mainGroup = E9F3AA3221CBD02C009690F6;
 			productRefGroup = E9F3AA3D21CBD02C009690F6 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E9F3AB9321D077D2009690F6 /* Products */;
+					ProjectRef = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E9F3AA3B21CBD02C009690F6 /* DIMCore */,
@@ -278,6 +303,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = DaoKeDao.framework;
+			remoteRef = E9F3AB9821D077D3009690F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E9F3AB9B21D077D3009690F6 /* DaoKeDaoTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = DaoKeDaoTests.xctest;
+			remoteRef = E9F3AB9A21D077D3009690F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E9F3AA3A21CBD02C009690F6 /* Resources */ = {
