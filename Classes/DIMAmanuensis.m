@@ -72,7 +72,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
             // get entity with ID
             DIMEntity *entity = nil;
             if (MKMNetwork_IsPerson(ID.type)) {
-                entity = MKMContactWithID(ID);
+                entity = MKMAccountWithID(ID);
             } else if (MKMNetwork_IsGroup(ID.type)) {
                 entity = MKMGroupWithID(ID);
             }
@@ -89,6 +89,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 }
 
 - (void)addConversation:(DIMConversation *)chatBox {
+    NSAssert([chatBox.ID isValid], @"conversation invalid");
     // check data source
     if (chatBox.dataSource == nil) {
         chatBox.dataSource = _conversationDataSource;
