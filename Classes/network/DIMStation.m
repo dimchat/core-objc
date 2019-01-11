@@ -13,7 +13,7 @@
 @interface DIMStation ()
 
 @property (strong, nonatomic) NSString *host;
-@property (nonatomic) NSUInteger port;
+@property (nonatomic) UInt32 port;
 
 @end
 
@@ -37,7 +37,10 @@
     DIMID *ID = [dict objectForKey:@"ID"];
     ID = [DIMID IDWithID:ID];
     // public key
-    DIMPublicKey *PK = [dict objectForKey:@"PK"];
+    DIMPublicKey *PK = [dict objectForKey:@"publicKey"];
+    if (!PK) {
+        PK = [dict objectForKey:@"PK"];
+    }
     PK = [DIMPublicKey keyWithKey:PK];
     
     // host
@@ -60,12 +63,26 @@
         PK = CA.info.publicKey;
     }
     
-    if (self = [self initWithID:ID publicKey:PK]) {
-        _host = host;
-        _port = [port unsignedIntegerValue];
-        
+    if (self = [self initWithID:ID
+                      publicKey:PK
+                           host:host
+                           port:[port unsignedIntValue]]) {
         _SP = SP;
         _CA = CA;
+    }
+    return self;
+}
+
+- (instancetype)initWithID:(const MKMID *)ID
+                 publicKey:(const MKMPublicKey *)PK
+                      host:(const NSString *)IP
+                      port:(UInt32)port {
+    if (self = [self initWithID:ID publicKey:PK]) {
+        _host = [IP copy];
+        _port = port;
+        
+        _SP = nil;
+        _CA = nil;
     }
     return self;
 }
@@ -75,8 +92,8 @@
     if (station) {
         station.host = _host;
         station.port = _port;
-        //station.SP = _SP;
-        //station.CA = _CA;
+        station.SP = _SP;
+        station.CA = _CA;
         station.delegate = _delegate;
     }
     return station;
