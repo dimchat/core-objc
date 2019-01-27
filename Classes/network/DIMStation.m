@@ -6,6 +6,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "NSObject+JsON.h"
+
 #import "DIMServiceProvider.h"
 
 #import "DIMStation.h"
