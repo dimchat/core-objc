@@ -99,6 +99,16 @@
     return station;
 }
 
+- (NSString *)debugDescription {
+    NSString *desc = [super debugDescription];
+    NSData *data = [desc data];
+    NSDictionary *dict = [data jsonDictionary];
+    NSMutableDictionary *mDict = [dict mutableCopy];
+    [mDict setObject:self.host forKey:@"host"];
+    [mDict setObject:@(self.port) forKey:@"port"];
+    return [mDict jsonString];
+}
+
 - (BOOL)isEqual:(id)object {
     DIMStation *station = (DIMStation *)object;
     if ([station.ID isEqual:_ID]) {
