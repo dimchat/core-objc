@@ -37,7 +37,7 @@
         if (meta) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
-        _meta = meta;
+        _meta = nil;
     }
     return self;
 }
@@ -66,7 +66,10 @@
     if (!_meta) {
         id obj = [_storeDictionary objectForKey:@"meta"];
         if (obj) {
-            _meta = [DIMMeta metaWithMeta:obj];
+            DIMMeta *meta = [DIMMeta metaWithMeta:obj];
+            if ([meta matchID:self.ID]) {
+                _meta = meta;
+            }
         }
     }
     return _meta;

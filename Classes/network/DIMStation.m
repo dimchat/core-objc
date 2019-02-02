@@ -82,9 +82,6 @@
     if (self = [self initWithID:ID publicKey:PK]) {
         _host = [IP copy];
         _port = port;
-        
-        _SP = nil;
-        _CA = nil;
     }
     return self;
 }
