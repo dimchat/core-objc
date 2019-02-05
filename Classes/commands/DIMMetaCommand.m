@@ -26,7 +26,7 @@
     return self;
 }
 
-- (instancetype)initWithID:(MKMID *)ID meta:(nullable MKMMeta *)meta {
+- (instancetype)initWithID:(DIMID *)ID meta:(nullable DIMMeta *)meta {
     if (self = [self initWithCommand:@"meta"]) {
         // ID
         if (ID) {

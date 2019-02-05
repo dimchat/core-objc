@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
-
 #import "DIMCASubject.h"
 #import "DIMCAValidity.h"
 #import "DIMCAData.h"

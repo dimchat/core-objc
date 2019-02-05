@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommand : DKDMessageContent
+@interface DIMCommand : DIMMessageContent
 
 @property (readonly, strong, nonatomic) NSString *command;
 
@@ -24,6 +24,29 @@ NS_ASSUME_NONNULL_BEGIN
  *  }
  */
 - (instancetype)initWithCommand:(NSString *)cmd
+NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict
+NS_DESIGNATED_INITIALIZER;
+
+@end
+
+#pragma mark -
+
+@interface DIMHistoryCommand : DIMMessageContent
+
+@property (readonly, strong, nonatomic) NSString *command;
+
+/**
+ *  History command: {
+ *      type : 0x89,
+ *      sn   : 123,
+ *
+ *      command : "...", // command name
+ *      extra   : info   // command parameters
+ *  }
+ */
+- (instancetype)initWithHistoryCommand:(NSString *)cmd
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict

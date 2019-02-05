@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
-
 #import "DIMConversation.h"
 
 @interface DIMConversation ()

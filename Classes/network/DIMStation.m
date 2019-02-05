@@ -22,8 +22,8 @@
 @implementation DIMStation
 
 /* designated initializer */
-- (instancetype)initWithID:(const MKMID *)ID
-                 publicKey:(const MKMPublicKey *)PK {
+- (instancetype)initWithID:(const DIMID *)ID
+                 publicKey:(const DIMPublicKey *)PK {
     if (self = [super initWithID:ID publicKey:PK]) {
         _host = nil;
         _port = 9394;
@@ -75,8 +75,8 @@
     return self;
 }
 
-- (instancetype)initWithID:(const MKMID *)ID
-                 publicKey:(const MKMPublicKey *)PK
+- (instancetype)initWithID:(const DIMID *)ID
+                 publicKey:(const DIMPublicKey *)PK
                       host:(const NSString *)IP
                       port:(UInt32)port {
     if (self = [self initWithID:ID publicKey:PK]) {

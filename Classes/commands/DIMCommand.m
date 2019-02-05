@@ -58,3 +58,56 @@
 }
 
 @end
+
+#pragma mark -
+
+@interface DIMHistoryCommand ()
+
+@property (strong, nonatomic) NSString *command;
+
+@end
+
+@implementation DIMHistoryCommand
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _command = nil;
+    }
+    return self;
+}
+
+- (instancetype)initWithType:(DKDMessageType)type {
+    NSAssert(false, @"DON'T call me");
+    return [self initWithCommand:@"NOOP"];
+}
+
+/* designated initializer */
+- (instancetype)initWithHistoryCommand:(NSString *)cmd {
+    NSAssert(cmd, @"command name cannot be empty");
+    if (self = [super initWithType:DKDMessageType_History]) {
+        // command
+        if (cmd) {
+            [_storeDictionary setObject:cmd forKey:@"command"];
+        }
+        _command = cmd;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    DIMHistoryCommand *command = [super copyWithZone:zone];
+    if (command) {
+        command.command = _command;
+    }
+    return command;
+}
+
+- (NSString *)command {
+    if (!_command) {
+        _command = [_storeDictionary objectForKey:@"command"];
+    }
+    return _command;
+}
+
+@end

@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
-
 #import "DIMCertificateAuthority.h"
 
 NS_ASSUME_NONNULL_BEGIN

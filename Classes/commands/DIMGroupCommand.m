@@ -13,7 +13,7 @@
 - (instancetype)initWithCommand:(NSString *)cmd
                           group:(DIMID *)groupID
                          member:(nullable DIMID *)memberID {
-    if (self = [self initWithCommand:cmd]) {
+    if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
             [_storeDictionary setObject:groupID forKey:@"group"];

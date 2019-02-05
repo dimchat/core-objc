@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
-
 #import "DIMCertificateAuthority.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -41,8 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
-- (instancetype)initWithID:(const MKMID *)ID
-                 publicKey:(const MKMPublicKey *)PK
+- (instancetype)initWithID:(const DIMID *)ID
+                 publicKey:(const DIMPublicKey *)PK
                       host:(const NSString *)IP
                       port:(UInt32)port;
 

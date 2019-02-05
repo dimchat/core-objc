@@ -13,8 +13,8 @@
 @implementation DIMServiceProvider
 
 /* designated initializer */
-- (instancetype)initWithID:(const MKMID *)ID
-                 founderID:(const MKMID *)founderID {
+- (instancetype)initWithID:(const DIMID *)ID
+                 founderID:(const DIMID *)founderID {
     if (self = [super initWithID:ID founderID:founderID]) {
         _CA = nil;
         _home = nil;

@@ -6,21 +6,20 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
-
 #import "DIMCommand.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMGroupCommand : DIMCommand
+@interface DIMGroupCommand : DIMHistoryCommand
 
 // Group ID for group message already defined in DKDMessageContent
+//@property (strong, nonatomic, nullable) MKMID *group;
 
 @property (readonly, strong, nonatomic, nullable) DIMID *member;
 
 /**
- *  Command message: {
- *      type : 0x88,
+ *  Group history command: {
+ *      type : 0x89,
  *      sn   : 123,
  *
  *      command : "invite",      // expel, quit
