@@ -87,15 +87,15 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMStation *station = [super copyWithZone:zone];
-    if (station) {
-        station.host = _host;
-        station.port = _port;
-        station.SP = _SP;
-        station.CA = _CA;
-        station.delegate = _delegate;
+    DIMStation *server = [super copyWithZone:zone];
+    if (server) {
+        server.host = _host;
+        server.port = _port;
+        server.SP = _SP;
+        server.CA = _CA;
+        server.delegate = _delegate;
     }
-    return station;
+    return server;
 }
 
 - (NSString *)debugDescription {
@@ -109,11 +109,11 @@
 }
 
 - (BOOL)isEqual:(id)object {
-    DIMStation *station = (DIMStation *)object;
-    if ([station.ID isEqual:_ID]) {
+    DIMStation *server = (DIMStation *)object;
+    if ([server.ID isEqual:_ID]) {
         return YES;
     }
-    if ([station.host isEqualToString:_host] && station.port == _port) {
+    if ([server.host isEqualToString:_host] && server.port == _port) {
         return YES;
     }
     return NO;

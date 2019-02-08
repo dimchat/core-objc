@@ -53,10 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Received a new data package from the station
 
- @param station - current station
+ @param server - current station
  @param data - data package
  */
-- (void)station:(const DIMStation *)station didReceiveData:(const NSData *)data;
+- (void)station:(const DIMStation *)server didReceiveData:(const NSData *)data;
 
 @end
 

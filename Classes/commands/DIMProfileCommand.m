@@ -88,11 +88,11 @@
 
 - (nullable DIMProfile *)profile {
     if (!_profile) {
-        NSData *signature = [self signature];
         NSString *json = [_storeDictionary objectForKey:@"profile"];
+        NSData *signature = [self signature];
         if (json && signature) {
-            MKMPublicKey *PK = MKMPublicKeyForID(self.ID);
             NSData *data = [json data];
+            MKMPublicKey *PK = MKMPublicKeyForID(self.ID);
             if ([PK verify:data withSignature:signature]) {
                 _profile = [DIMProfile profileWithProfile:json];
             }

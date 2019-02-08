@@ -51,8 +51,6 @@
 #define DIMUserDelegate                 MKMUserDelegate
 
 #define DIMProfile                      MKMProfile
-#define DIMAccountProfile               MKMAccountProfile
-#define DIMGroupProfile                 MKMGroupProfile
 #define DIMProfileDataSource            MKMProfileDataSource
 
 #define DIMBarrack                      MKMBarrack

@@ -77,8 +77,8 @@
 
 #pragma mark Station
 
-- (BOOL)verifyStation:(const DIMStation *)station {
-    DIMCertificateAuthority *CA = station.CA;
+- (BOOL)verifyStation:(const DIMStation *)server {
+    DIMCertificateAuthority *CA = server.CA;
     return [CA verifyWithPublicKey:self.publicKey];
 }
 

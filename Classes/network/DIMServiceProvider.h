@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
-- (BOOL)verifyStation:(const DIMStation *)station;
+- (BOOL)verifyStation:(const DIMStation *)server;
 
 @end
 
