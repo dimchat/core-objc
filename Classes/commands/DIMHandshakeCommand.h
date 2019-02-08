@@ -35,10 +35,10 @@ typedef NS_ENUM(UInt8, DIMHandshakeState) {
  *      session : "{SESSION_KEY}" // session key
  *  }
  */
-- (instancetype)initWithMessage:(NSString *)message
-                     sessionKey:(nullable NSString *)session;
+- (instancetype)initWithMessage:(const NSString *)message
+                     sessionKey:(nullable const NSString *)session;
 
-- (instancetype)initWithSessionKey:(nullable NSString *)session;
+- (instancetype)initWithSessionKey:(nullable const NSString *)session;
 
 @end
 

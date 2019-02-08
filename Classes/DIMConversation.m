@@ -31,7 +31,7 @@
 }
 
 - (DIMConversationType)type {
-    if (MKMNetwork_IsPerson(_entity.type)) {
+    if (MKMNetwork_IsCommunicator(_entity.type)) {
         return DIMConversationPersonal;
     } else if (MKMNetwork_IsGroup(_entity.type)) {
         return DIMConversationGroup;

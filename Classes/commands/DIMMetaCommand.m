@@ -26,18 +26,19 @@
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID meta:(nullable DIMMeta *)meta {
+- (instancetype)initWithID:(const DIMID *)ID
+                      meta:(nullable const DIMMeta *)meta {
     if (self = [self initWithCommand:@"meta"]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
-        _ID = ID;
+        _ID = nil; // lazy
         // meta
         if (meta) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
-        _meta = nil;
+        _meta = nil; // lazy
     }
     return self;
 }

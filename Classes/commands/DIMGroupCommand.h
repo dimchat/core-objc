@@ -27,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
  *      member  : "{MEMBER_ID}",
  *  }
  */
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(DIMID *)groupID
-                         member:(nullable DIMID *)memberID;
+- (instancetype)initWithCommand:(const NSString *)cmd
+                          group:(const DIMID *)groupID
+                         member:(nullable const DIMID *)memberID;
 
 @end
 
@@ -37,21 +37,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMInviteCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(nullable DIMID *)memberID;
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                       member:(nullable const DIMID *)memberID;
 
 @end
 
 @interface DIMExpelCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(nullable DIMID *)memberID;
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                       member:(nullable const DIMID *)memberID;
 
 @end
 
 @interface DIMQuitCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID;
+- (instancetype)initWithGroup:(const DIMID *)groupID;
 
 @end
 

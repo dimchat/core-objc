@@ -30,14 +30,14 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithCommand:(NSString *)cmd {
+- (instancetype)initWithCommand:(const NSString *)cmd {
     NSAssert(cmd, @"command name cannot be empty");
     if (self = [super initWithType:DKDMessageType_Command]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];
         }
-        _command = cmd;
+        _command = nil; // lazy
     }
     return self;
 }
@@ -83,14 +83,14 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithHistoryCommand:(NSString *)cmd {
+- (instancetype)initWithHistoryCommand:(const NSString *)cmd {
     NSAssert(cmd, @"command name cannot be empty");
     if (self = [super initWithType:DKDMessageType_History]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];
         }
-        _command = cmd;
+        _command = nil; // lazy
     }
     return self;
 }

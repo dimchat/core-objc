@@ -25,7 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      meta : {...}      // When meta is empty, means query meta for ID
  *  }
  */
-- (instancetype)initWithID:(DIMID *)ID meta:(nullable DIMMeta *)meta;
+- (instancetype)initWithID:(const DIMID *)ID
+                      meta:(nullable const DIMMeta *)meta;
 
 @end
 

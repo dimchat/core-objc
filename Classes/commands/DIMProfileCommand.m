@@ -32,41 +32,37 @@
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID
-                   profile:(nullable NSString *)profileString
-                 signature:(nullable NSString *)signatureString {
+- (instancetype)initWithID:(const DIMID *)ID
+                   profile:(nullable const NSString *)profileString
+                 signature:(nullable const NSString *)signatureString {
     if (self = [self initWithCommand:@"profile"]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
-        _ID = ID;
+        _ID = nil; // lazy
         // profile
         if (profileString) {
             [_storeDictionary setObject:profileString forKey:@"profile"];
         }
-        _profile = nil;
+        _profile = nil; // lazy
         // signature
         if (signatureString) {
             [_storeDictionary setObject:signatureString forKey:@"signature"];
         }
-        _signature = nil;
+        _signature = nil; // lazy
     }
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID
-                privateKey:(DIMPrivateKey *)SK
-                   profile:(DIMProfile *)profile {
-    NSString *jsonString = [profile jsonString];
-    NSData *data = [jsonString data];
-    data = [SK sign:data];
-    NSString *signature = [data base64Encode];
-    if (self = [self initWithID:ID profile:jsonString signature:signature]) {
-        _profile = profile;
-        _signature = data;
-    }
-    return self;
+- (instancetype)initWithID:(const DIMID *)ID
+                privateKey:(const DIMPrivateKey *)SK
+                   profile:(const DIMProfile *)profile {
+    NSString *json = [profile jsonString];
+    NSData *data = [json data];
+    NSData *signature = [SK sign:data];
+    NSString *string = [signature base64Encode];
+    return [self initWithID:ID profile:json signature:string];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -92,16 +88,13 @@
 
 - (nullable DIMProfile *)profile {
     if (!_profile) {
+        NSData *signature = [self signature];
         NSString *json = [_storeDictionary objectForKey:@"profile"];
-        NSString *base64 = [_storeDictionary objectForKey:@"signature"];
-        if (json && base64) {
-            DIMID *ID = self.ID;
-            DIMMeta *meta = MKMMetaForID(ID);
+        if (json && signature) {
+            MKMPublicKey *PK = MKMPublicKeyForID(self.ID);
             NSData *data = [json data];
-            NSData *sig = [base64 base64Decode];
-            if ([meta.key verify:data withSignature:sig]) {
+            if ([PK verify:data withSignature:signature]) {
                 _profile = [DIMProfile profileWithProfile:json];
-                _signature = sig;
             }
         }
     }
@@ -110,9 +103,8 @@
 
 - (nullable NSData *)signature {
     if (!_signature) {
-        if ([self profile]) {
-            //
-        }
+        NSString *base64 = [_storeDictionary objectForKey:@"signature"];
+        _signature = [base64 base64Decode];
     }
     return _signature;
 }

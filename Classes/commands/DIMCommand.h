@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // command parameters
  *  }
  */
-- (instancetype)initWithCommand:(NSString *)cmd
+- (instancetype)initWithCommand:(const NSString *)cmd
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
@@ -46,7 +46,7 @@ NS_DESIGNATED_INITIALIZER;
  *      extra   : info   // command parameters
  *  }
  */
-- (instancetype)initWithHistoryCommand:(NSString *)cmd
+- (instancetype)initWithHistoryCommand:(const NSString *)cmd
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict

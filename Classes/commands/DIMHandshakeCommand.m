@@ -29,19 +29,19 @@
     return self;
 }
 
-- (instancetype)initWithMessage:(NSString *)message
-                     sessionKey:(nullable NSString *)session {
+- (instancetype)initWithMessage:(const NSString *)message
+                     sessionKey:(nullable const NSString *)session {
     if (self = [self initWithCommand:@"handshake"]) {
         // message
         if (message) {
             [_storeDictionary setObject:message forKey:@"message"];
         }
-        _message = message;
+        _message = nil; // lazy
         // session key
         if (session) {
             [_storeDictionary setObject:session forKey:@"session"];
         }
-        _sessionKey = session;
+        _sessionKey = nil; // lazy
         // state
         if (session) {
             _state = DIMHandshake_Restart;
@@ -52,7 +52,7 @@
     return self;
 }
 
-- (instancetype)initWithSessionKey:(nullable NSString *)session {
+- (instancetype)initWithSessionKey:(nullable const NSString *)session {
     return [self initWithMessage:@"Hello world!" sessionKey:session];
 }
 

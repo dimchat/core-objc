@@ -10,9 +10,9 @@
 
 @implementation DIMGroupCommand
 
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(DIMID *)groupID
-                         member:(nullable DIMID *)memberID {
+- (instancetype)initWithCommand:(const NSString *)cmd
+                          group:(const DIMID *)groupID
+                         member:(nullable const DIMID *)memberID {
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
@@ -37,8 +37,8 @@
 
 @implementation DIMInviteCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(nullable DIMID *)memberID {
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                       member:(nullable const DIMID *)memberID {
     return [super initWithCommand:@"invite" group:groupID member:memberID];
 }
 
@@ -46,8 +46,8 @@
 
 @implementation DIMExpelCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(nullable DIMID *)memberID {
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                       member:(nullable const DIMID *)memberID {
     return [super initWithCommand:@"expel" group:groupID member:memberID];
 }
 
@@ -55,7 +55,7 @@
 
 @implementation DIMQuitCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID {
+- (instancetype)initWithGroup:(const DIMID *)groupID {
     return [super initWithCommand:@"quit" group:groupID member:nil];
 }
 

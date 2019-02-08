@@ -69,7 +69,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
             // create directly if we can find the entity
             // get entity with ID
             DIMEntity *entity = nil;
-            if (MKMNetwork_IsPerson(ID.type)) {
+            if (MKMNetwork_IsCommunicator(ID.type)) {
                 entity = MKMAccountWithID(ID);
             } else if (MKMNetwork_IsGroup(ID.type)) {
                 entity = MKMGroupWithID(ID);

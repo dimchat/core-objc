@@ -27,13 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
  *      signature: "{BASE64}", // sign(profile)
  *  }
  */
-- (instancetype)initWithID:(DIMID *)ID
-                   profile:(nullable NSString *)profileString
-                 signature:(nullable NSString *)signatureString;
+- (instancetype)initWithID:(const DIMID *)ID
+                   profile:(nullable const NSString *)profileString
+                 signature:(nullable const NSString *)signatureString;
 
-- (instancetype)initWithID:(DIMID *)ID
-                privateKey:(DIMPrivateKey *)SK
-                   profile:(DIMProfile *)profile;
+- (instancetype)initWithID:(const DIMID *)ID
+                privateKey:(const DIMPrivateKey *)SK
+                   profile:(const DIMProfile *)profile;
 
 @end
 
