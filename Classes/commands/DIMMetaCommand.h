@@ -10,7 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMMetaCommand : DIMCommand
+@interface DIMMetaCommand : DIMCommand {
+    
+    DIMID *_ID;
+    DIMMeta *_meta;
+}
 
 @property (readonly, strong, nonatomic) DIMID *ID;
 @property (readonly, strong, nonatomic, nullable) DIMMeta *meta;
@@ -21,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      sn   : 123,
  *
  *      command : "meta", // command name
- *      ID : "{ID}",      // contact's ID
- *      meta : {...}      // When meta is empty, means query meta for ID
+ *      ID      : "{ID}", // contact's ID
+ *      meta    : {...}   // When meta is empty, means query meta for ID
  *  }
  */
 - (instancetype)initWithID:(const DIMID *)ID

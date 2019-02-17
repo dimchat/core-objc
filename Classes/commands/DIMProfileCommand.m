@@ -14,7 +14,6 @@
 
 @interface DIMProfileCommand ()
 
-@property (strong, nonatomic) DIMID *ID;
 @property (strong, nonatomic, nullable) DIMProfile *profile;
 @property (strong, nonatomic, nullable) NSData *signature;
 
@@ -25,7 +24,6 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _ID = nil;
         _profile = nil;
         _signature = nil;
     }
@@ -33,6 +31,7 @@
 }
 
 - (instancetype)initWithID:(const DIMID *)ID
+                      meta:(nullable const DIMMeta *)meta
                    profile:(nullable const NSString *)profileString
                  signature:(nullable const NSString *)signatureString {
     if (self = [self initWithCommand:@"profile"]) {
@@ -41,6 +40,12 @@
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
         _ID = nil; // lazy
+        // meta
+        if (meta) {
+            [_storeDictionary setObject:meta forKey:@"meta"];
+        }
+        _meta = nil; // lazy
+        
         // profile
         if (profileString) {
             [_storeDictionary setObject:profileString forKey:@"profile"];
@@ -56,34 +61,23 @@
 }
 
 - (instancetype)initWithID:(const DIMID *)ID
+                      meta:(nullable const DIMMeta *)meta
                 privateKey:(const DIMPrivateKey *)SK
                    profile:(const DIMProfile *)profile {
     NSString *json = [profile jsonString];
     NSData *data = [json data];
     NSData *signature = [SK sign:data];
     NSString *string = [signature base64Encode];
-    return [self initWithID:ID profile:json signature:string];
+    return [self initWithID:ID meta:meta profile:json signature:string];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
     DIMProfileCommand *command = [super copyWithZone:zone];
     if (command) {
-        command.ID = _ID;
         command.profile = _profile;
         command.signature = _signature;
     }
     return command;
-}
-
-- (DIMID *)ID {
-    if (!_ID) {
-        id obj = [_storeDictionary objectForKey:@"ID"];
-        if (!obj) {
-            obj = [_storeDictionary objectForKey:@"identifier"];
-        }
-        _ID = [DIMID IDWithID:obj];
-    }
-    return _ID;
 }
 
 - (nullable DIMProfile *)profile {
