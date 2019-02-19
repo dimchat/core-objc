@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 @property (readonly, strong, nonatomic) NSString *host; // Domain/IP
-@property (readonly, nonatomic) UInt32 port;        // default: 9394
+@property (readonly, nonatomic)         UInt32    port; // default: 9394
 
 @property (strong, nonatomic) DIMServiceProvider *SP;
 @property (strong, nonatomic) DIMCertificateAuthority *CA;
