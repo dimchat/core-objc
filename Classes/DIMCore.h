@@ -47,6 +47,5 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 //-
 #import <DIMCore/DIMConversation.h>
 #import <DIMCore/DIMAmanuensis.h>
-#import <DIMCore/DIMClient.h>
 
 #endif /* ! __DIM_CORE__ */
