@@ -42,6 +42,14 @@
     DIMPublicKey *PK = [dict objectForKey:@"publicKey"];
     if (!PK) {
         PK = [dict objectForKey:@"PK"];
+        if (!PK) {
+            // get from meta.key
+            DIMMeta *meta = [dict objectForKey:@"meta"];
+            if (meta) {
+                meta = [DIMMeta metaWithMeta:meta];
+                PK = meta.key;
+            }
+        }
     }
     PK = [DIMPublicKey keyWithKey:PK];
     
@@ -62,6 +70,7 @@
     CA = [DIMCertificateAuthority caWithCA:CA];
     
     if (!PK) {
+        // get from CA.info.publicKey
         PK = CA.info.publicKey;
     }
     
