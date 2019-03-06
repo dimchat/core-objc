@@ -21,6 +21,8 @@
 #define DIMAddress                      MKMAddress
 #define DIMMeta                         MKMMeta
 #define DIMEntity                       MKMEntity
+
+#define DIMMetaDataSource               MKMMetaDataSource
 #define DIMEntityDataSource             MKMEntityDataSource
 
 // History
@@ -30,16 +32,16 @@
 #define DIMGroup                        MKMGroup
 #define DIMPolylogue                    MKMPolylogue
 #define DIMChatroom                     MKMChatroom
-#define DIMGroupDataSource              MKMGroupDataSource
-#define DIMGroupDelegate                MKMGroupDelegate
-#define DIMChatroomDataSource           MKMChatroomDataSource
 
 #define DIMMember                       MKMMember
-#define DIMMemberDelegate               MKMMemberDelegate
 #define DIMFounder                      MKMFounder
 #define DIMOwner                        MKMOwner
 #define DIMAdmin                        MKMAdmin
 
+#define DIMGroupDataSource              MKMGroupDataSource
+#define DIMGroupDelegate                MKMGroupDelegate
+#define DIMChatroomDataSource           MKMChatroomDataSource
+#define DIMMemberDelegate               MKMMemberDelegate
 
 //-
 #define DIMAccount                      MKMAccount

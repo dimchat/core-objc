@@ -22,9 +22,8 @@
 @implementation DIMStation
 
 /* designated initializer */
-- (instancetype)initWithID:(const DIMID *)ID
-                 publicKey:(const DIMPublicKey *)PK {
-    if (self = [super initWithID:ID publicKey:PK]) {
+- (instancetype)initWithID:(const DIMID *)ID {
+    if (self = [super initWithID:ID]) {
         _host = nil;
         _port = 9394;
         _SP = nil;
@@ -73,9 +72,9 @@
         // get from CA.info.publicKey
         PK = CA.info.publicKey;
     }
+    // TODO: save public key for the Station
     
     if (self = [self initWithID:ID
-                      publicKey:PK
                            host:host
                            port:[port unsignedIntValue]]) {
         _SP = SP;
@@ -85,10 +84,9 @@
 }
 
 - (instancetype)initWithID:(const DIMID *)ID
-                 publicKey:(const DIMPublicKey *)PK
                       host:(const NSString *)IP
                       port:(UInt32)port {
-    if (self = [self initWithID:ID publicKey:PK]) {
+    if (self = [self initWithID:ID]) {
         _host = [IP copy];
         _port = port;
     }

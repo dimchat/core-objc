@@ -38,7 +38,6 @@
 		E9F3AA8321CBD03C009690F6 /* DIMAmanuensis.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA6E21CBD03C009690F6 /* DIMAmanuensis.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA9B21CC00B6009690F6 /* dimMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
-		E9F3AC5521D23CD1009690F6 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AC5421D23CD1009690F6 /* MingKeMing.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,7 +106,6 @@
 		E9F3AA6E21CBD03C009690F6 /* DIMAmanuensis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMAmanuensis.h; sourceTree = "<group>"; };
 		E9F3AA9B21CC00B6009690F6 /* dimMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dimMacros.h; sourceTree = "<group>"; };
 		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
-		E9F3AC5421D23CD1009690F6 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,7 +113,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9F3AC5521D23CD1009690F6 /* MingKeMing.framework in Frameworks */,
 				E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,7 +229,6 @@
 		E9F3AA9621CBD1E5009690F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9F3AC5421D23CD1009690F6 /* MingKeMing.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

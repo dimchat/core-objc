@@ -13,9 +13,8 @@
 @implementation DIMServiceProvider
 
 /* designated initializer */
-- (instancetype)initWithID:(const DIMID *)ID
-                 founderID:(const DIMID *)founderID {
-    if (self = [super initWithID:ID founderID:founderID]) {
+- (instancetype)initWithID:(const DIMID *)ID {
+    if (self = [super initWithID:ID]) {
         _CA = nil;
         _home = nil;
     }
@@ -42,9 +41,7 @@
         home = [NSURL URLWithString:home];
     }
     
-    if (self = [self initWithID:ID founderID:founder]) {
-        _owner = owner;
-        
+    if (self = [self initWithID:ID]) {
         _CA = CA;
         _home = home;
     }

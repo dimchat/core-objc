@@ -40,7 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
 - (instancetype)initWithID:(const DIMID *)ID
-                 publicKey:(const DIMPublicKey *)PK
                       host:(const NSString *)IP
                       port:(UInt32)port;
 
