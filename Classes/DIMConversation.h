@@ -26,7 +26,7 @@ typedef UInt8 DIMConversationType;
 
 @property (readonly, nonatomic) DIMConversationType type; // Network ID
 
-@property (readonly, strong, nonatomic) DIMID *ID;
+@property (readonly, strong, nonatomic) const DIMID *ID;
 @property (readonly, strong, nonatomic) NSString *title;
 
 @property (weak, nonatomic) id<DIMConversationDataSource> dataSource;

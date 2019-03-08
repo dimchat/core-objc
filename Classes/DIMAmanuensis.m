@@ -96,12 +96,12 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     if (chatBox.delegate == nil) {
         chatBox.delegate = _conversationDelegate;
     }
-    DIMID *ID = chatBox.ID;
+    const DIMID *ID = chatBox.ID;
     [_conversations setObject:chatBox forKey:ID.address];
 }
 
 - (void)removeConversation:(DIMConversation *)chatBox {
-    DIMID *ID = chatBox.ID;
+    const DIMID *ID = chatBox.ID;
     [_conversations removeObjectForKey:ID.address];
 }
 
@@ -115,8 +115,8 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     DIMConversation *chatBox = nil;
     
     DIMEnvelope *env = iMsg.envelope;
-    DIMID *sender = env.sender;
-    DIMID *receiver = env.receiver;
+    const DIMID *sender = env.sender;
+    const DIMID *receiver = env.receiver;
     
     if (MKMNetwork_IsGroup(receiver.type)) {
         // group chat, get chat box with group ID

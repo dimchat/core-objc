@@ -39,7 +39,7 @@
     return DIMConversationUnknown;
 }
 
-- (DIMID *)ID {
+- (const DIMID *)ID {
     return _entity.ID;
 }
 

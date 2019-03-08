@@ -26,7 +26,7 @@
     return self;
 }
 
-- (nullable DIMID *)member {
+- (nullable const DIMID *)member {
     DIMID *ID = [_storeDictionary objectForKey:@"member"];
     return [DIMID IDWithID:ID];
 }

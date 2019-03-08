@@ -25,9 +25,6 @@
 #define DIMMetaDataSource               MKMMetaDataSource
 #define DIMEntityDataSource             MKMEntityDataSource
 
-// History
-#define DIMRegisterInfo                 MKMRegisterInfo
-
 // Group
 #define DIMGroup                        MKMGroup
 #define DIMPolylogue                    MKMPolylogue

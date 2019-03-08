@@ -10,8 +10,8 @@
 
 @interface DIMMetaCommand ()
 
-@property (strong, nonatomic) DIMID *ID;
-@property (strong, nonatomic, nullable) DIMMeta *meta;
+@property (strong, nonatomic) const DIMID *ID;
+@property (strong, nonatomic, nullable) const DIMMeta *meta;
 
 @end
 
@@ -52,7 +52,7 @@
     return command;
 }
 
-- (DIMID *)ID {
+- (const DIMID *)ID {
     if (!_ID) {
         id obj = [_storeDictionary objectForKey:@"ID"];
         if (!obj) {
@@ -63,7 +63,7 @@
     return _ID;
 }
 
-- (nullable DIMMeta *)meta {
+- (nullable const DIMMeta *)meta {
     if (!_meta) {
         id obj = [_storeDictionary objectForKey:@"meta"];
         if (obj) {

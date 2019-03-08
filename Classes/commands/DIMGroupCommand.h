@@ -13,9 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMGroupCommand : DIMHistoryCommand
 
 // Group ID for group message already defined in DKDMessageContent
-//@property (strong, nonatomic, nullable) MKMID *group;
+//@property (strong, nonatomic, nullable) const MKMID *group;
 
-@property (readonly, strong, nonatomic, nullable) DIMID *member;
+@property (readonly, strong, nonatomic, nullable) const DIMID *member;
 
 /**
  *  Group history command: {
