@@ -70,6 +70,7 @@
 #define DIMMessageType_Page             DKDMessageType_Page
 #define DIMMessageType_Quote            DKDMessageType_Quote
 #define DIMMessageType_Command          DKDMessageType_Command
+#define DIMMessageType_History          DKDMessageType_History
 #define DIMMessageType_Forward          DKDMessageType_Forward
 #define DIMMessageType_Unknown          DKDMessageType_Unknown
 #define DIMMessageContentDelegate       DKDMessageContentDelegate
