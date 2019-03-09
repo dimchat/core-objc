@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 //@property (strong, nonatomic, nullable) const MKMID *group;
 
 @property (readonly, strong, nonatomic, nullable) const DIMID *member;
+@property (readonly, strong, nonatomic, nullable) const NSArray<const DIMID *> *members;
 
 /**
  *  Group history command: {
@@ -31,6 +32,20 @@ NS_ASSUME_NONNULL_BEGIN
                           group:(const DIMID *)groupID
                          member:(nullable const DIMID *)memberID;
 
+/**
+ *  Group history command: {
+ *      type : 0x89,
+ *      sn   : 123,
+ *
+ *      command : "invite",      // expel
+ *      group   : "{GROUP_ID}",
+ *      members : ["{MEMBER_ID}", ],
+ *  }
+ */
+- (instancetype)initWithCommand:(const NSString *)cmd
+                          group:(const DIMID *)groupID
+                        members:(const NSArray<const DIMID *> *)list;
+
 @end
 
 #pragma mark -
@@ -40,12 +55,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithGroup:(const DIMID *)groupID
                        member:(nullable const DIMID *)memberID;
 
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                      members:(const NSArray<const DIMID *> *)list;
+
 @end
 
 @interface DIMExpelCommand : DIMGroupCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
                        member:(nullable const DIMID *)memberID;
+
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                      members:(const NSArray<const DIMID *> *)list;
 
 @end
 
