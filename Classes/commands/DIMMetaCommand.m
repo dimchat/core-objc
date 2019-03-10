@@ -54,24 +54,39 @@
 
 - (const DIMID *)ID {
     if (!_ID) {
-        id obj = [_storeDictionary objectForKey:@"ID"];
-        if (!obj) {
-            obj = [_storeDictionary objectForKey:@"identifier"];
+        NSString *str = [_storeDictionary objectForKey:@"ID"];
+        _ID = [DIMID IDWithID:str];
+        
+        if (_ID != str) {
+            if (_ID) {
+                // replace the ID object
+                [_storeDictionary setObject:_ID forKey:@"ID"];
+            } else {
+                NSAssert(false, @"ID error: %@", str);
+                //[_storeDictionary removeObjectForKey:@"ID"];
+            }
         }
-        _ID = [DIMID IDWithID:obj];
     }
     return _ID;
 }
 
 - (nullable const DIMMeta *)meta {
     if (!_meta) {
-        id obj = [_storeDictionary objectForKey:@"meta"];
-        if (obj) {
-            DIMMeta *meta = [DIMMeta metaWithMeta:obj];
-            if ([meta matchID:self.ID]) {
-                _meta = meta;
-            }
+        NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
+        if (!dict) {
+            return nil;
         }
+        DIMMeta *m = [DIMMeta metaWithMeta:dict];
+        if (![m matchID:self.ID]) {
+            NSLog(@"meta not match ID: %@, meta: %@", self.ID, m);
+            return nil;
+        }
+        if (m != dict) {
+            // replace the meta object
+            [_storeDictionary setObject:m forKey:@"meta"];
+        }
+        
+        _meta = m;
     }
     return _meta;
 }

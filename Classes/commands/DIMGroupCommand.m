@@ -43,8 +43,18 @@
 }
 
 - (nullable const DIMID *)member {
-    DIMID *ID = [_storeDictionary objectForKey:@"member"];
-    return [DIMID IDWithID:ID];
+    NSString *str = [_storeDictionary objectForKey:@"member"];
+    DIMID *ID = [DIMID IDWithID:str];
+    if (ID != str) {
+        if (ID) {
+            // replace the member ID object
+            [_storeDictionary setObject:ID forKey:@"member"];
+        } else {
+            NSAssert(false, @"member error: %@", str);
+            //[_storeDictionary removeObjectForKey:@"member"];
+        }
+    }
+    return ID;
 }
 
 - (const NSArray<const DIMID *> *)members {
@@ -61,6 +71,8 @@
         NSAssert(ID.isValid, @"members item error: %@", item);
         [mArray addObject:ID];
     }
+    // replace the members array to avoid building IDs from string again
+    [_storeDictionary setObject:mArray forKey:@"members"];
     return mArray;
 }
 
