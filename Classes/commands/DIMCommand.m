@@ -31,7 +31,7 @@
 
 /* designated initializer */
 - (instancetype)initWithCommand:(const NSString *)cmd {
-    NSAssert(cmd, @"command name cannot be empty");
+    NSAssert(cmd.length > 0, @"command name cannot be empty");
     if (self = [super initWithType:DKDMessageType_Command]) {
         // command
         if (cmd) {
@@ -84,7 +84,7 @@
 
 /* designated initializer */
 - (instancetype)initWithHistoryCommand:(const NSString *)cmd {
-    NSAssert(cmd, @"command name cannot be empty");
+    NSAssert(cmd.length > 0, @"command name cannot be empty");
     if (self = [super initWithType:DKDMessageType_History]) {
         // command
         if (cmd) {

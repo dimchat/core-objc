@@ -52,8 +52,6 @@
 #define DIMProfile                      MKMProfile
 #define DIMProfileDataSource            MKMProfileDataSource
 
-#define DIMBarrack                      MKMBarrack
-
 #import <DaoKeDao/DaoKeDao.h>
 
 // Types
@@ -82,12 +80,5 @@
 #define DIMSecureMessage                DKDSecureMessage
 #define DIMReliableMessage              DKDReliableMessage
 #define DIMEncryptedKeyMap              DKDEncryptedKeyMap
-
-//-
-#define DIMKeyStore                     DKDKeyStore
-#define DIMTransceiver                  DKDTransceiver
-#define DIMTransceiverDelegate          DKDTransceiverDelegate
-#define DIMTransceiverCallback          DKDTransceiverCallback
-#define DIMTransceiverCompletionHandler DKDTransceiverCompletionHandler
 
 #endif /* dimMacros_h */

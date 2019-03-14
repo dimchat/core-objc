@@ -8,6 +8,7 @@
 
 #import "NSObject+Singleton.h"
 
+#import "DIMBarrack.h"
 #import "DIMConversation.h"
 
 #import "DIMAmanuensis.h"
@@ -70,11 +71,11 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
             // get entity with ID
             DIMEntity *entity = nil;
             if (MKMNetwork_IsCommunicator(ID.type)) {
-                entity = MKMAccountWithID(ID);
+                entity = DIMAccountWithID(ID);
             } else if (MKMNetwork_IsGroup(ID.type)) {
-                entity = MKMGroupWithID(ID);
+                entity = DIMGroupWithID(ID);
             }
-            NSAssert(entity, @"ID error");
+            NSAssert(entity, @"ID error: %@", ID);
             if (entity) {
                 // create new conversation with entity(Account/Group)
                 chatBox = [[DIMConversation alloc] initWithEntity:entity];
@@ -87,7 +88,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 }
 
 - (void)addConversation:(DIMConversation *)chatBox {
-    NSAssert([chatBox.ID isValid], @"conversation invalid");
+    NSAssert([chatBox.ID isValid], @"conversation invalid: %@", chatBox.ID);
     // check data source
     if (chatBox.dataSource == nil) {
         chatBox.dataSource = _conversationDataSource;
@@ -115,20 +116,22 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     DIMConversation *chatBox = nil;
     
     DIMEnvelope *env = iMsg.envelope;
-    const DIMID *sender = env.sender;
-    const DIMID *receiver = env.receiver;
+    const DIMID *sender = [DIMID IDWithID:env.sender];
+    const DIMID *receiver = [DIMID IDWithID:env.receiver];
+    const DIMID *groupID = [DIMID IDWithID:iMsg.content.group];
     
     if (MKMNetwork_IsGroup(receiver.type)) {
         // group chat, get chat box with group ID
         chatBox = [self conversationWithID:receiver];
-    } else if (iMsg.content.group) {
+    } else if (groupID) {
         // group chat, get chat box with group ID
-        chatBox = [self conversationWithID:iMsg.content.group];
+        chatBox = [self conversationWithID:groupID];
     } else {
         // personal chat, get chat box with contact ID
         chatBox = [self conversationWithID:sender];
     }
     
+    NSAssert(chatBox, @"chat box not found for message: %@", iMsg);
     [chatBox insertMessage:iMsg];
 }
 

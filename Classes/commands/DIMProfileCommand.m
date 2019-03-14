@@ -10,6 +10,8 @@
 #import "NSData+Crypto.h"
 #import "NSString+Crypto.h"
 
+#import "DIMBarrack.h"
+
 #import "DIMProfileCommand.h"
 
 @interface DIMProfileCommand ()
@@ -86,7 +88,7 @@
         NSData *signature = [self signature];
         if (json && signature) {
             NSData *data = [json data];
-            MKMPublicKey *PK = MKMPublicKeyForID(self.ID);
+            DIMPublicKey *PK = DIMPublicKeyForID(self.ID);
             if ([PK verify:data withSignature:signature]) {
                 _profile = [DIMProfile profileWithProfile:json];
             }

@@ -27,6 +27,23 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 
 #import <DIMCore/dimMacros.h>
 
+// History
+#import <DIMCore/DIMHistoryOperation.h>
+#import <DIMCore/DIMHistoryTransaction.h>
+#import <DIMCore/DIMHistoryBlock.h>
+#import <DIMCore/DIMHistory.h>
+#import <DIMCore/DIMEntityHistoryDelegate.h>
+#import <DIMCore/DIMAccountHistoryDelegate.h>
+#import <DIMCore/DIMGroupHistoryDelegate.h>
+#import <DIMCore/DIMChatroomHistoryDelegate.h>
+#import <DIMCore/DIMConsensus.h>
+#import <DIMCore/DIMUser+History.h>
+
+// message
+#import <DIMCore/DIMInstantMessage+Transform.h>
+#import <DIMCore/DIMSecureMessage+Transform.h>
+#import <DIMCore/DIMReliableMessage+Transform.h>
+
 // CA
 #import <DIMCore/DIMCASubject.h>
 #import <DIMCore/DIMCAValidity.h>
@@ -45,6 +62,13 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMProfileCommand.h>
 
 //-
+#import <DIMCore/DIMBarrack.h>
+#import <DIMCore/DIMBarrack+LocalStorage.h>
+
+#import <DIMCore/DIMKeyStore.h>
+#import <DIMCore/DIMKeyStore+CacheFile.h>
+#import <DIMCore/DIMTransceiver.h>
+
 #import <DIMCore/DIMConversation.h>
 #import <DIMCore/DIMAmanuensis.h>
 

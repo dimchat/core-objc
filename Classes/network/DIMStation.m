@@ -6,6 +6,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Compare.h"
 #import "NSObject+JsON.h"
 
 #import "DIMServiceProvider.h"
@@ -120,7 +121,7 @@
     if ([server.ID isEqual:_ID]) {
         return YES;
     }
-    if ([server.host isEqualToString:_host] && server.port == _port) {
+    if (NSStringEquals(server.host, _host) && server.port == _port) {
         return YES;
     }
     return NO;
