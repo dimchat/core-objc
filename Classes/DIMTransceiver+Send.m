@@ -44,7 +44,7 @@
     }
     if (split && groupID) {
         DIMGroup *group = DIMGroupWithID(groupID);
-        NSArray *messages = [rMsg splitForGroupMembers:group.members];
+        NSArray *messages = [rMsg splitForMembers:group.members];
         if (messages.count == 0) {
             NSLog(@"failed to split msg, send it to group: %@", receiver);
             return [self sendReliableMessage:rMsg callback:callback];

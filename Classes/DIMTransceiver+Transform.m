@@ -45,7 +45,7 @@
         }
         DIMGroup *group = DIMGroupWithID(groupID);
         NSArray *members = group.members;
-        sMsg = [iMsg encryptWithKey:scKey forGroupMembers:members];
+        sMsg = [iMsg encryptWithKey:scKey forMembers:members];
     } else {
         NSAssert(false, @"receiver error: %@", receiver);
         return nil;

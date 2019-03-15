@@ -229,13 +229,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E9BBBD4B223AA31E00E6ACDA /* message */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = message;
-			sourceTree = "<group>";
-		};
 		E9BBBDA4223AB42D00E6ACDA /* history */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,7 +316,6 @@
 			isa = PBXGroup;
 			children = (
 				E9BBBDA4223AB42D00E6ACDA /* history */,
-				E9BBBD4B223AA31E00E6ACDA /* message */,
 				E9F3AA5C21CBD03C009690F6 /* network */,
 				E9CF980921FF53470092DD8B /* commands */,
 				E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */,
