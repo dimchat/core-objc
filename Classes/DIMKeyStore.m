@@ -46,8 +46,6 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
         _tablesFromGroups = [[KeyTableTableM alloc] init];
         
         _dirty = NO;
-        
-        [MKMCryptographyKey loadCryptoKeyClasses];
     }
     return self;
 }
