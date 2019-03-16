@@ -25,7 +25,28 @@
     
     // 1. encrypt 'content' to 'data' for receiver
     const DIMID *receiver = [DIMID IDWithID:iMsg.envelope.receiver];
-    if (MKMNetwork_IsCommunicator(receiver.type)) {
+    const DIMID *group = [DIMID IDWithID:iMsg.content.group];
+    if (group) {
+        // if 'group' exists and the 'receiver' is a group ID,
+        // they must be equal
+        NSAssert(MKMNetwork_IsCommunicator(receiver.type) || [receiver isEqual:group],
+                 @"receiver error: %@", receiver);
+    } else if (MKMNetwork_IsGroup(receiver.type)) {
+        group = receiver;
+    }
+    
+    if (group) {
+        // group message
+        scKey = [store cipherKeyForGroup:group];
+        if (!scKey) {
+            // create a new key & save it into the Key Store
+            scKey = [[DIMSymmetricKey alloc] init];
+            [store setCipherKey:scKey forGroup:group];
+        }
+        NSArray *members = DIMGroupWithID(group).members;
+        sMsg = [iMsg encryptWithKey:scKey forMembers:members];
+    } else {
+        // personal message
         NSAssert(iMsg.content.group == nil, @"content error: %@", iMsg);
         scKey = [store cipherKeyForAccount:receiver];
         if (!scKey) {
@@ -34,21 +55,6 @@
             [store setCipherKey:scKey forAccount:receiver];
         }
         sMsg = [iMsg encryptWithKey:scKey];
-    } else if (MKMNetwork_IsGroup(receiver.type)) {
-        const DIMID *groupID = [DIMID IDWithID:iMsg.content.group];
-        NSAssert([groupID isEqual:receiver], @"group error: %@ not %@", groupID, receiver);
-        scKey = [store cipherKeyForGroup:groupID];
-        if (!scKey) {
-            // create a new key & save it into the Key Store
-            scKey = [[DIMSymmetricKey alloc] init];
-            [store setCipherKey:scKey forGroup:groupID];
-        }
-        DIMGroup *group = DIMGroupWithID(groupID);
-        NSArray *members = group.members;
-        sMsg = [iMsg encryptWithKey:scKey forMembers:members];
-    } else {
-        NSAssert(false, @"receiver error: %@", receiver);
-        return nil;
     }
     NSAssert(sMsg.data, @"data cannot be empty");
     

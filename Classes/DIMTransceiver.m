@@ -11,6 +11,7 @@
 #import "NSData+Crypto.h"
 
 #import "DIMBarrack.h"
+#import "DIMKeyStore.h"
 
 #import "DIMTransceiver.h"
 
@@ -30,7 +31,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
               encryptContent:(const DKDMessageContent *)content
                      withKey:(NSDictionary *)password {
     DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
-    NSAssert(symmetricKey == password, @"invalid symmetric key: %@", password);
+    NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     
     NSString *json = [content jsonString];
     NSData *data = [json data];
@@ -54,30 +55,69 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
                             decryptData:(const NSData *)data
                                 withKey:(const NSDictionary *)password {
     DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
-    NSAssert(symmetricKey, @"invalid symmetric key: %@", password);
-    
+    NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
+    // decrypt message.data
     NSData *plaintext = [symmetricKey decrypt:data];
     if (plaintext.length == 0) {
         NSAssert(false, @"failed to decrypt data: %@, key: %@", data, password);
         return nil;
     }
-    NSString *json = [plaintext UTF8String];
-    return [[DKDMessageContent alloc] initWithJSONString:json];
+    NSString *json = [plaintext UTF8String]; // remove garbage at end
+    NSDictionary *dict = [[json data] jsonDictionary];
+    // pack message content
+    return [[DKDMessageContent alloc] initWithDictionary:dict];
 }
 
 - (nullable NSDictionary *)message:(const DKDSecureMessage *)sMsg
                     decryptKeyData:(nullable const NSData *)key
-                       forReceiver:(const NSString *)receiver {
-    DIMID *ID = [DIMID IDWithID:receiver];
-    DIMUser *user = DIMUserWithID(ID);
-    DIMPrivateKey *SK = user.privateKey;
-    NSAssert(SK, @"failed to get private key for receiver: %@", receiver);
-    NSData *plaintext = [SK decrypt:key];
-    if (plaintext.length == 0) {
-        NSAssert(false, @"failed to decrypt key: %@, user: %@", key, user);
-        return nil;
+                        fromSender:(const NSString *)sender
+                        toReceiver:(const NSString *)receiver
+                           inGroup:(nullable const NSString *)group {
+    DIMSymmetricKey *PW = nil;
+    
+    DIMKeyStore *store = [DIMKeyStore sharedInstance];
+    DIMID *from = [DIMID IDWithID:sender];
+    DIMID *to = [DIMID IDWithID:receiver];
+    DIMID *groupID = [DIMID IDWithID:group];
+    
+    if (key) {
+        // decrypt key data with the receiver's private key
+        DIMUser *user = DIMUserWithID(to);
+        DIMPrivateKey *SK = user.privateKey;
+        NSAssert(SK, @"failed to get private key for receiver: %@", receiver);
+        NSData *plaintext = [SK decrypt:key];
+        NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
+        
+        // create symmetric key
+        NSString *json = [plaintext UTF8String]; // remove garbage at end
+        NSDictionary *dict = [[json data] jsonDictionary];
+        PW = [[DIMSymmetricKey alloc] initWithDictionary:dict];
+        NSAssert(PW, @"invalid key: %@", dict);
+        
+        // set the new key in key store
+        if (group) {
+            [store setCipherKey:PW
+                     fromMember:[DIMID IDWithID:sender]
+                        inGroup:[DIMID IDWithID:group]];
+            NSLog(@"got key from group member: %@, %@", sender, group);
+        } else {
+            [store setCipherKey:PW
+                    fromAccount:[DIMID IDWithID:sender]];
+            NSLog(@"got key from contact: %@", sender);
+        }
     }
-    return [plaintext jsonDictionary];
+    
+    if (!PW) {
+        // if key data is empty, get it from key store
+        if (group) {
+            PW = [store cipherKeyFromMember:from inGroup:groupID];
+        } else {
+            PW = [store cipherKeyFromAccount:from];
+        }
+        NSAssert(PW, @"failed to get symmetric from %@, group: %@", from, group);
+    }
+    
+    return PW;
 }
 
 - (nullable NSData *)message:(const DKDSecureMessage *)sMsg
