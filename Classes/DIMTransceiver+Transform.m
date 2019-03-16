@@ -112,28 +112,20 @@
         return nil;
     }
     
-    // 1. verify 'data' witn 'signature'
+    // 1. verify 'data' with 'signature'
     DIMSecureMessage *sMsg = [rMsg verify];
     NSAssert(sMsg.data, @"data cannot be empty");
     
-    // 1.1. trim for user
-    sMsg = [sMsg trimForMember:user.ID];
-    NSAssert(MKMNetwork_IsPerson(receiver.type), @"receiver error: %@", receiver);
-    
-    if (sMsg.delegate == nil) {
-        sMsg.delegate = self;
-    }
-    
     // 2. decrypt 'data' to 'content'
     DIMInstantMessage *iMsg = nil;
-    if (MKMNetwork_IsGroup(receiver.type)) {
+    if (groupID) {
         // group message
-        iMsg = [sMsg decryptForMember:user.ID];
-    } else if ([sMsg objectForKey:@"group"]) {
-        // splitted group message
+        sMsg = [sMsg trimForMember:user.ID];
+        sMsg.delegate = self;
         iMsg = [sMsg decryptForMember:receiver];
     } else {
         // personal message
+        sMsg.delegate = self;
         iMsg = [sMsg decrypt];
     }
     NSAssert(iMsg.content, @"content cannot be empty");

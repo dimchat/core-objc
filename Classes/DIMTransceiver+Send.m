@@ -42,7 +42,8 @@
         NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
         return NO;
     }
-    if (split && groupID) {
+    if (split && MKMNetwork_IsGroup(receiver.type)) {
+        NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
         DIMGroup *group = DIMGroupWithID(groupID);
         NSArray *messages = [rMsg splitForMembers:group.members];
         if (messages.count == 0) {
