@@ -45,7 +45,6 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     NSData *data = [json data];
     DIMID *ID = [DIMID IDWithID:receiver];
     DIMPublicKey *PK = DIMPublicKeyForID(ID);
-    NSAssert(PK, @"failed to get public key for receiver: %@", receiver);
     return [PK encrypt:data];
 }
 
