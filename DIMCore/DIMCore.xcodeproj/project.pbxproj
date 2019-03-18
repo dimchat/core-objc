@@ -46,6 +46,7 @@
 		E9BBBDEE223BB70900E6ACDA /* DIMTransceiver+Transform.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBDEC223BB70900E6ACDA /* DIMTransceiver+Transform.m */; };
 		E9BBBDF1223BB78F00E6ACDA /* DIMTransceiver+Send.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBDEF223BB78F00E6ACDA /* DIMTransceiver+Send.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBBDF2223BB78F00E6ACDA /* DIMTransceiver+Send.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBDF0223BB78F00E6ACDA /* DIMTransceiver+Send.m */; };
+		E9BBBE47223F790700E6ACDA /* NSObject+Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBE44223F790600E6ACDA /* NSObject+Singleton.h */; };
 		E9CF981121FF548F0092DD8B /* DIMCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9CF980F21FF548F0092DD8B /* DIMCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CF981021FF548F0092DD8B /* DIMCommand.m */; };
 		E9CF981521FF567B0092DD8B /* DIMHandshakeCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9CF981321FF567B0092DD8B /* DIMHandshakeCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -167,6 +168,7 @@
 		E9BBBDEC223BB70900E6ACDA /* DIMTransceiver+Transform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIMTransceiver+Transform.m"; sourceTree = "<group>"; };
 		E9BBBDEF223BB78F00E6ACDA /* DIMTransceiver+Send.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DIMTransceiver+Send.h"; sourceTree = "<group>"; };
 		E9BBBDF0223BB78F00E6ACDA /* DIMTransceiver+Send.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIMTransceiver+Send.m"; sourceTree = "<group>"; };
+		E9BBBE44223F790600E6ACDA /* NSObject+Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Singleton.h"; sourceTree = "<group>"; };
 		E9CF980F21FF548F0092DD8B /* DIMCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMCommand.h; sourceTree = "<group>"; };
 		E9CF981021FF548F0092DD8B /* DIMCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
 		E9CF981321FF567B0092DD8B /* DIMHandshakeCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMHandshakeCommand.h; sourceTree = "<group>"; };
@@ -336,6 +338,7 @@
 				E9F3AA6A21CBD03C009690F6 /* DIMAmanuensis.m */,
 				E9F3AA6B21CBD03C009690F6 /* DIMConversation.h */,
 				E9F3AA5921CBD03C009690F6 /* DIMConversation.m */,
+				E9BBBE44223F790600E6ACDA /* NSObject+Singleton.h */,
 				E9F3AA9B21CC00B6009690F6 /* dimMacros.h */,
 				E9F3AA5B21CBD03C009690F6 /* DIMCore.h */,
 			);
@@ -425,6 +428,7 @@
 				E9F3AA8321CBD03C009690F6 /* DIMAmanuensis.h in Headers */,
 				E9F3AA8021CBD03C009690F6 /* DIMConversation.h in Headers */,
 				E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */,
+				E9BBBE47223F790700E6ACDA /* NSObject+Singleton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

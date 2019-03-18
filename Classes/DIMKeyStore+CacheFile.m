@@ -10,16 +10,16 @@
 
 #import "DIMKeyStore+CacheFile.h"
 
-#define DIM_KEYSTORE_ACCOUNTS_FILENAME @"keystore_accounts.plist"
-#define DIM_KEYSTORE_GROUPS_FILENAME   @"keystore_groups.plist"
+#define DIM_KEYSTORE_FILENAME @"keystore.plist"
+
+// receiver -> key
+typedef NSMutableDictionary<const DIMAddress *, DIMSymmetricKey *> KeyMap;
+// sender -> map<receiver, key>
+typedef NSMutableDictionary<const DIMAddress *, KeyMap *> KeyTable;
 
 @interface DIMKeyStore ()
 
-@property (strong, nonatomic) NSMutableDictionary *keysForAccounts;
-@property (strong, nonatomic) NSMutableDictionary *keysFromAccounts;
-
-@property (strong, nonatomic) NSMutableDictionary *keysForGroups;
-@property (strong, nonatomic) NSMutableDictionary *tablesFromGroups;
+@property (strong, nonatomic) KeyTable *KeyTable;
 
 @property (nonatomic, getter=isDirty) BOOL dirty;
 
@@ -74,19 +74,9 @@ static NSString *s_directory = nil;
         NSAssert(self.currentUser == nil, @"Current user invalid: %@", self.currentUser);
         return NO;
     }
-    
-    NSString *path;
-    
-    // keys from contacts
-    path = [self _pathWithID:ID filename:DIM_KEYSTORE_ACCOUNTS_FILENAME];
-    BOOL OK1 = [self.keysFromAccounts writeToBinaryFile:path];
-    
-    // keys from group.members
-    path = [self _pathWithID:ID filename:DIM_KEYSTORE_GROUPS_FILENAME];
-    BOOL OK2 = [self.tablesFromGroups writeToBinaryFile:path];
-    
     self.dirty = NO;
-    return OK1 && OK2;
+    NSString *path = [self _pathWithID:ID filename:DIM_KEYSTORE_FILENAME];
+    return [self.KeyTable writeToBinaryFile:path];
 }
 
 - (BOOL)reload {
@@ -96,68 +86,42 @@ static NSString *s_directory = nil;
         return NO;
     }
     
+    NSString *path = [self _pathWithID:ID filename:DIM_KEYSTORE_FILENAME];
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *path;
-    
-    NSDictionary *dict;
-    id cKey;
-    id obj;
-    DIMAddress *address;
-    DIMSymmetricKey *PW;
+    if (![fm fileExistsAtPath:path]) {
+        NSLog(@"keystore file not exists: %@", path);
+        return NO;
+    }
     
     BOOL changed = NO;
     BOOL isDirty = self.dirty; // save old flag
     
-    // keys from contacts
-    path = [self _pathWithID:ID filename:DIM_KEYSTORE_ACCOUNTS_FILENAME];
-    if ([fm fileExistsAtPath:path]) {
-        // load keys from contacts
-        dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        for (cKey in dict) {
-            // Address
-            address = [DIMAddress addressWithAddress:cKey];
-            NSAssert(MKMNetwork_IsCommunicator(address.network), @"account address error: %@", address);
-            // key
-            obj = [dict objectForKey:cKey];
-            PW = [DIMSymmetricKey keyWithKey:obj];
-            // update keys table
-            [self.keysFromAccounts setObject:PW forKey:address];
+    KeyMap *keyMap;
+    DIMAddress *fromAddress, *toAddress;
+    DIMSymmetricKey *cipherKey;
+    
+    NSString *from, *to;
+    NSDictionary *keyTableDict = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSDictionary *keyMapDict;
+    NSDictionary *keyDict;
+    for (from in keyTableDict) {
+        keyMapDict = [keyTableDict objectForKey:from];
+        fromAddress = [DIMAddress addressWithAddress:from];
+        keyMap = [self.KeyTable objectForKey:fromAddress];
+        if (!keyMap) {
+            keyMap = [[KeyMap alloc] init];
+            [self.KeyTable setObject:keyMap forKey:fromAddress];
         }
-        changed = YES;
-    }
-    
-    id gKey, mKey;
-    DIMAddress *gAddr, *mAddr;
-    NSMutableDictionary *gTable, *mTable;
-    
-    // keys from group.members
-    path = [self _pathWithID:ID filename:DIM_KEYSTORE_GROUPS_FILENAME];
-    if ([fm fileExistsAtPath:path]) {
-        // load keys from group.members
-        dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        for (gKey in dict) {
-            // group ID.address
-            gAddr = [DIMAddress addressWithAddress:gKey];
-            NSAssert(MKMNetwork_IsGroup(gAddr.network), @"group address error: %@", gAddr);
-            // table
-            gTable = [dict objectForKey:gKey];
-            for (mKey in gTable) {
-                // member ID.address
-                mAddr = [DIMAddress addressWithAddress:mKey];
-                NSAssert(MKMNetwork_IsCommunicator(mAddr.network), @"member address error: %@", mAddr);
-                // key
-                obj = [gTable objectForKey:mKey];
-                PW = [DIMSymmetricKey keyWithKey:obj];
-                // update keys table
-                mTable = [self.tablesFromGroups objectForKey:gAddr];
-                if (!mTable) {
-                    mTable = [[NSMutableDictionary alloc] init];
-                    [self.tablesFromGroups setObject:mTable forKey:gAddr];
-                }
-                [mTable setObject:PW forKey:mAddr];
+        for (to in keyMapDict) {
+            keyDict = [keyMapDict objectForKey:to];
+            toAddress = [DIMAddress addressWithAddress:to];
+            if ([keyMap objectForKey:toAddress]) {
+                // key exists
+                continue;
             }
+            cipherKey = [DIMSymmetricKey keyWithKey:keyDict];
+            changed = YES;
         }
-        changed = YES;
     }
     
     self.dirty = isDirty; // restore the flag

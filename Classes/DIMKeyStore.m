@@ -13,16 +13,14 @@
 
 #import "DIMKeyStore.h"
 
-typedef NSMutableDictionary<const DIMAddress *, DIMSymmetricKey *> KeyTableM;
-typedef NSMutableDictionary<const DIMAddress *, KeyTableM *> KeyTableTableM;
+// receiver -> key
+typedef NSMutableDictionary<const DIMAddress *, DIMSymmetricKey *> KeyMap;
+// sender -> map<receiver, key>
+typedef NSMutableDictionary<const DIMAddress *, KeyMap *> KeyTable;
 
 @interface DIMKeyStore ()
 
-@property (strong, nonatomic) KeyTableM *keysForAccounts;
-@property (strong, nonatomic) KeyTableM *keysFromAccounts;
-
-@property (strong, nonatomic) KeyTableM *keysForGroups;
-@property (strong, nonatomic) KeyTableTableM *tablesFromGroups;
+@property (strong, nonatomic) KeyTable *keyTable;
 
 @property (nonatomic, getter=isDirty) BOOL dirty;
 
@@ -39,11 +37,7 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
-        _keysForAccounts = [[KeyTableM alloc] init];
-        _keysFromAccounts = [[KeyTableM alloc] init];
-        
-        _keysForGroups = [[KeyTableM alloc] init];
-        _tablesFromGroups = [[KeyTableTableM alloc] init];
+        _keyTable = [[KeyTable alloc] init];
         
         _dirty = NO;
     }
@@ -55,8 +49,9 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
         // 1. save key store files for current user
         [self flush];
         
-        // 2. clear
-        [self clearMemory];
+        // 2. flush & clear
+        [self flush];
+        [_keyTable removeAllObjects];
         
         // 3. replace current user
         _currentUser = currentUser;
@@ -66,88 +61,90 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     }
 }
 
-- (void)clearMemory {
-    [_keysForAccounts removeAllObjects];
-    [_keysFromAccounts removeAllObjects];
-    
-    [_keysForGroups removeAllObjects];
-    [_tablesFromGroups removeAllObjects];
+- (DIMSymmetricKey *)cipherKeyFrom:(const MKMID *)sender
+                                to:(const MKMID *)receiver {
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    KeyMap *keyMap = [_keyTable objectForKey:sender.address];
+    return [keyMap objectForKey:receiver.address];
+}
+
+- (void)cacheCipherKey:(MKMSymmetricKey *)key
+                  from:(const MKMID *)sender
+                    to:(const MKMID *)receiver {
+    NSAssert(key, @"cipher key cannot be empty");
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    KeyMap *keyMap = [_keyTable objectForKey:sender.address];
+    if (!keyMap) {
+        keyMap = [[KeyMap alloc] init];
+        [_keyTable setObject:keyMap forKey:sender.address];
+    }
+    if (key) {
+        [keyMap setObject:key forKey:receiver.address];
+        _dirty = YES;
+    }
 }
 
 #pragma mark - Cipher key to encpryt message for account(contact)
 
-- (DIMSymmetricKey *)cipherKeyForAccount:(const DIMID *)ID {
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
-    return [_keysForAccounts objectForKey:ID.address];
+- (DIMSymmetricKey *)cipherKeyForAccount:(const DIMID *)receiver {
+    const DIMID *sender =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"account error: %@", receiver);
+    return [self cipherKeyFrom:sender to:receiver];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key
-          forAccount:(const DIMID *)ID {
-    NSAssert(key, @"cipher key cannot be empty");
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
-    if (key) {
-        [_keysForAccounts setObject:key forKey:ID.address];
-    }
+- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(const DIMID *)receiver {
+    const DIMID *sender =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"account error: %@", receiver);
+    [self cacheCipherKey:key from:sender to:receiver];
 }
 
 #pragma mark - Cipher key from account(contact) to decrypt message
 
-- (DIMSymmetricKey *)cipherKeyFromAccount:(const DIMID *)ID {
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
-    return [_keysFromAccounts objectForKey:ID.address];
+- (DIMSymmetricKey *)cipherKeyFromAccount:(const DIMID *)sender {
+    const DIMID *receiver =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"receiver error: %@", receiver);
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"account error: %@", sender);
+    return [self cipherKeyFrom:sender to:receiver];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key
-         fromAccount:(const DIMID *)ID {
-    NSAssert(key, @"cipher key cannot be empty");
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
-    if (key) {
-        [_keysFromAccounts setObject:key forKey:ID.address];
-        _dirty = YES;
-    }
+- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(const DIMID *)sender {
+    const DIMID *receiver =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"receiver error: %@", receiver);
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"account error: %@", sender);
+    [self cacheCipherKey:key from:sender to:receiver];
 }
 
 #pragma mark - Cipher key to encrypt message for all group members
 
-- (DIMSymmetricKey *)cipherKeyForGroup:(const DIMID *)ID {
-    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    return [_keysForGroups objectForKey:ID.address];
+- (DIMSymmetricKey *)cipherKeyForGroup:(const DIMID *)group {
+    const DIMID *sender =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    return [self cipherKeyFrom:sender to:group];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key
-            forGroup:(const DIMID *)ID {
-    NSAssert(key, @"cipher key cannot be empty");
-    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    if (key) {
-        [_keysForGroups setObject:key forKey:ID.address];
-    }
+- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(const DIMID *)group {
+    const DIMID *sender =_currentUser.ID;
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    [self cacheCipherKey:key from:sender to:group];
 }
 
 #pragma mark - Cipher key from a member in the group to decrypt message
 
-- (DIMSymmetricKey *)cipherKeyFromMember:(const DIMID *)ID
-                                 inGroup:(const DIMID *)group {
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"member ID error: %@", ID);
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
-    KeyTableM *table = [_tablesFromGroups objectForKey:group.address];
-    return [table objectForKey:ID.address];
+- (DIMSymmetricKey *)cipherKeyFromMember:(const DIMID *)sender inGroup:(const DIMID *)group {
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"member error: %@", sender);
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    return [self cipherKeyFrom:sender to:group];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key
-          fromMember:(const DIMID *)ID
-             inGroup:(const DIMID *)group {
+- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(const DIMID *)sender inGroup:(const DIMID *)group {
     NSAssert(key, @"cipher key cannot be empty");
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"member ID error: %@", ID);
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
-    KeyTableM *table = [_tablesFromGroups objectForKey:group.address];
-    if (!table) {
-        table = [[KeyTableM alloc] init];
-        [_tablesFromGroups setObject:table forKey:group.address];
-    }
-    if (key) {
-        [table setObject:key forKey:ID.address];
-        _dirty = YES;
-    }
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"member error: %@", sender);
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    [self cacheCipherKey:key from:sender to:group];
 }
 
 #pragma mark - Private key encrpyted by a password for user
