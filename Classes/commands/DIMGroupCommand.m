@@ -62,6 +62,7 @@
     if (list.count == 0) {
         return nil;
     }
+    //list = [list copy];
     NSMutableArray<const DIMID *> *mArray;
     mArray = [[NSMutableArray alloc] initWithCapacity:list.count];
     NSString *item;

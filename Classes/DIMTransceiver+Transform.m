@@ -66,7 +66,7 @@
 }
 
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
-                                                  users:(NSArray<const DIMUser *> *)users {
+                                                  users:(const NSArray<const DIMUser *> *)users {
     NSAssert(rMsg.signature, @"signature cannot be empty");
     const DIMID *sender = [DIMID IDWithID:rMsg.envelope.sender];
     const DIMID *receiver = [DIMID IDWithID:rMsg.envelope.receiver];

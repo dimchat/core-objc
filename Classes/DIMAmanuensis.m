@@ -33,10 +33,12 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 
 - (void)setConversationDataSource:(id<DIMConversationDataSource>)dataSource {
     if (dataSource) {
+        NSMutableDictionary<const DIMAddress *, DIMConversation *> *list;
+        list = [_conversations copy];
         // update exists chat boxes
         DIMConversation *chatBox;
-        for (id addr in _conversations) {
-            chatBox = [_conversations objectForKey:addr];
+        for (id addr in list) {
+            chatBox = [list objectForKey:addr];
             if (chatBox.dataSource == nil) {
                 chatBox.dataSource = dataSource;
             }
@@ -47,10 +49,12 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 
 - (void)setConversationDelegate:(id<DIMConversationDelegate>)delegate {
     if (delegate) {
+        NSMutableDictionary<const DIMAddress *, DIMConversation *> *list;
+        list = [_conversations copy];
         // update exists chat boxes
         DIMConversation *chatBox;
-        for (id addr in _conversations) {
-            chatBox = [_conversations objectForKey:addr];
+        for (id addr in list) {
+            chatBox = [list objectForKey:addr];
             if (chatBox.delegate == nil) {
                 chatBox.delegate = delegate;
             }
