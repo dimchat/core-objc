@@ -148,10 +148,8 @@
 
 #pragma mark - DIMTransceiverDelegate
 
-- (BOOL)sendPackage:(const NSData *)data
-  completionHandler:(nullable DIMTransceiverCompletionHandler)handler {
-    // TODO: override me
-    
+- (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler {
+    NSAssert(false, @"override me");
     return NO;
 }
 

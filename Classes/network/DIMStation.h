@@ -55,9 +55,28 @@ NS_ASSUME_NONNULL_BEGIN
  Received a new data package from the station
 
  @param server - current station
- @param data - data package
+ @param data - data package to send
  */
 - (void)station:(const DIMStation *)server didReceivePackage:(const NSData *)data;
+
+@optional
+
+/**
+ Send data package to station success
+ 
+ @param server - current station
+ @param data - data package sent
+ */
+- (void)station:(const DIMStation *)server didSendPackage:(const NSDate *)data;
+
+/**
+ Failed to send data package to station
+ 
+ @param server - current station
+ @param data - data package to send
+ @param error - error informatin
+ */
+- (void)station:(const DIMStation *)server sendPackage:(const NSDate *)data didFailWithError:(const NSError *)error;
 
 @end
 

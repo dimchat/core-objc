@@ -71,7 +71,6 @@
         NSAssert(_delegate, @"transceiver delegate not set");
         return [_delegate sendPackage:data
                     completionHandler:^(const NSError * _Nullable error) {
-                        assert(!error);
                         !callback ?: callback(rMsg, error);
                     }];
     } else {

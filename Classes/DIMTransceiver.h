@@ -25,8 +25,7 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
  @param handler - completion handler
  @return NO on data/delegate error
  */
-- (BOOL)sendPackage:(const NSData *)data
-  completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
+- (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
 
 @end
 
