@@ -19,7 +19,7 @@ typedef NSMutableDictionary<const DIMAddress *, KeyMap *> KeyTable;
 
 @interface DIMKeyStore ()
 
-@property (strong, nonatomic) KeyTable *KeyTable;
+@property (strong, nonatomic) KeyTable *keyTable;
 
 @property (nonatomic, getter=isDirty) BOOL dirty;
 
@@ -76,7 +76,7 @@ static NSString *s_directory = nil;
     }
     self.dirty = NO;
     NSString *path = [self _pathWithID:ID filename:DIM_KEYSTORE_FILENAME];
-    return [self.KeyTable writeToBinaryFile:path];
+    return [self.keyTable writeToBinaryFile:path];
 }
 
 - (BOOL)reload {
@@ -107,10 +107,10 @@ static NSString *s_directory = nil;
     for (from in keyTableDict) {
         keyMapDict = [keyTableDict objectForKey:from];
         fromAddress = [DIMAddress addressWithAddress:from];
-        keyMap = [self.KeyTable objectForKey:fromAddress];
+        keyMap = [self.keyTable objectForKey:fromAddress];
         if (!keyMap) {
             keyMap = [[KeyMap alloc] init];
-            [self.KeyTable setObject:keyMap forKey:fromAddress];
+            [self.keyTable setObject:keyMap forKey:fromAddress];
         }
         for (to in keyMapDict) {
             keyDict = [keyMapDict objectForKey:to];
