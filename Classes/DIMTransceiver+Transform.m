@@ -43,7 +43,14 @@
             scKey = [[DIMSymmetricKey alloc] init];
             [store setCipherKey:scKey forGroup:group];
         }
-        NSArray *members = DIMGroupWithID(group).members;
+        NSArray *members;
+        if (MKMNetwork_IsCommunicator(receiver.type)) {
+            // split group message
+            members = @[receiver];
+        } else {
+            members = DIMGroupWithID(group).members;
+            NSAssert(members.count > 0, @"group members cannot be empty");
+        }
         sMsg = [iMsg encryptWithKey:scKey forMembers:members];
     } else {
         // personal message
