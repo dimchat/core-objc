@@ -116,3 +116,22 @@
 }
 
 @end
+
+#pragma mark -
+
+@implementation DIMResetGroupCommand
+
+- (instancetype)initWithGroup:(const MKMID *)groupID
+                      members:(const NSArray<const MKMID *> *)list {
+    return [super initWithCommand:@"reset" group:groupID members:list];
+}
+
+@end
+
+@implementation DIMQueryGroupCommand
+
+- (instancetype)initWithGroup:(const DIMID *)groupID {
+    return [super initWithCommand:@"query" group:groupID member:nil];
+}
+
+@end

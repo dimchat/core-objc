@@ -76,4 +76,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark -
+
+@interface DIMResetGroupCommand : DIMGroupCommand
+
+- (instancetype)initWithGroup:(const DIMID *)groupID
+                      members:(const NSArray<const DIMID *> *)list;
+
+@end
+
+@interface DIMQueryGroupCommand : DIMGroupCommand
+
+- (instancetype)initWithGroup:(const DIMID *)groupID;
+
+@end
+
 NS_ASSUME_NONNULL_END
