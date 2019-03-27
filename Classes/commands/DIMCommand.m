@@ -16,6 +16,7 @@
 
 @implementation DIMCommand
 
+/* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
@@ -69,6 +70,7 @@
 
 @implementation DIMHistoryCommand
 
+/* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
@@ -79,7 +81,12 @@
 
 - (instancetype)initWithType:(DKDMessageType)type {
     NSAssert(false, @"DON'T call me");
-    return [self initWithCommand:@"NOOP"];
+    return [self initWithHistoryCommand:@"NOOP"];
+}
+
+- (instancetype)initWithCommand:(const NSString *)cmd {
+    NSAssert(false, @"DON'T call me");
+    return [self initWithHistoryCommand:@"NOOP"];
 }
 
 /* designated initializer */

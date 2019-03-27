@@ -23,21 +23,33 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "invite",      // expel, quit
+ *      command : "join",      // or quit
  *      group   : "{GROUP_ID}",
- *      member  : "{MEMBER_ID}",
  *  }
  */
 - (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const DIMID *)groupID
-                         member:(nullable const DIMID *)memberID;
+                          group:(const DIMID *)groupID;
 
 /**
  *  Group history command: {
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "invite",      // expel
+ *      command : "invite",      // or expel
+ *      group   : "{GROUP_ID}",
+ *      member  : "{MEMBER_ID}",
+ *  }
+ */
+- (instancetype)initWithCommand:(const NSString *)cmd
+                          group:(const DIMID *)groupID
+                         member:(const DIMID *)memberID;
+
+/**
+ *  Group history command: {
+ *      type : 0x89,
+ *      sn   : 123,
+ *
+ *      command : "invite",      // or expel
  *      group   : "{GROUP_ID}",
  *      members : ["{MEMBER_ID}", ],
  *  }
@@ -53,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMInviteCommand : DIMGroupCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(nullable const DIMID *)memberID;
+                       member:(const DIMID *)memberID;
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
                       members:(const NSArray<const DIMID *> *)list;
@@ -63,10 +75,16 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMExpelCommand : DIMGroupCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(nullable const DIMID *)memberID;
+                       member:(const DIMID *)memberID;
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
                       members:(const NSArray<const DIMID *> *)list;
+
+@end
+
+@interface DIMJoinCommand : DIMGroupCommand
+
+- (instancetype)initWithGroup:(const DIMID *)groupID;
 
 @end
 

@@ -32,32 +32,37 @@
     return self;
 }
 
+- (instancetype)initWithCommand:(const NSString *)cmd {
+    if (self = [super initWithCommand:cmd]) {
+        // lazy
+        _profile = nil;
+        _signature = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithID:(const DIMID *)ID
                       meta:(nullable const DIMMeta *)meta
                    profile:(nullable const NSString *)profileString
                  signature:(nullable const NSString *)signatureString {
-    if (self = [self initWithCommand:@"profile"]) {
+    if (self = [self initWithCommand:DKDSystemCommand_Profile]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
-        _ID = nil; // lazy
         // meta
         if (meta) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
-        _meta = nil; // lazy
         
         // profile
         if (profileString) {
             [_storeDictionary setObject:profileString forKey:@"profile"];
         }
-        _profile = nil; // lazy
         // signature
         if (signatureString) {
             [_storeDictionary setObject:signatureString forKey:@"signature"];
         }
-        _signature = nil; // lazy
     }
     return self;
 }

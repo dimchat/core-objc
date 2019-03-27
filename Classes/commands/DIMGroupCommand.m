@@ -8,11 +8,49 @@
 
 #import "DIMGroupCommand.h"
 
+@interface DIMGroupCommand ()
+
+@property (strong, nonatomic, nullable) const DIMID *member;
+@property (strong, nonatomic, nullable) const NSArray<const DIMID *> *members;
+
+@end
+
 @implementation DIMGroupCommand
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _member = nil;
+        _members = nil;
+    }
+    return self;
+}
+
+- (instancetype)initWithHistoryCommand:(const NSString *)cmd {
+    if (self = [super initWithHistoryCommand:cmd]) {
+        // lazy
+        _member = nil;
+        _members = nil;
+    }
+    return self;
+}
+
+- (instancetype)initWithCommand:(const NSString *)cmd
+                          group:(const MKMID *)groupID {
+    
+    if (self = [self initWithHistoryCommand:cmd]) {
+        // Group ID
+        if (groupID) {
+            [_storeDictionary setObject:groupID forKey:@"group"];
+        }
+    }
+    return self;
+}
 
 - (instancetype)initWithCommand:(const NSString *)cmd
                           group:(const DIMID *)groupID
-                         member:(nullable const DIMID *)memberID {
+                         member:(const DIMID *)memberID {
+    
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
@@ -29,6 +67,7 @@
 - (instancetype)initWithCommand:(const NSString *)cmd
                           group:(const MKMID *)groupID
                         members:(const NSArray<const MKMID *> *)list {
+    
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
@@ -84,13 +123,19 @@
 @implementation DIMInviteCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(nullable const DIMID *)memberID {
-    return [super initWithCommand:@"invite" group:groupID member:memberID];
+                       member:(const DIMID *)memberID {
+    
+    return [super initWithCommand:DKDGroupCommand_Invite
+                            group:groupID
+                           member:memberID];
 }
 
 - (instancetype)initWithGroup:(const MKMID *)groupID
                       members:(const NSArray<const MKMID *> *)list {
-    return [super initWithCommand:@"invite" group:groupID members:list];
+    
+    return [super initWithCommand:DKDGroupCommand_Invite
+                            group:groupID
+                          members:list];
 }
 
 @end
@@ -98,13 +143,29 @@
 @implementation DIMExpelCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(nullable const DIMID *)memberID {
-    return [super initWithCommand:@"expel" group:groupID member:memberID];
+                       member:(const DIMID *)memberID {
+    
+    return [super initWithCommand:DKDGroupCommand_Expel
+                            group:groupID
+                           member:memberID];
 }
 
 - (instancetype)initWithGroup:(const MKMID *)groupID
                       members:(const NSArray<const MKMID *> *)list {
-    return [super initWithCommand:@"expel" group:groupID members:list];
+    
+    return [super initWithCommand:DKDGroupCommand_Expel
+                            group:groupID
+                          members:list];
+}
+
+@end
+
+@implementation DIMJoinCommand
+
+- (instancetype)initWithGroup:(const DIMID *)groupID {
+    
+    return [super initWithCommand:DKDGroupCommand_Join
+                            group:groupID];
 }
 
 @end
@@ -112,7 +173,9 @@
 @implementation DIMQuitCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID {
-    return [super initWithCommand:@"quit" group:groupID member:nil];
+    
+    return [super initWithCommand:DKDGroupCommand_Quit
+                            group:groupID];
 }
 
 @end
@@ -123,7 +186,10 @@
 
 - (instancetype)initWithGroup:(const MKMID *)groupID
                       members:(const NSArray<const MKMID *> *)list {
-    return [super initWithCommand:@"reset" group:groupID members:list];
+    
+    return [super initWithCommand:@"reset"
+                            group:groupID
+                          members:list];
 }
 
 @end
@@ -131,7 +197,9 @@
 @implementation DIMQueryGroupCommand
 
 - (instancetype)initWithGroup:(const DIMID *)groupID {
-    return [super initWithCommand:@"query" group:groupID member:nil];
+    
+    return [super initWithCommand:@"query"
+                            group:groupID];
 }
 
 @end

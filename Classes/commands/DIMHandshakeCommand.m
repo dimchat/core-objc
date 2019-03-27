@@ -29,19 +29,27 @@
     return self;
 }
 
+- (instancetype)initWithCommand:(const NSString *)cmd {
+    if (self = [super initWithCommand:cmd]) {
+        // lazy
+        _message = nil;
+        _sessionKey = nil;
+        _state = DIMHandshake_Init;
+    }
+    return self;
+}
+
 - (instancetype)initWithMessage:(const NSString *)message
                      sessionKey:(nullable const NSString *)session {
-    if (self = [self initWithCommand:@"handshake"]) {
+    if (self = [self initWithCommand:DKDSystemCommand_Handshake]) {
         // message
         if (message) {
             [_storeDictionary setObject:message forKey:@"message"];
         }
-        _message = nil; // lazy
         // session key
         if (session) {
             [_storeDictionary setObject:session forKey:@"session"];
         }
-        _sessionKey = nil; // lazy
         // state
         if (session) {
             _state = DIMHandshake_Restart;
