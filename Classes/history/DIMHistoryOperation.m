@@ -79,7 +79,7 @@
 - (NSDate *)time {
     if (!_time) {
         NSNumber *timestamp = [_storeDictionary objectForKey:@"time"];
-        NSAssert(timestamp, @"time error: %@", _storeDictionary);
+        NSAssert(timestamp != nil, @"time error: %@", _storeDictionary);
         _time = [[NSDate alloc] initWithTimeIntervalSince1970:timestamp.doubleValue];
     }
     return _time;

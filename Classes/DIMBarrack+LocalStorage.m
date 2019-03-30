@@ -49,7 +49,7 @@ static NSString *s_directory = nil;
     return [dir stringByAppendingPathComponent:name];
 }
 
-- (const DIMMeta *)loadMetaForID:(const DIMID *)ID {
+- (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID {
     const DIMMeta *meta = nil;
     NSString *path = [self _pathWithID:ID filename:@"meta.plist"];
     NSFileManager *fm = [NSFileManager defaultManager];

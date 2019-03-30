@@ -113,9 +113,7 @@ typedef NSMutableDictionary<const DIMAddress *, NSString *> DIMConfirmTableM;
 - (NSData *)signature {
     if (!_signature) {
         NSString *CT = [_storeDictionary objectForKey:@"signature"];
-        if (CT) {
-            _signature = [CT base64Decode];
-        }
+        _signature = [CT base64Decode];
     }
     return _signature;
 }

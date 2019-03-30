@@ -120,7 +120,12 @@ static NSString *s_directory = nil;
                 continue;
             }
             cipherKey = [DIMSymmetricKey keyWithKey:keyDict];
-            changed = YES;
+            if (cipherKey != nil) {
+                [keyMap setObject:cipherKey forKey:toAddress];
+                changed = YES;
+            } else {
+                NSAssert(false, @"cipher error: %@, from %@ -> %@", keyDict, fromAddress, toAddress);
+            }
         }
     }
     

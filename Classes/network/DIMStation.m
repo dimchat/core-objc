@@ -38,26 +38,26 @@
     // ID
     DIMID *ID = [dict objectForKey:@"ID"];
     ID = [DIMID IDWithID:ID];
-    // public key
-    DIMPublicKey *PK = [dict objectForKey:@"publicKey"];
-    if (!PK) {
-        PK = [dict objectForKey:@"PK"];
-        if (!PK) {
-            // get from meta.key
-            DIMMeta *meta = [dict objectForKey:@"meta"];
-            if (meta) {
-                meta = [DIMMeta metaWithMeta:meta];
-                PK = meta.key;
-            }
-        }
-    }
-    PK = [DIMPublicKey keyWithKey:PK];
+//    // public key
+//    DIMPublicKey *PK = [dict objectForKey:@"publicKey"];
+//    if (!PK) {
+//        PK = [dict objectForKey:@"PK"];
+//        if (!PK) {
+//            // get from meta.key
+//            DIMMeta *meta = [dict objectForKey:@"meta"];
+//            if (meta) {
+//                meta = [DIMMeta metaWithMeta:meta];
+//                PK = meta.key;
+//            }
+//        }
+//    }
+//    PK = [DIMPublicKey keyWithKey:PK];
     
     // host
     NSString *host = [dict objectForKey:@"host"];
     // port
     NSNumber *port = [dict objectForKey:@"port"];
-    if (!port) {
+    if (port == nil) {
         port = @(9394);
     }
     // SP
@@ -69,10 +69,10 @@
     DIMCertificateAuthority *CA = [dict objectForKey:@"CA"];
     CA = [DIMCertificateAuthority caWithCA:CA];
     
-    if (!PK) {
-        // get from CA.info.publicKey
-        PK = CA.info.publicKey;
-    }
+//    if (!PK) {
+//        // get from CA.info.publicKey
+//        PK = CA.info.publicKey;
+//    }
     // TODO: save public key for the Station
     
     if (self = [self initWithID:ID

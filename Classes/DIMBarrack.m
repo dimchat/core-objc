@@ -152,7 +152,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMMetaDataSource
 
-- (const DIMMeta *)metaForID:(const DIMID *)ID {
+- (nullable const DIMMeta *)metaForID:(const DIMID *)ID {
     const DIMMeta *meta;
     
     // (a) get from meta cache
@@ -182,7 +182,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMEntityDataSource
 
-- (const DIMMeta *)metaForEntity:(const DIMEntity *)entity {
+- (nullable  const DIMMeta *)metaForEntity:(const DIMEntity *)entity {
     const DIMMeta *meta;
     const DIMID *ID = entity.ID;
     
@@ -233,7 +233,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMAccountDelegate
 
-- (DIMAccount *)accountWithID:(const DIMID *)ID {
+- (nullable DIMAccount *)accountWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
     DIMAccount *account;
     
@@ -278,7 +278,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMUserDelegate
 
-- (DIMUser *)userWithID:(const DIMID *)ID {
+- (nullable DIMUser *)userWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     DIMUser *user;
     
@@ -324,7 +324,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return [_groupDataSource founderOfGroup:group];
 }
 
-- (const DIMID *)ownerOfGroup:(const DIMGroup *)group {
+- (nullable const DIMID *)ownerOfGroup:(const DIMGroup *)group {
     NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
     return [_groupDataSource ownerOfGroup:group];
@@ -344,7 +344,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark DIMGroupDelegate
 
-- (DIMGroup *)groupWithID:(const DIMID *)ID {
+- (nullable DIMGroup *)groupWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     DIMGroup *group;
     

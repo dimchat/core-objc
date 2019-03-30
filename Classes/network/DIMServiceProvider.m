@@ -25,12 +25,12 @@
     // ID
     DIMID *ID = [dict objectForKey:@"ID"];
     ID = [DIMID IDWithID:ID];
-    // founder
-    DIMID *founder = [dict objectForKey:@"founder"];
-    founder = [DIMID IDWithID:founder];
-    // owner
-    DIMID *owner = [dict objectForKey:@"owner"];
-    owner = [DIMID IDWithID:owner];
+//    // founder
+//    DIMID *founder = [dict objectForKey:@"founder"];
+//    founder = [DIMID IDWithID:founder];
+//    // owner
+//    DIMID *owner = [dict objectForKey:@"owner"];
+//    owner = [DIMID IDWithID:owner];
     
     // CA
     DIMCertificateAuthority *CA = [dict objectForKey:@"CA"];
