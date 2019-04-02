@@ -71,7 +71,6 @@
 #define DIMMessageType_History          DKDMessageType_History
 #define DIMMessageType_Forward          DKDMessageType_Forward
 #define DIMMessageType_Unknown          DKDMessageType_Unknown
-#define DIMMessageContentDelegate       DKDMessageContentDelegate
 
 // Message
 #define DIMEnvelope                     DKDEnvelope

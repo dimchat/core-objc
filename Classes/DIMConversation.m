@@ -75,12 +75,12 @@
 
 #pragma mark - Write via delegate
 
-- (BOOL)insertMessage:(const DIMInstantMessage *)iMsg {
+- (BOOL)insertMessage:(DIMInstantMessage *)iMsg {
     NSAssert(_delegate, @"set delegate first");
     return [_delegate conversation:self insertMessage:iMsg];
 }
 
-- (BOOL)removeMessage:(const DIMInstantMessage *)iMsg {
+- (BOOL)removeMessage:(DIMInstantMessage *)iMsg {
     NSAssert(_delegate, @"set delegate first");
     SEL selector = @selector(conversation:removeMessage:);
     if (![_delegate respondsToSelector:selector]) {
@@ -90,7 +90,7 @@
     return [_delegate conversation:self removeMessage:iMsg];
 }
 
-- (BOOL)withdrawMessage:(const DIMInstantMessage *)iMsg {
+- (BOOL)withdrawMessage:(DIMInstantMessage *)iMsg {
     NSAssert(_delegate, @"set delegate first");
     SEL selector = @selector(conversation:withdrawMessage:);
     if (![_delegate respondsToSelector:selector]) {

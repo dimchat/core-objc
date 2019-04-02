@@ -90,7 +90,13 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     const DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"account error: %@", receiver);
-    return [self cipherKeyFrom:sender to:receiver];
+    DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:receiver];
+    if (!scKey) {
+        // create a new key & save it into the Key Store
+        scKey = [[DIMSymmetricKey alloc] init];
+        [self setCipherKey:scKey forAccount:receiver];
+    }
+    return scKey;
 }
 
 - (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(const DIMID *)receiver {
@@ -122,7 +128,13 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     const DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
-    return [self cipherKeyFrom:sender to:group];
+    DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:group];
+    if (!scKey) {
+        // create a new key & save it into the Key Store
+        scKey = [[DIMSymmetricKey alloc] init];
+        [self setCipherKey:scKey forGroup:group];
+    }
+    return scKey;
 }
 
 - (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(const DIMID *)group {

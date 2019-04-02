@@ -114,7 +114,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 
 @implementation DIMAmanuensis (Message)
 
-- (void)saveMessage:(const DIMInstantMessage *)iMsg {
+- (void)saveMessage:(DIMInstantMessage *)iMsg {
     NSLog(@"saving message: %@", iMsg);
     
     DIMConversation *chatBox = nil;

@@ -37,12 +37,6 @@
     
     if (group) {
         // group message
-        scKey = [store cipherKeyForGroup:group];
-        if (!scKey) {
-            // create a new key & save it into the Key Store
-            scKey = [[DIMSymmetricKey alloc] init];
-            [store setCipherKey:scKey forGroup:group];
-        }
         NSArray *members;
         if (MKMNetwork_IsCommunicator(receiver.type)) {
             // split group message
@@ -51,16 +45,14 @@
             members = DIMGroupWithID(group).members;
             NSAssert(members.count > 0, @"group members cannot be empty");
         }
+        scKey = [store cipherKeyForGroup:group];
+        NSAssert(scKey != nil, @"failed to generate key for group: %@", group);
         sMsg = [iMsg encryptWithKey:scKey forMembers:members];
     } else {
         // personal message
         NSAssert(iMsg.content.group == nil, @"content error: %@", iMsg);
         scKey = [store cipherKeyForAccount:receiver];
-        if (!scKey) {
-            // create a new key & save it into the Key Store
-            scKey = [[DIMSymmetricKey alloc] init];
-            [store setCipherKey:scKey forAccount:receiver];
-        }
+        NSAssert(scKey != nil, @"failed to generate key for contact: %@", receiver);
         sMsg = [iMsg encryptWithKey:scKey];
     }
     NSAssert(sMsg.data, @"data cannot be empty");

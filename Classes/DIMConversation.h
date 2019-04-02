@@ -59,21 +59,21 @@ NS_DESIGNATED_INITIALIZER;
 
  @param iMsg - instant message
  */
-- (BOOL)insertMessage:(const DIMInstantMessage *)iMsg;
+- (BOOL)insertMessage:(DIMInstantMessage *)iMsg;
 
 /**
  Delete the message
 
  @param iMsg - instant message
  */
-- (BOOL)removeMessage:(const DIMInstantMessage *)iMsg;
+- (BOOL)removeMessage:(DIMInstantMessage *)iMsg;
 
 /**
  Try to withdraw the message
 
  @param iMsg - instant message
  */
-- (BOOL)withdrawMessage:(const DIMInstantMessage *)iMsg;
+- (BOOL)withdrawMessage:(DIMInstantMessage *)iMsg;
 
 @end
 
@@ -118,7 +118,7 @@ NS_DESIGNATED_INITIALIZER;
  @param iMsg - instant message
  */
 - (BOOL)conversation:(const DIMConversation *)chatBox
-       insertMessage:(const DIMInstantMessage *)iMsg;
+       insertMessage:(DIMInstantMessage *)iMsg;
 
 @optional
 
@@ -129,7 +129,7 @@ NS_DESIGNATED_INITIALIZER;
  @param iMsg - instant message
  */
 - (BOOL)conversation:(const DIMConversation *)chatBox
-       removeMessage:(const DIMInstantMessage *)iMsg;
+       removeMessage:(DIMInstantMessage *)iMsg;
 
 /**
  Try to withdraw the message, maybe won't success
@@ -138,7 +138,7 @@ NS_DESIGNATED_INITIALIZER;
  @param iMsg - instant message
  */
 - (BOOL)conversation:(const DIMConversation *)chatBox
-     withdrawMessage:(const DIMInstantMessage *)iMsg;
+     withdrawMessage:(DIMInstantMessage *)iMsg;
 
 @end
 
