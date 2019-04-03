@@ -69,7 +69,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMKeyStore+CacheFile.h>
 #import <DIMCore/DIMTransceiver.h>
 #import <DIMCore/DIMTransceiver+Transform.h>
-#import <DIMCore/DIMTransceiver+Send.h>
 
 #import <DIMCore/DIMConversation.h>
 #import <DIMCore/DIMAmanuensis.h>

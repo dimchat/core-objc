@@ -153,4 +153,14 @@
     return NO;
 }
 
+- (NSURL *)uploadEncryptedFileData:(const NSData *)CT filename:(nullable const NSString *)name sender:(const MKMID *)ID {
+    NSAssert(false, @"override me");
+    return nil;
+}
+
+- (nullable NSData *)downloadEncryptedFileDataFromURL:(const NSURL *)url filename:(const NSString *)name sender:(const MKMID *)ID {
+    NSAssert(false, @"override me");
+    return nil;
+}
+
 @end
