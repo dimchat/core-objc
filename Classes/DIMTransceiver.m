@@ -37,19 +37,16 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     NSData *CT = [symmetricKey encrypt:data];
-    const DIMID *sender = [DIMID IDWithID:iMsg.envelope.sender];
+    NSLog(@"encrypt file %@: %lu bytes -> %lu bytes", name, data.length, CT.length);
     
-    return [_delegate uploadEncryptedFileData:CT filename:name sender:sender];
+    return [_delegate uploadEncryptedFileData:CT forMessage:iMsg];
 }
 
 - (nullable NSData *)message:(const DKDInstantMessage *)iMsg
                     download:(const NSURL *)url
                      withKey:(NSDictionary *)password {
     
-    NSString *filename = iMsg.content.filename;
-    DIMID *sender = [DIMID IDWithID:iMsg.envelope.sender];
-    
-    NSData *CT = [_delegate downloadEncryptedFileDataFromURL:url filename:filename sender:sender];
+    NSData *CT = [_delegate downloadEncryptedFileData:url forMessage:iMsg];
     if (CT) {
         DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
         NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);

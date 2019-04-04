@@ -28,10 +28,14 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
 - (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
 
 /**
- *  CDN
+ *  Upload encrypted data to CDN
  */
-- (NSURL *)uploadEncryptedFileData:(const NSData *)CT filename:(nullable const NSString *)name sender:(const DIMID *)ID;
-- (nullable NSData *)downloadEncryptedFileDataFromURL:(const NSURL *)url filename:(nullable const NSString *)name sender:(const MKMID *)ID;
+- (NSURL *)uploadEncryptedFileData:(const NSData *)CT forMessage:(const DIMInstantMessage *)iMsg;
+
+/**
+ *  Download encrypted data from CDN, and decrypt it when finished
+ */
+- (nullable NSData *)downloadEncryptedFileData:(const NSURL *)url forMessage:(const DIMInstantMessage *)iMsg;
 
 @end
 

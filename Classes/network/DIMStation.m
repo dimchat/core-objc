@@ -153,12 +153,12 @@
     return NO;
 }
 
-- (NSURL *)uploadEncryptedFileData:(const NSData *)CT filename:(nullable const NSString *)name sender:(const MKMID *)ID {
+- (NSURL *)uploadEncryptedFileData:(const NSData *)CT forMessage:(const DKDInstantMessage *)iMsg {
     NSAssert(false, @"override me");
     return nil;
 }
 
-- (nullable NSData *)downloadEncryptedFileDataFromURL:(const NSURL *)url filename:(const NSString *)name sender:(const MKMID *)ID {
+- (nullable NSData *)downloadEncryptedFileData:(const NSURL *)url forMessage:(const DKDInstantMessage *)iMsg {
     NSAssert(false, @"override me");
     return nil;
 }
