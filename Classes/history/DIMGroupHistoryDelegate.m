@@ -213,7 +213,7 @@
         NSAssert(!social.owner, @"owner should not be set yet");
         DIMID *owner = [operation objectForKey:@"owner"];
         if (owner) {
-            owner = [DIMID IDWithID:owner];
+            //owner = [DIMID IDWithID:owner];
             // TODO: set owner
             //social.owner = owner;
         } else {
@@ -225,7 +225,7 @@
         // abdicate the ownership
         DIMID *owner = [operation objectForKey:@"owner"];
         if (owner) {
-            owner = [DIMID IDWithID:owner];
+            //owner = [DIMID IDWithID:owner];
             // TODO: change owner
             //social.owner = owner;
         }
@@ -236,7 +236,7 @@
             user = [operation objectForKey:@"member"];
         }
         if (user) {
-            user = [DIMID IDWithID:user];
+            //user = [DIMID IDWithID:user];
             // TODO: invite
             //[social addMember:user];
         }
@@ -244,7 +244,7 @@
         // expel member
         DIMID *member = [operation objectForKey:@"member"];
         if (member) {
-            member = [DIMID IDWithID:member];
+            //member = [DIMID IDWithID:member];
             // TODO: expel
             //[social removeMember:member];
         }

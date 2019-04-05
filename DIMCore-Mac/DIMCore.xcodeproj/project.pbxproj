@@ -32,7 +32,6 @@
 		E9BBC1B722427EF100E6ACDA /* DIMStation.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17422427EF100E6ACDA /* DIMStation.m */; };
 		E9BBC1B822427EF100E6ACDA /* DIMAmanuensis.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17522427EF100E6ACDA /* DIMAmanuensis.m */; };
 		E9BBC1B922427EF100E6ACDA /* DIMBarrack.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17622427EF100E6ACDA /* DIMBarrack.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9BBC1BA22427EF100E6ACDA /* DIMTransceiver+Send.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17722427EF100E6ACDA /* DIMTransceiver+Send.m */; };
 		E9BBC1BB22427EF100E6ACDA /* DIMBarrack+LocalStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17822427EF100E6ACDA /* DIMBarrack+LocalStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1BC22427EF100E6ACDA /* DIMConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17922427EF100E6ACDA /* DIMConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1BD22427EF100E6ACDA /* DIMKeyStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17A22427EF100E6ACDA /* DIMKeyStore.m */; };
@@ -70,7 +69,6 @@
 		E9BBC1DD22427EF100E6ACDA /* DIMMetaCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC19C22427EF100E6ACDA /* DIMMetaCommand.m */; };
 		E9BBC1DE22427EF100E6ACDA /* DIMGroupCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC19D22427EF100E6ACDA /* DIMGroupCommand.m */; };
 		E9BBC1DF22427EF100E6ACDA /* DIMCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC19E22427EF100E6ACDA /* DIMCommand.m */; };
-		E9BBC1E022427EF100E6ACDA /* DIMTransceiver+Send.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC19F22427EF100E6ACDA /* DIMTransceiver+Send.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1E122427EF100E6ACDA /* DIMBarrack.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC1A022427EF100E6ACDA /* DIMBarrack.m */; };
 		E9BBC1E222427EF100E6ACDA /* DIMCore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC1A122427EF100E6ACDA /* DIMCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1E322427EF100E6ACDA /* DIMAmanuensis.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC1A222427EF100E6ACDA /* DIMAmanuensis.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -163,7 +161,6 @@
 		E9BBC17422427EF100E6ACDA /* DIMStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMStation.m; sourceTree = "<group>"; };
 		E9BBC17522427EF100E6ACDA /* DIMAmanuensis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMAmanuensis.m; sourceTree = "<group>"; };
 		E9BBC17622427EF100E6ACDA /* DIMBarrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMBarrack.h; sourceTree = "<group>"; };
-		E9BBC17722427EF100E6ACDA /* DIMTransceiver+Send.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMTransceiver+Send.m"; sourceTree = "<group>"; };
 		E9BBC17822427EF100E6ACDA /* DIMBarrack+LocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DIMBarrack+LocalStorage.h"; sourceTree = "<group>"; };
 		E9BBC17922427EF100E6ACDA /* DIMConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMConversation.h; sourceTree = "<group>"; };
 		E9BBC17A22427EF100E6ACDA /* DIMKeyStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMKeyStore.m; sourceTree = "<group>"; };
@@ -201,7 +198,6 @@
 		E9BBC19C22427EF100E6ACDA /* DIMMetaCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMetaCommand.m; sourceTree = "<group>"; };
 		E9BBC19D22427EF100E6ACDA /* DIMGroupCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMGroupCommand.m; sourceTree = "<group>"; };
 		E9BBC19E22427EF100E6ACDA /* DIMCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
-		E9BBC19F22427EF100E6ACDA /* DIMTransceiver+Send.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DIMTransceiver+Send.h"; sourceTree = "<group>"; };
 		E9BBC1A022427EF100E6ACDA /* DIMBarrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMBarrack.m; sourceTree = "<group>"; };
 		E9BBC1A122427EF100E6ACDA /* DIMCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCore.h; sourceTree = "<group>"; };
 		E9BBC1A222427EF100E6ACDA /* DIMAmanuensis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMAmanuensis.h; sourceTree = "<group>"; };
@@ -295,8 +291,6 @@
 				E9BBC17C22427EF100E6ACDA /* dimMacros.h */,
 				E9BBC17D22427EF100E6ACDA /* DIMTransceiver.h */,
 				E9BBC16622427EF100E6ACDA /* DIMTransceiver.m */,
-				E9BBC19F22427EF100E6ACDA /* DIMTransceiver+Send.h */,
-				E9BBC17722427EF100E6ACDA /* DIMTransceiver+Send.m */,
 				E9BBC19322427EF100E6ACDA /* DIMTransceiver+Transform.h */,
 				E9BBC16522427EF100E6ACDA /* DIMTransceiver+Transform.m */,
 				E9BBC1A122427EF100E6ACDA /* DIMCore.h */,
@@ -433,7 +427,6 @@
 				E9BBC1D022427EF100E6ACDA /* DIMAccountHistoryDelegate.h in Headers */,
 				E9BBC1D122427EF100E6ACDA /* DIMEntityHistoryDelegate.h in Headers */,
 				E9BBC1D522427EF100E6ACDA /* DIMTransceiver+Transform.h in Headers */,
-				E9BBC1E022427EF100E6ACDA /* DIMTransceiver+Send.h in Headers */,
 				E9BBC1B622427EF100E6ACDA /* DIMServiceProvider.h in Headers */,
 				E9BBC1D922427EF100E6ACDA /* DIMCommand.h in Headers */,
 				E9BBC1E222427EF100E6ACDA /* DIMCore.h in Headers */,
@@ -622,7 +615,6 @@
 				E9BBC1E122427EF100E6ACDA /* DIMBarrack.m in Sources */,
 				E9E824CC224BF64700A029F1 /* DIMReceiptCommand.m in Sources */,
 				E9BBC1C822427EF100E6ACDA /* DIMGroupHistoryDelegate.m in Sources */,
-				E9BBC1BA22427EF100E6ACDA /* DIMTransceiver+Send.m in Sources */,
 				E9BBC1D622427EF100E6ACDA /* DIMHandshakeCommand.m in Sources */,
 				E9BBC1B222427EF100E6ACDA /* DIMCAData.m in Sources */,
 				E9BBC1A822427EF100E6ACDA /* DIMConversation.m in Sources */,

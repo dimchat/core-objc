@@ -14,10 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMServiceProvider : DIMGroup
 
-@property (strong, nonatomic) DIMCertificateAuthority *CA;
+@property (strong, nonatomic, nullable) DIMCertificateAuthority *CA;
 @property (readonly, strong, nonatomic) DIMPublicKey *publicKey; // CA.info.*
 
-@property (strong, nonatomic) NSURL *home; // home page URL
+@property (strong, nonatomic, nullable) NSURL *home; // home page URL
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 

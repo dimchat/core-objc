@@ -122,7 +122,7 @@
             admin = [operation objectForKey:@"administrator"];
         }
         if (admin) {
-            admin = [DIMID IDWithID:admin];
+            //admin = [DIMID IDWithID:admin];
             // TODO: hire admin
             //[chatroom addAdmin:admin];
         }
@@ -134,7 +134,7 @@
             admin = [operation objectForKey:@"administrator"];
         }
         if (admin) {
-            admin = [DIMID IDWithID:admin];
+            //admin = [DIMID IDWithID:admin];
             // TODO: fire admin
             //[chatroom removeAdmin:admin];
         }
