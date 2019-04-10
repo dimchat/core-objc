@@ -25,7 +25,7 @@
     return self;
 }
 
-- (instancetype)initWithType:(DKDMessageType)type {
+- (instancetype)initWithType:(DIMMessageType)type {
     NSAssert(false, @"DON'T call me");
     return [self initWithCommand:@"NOOP"];
 }
@@ -33,7 +33,7 @@
 /* designated initializer */
 - (instancetype)initWithCommand:(const NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DKDMessageType_Command]) {
+    if (self = [super initWithType:DIMMessageType_Command]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];
@@ -79,7 +79,7 @@
     return self;
 }
 
-- (instancetype)initWithType:(DKDMessageType)type {
+- (instancetype)initWithType:(DIMMessageType)type {
     NSAssert(false, @"DON'T call me");
     return [self initWithHistoryCommand:@"NOOP"];
 }
@@ -92,7 +92,7 @@
 /* designated initializer */
 - (instancetype)initWithHistoryCommand:(const NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DKDMessageType_History]) {
+    if (self = [super initWithType:DIMMessageType_History]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];

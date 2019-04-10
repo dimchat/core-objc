@@ -10,32 +10,14 @@
 
 #import "DIMBarrack+LocalStorage.h"
 
-@implementation DIMBarrack (LocalStorage)
-
-static NSString *s_directory = nil;
-
-// "Documents/.mkm"
-- (NSString *)directory {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSArray *paths;
-        paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                                    NSUserDomainMask, YES);
-        NSString *dir = paths.firstObject;
-        s_directory = [dir stringByAppendingPathComponent:@".mkm"];
-    });
-    return s_directory;
+static inline NSString *document_directory(void) {
+    NSArray *paths;
+    paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                NSUserDomainMask, YES);
+    return paths.firstObject;
 }
 
-- (void)setDirectory:(NSString *)directory {
-    s_directory = directory;
-}
-
-// "Documents/.mkm/{address}/meta.plist"
-- (NSString *)_pathWithID:(const DIMID *)ID filename:(NSString *)name {
-    NSString *dir = self.directory;
-    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
-    
+static inline void make_dirs(NSString *dir) {
     // check base directory exists
     NSFileManager *fm = [NSFileManager defaultManager];
     if (![fm fileExistsAtPath:dir isDirectory:nil]) {
@@ -45,20 +27,62 @@ static NSString *s_directory = nil;
                        attributes:nil error:&error];
         assert(!error);
     }
-    
-    return [dir stringByAppendingPathComponent:name];
+}
+
+static inline BOOL file_exists(NSString *path) {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    return [fm fileExistsAtPath:path];
+}
+
+static NSString *s_directory = nil;
+
+static inline NSString *base_directory(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (s_directory == nil) {
+            NSString *dir = document_directory();
+            dir = [dir stringByAppendingPathComponent:@".mkm"];
+            s_directory = dir;
+        }
+    });
+    return s_directory;
+}
+
+/**
+ Get meta filepath in Documents Directory
+ 
+ @param ID - entity ID
+ @return "Documents/.mkm/{address}/meta.plist"
+ */
+static inline NSString *meta_filepath(const DIMID *ID, BOOL autoCreate) {
+    NSString *dir = base_directory();
+    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
+    // check base directory exists
+    if (autoCreate && !file_exists(dir)) {
+        // make sure directory exists
+        make_dirs(dir);
+    }
+    return [dir stringByAppendingPathComponent:@"meta.plist"];
+}
+
+@implementation DIMBarrack (LocalStorage)
+
+// "Documents/.mkm"
+- (NSString *)directory {
+    return base_directory();
+}
+
+- (void)setDirectory:(NSString *)directory {
+    s_directory = directory;
 }
 
 - (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID {
-    const DIMMeta *meta = nil;
-    NSString *path = [self _pathWithID:ID filename:@"meta.plist"];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:path]) {
-        NSDictionary *dict;
-        dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        meta = [[DIMMeta alloc] initWithDictionary:dict];
+    NSString *path = meta_filepath(ID, NO);
+    if (file_exists(path)) {
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+        return [[DIMMeta alloc] initWithDictionary:dict];
     }
-    return meta;
+    return nil;
 }
 
 - (BOOL)saveMeta:(const DIMMeta *)meta forEntityID:(const DIMID *)ID {
@@ -67,9 +91,8 @@ static NSString *s_directory = nil;
         return NO;
     }
     
-    NSString *path = [self _pathWithID:ID filename:@"meta.plist"];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:path]) {
+    NSString *path = meta_filepath(ID, YES);
+    if (file_exists(path)) {
         NSLog(@"meta file already exists: %@, IGNORE!", path);
         return YES;
     }
