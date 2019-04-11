@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param server - current station
  @param data - data package sent
  */
-- (void)station:(const DIMStation *)server didSendPackage:(const NSDate *)data;
+- (void)station:(const DIMStation *)server didSendPackage:(const NSData *)data;
 
 /**
  Failed to send data package to station
@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param data - data package to send
  @param error - error informatin
  */
-- (void)station:(const DIMStation *)server sendPackage:(const NSDate *)data didFailWithError:(const NSError *)error;
+- (void)station:(const DIMStation *)server sendPackage:(const NSData *)data didFailWithError:(const NSError *)error;
 
 @end
 

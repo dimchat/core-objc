@@ -14,14 +14,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic) NSString *message;
 
+// original message info
+@property (strong, nonatomic) DIMEnvelope *envelope;
+@property (strong, nonatomic, nullable) NSData *signature;
+
 /**
  *  Command message: {
  *      type : 0x88,
- *      sn   : 123,
+ *      sn   : 123,  // the same serial number with the original message
  *
  *      command : "receipt",
  *      message : "...",
- *      extra   : info
+ *      // -- extra info
+ *      sender    : "...",
+ *      receiver  : "...",
+ *      time      : 0,
+ *      signature : "..." // the same signature with the original message
  *  }
  */
 - (instancetype)initWithMessage:(const NSString *)message;

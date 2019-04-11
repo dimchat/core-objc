@@ -11,6 +11,8 @@
 		E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */; };
 		E95A80CB22060142007EA611 /* DIMProfileCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E95A80C922060142007EA611 /* DIMProfileCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E95A80CC22060142007EA611 /* DIMProfileCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E95A80CA22060142007EA611 /* DIMProfileCommand.m */; };
+		E9790893225EDE450024C830 /* DKDInstantMessage+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E9790891225EDE450024C830 /* DKDInstantMessage+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9790894225EDE450024C830 /* DKDInstantMessage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9790892225EDE450024C830 /* DKDInstantMessage+Extension.m */; };
 		E9BBBD2B223A479E00E6ACDA /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBBD28223A479800E6ACDA /* MingKeMing.framework */; };
 		E9BBBD45223AA13500E6ACDA /* DIMKeyStore+CacheFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBD3F223AA13400E6ACDA /* DIMKeyStore+CacheFile.m */; };
 		E9BBBD46223AA13500E6ACDA /* DIMKeyStore+CacheFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD40223AA13400E6ACDA /* DIMKeyStore+CacheFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -137,6 +139,8 @@
 		E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMGroupCommand.m; sourceTree = "<group>"; };
 		E95A80C922060142007EA611 /* DIMProfileCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMProfileCommand.h; sourceTree = "<group>"; };
 		E95A80CA22060142007EA611 /* DIMProfileCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMProfileCommand.m; sourceTree = "<group>"; };
+		E9790891225EDE450024C830 /* DKDInstantMessage+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DKDInstantMessage+Extension.h"; sourceTree = "<group>"; };
+		E9790892225EDE450024C830 /* DKDInstantMessage+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DKDInstantMessage+Extension.m"; sourceTree = "<group>"; };
 		E9BBBD21223A479800E6ACDA /* MingKeMing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MingKeMing.xcodeproj; path = "../../mkm-objc/MingKeMing/MingKeMing.xcodeproj"; sourceTree = "<group>"; };
 		E9BBBD3F223AA13400E6ACDA /* DIMKeyStore+CacheFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMKeyStore+CacheFile.m"; sourceTree = "<group>"; };
 		E9BBBD40223AA13400E6ACDA /* DIMKeyStore+CacheFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DIMKeyStore+CacheFile.h"; sourceTree = "<group>"; };
@@ -272,6 +276,8 @@
 				E9BBBE55223FB25400E6ACDA /* NSObject+Singleton.h */,
 				E9BBBE51223FB0DD00E6ACDA /* MKMGroup+Extension.h */,
 				E9BBBE52223FB0DD00E6ACDA /* MKMGroup+Extension.m */,
+				E9790891225EDE450024C830 /* DKDInstantMessage+Extension.h */,
+				E9790892225EDE450024C830 /* DKDInstantMessage+Extension.m */,
 			);
 			path = extends;
 			sourceTree = "<group>";
@@ -417,6 +423,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9BBBE53223FB0DD00E6ACDA /* MKMGroup+Extension.h in Headers */,
+				E9790893225EDE450024C830 /* DKDInstantMessage+Extension.h in Headers */,
 				E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */,
 				E9F3AA7721CBD03C009690F6 /* DIMCASubject.h in Headers */,
 				E9F3AA7521CBD03C009690F6 /* DIMCAValidity.h in Headers */,
@@ -594,6 +601,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9F3AA7F21CBD03C009690F6 /* DIMAmanuensis.m in Sources */,
+				E9790894225EDE450024C830 /* DKDInstantMessage+Extension.m in Sources */,
 				E9BBBDC5223AB42D00E6ACDA /* DIMUser+History.m in Sources */,
 				E9BBBDBF223AB42D00E6ACDA /* DIMAccountHistoryDelegate.m in Sources */,
 				E9F3AA7E21CBD03C009690F6 /* DIMStation.m in Sources */,

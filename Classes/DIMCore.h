@@ -29,6 +29,7 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 
 // extends
 #import <DIMCore/MKMGroup+Extension.h>
+#import <DIMCore/DKDInstantMessage+Extension.h>
 
 // History
 #import <DIMCore/DIMHistoryOperation.h>

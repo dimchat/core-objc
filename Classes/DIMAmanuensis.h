@@ -8,12 +8,15 @@
 
 #import "dimMacros.h"
 
+#import "DKDInstantMessage+Extension.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define DIMClerk()                [DIMAmanuensis sharedInstance]
 #define DIMConversationWithID(ID) [DIMClerk() conversationWithID:(ID)]
 
 @class DIMConversation;
+@class DIMReceiptCommand;
 
 @protocol DIMConversationDataSource;
 @protocol DIMConversationDelegate;
@@ -45,8 +48,17 @@ NS_ASSUME_NONNULL_BEGIN
  Save received message
  
  @param iMsg - instant message
+ @return YES on success
  */
-- (void)saveMessage:(DIMInstantMessage *)iMsg;
+- (BOOL)saveMessage:(DIMInstantMessage *)iMsg;
+
+/**
+ Save state with receipt
+ 
+ @param cmd - receipt
+ @return YES while message found
+ */
+- (BOOL)saveReceipt:(const DIMReceiptCommand *)cmd;
 
 @end
 

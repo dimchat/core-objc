@@ -114,7 +114,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
 
 @implementation DIMAmanuensis (Message)
 
-- (void)saveMessage:(DIMInstantMessage *)iMsg {
+- (BOOL)saveMessage:(DIMInstantMessage *)iMsg {
     NSLog(@"saving message: %@", iMsg);
     
     DIMConversation *chatBox = nil;
@@ -136,7 +136,12 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     }
     
     NSAssert(chatBox, @"chat box not found for message: %@", iMsg);
-    [chatBox insertMessage:iMsg];
+    return [chatBox insertMessage:iMsg];
+}
+
+- (BOOL)saveReceipt:(const DIMReceiptCommand *)cmd {
+    // TODO:
+    return YES;
 }
 
 @end
