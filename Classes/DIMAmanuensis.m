@@ -8,6 +8,8 @@
 
 #import "NSObject+Singleton.h"
 
+#import "DIMReceiptCommand.h"
+
 #import "DIMBarrack.h"
 #import "DIMConversation.h"
 
@@ -139,9 +141,84 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     return [chatBox insertMessage:iMsg];
 }
 
-- (BOOL)saveReceipt:(const DIMReceiptCommand *)cmd {
-    // TODO:
-    return YES;
+- (BOOL)saveReceipt:(DKDInstantMessage *)iMsg {
+    DIMMessageContent *content = iMsg.content;
+    if (content.type != DIMMessageType_Command ||
+        ![content.command isEqualToString:DKDSystemCommand_Receipt]) {
+        NSAssert(false, @"this is not a receipt: %@", iMsg);
+        return NO;
+    }
+    DIMReceiptCommand *receipt;
+    receipt = [[DIMReceiptCommand alloc] initWithDictionary:content];
+    NSLog(@"saving receipt: %@", receipt);
+    
+    DIMConversation *chatBox = nil;
+    
+    // NOTE: this is the receipt's commander,
+    //       it can be a station, or the original message's receiver
+    const DIMID *sender = [DIMID IDWithID:iMsg.envelope.sender];
+    
+    // NOTE: this is the original message's receiver
+    const DIMID *receiver = [DIMID IDWithID:receipt.envelope.receiver];
+    
+    // FIXME: only the real receiver will know the exact message detail, so
+    //        the station may not know if this is a group message.
+    //        maybe we should try another way to search the exact conversation.
+    const DIMID *groupID = [DIMID IDWithID:content.group];
+    
+    if (receiver == nil) {
+        NSLog(@"receiver not found, it's not a receipt for instant message");
+        return NO;
+    }
+    
+    if (groupID) {
+        // group chat, get chat box with group ID
+        chatBox = [self conversationWithID:groupID];
+    } else {
+        // personal chat, get chat box with contact ID
+        chatBox = [self conversationWithID:receiver];
+    }
+    
+    NSAssert(chatBox, @"chat box not found for receipt: %@", receipt);
+    DIMInstantMessage *targetMessage;
+    targetMessage = [self conversation:chatBox messageMatchReceipt:receipt];
+    if (targetMessage) {
+        if ([sender isEqual:receiver]) {
+            // the receiver's client feedback
+            if ([receipt.message containsString:@"read"]) {
+                targetMessage.state = DIMMessageState_Read;
+            } else {
+                targetMessage.state = DIMMessageState_Arrived;
+            }
+        } else if (MKMNetwork_IsStation(sender.type)) {
+            // delivering or delivered to receiver (station said)
+            if ([receipt.message containsString:@"delivered"]) {
+                targetMessage.state = DIMMessageState_Delivered;
+            } else {
+                targetMessage.state = DIMMessageState_Delivering;
+            }
+        } else {
+            NSAssert(false, @"unexpect receipt sender: %@", sender);
+            return NO;
+        }
+        return YES;
+    }
+    
+    NSLog(@"target message not found for receipt: %@", receipt);
+    return NO;
+}
+
+- (nullable DIMInstantMessage *)conversation:(DIMConversation *)chatBox
+                         messageMatchReceipt:(DIMReceiptCommand *)receipt {
+    DIMInstantMessage *iMsg = nil;
+    NSInteger count = [chatBox numberOfMessage];
+    for (NSInteger index = count - 1; index >= 0; --index) {
+        iMsg = [chatBox messageAtIndex:index];
+        if ([iMsg matchReceipt:receipt]) {
+            return iMsg;
+        }
+    }
+    return nil;
 }
 
 @end

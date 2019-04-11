@@ -10,6 +10,8 @@
 #import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
 
+#import "DKDInstantMessage+Extension.h"
+
 #import "DIMBarrack.h"
 #import "DIMKeyStore.h"
 
@@ -183,33 +185,47 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 - (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
                   callback:(nullable DIMTransceiverCallback)callback
                dispersedly:(BOOL)split {
+    // transforming
     const DIMID *receiver = [DIMID IDWithID:iMsg.envelope.receiver];
     const DIMID *groupID = [DIMID IDWithID:iMsg.content.group];
     DIMReliableMessage *rMsg = [self encryptAndSignMessage:iMsg];
     if (!rMsg) {
         NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
+        iMsg.state = DIMMessageState_Error;
+        iMsg.error = @"Encryption failed.";
         return NO;
     }
+    
+    // trying to send out
+    BOOL OK = YES;
     if (split && MKMNetwork_IsGroup(receiver.type)) {
         NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
         DIMGroup *group = DIMGroupWithID(groupID);
         NSArray *messages = [rMsg splitForMembers:group.members];
         if (messages.count == 0) {
             NSLog(@"failed to split msg, send it to group: %@", receiver);
-            return [self sendReliableMessage:rMsg callback:callback];
-        }
-        BOOL OK = YES;
-        for (rMsg in messages) {
-            if ([self sendReliableMessage:rMsg callback:callback]) {
-                //NSLog(@"group message sent to %@", rMsg.envelope.receiver);
-            } else {
-                OK = NO;
+            OK = [self sendReliableMessage:rMsg callback:callback];
+        } else {
+            for (rMsg in messages) {
+                if ([self sendReliableMessage:rMsg callback:callback]) {
+                    //NSLog(@"group message sent to %@", rMsg.envelope.receiver);
+                } else {
+                    OK = NO;
+                }
             }
         }
-        return OK;
     } else {
-        return [self sendReliableMessage:rMsg callback:callback];
+        OK = [self sendReliableMessage:rMsg callback:callback];
     }
+    
+    // sending status
+    if (OK) {
+        iMsg.state = DIMMessageState_Sending;
+    } else {
+        NSLog(@"cannot send message now, put in waiting queue: %@", iMsg);
+        iMsg.state = DIMMessageState_Waiting;
+    }
+    return OK;
 }
 
 - (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg

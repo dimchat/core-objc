@@ -33,7 +33,7 @@ typedef NS_ENUM(UInt8, DIMMessageState) {
 @property (nonatomic) DIMMessageState state;
 @property (strong , nonatomic, nullable) NSString *error;
 
-- (BOOL)matchReceipt:(DIMReceiptCommand *)cmd;
+- (BOOL)matchReceipt:(const DIMReceiptCommand *)cmd;
 
 @end
 

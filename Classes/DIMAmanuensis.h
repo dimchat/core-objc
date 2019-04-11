@@ -53,12 +53,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)saveMessage:(DIMInstantMessage *)iMsg;
 
 /**
- Save state with receipt
+ Update message state with receipt
  
- @param cmd - receipt
- @return YES while message found
+ @param iMsg - receipt message
+ @return YES while target message found
  */
-- (BOOL)saveReceipt:(const DIMReceiptCommand *)cmd;
+- (BOOL)saveReceipt:(DIMInstantMessage *)iMsg;
 
 @end
 
