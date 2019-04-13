@@ -6,6 +6,7 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Compare.h"
 #import "NSDate+Timestamp.h"
 #import "NSData+Crypto.h"
 #import "NSString+Crypto.h"
@@ -71,7 +72,7 @@
     return _message;
 }
 
-- (DIMEnvelope *)envelope {
+- (nullable DIMEnvelope *)envelope {
     if (!_envelope) {
         NSString *sender = [_storeDictionary objectForKey:@"sender"];
         NSString *receiver = [_storeDictionary objectForKey:@"receiver"];
@@ -88,6 +89,11 @@
 }
 
 - (void)setEnvelope:(DIMEnvelope *)envelope {
+    if (NSObjectEquals(_envelope, envelope)) {
+        return ;
+    }
+    _envelope = envelope;
+    
     if (envelope) {
         const NSString *sender = envelope.sender;
         const NSString *receiver = envelope.receiver;
@@ -113,6 +119,11 @@
 }
 
 - (void)setSignature:(NSData *)signature {
+    if (NSObjectEquals(_signature, signature)) {
+        return ;
+    }
+    _signature = signature;
+    
     if (signature) {
         [_storeDictionary setObject:[signature base64Encode] forKey:@"signature"];
     } else {
