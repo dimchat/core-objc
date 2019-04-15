@@ -6,7 +6,7 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMBarrack+LocalStorage.h"
+#import "DIMBarrack.h"
 #import "DIMKeyStore.h"
 
 #import "DIMTransceiver+Transform.h"
@@ -77,9 +77,9 @@
         meta = [DIMMeta metaWithMeta:rMsg.meta];
         if ([meta matchID:sender]) {
             DIMBarrack *barrack = [DIMBarrack sharedInstance];
-            [barrack saveMeta:meta forEntityID:sender];
+            [barrack saveMeta:meta forID:sender];
         } else {
-            NSAssert(false, @"meta not found for sender: %@", sender);
+            NSAssert(false, @"meta error: %@, %@", sender, meta);
             return nil;
         }
     }

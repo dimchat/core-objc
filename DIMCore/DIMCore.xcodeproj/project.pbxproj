@@ -20,8 +20,6 @@
 		E9BBBD48223AA13500E6ACDA /* DIMKeyStore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD42223AA13500E6ACDA /* DIMKeyStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBBD49223AA13500E6ACDA /* DIMTransceiver.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD43223AA13500E6ACDA /* DIMTransceiver.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBBD4A223AA13500E6ACDA /* DIMTransceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */; };
-		E9BBBD77223AB02600E6ACDA /* DIMBarrack+LocalStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD73223AB02600E6ACDA /* DIMBarrack+LocalStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9BBBD78223AB02600E6ACDA /* DIMBarrack+LocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBD74223AB02600E6ACDA /* DIMBarrack+LocalStorage.m */; };
 		E9BBBD79223AB02600E6ACDA /* DIMBarrack.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBBD7A223AB02600E6ACDA /* DIMBarrack.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */; };
 		E9BBBDB9223AB42D00E6ACDA /* DIMHistoryTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBDA5223AB42D00E6ACDA /* DIMHistoryTransaction.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -148,8 +146,6 @@
 		E9BBBD42223AA13500E6ACDA /* DIMKeyStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMKeyStore.h; sourceTree = "<group>"; };
 		E9BBBD43223AA13500E6ACDA /* DIMTransceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTransceiver.h; sourceTree = "<group>"; };
 		E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTransceiver.m; sourceTree = "<group>"; };
-		E9BBBD73223AB02600E6ACDA /* DIMBarrack+LocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DIMBarrack+LocalStorage.h"; sourceTree = "<group>"; };
-		E9BBBD74223AB02600E6ACDA /* DIMBarrack+LocalStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMBarrack+LocalStorage.m"; sourceTree = "<group>"; };
 		E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMBarrack.h; sourceTree = "<group>"; };
 		E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMBarrack.m; sourceTree = "<group>"; };
 		E9BBBDA5223AB42D00E6ACDA /* DIMHistoryTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMHistoryTransaction.h; sourceTree = "<group>"; };
@@ -351,8 +347,6 @@
 				E9CF980921FF53470092DD8B /* commands */,
 				E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */,
 				E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */,
-				E9BBBD73223AB02600E6ACDA /* DIMBarrack+LocalStorage.h */,
-				E9BBBD74223AB02600E6ACDA /* DIMBarrack+LocalStorage.m */,
 				E9BBBD42223AA13500E6ACDA /* DIMKeyStore.h */,
 				E9BBBD41223AA13500E6ACDA /* DIMKeyStore.m */,
 				E9BBBD40223AA13400E6ACDA /* DIMKeyStore+CacheFile.h */,
@@ -428,7 +422,6 @@
 				E9F3AA7721CBD03C009690F6 /* DIMCASubject.h in Headers */,
 				E9F3AA7521CBD03C009690F6 /* DIMCAValidity.h in Headers */,
 				E9F3AA7821CBD03C009690F6 /* DIMCAData.h in Headers */,
-				E9BBBD77223AB02600E6ACDA /* DIMBarrack+LocalStorage.h in Headers */,
 				E9F3AA7621CBD03C009690F6 /* DIMCertificateAuthority.h in Headers */,
 				E9F3AA7D21CBD03C009690F6 /* DIMServiceProvider.h in Headers */,
 				E9F3AA7421CBD03C009690F6 /* DIMStation.h in Headers */,
@@ -611,7 +604,6 @@
 				E9CF981621FF567B0092DD8B /* DIMHandshakeCommand.m in Sources */,
 				E9F3AA7321CBD03C009690F6 /* DIMServiceProvider.m in Sources */,
 				E9F3AA7921CBD03C009690F6 /* DIMCAData.m in Sources */,
-				E9BBBD78223AB02600E6ACDA /* DIMBarrack+LocalStorage.m in Sources */,
 				E9F3AA7B21CBD03C009690F6 /* DIMCertificateAuthority.m in Sources */,
 				E9E824BF224BE5AF00A029F1 /* DIMReceiptCommand.m in Sources */,
 				E9F3AA7C21CBD03C009690F6 /* DIMCAValidity.m in Sources */,

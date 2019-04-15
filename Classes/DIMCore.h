@@ -64,8 +64,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 
 //-
 #import <DIMCore/DIMBarrack.h>
-#import <DIMCore/DIMBarrack+LocalStorage.h>
-
 #import <DIMCore/DIMKeyStore.h>
 #import <DIMCore/DIMKeyStore+CacheFile.h>
 #import <DIMCore/DIMTransceiver.h>

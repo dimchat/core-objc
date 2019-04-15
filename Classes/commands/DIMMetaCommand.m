@@ -80,12 +80,9 @@
 - (nullable const DIMMeta *)meta {
     if (!_meta) {
         NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
-        if (!dict) {
-            return nil;
-        }
         DIMMeta *m = [DIMMeta metaWithMeta:dict];
         if (![m matchID:self.ID]) {
-            NSLog(@"meta not match ID: %@, meta: %@", self.ID, m);
+            NSAssert(m == nil, @"meta not match ID: %@, %@", self.ID, m);
             return nil;
         }
         if (m != dict) {

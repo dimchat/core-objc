@@ -164,7 +164,7 @@ SingletonImplementations(DIMAmanuensis, sharedInstance)
     // FIXME: only the real receiver will know the exact message detail, so
     //        the station may not know if this is a group message.
     //        maybe we should try another way to search the exact conversation.
-    const DIMID *groupID = [DIMID IDWithID:content.group];
+    const DIMID *groupID = [DIMID IDWithID:receipt.group];
     
     if (receiver == nil) {
         NSLog(@"receiver not found, it's not a receipt for instant message");

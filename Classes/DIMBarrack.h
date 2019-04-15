@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      2nd, if they were updated, we can refresh them immediately here
  */
 @interface DIMBarrack : NSObject <DIMMetaDataSource,
+                                  DIMMetaDelegate,
                                   DIMEntityDataSource,
                                   DIMAccountDelegate,
                                   DIMUserDataSource,
@@ -42,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
                                   DIMProfileDataSource>
 
 @property (weak, nonatomic) id<DIMMetaDataSource> metaDataSource;
+@property (weak, nonatomic) id<DIMMetaDelegate> metaDelegate;
 @property (weak, nonatomic) id<DIMEntityDataSource> entityDataSource;
 @property (weak, nonatomic) id<DIMAccountDelegate> accountDelegate;
 @property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
@@ -61,8 +63,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addGroup:(DIMGroup *)group;
 - (void)addMember:(DIMMember *)member;
-
-- (BOOL)setMeta:(const DIMMeta *)meta forID:(const DIMID *)ID;
 
 /**
  Call it when receive 'UIApplicationDidReceiveMemoryWarningNotification',

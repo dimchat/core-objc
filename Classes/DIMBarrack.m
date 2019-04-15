@@ -7,10 +7,66 @@
 //
 
 #import "NSObject+Singleton.h"
-
-#import "DIMBarrack+LocalStorage.h"
+#import "NSDictionary+Binary.h"
 
 #import "DIMBarrack.h"
+
+static inline NSString *document_directory(void) {
+    NSArray *paths;
+    paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                NSUserDomainMask, YES);
+    return paths.firstObject;
+}
+
+static inline void make_dirs(NSString *dir) {
+    // check base directory exists
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:dir isDirectory:nil]) {
+        NSError *error = nil;
+        // make sure directory exists
+        [fm createDirectoryAtPath:dir withIntermediateDirectories:YES
+                       attributes:nil error:&error];
+        assert(!error);
+    }
+}
+
+static inline BOOL file_exists(NSString *path) {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    return [fm fileExistsAtPath:path];
+}
+
+// default: "Documents/.mkm"
+static NSString *s_directory = nil;
+static inline NSString *base_directory(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (s_directory == nil) {
+            NSString *dir = document_directory();
+            dir = [dir stringByAppendingPathComponent:@".mkm"];
+            s_directory = dir;
+        }
+    });
+    return s_directory;
+}
+
+/**
+ Get meta filepath in Documents Directory
+ 
+ @param ID - entity ID
+ @return "Documents/.mkm/{address}/meta.plist"
+ */
+static inline NSString *meta_filepath(const DIMID *ID, BOOL autoCreate) {
+    NSString *dir = base_directory();
+    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
+    // check base directory exists
+    if (autoCreate && !file_exists(dir)) {
+        // make sure directory exists
+        make_dirs(dir);
+    }
+    return [dir stringByAppendingPathComponent:@"meta.plist"];
+}
+
+#pragma mark -
 
 typedef NSMutableDictionary<const DIMAddress *, DIMAccount *> AccountTableM;
 typedef NSMutableDictionary<const DIMAddress *, DIMUser *> UserTableM;
@@ -31,6 +87,9 @@ typedef NSMutableDictionary<const DIMAddress *, const DIMMeta *> MetaTableM;
     
     MetaTableM *_metaTable;
 }
+
+// default "Documents/.mkm/{address}/meta.plist"
+- (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID;
 
 @end
 
@@ -140,14 +199,13 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     }
 }
 
-- (BOOL)setMeta:(const DIMMeta *)meta forID:(const DIMID *)ID {
-    if ([meta matchID:ID]) {
-        [_metaTable setObject:meta forKey:ID.address];
-        return YES;
-    } else {
-        NSAssert(false, @"meta error: %@, ID = %@", meta, ID);
-        return NO;
+- (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID {
+    NSString *path = meta_filepath(ID, NO);
+    if (file_exists(path)) {
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+        return [[DIMMeta alloc] initWithDictionary:dict];
     }
+    return nil;
 }
 
 #pragma mark - DIMMetaDataSource
@@ -161,23 +219,57 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return meta;
     }
     
-    // (b) get from meta data source
-    NSAssert(_metaDataSource, @"meta data source not set");
-    meta = [_metaDataSource metaForID:ID];
-    if (meta) {
-        [self setMeta:meta forID:ID];
-        return meta;
+    do {
+        // (b) get from meta data source
+        NSAssert(_metaDataSource, @"meta data source not set");
+        meta = [_metaDataSource metaForID:ID];
+        if (meta) {
+            break;
+        }
+        
+        // (c) get from local storage
+        meta = [self loadMetaForID:ID];
+        if (meta) {
+            break;
+        }
+        
+        break;
+    } while (YES);
+    
+    // (d) cache it
+    if ([meta matchID:ID]) {
+        [_metaTable setObject:meta forKey:ID.address];
+    } else {
+        NSAssert(meta == nil, @"meta error: %@, %@", meta, ID);
+        NSLog(@"meta not found: %@", ID);
+    }
+    return meta;
+}
+
+#pragma mark - DIMMetaDelegate
+
+- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID {
+    
+    // (a) check meta with ID
+    if ([meta matchID:ID]) {
+        [_metaTable setObject:meta forKey:ID.address];
+    } else {
+        NSAssert(false, @"meta not match ID:%@, %@", ID, meta);
+        return NO;
     }
     
-    // (c) get from local storage
-    meta = [self loadMetaForID:ID];
-    if (meta) {
-        [self setMeta:meta forID:ID];
-        return meta;
+    // (b) check meta delegate
+    if ([_metaDelegate respondsToSelector:@selector(saveMeta:forID:)]) {
+        return [_metaDelegate saveMeta:meta forID:ID];
     }
     
-    NSLog(@"meta not found: %@", ID);
-    return nil;
+    // default "Documents/.mkm/{address}/meta.plist"
+    NSString *path = meta_filepath(ID, YES);
+    if (file_exists(path)) {
+        NSLog(@"meta file already exists: %@, IGNORE!", path);
+        return YES;
+    }
+    return [meta writeToBinaryFile:path];
 }
 
 #pragma mark - DIMEntityDataSource
@@ -186,37 +278,29 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     const DIMMeta *meta;
     const DIMID *ID = entity.ID;
     
-    // (a) get from meta cache
-    meta = [_metaTable objectForKey:ID.address];
+    // (a) call 'metaForID:' of meta data source
+    meta = [self metaForID:ID];
     if (meta) {
         return meta;
     }
     
-    // (b) get from entity data source
-    NSAssert(_entityDataSource, @"entity data source not set");
+    // (b) check entity data source
+    if (![_entityDataSource respondsToSelector:@selector(metaForEntity:)]) {
+        // not implement
+        return nil;
+    }
+    
+    // (c) get from entity data source
     meta = [_entityDataSource metaForEntity:entity];
-    if (meta) {
-        [self setMeta:meta forID:ID];
-        return meta;
-    }
     
-    // (c) get from meta data source
-    NSAssert(_metaDataSource, @"meta data source not set");
-    meta = [_metaDataSource metaForID:ID];
-    if (meta) {
-        [self setMeta:meta forID:ID];
-        return meta;
+    // (d) cache it
+    if ([meta matchID:ID]) {
+        [_metaTable setObject:meta forKey:ID.address];
+    } else {
+        NSAssert(meta == nil, @"meta error: %@, %@", meta, ID);
+        NSLog(@"meta not found: %@", ID);
     }
-    
-    // (d) get from local storage
-    meta = [self loadMetaForID:ID];
-    if (meta) {
-        [self setMeta:meta forID:ID];
-        return meta;
-    }
-    
-    NSLog(@"meta not found: %@", ID);
-    return nil;
+    return meta;
 }
 
 - (NSString *)nameOfEntity:(const DIMEntity *)entity {

@@ -17,7 +17,6 @@
 		E9BBC1A622427EF100E6ACDA /* NSObject+Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC16122427EF100E6ACDA /* NSObject+Singleton.h */; };
 		E9BBC1A722427EF100E6ACDA /* MKMGroup+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC16222427EF100E6ACDA /* MKMGroup+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1A822427EF100E6ACDA /* DIMConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC16322427EF100E6ACDA /* DIMConversation.m */; };
-		E9BBC1A922427EF100E6ACDA /* DIMBarrack+LocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC16422427EF100E6ACDA /* DIMBarrack+LocalStorage.m */; };
 		E9BBC1AA22427EF100E6ACDA /* DIMTransceiver+Transform.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC16522427EF100E6ACDA /* DIMTransceiver+Transform.m */; };
 		E9BBC1AB22427EF100E6ACDA /* DIMTransceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC16622427EF100E6ACDA /* DIMTransceiver.m */; };
 		E9BBC1AC22427EF100E6ACDA /* DIMServiceProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC16822427EF100E6ACDA /* DIMServiceProvider.m */; };
@@ -34,7 +33,6 @@
 		E9BBC1B722427EF100E6ACDA /* DIMStation.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17422427EF100E6ACDA /* DIMStation.m */; };
 		E9BBC1B822427EF100E6ACDA /* DIMAmanuensis.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17522427EF100E6ACDA /* DIMAmanuensis.m */; };
 		E9BBC1B922427EF100E6ACDA /* DIMBarrack.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17622427EF100E6ACDA /* DIMBarrack.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9BBC1BB22427EF100E6ACDA /* DIMBarrack+LocalStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17822427EF100E6ACDA /* DIMBarrack+LocalStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1BC22427EF100E6ACDA /* DIMConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBC17922427EF100E6ACDA /* DIMConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC1BD22427EF100E6ACDA /* DIMKeyStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17A22427EF100E6ACDA /* DIMKeyStore.m */; };
 		E9BBC1BE22427EF100E6ACDA /* DIMKeyStore+CacheFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBC17B22427EF100E6ACDA /* DIMKeyStore+CacheFile.m */; };
@@ -148,7 +146,6 @@
 		E9BBC16122427EF100E6ACDA /* NSObject+Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Singleton.h"; sourceTree = "<group>"; };
 		E9BBC16222427EF100E6ACDA /* MKMGroup+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMGroup+Extension.h"; sourceTree = "<group>"; };
 		E9BBC16322427EF100E6ACDA /* DIMConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMConversation.m; sourceTree = "<group>"; };
-		E9BBC16422427EF100E6ACDA /* DIMBarrack+LocalStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMBarrack+LocalStorage.m"; sourceTree = "<group>"; };
 		E9BBC16522427EF100E6ACDA /* DIMTransceiver+Transform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMTransceiver+Transform.m"; sourceTree = "<group>"; };
 		E9BBC16622427EF100E6ACDA /* DIMTransceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTransceiver.m; sourceTree = "<group>"; };
 		E9BBC16822427EF100E6ACDA /* DIMServiceProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMServiceProvider.m; sourceTree = "<group>"; };
@@ -165,7 +162,6 @@
 		E9BBC17422427EF100E6ACDA /* DIMStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMStation.m; sourceTree = "<group>"; };
 		E9BBC17522427EF100E6ACDA /* DIMAmanuensis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMAmanuensis.m; sourceTree = "<group>"; };
 		E9BBC17622427EF100E6ACDA /* DIMBarrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMBarrack.h; sourceTree = "<group>"; };
-		E9BBC17822427EF100E6ACDA /* DIMBarrack+LocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DIMBarrack+LocalStorage.h"; sourceTree = "<group>"; };
 		E9BBC17922427EF100E6ACDA /* DIMConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMConversation.h; sourceTree = "<group>"; };
 		E9BBC17A22427EF100E6ACDA /* DIMKeyStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMKeyStore.m; sourceTree = "<group>"; };
 		E9BBC17B22427EF100E6ACDA /* DIMKeyStore+CacheFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DIMKeyStore+CacheFile.m"; sourceTree = "<group>"; };
@@ -284,8 +280,6 @@
 				E9BBC17522427EF100E6ACDA /* DIMAmanuensis.m */,
 				E9BBC17622427EF100E6ACDA /* DIMBarrack.h */,
 				E9BBC1A022427EF100E6ACDA /* DIMBarrack.m */,
-				E9BBC17822427EF100E6ACDA /* DIMBarrack+LocalStorage.h */,
-				E9BBC16422427EF100E6ACDA /* DIMBarrack+LocalStorage.m */,
 				E9BBC17922427EF100E6ACDA /* DIMConversation.h */,
 				E9BBC16322427EF100E6ACDA /* DIMConversation.m */,
 				E9BBC15E22427EF100E6ACDA /* DIMKeyStore.h */,
@@ -456,7 +450,6 @@
 				E9BBC1C522427EF100E6ACDA /* DIMChatroomHistoryDelegate.h in Headers */,
 				E9BBC1DB22427EF100E6ACDA /* DIMHandshakeCommand.h in Headers */,
 				E9BBC1CA22427EF100E6ACDA /* DIMHistoryOperation.h in Headers */,
-				E9BBC1BB22427EF100E6ACDA /* DIMBarrack+LocalStorage.h in Headers */,
 				E9BBC1A622427EF100E6ACDA /* NSObject+Singleton.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,7 +601,6 @@
 				E9BBC1AA22427EF100E6ACDA /* DIMTransceiver+Transform.m in Sources */,
 				E9BBC1C222427EF100E6ACDA /* DIMHistoryBlock.m in Sources */,
 				E9BBC1CB22427EF100E6ACDA /* DIMHistoryTransaction.m in Sources */,
-				E9BBC1A922427EF100E6ACDA /* DIMBarrack+LocalStorage.m in Sources */,
 				E9BBC1DF22427EF100E6ACDA /* DIMCommand.m in Sources */,
 				E9BBC1C622427EF100E6ACDA /* DIMEntityHistoryDelegate.m in Sources */,
 				E9BBC1DE22427EF100E6ACDA /* DIMGroupCommand.m in Sources */,

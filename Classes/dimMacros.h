@@ -23,6 +23,7 @@
 #define DIMEntity                       MKMEntity
 
 #define DIMMetaDataSource               MKMMetaDataSource
+#define DIMMetaDelegate                 MKMMetaDelegate
 #define DIMEntityDataSource             MKMEntityDataSource
 
 // Group
