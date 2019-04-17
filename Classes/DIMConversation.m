@@ -43,6 +43,10 @@
     return _entity.ID;
 }
 
+- (NSString *)name {
+    return _entity.name;
+}
+
 - (NSString *)title {
     DIMConversationType type = self.type;
     if (type == DIMConversationPersonal) {
