@@ -340,7 +340,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return account;
     }
     
-    // (d) create directly
+    // (d) create it directly
     account = [[DIMAccount alloc] initWithID:ID];
     [self addAccount:account];
     return account;

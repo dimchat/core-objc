@@ -29,11 +29,19 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
 
 /**
  *  Upload encrypted data to CDN
+ *
+ *  @param CT - encrypted file data
+ *  @param iMsg - instant message
+ *  @return download URL
  */
 - (NSURL *)uploadEncryptedFileData:(const NSData *)CT forMessage:(const DIMInstantMessage *)iMsg;
 
 /**
  *  Download encrypted data from CDN, and decrypt it when finished
+ *
+ *  @param url - download URL
+ *  @param iMsg - instant message
+ *  @return encrypted file data
  */
 - (nullable NSData *)downloadEncryptedFileData:(const NSURL *)url forMessage:(const DIMInstantMessage *)iMsg;
 

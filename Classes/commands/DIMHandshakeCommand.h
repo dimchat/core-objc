@@ -15,7 +15,7 @@ typedef NS_ENUM(UInt8, DIMHandshakeState) {
     DIMHandshake_Start,   // C -> S, without session key(or session expired)
     DIMHandshake_Again,   // S -> C, with new session key
     DIMHandshake_Restart, // C -> S, with new session key
-    DIMHandshake_Success, // S -> C
+    DIMHandshake_Success, // S -> C, handshake accepted
 };
 
 @interface DIMHandshakeCommand : DIMCommand
