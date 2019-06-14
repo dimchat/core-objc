@@ -100,17 +100,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(const DIMID *)sender inGroup:(const DIMID *)group;
 
-#pragma mark - Private key encrpyted by a password for user
-
-/**
- Get encrypted SK for user to store elsewhere
- 
- @param user - user
- @param PW - password to encrypt the SK
- @return KS
- */
-- (NSData *)privateKeyStoredForUser:(const DIMUser *)user passphrase:(const DIMSymmetricKey *)PW;
-
 @end
 
 NS_ASSUME_NONNULL_END

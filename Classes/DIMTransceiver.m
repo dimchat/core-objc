@@ -76,8 +76,9 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     NSString *json = [password jsonString];
     NSData *data = [json data];
     DIMID *ID = [DIMID IDWithID:receiver];
-    DIMPublicKey *PK = DIMPublicKeyForID(ID);
-    return [PK encrypt:data];
+    DIMAccount *account = DIMAccountWithID(ID);
+    NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
+    return [account encrypt:data];
 }
 
 #pragma mark DKDSecureMessageDelegate
@@ -115,9 +116,8 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     if (key) {
         // decrypt key data with the receiver's private key
         DIMUser *user = DIMUserWithID(to);
-        DIMPrivateKey *SK = user.privateKey;
-        NSAssert(SK, @"failed to get private key for receiver: %@", receiver);
-        NSData *plaintext = [SK decrypt:key];
+        NSAssert(user, @"failed to decrypt for receiver: %@", receiver);
+        NSData *plaintext = [user decrypt:key];
         NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
         
         // create symmetric key
@@ -158,9 +158,8 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     
     DIMID *ID = [DIMID IDWithID:sender];
     DIMUser *user = DIMUserWithID(ID);
-    DIMPrivateKey *SK = user.privateKey;
-    NSAssert(SK, @"failed to get private key for sender: %@", sender);
-    return [SK sign:data];
+    NSAssert(user, @"failed to sign with sender: %@", sender);
+    return [user sign:data];
 }
 
 #pragma mark DKDReliableMessageDelegate
@@ -171,9 +170,9 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
       forSender:(const NSString *)sender {
     
     DIMID *ID = [DIMID IDWithID:sender];
-    DIMPublicKey *PK = DIMPublicKeyForID(ID);
-    NSAssert(PK, @"failed to get public key for sender: %@", sender);
-    return [PK verify:data withSignature:signature];
+    DIMAccount *account = DIMAccountWithID(ID);
+    NSAssert(account, @"failed to verify with sender: %@", sender);
+    return [account verify:data withSignature:signature];
 }
 
 @end

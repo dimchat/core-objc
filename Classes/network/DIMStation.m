@@ -146,6 +146,20 @@
     return self.SP.home;
 }
 
+- (NSData *)encrypt:(const NSData *)plaintext {
+    // 1. get key for encryption from CA.info.publicKey
+    MKMPublicKey *key = [self publicKey];
+    if (key == nil) {
+        // 2. get key for encryption from meta
+        const MKMMeta *meta = [self meta];
+        // NOTICE: meta.key will never changed,
+        //         so use profile.key to encrypt is the better way
+        key = [meta key];
+    }
+    // 3. encrypt with profile.key
+    return [key encrypt:plaintext];
+}
+
 #pragma mark - DIMTransceiverDelegate
 
 - (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler {

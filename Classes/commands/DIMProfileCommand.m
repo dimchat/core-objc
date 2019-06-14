@@ -17,7 +17,6 @@
 @interface DIMProfileCommand ()
 
 @property (strong, nonatomic, nullable) DIMProfile *profile;
-@property (strong, nonatomic, nullable) NSData *signature;
 
 @end
 
@@ -27,7 +26,6 @@
     if (self = [super initWithDictionary:dict]) {
         // lazy
         _profile = nil;
-        _signature = nil;
     }
     return self;
 }
@@ -36,78 +34,77 @@
     if (self = [super initWithCommand:cmd]) {
         // lazy
         _profile = nil;
-        _signature = nil;
     }
     return self;
 }
 
 - (instancetype)initWithID:(const DIMID *)ID
                       meta:(nullable const DIMMeta *)meta
-                   profile:(nullable const NSString *)profileString
-                 signature:(nullable const NSString *)signatureString {
+                   profile:(nullable DIMProfile *)profile {
     if (self = [self initWithCommand:DKDSystemCommand_Profile]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
         // meta
-        if (meta) {
+        _meta = meta;
+        if ([meta matchID:ID]) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
         
         // profile
-        if (profileString) {
-            [_storeDictionary setObject:profileString forKey:@"profile"];
-        }
-        // signature
-        if (signatureString) {
-            [_storeDictionary setObject:signatureString forKey:@"signature"];
+        _profile = profile;
+        if ([profile.ID isEqual:ID]) {
+            [_storeDictionary setObject:profile forKey:@"profile"];
         }
     }
     return self;
-}
-
-- (instancetype)initWithID:(const DIMID *)ID
-                      meta:(nullable const DIMMeta *)meta
-                privateKey:(const DIMPrivateKey *)SK
-                   profile:(const DIMProfile *)profile {
-    NSString *json = [profile jsonString];
-    NSData *data = [json data];
-    NSData *signature = [SK sign:data];
-    NSString *string = [signature base64Encode];
-    return [self initWithID:ID meta:meta profile:json signature:string];
 }
 
 - (id)copyWithZone:(NSZone *)zone {
     DIMProfileCommand *command = [super copyWithZone:zone];
     if (command) {
         command.profile = _profile;
-        command.signature = _signature;
     }
     return command;
 }
 
 - (nullable DIMProfile *)profile {
     if (!_profile) {
-        NSString *json = [_storeDictionary objectForKey:@"profile"];
-        NSData *signature = [self signature];
-        if (json && signature) {
-            NSData *data = [json data];
-            DIMPublicKey *PK = DIMPublicKeyForID(self.ID);
-            if ([PK verify:data withSignature:signature]) {
-                _profile = [DIMProfile profileWithProfile:json];
-            }
+        NSObject *data = [_storeDictionary objectForKey:@"profile"];
+        if ([data isKindOfClass:[NSDictionary class]]) {
+            // (v1.1)
+            //  profile (dictionary): {
+            //      "ID"        : "{ID}",
+            //      "data"      : "{...}",
+            //      "signature" : "{BASE64}"
+            //  }
+            _profile = [DIMProfile profileWithProfile:data];
+        } else if ([data isKindOfClass:[NSString class]]) {
+            // (v1.0)
+            //  profile data (JsON)
+            //  profile signature (Base64)
+            NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
+            [mDict setObject:_ID forKey:@"ID"];
+            [mDict setObject:data forKey:@"data"];
+            NSString *sig = [_storeDictionary objectForKey:@"signature"];
+            NSAssert(sig, @"signature not found");
+            [mDict setObject:sig forKey:@"signature"];
+            _profile = [DIMProfile profileWithProfile:mDict];
         }
     }
-    return _profile;
-}
-
-- (nullable NSData *)signature {
-    if (!_signature) {
-        NSString *base64 = [_storeDictionary objectForKey:@"signature"];
-        _signature = [base64 base64Decode];
+    /*
+    // verify profile
+    if (_profile) {
+        DIMBarrack *barrack = [DIMBarrack sharedInstance];
+        DIMMeta *meta = DIMMetaWithID(_ID);
+        if (![_profile verify:meta.key]) {
+            NSAssert(false, @"profile's signature not match: %@", _storeDictionary);
+            _profile = nil;
+        }
     }
-    return _signature;
+     */
+    return _profile;
 }
 
 @end

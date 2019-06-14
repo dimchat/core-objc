@@ -43,7 +43,7 @@
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
         // meta
-        if (meta) {
+        if ([meta matchID:ID]) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
     }

@@ -159,13 +159,4 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     [self cacheCipherKey:key from:sender to:group];
 }
 
-#pragma mark - Private key encrpyted by a password for user
-
-- (NSData *)privateKeyStoredForUser:(const DIMUser *)user
-                         passphrase:(const DIMSymmetricKey *)scKey {
-    DIMPrivateKey *SK = [user privateKey];
-    NSData *data = [SK jsonData];
-    return [scKey encrypt:data];
-}
-
 @end

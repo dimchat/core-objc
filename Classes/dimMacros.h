@@ -22,8 +22,6 @@
 #define DIMMeta                         MKMMeta
 #define DIMEntity                       MKMEntity
 
-#define DIMMetaDataSource               MKMMetaDataSource
-#define DIMMetaDelegate                 MKMMetaDelegate
 #define DIMEntityDataSource             MKMEntityDataSource
 
 // Group
@@ -37,21 +35,16 @@
 #define DIMAdmin                        MKMAdmin
 
 #define DIMGroupDataSource              MKMGroupDataSource
-#define DIMGroupDelegate                MKMGroupDelegate
 #define DIMChatroomDataSource           MKMChatroomDataSource
-#define DIMMemberDelegate               MKMMemberDelegate
 
 //-
 #define DIMAccount                      MKMAccount
 #define DIMUser                         MKMUser
 #define DIMContact                      MKMContact
 
-#define DIMAccountDelegate              MKMAccountDelegate
 #define DIMUserDataSource               MKMUserDataSource
-#define DIMUserDelegate                 MKMUserDelegate
 
 #define DIMProfile                      MKMProfile
-#define DIMProfileDataSource            MKMProfileDataSource
 
 #import <DaoKeDao/DaoKeDao.h>
 

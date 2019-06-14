@@ -68,24 +68,19 @@ static inline NSString *meta_filepath(const DIMID *ID, BOOL autoCreate) {
 
 #pragma mark -
 
+typedef NSMutableDictionary<const DIMAddress *, const DIMMeta *> MetaTableM;
+
 typedef NSMutableDictionary<const DIMAddress *, DIMAccount *> AccountTableM;
 typedef NSMutableDictionary<const DIMAddress *, DIMUser *> UserTableM;
-
 typedef NSMutableDictionary<const DIMAddress *, DIMGroup *> GroupTableM;
-typedef NSMutableDictionary<const DIMAddress *, DIMMember *> MemberTableM;
-typedef NSMutableDictionary<const DIMAddress *, MemberTableM *> GroupMemberTableM;
-
-typedef NSMutableDictionary<const DIMAddress *, const DIMMeta *> MetaTableM;
 
 @interface DIMBarrack () {
     
+    MetaTableM *_metaTable;
+    
     AccountTableM *_accountTable;
     UserTableM *_userTable;
-    
     GroupTableM *_groupTable;
-    GroupMemberTableM *_groupMemberTable;
-    
-    MetaTableM *_metaTable;
 }
 
 // default "Documents/.mkm/{address}/meta.plist"
@@ -94,17 +89,21 @@ typedef NSMutableDictionary<const DIMAddress *, const DIMMeta *> MetaTableM;
 @end
 
 /**
- Remove 1/2 objects from the dictionary
- 
- @param mDict - mutable dictionary
+ *  Remove 1/2 objects from the dictionary
+ *
+ * @param mDict - mutable dictionary
  */
-static inline void reduce_table(NSMutableDictionary *mDict) {
+static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     NSArray *keys = [mDict allKeys];
-    DIMAddress *addr;
-    for (NSUInteger index = 0; index < keys.count; index += 2) {
-        addr = [keys objectAtIndex:index];
+    for (id addr in keys) {
+        if ((++finger & 1) == 0) {
+            // let it go
+            continue;
+        }
+        // kill it
         [mDict removeObjectForKey:addr];
     }
+    return finger;
 }
 
 @implementation DIMBarrack
@@ -113,38 +112,27 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
-        _accountTable = [[AccountTableM alloc] init];
-        _userTable = [[UserTableM alloc] init];
-        
-        _groupTable = [[GroupTableM alloc] init];
-        _groupMemberTable = [[GroupMemberTableM alloc] init];
-        
         _metaTable = [[MetaTableM alloc] init];
         
+        _accountTable = [[AccountTableM alloc] init];
+        _userTable = [[UserTableM alloc] init];
+        _groupTable = [[GroupTableM alloc] init];
+        
         // delegates
-        _accountDelegate = nil;
-        _userDataSource = nil;
-        _userDelegate = nil;
-        
-        _groupDataSource = nil;
-        _groupDelegate = nil;
-        _memberDelegate = nil;
-        _chatroomDataSource = nil;
-        
         _entityDataSource = nil;
-        _profileDataSource = nil;
+        _userDataSource = nil;
+        _groupDataSource = nil;
     }
     return self;
 }
 
-- (void)reduceMemory {
-    reduce_table(_accountTable);
-    reduce_table(_userTable);
-    
-    reduce_table(_groupTable);
-    reduce_table(_groupMemberTable);
-    
-    reduce_table(_metaTable);
+- (NSInteger)reduceMemory {
+    NSInteger finger = 0;
+    finger = thanos(_metaTable, finger);
+    finger = thanos(_accountTable, finger);
+    finger = thanos(_userTable, finger);
+    finger = thanos(_groupTable, finger);
+    return (finger & 1) + (finger >> 1);
 }
 
 - (void)addAccount:(DIMAccount *)account {
@@ -182,23 +170,6 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     }
 }
 
-- (void)addMember:(DIMMember *)member {
-    const DIMID *groupID = member.groupID;
-    if (groupID.isValid && member.ID.isValid) {
-        if (member.dataSource == nil) {
-            member.dataSource = self;
-        }
-        
-        MemberTableM *table;
-        table = [_groupMemberTable objectForKey:groupID.address];
-        if (!table) {
-            table = [[MemberTableM alloc] init];
-            [_groupMemberTable setObject:table forKey:groupID.address];
-        }
-        [table setObject:member forKey:member.ID.address];
-    }
-}
-
 - (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID {
     NSString *path = meta_filepath(ID, NO);
     if (file_exists(path)) {
@@ -208,45 +179,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return nil;
 }
 
-#pragma mark - DIMMetaDataSource
-
-- (nullable const DIMMeta *)metaForID:(const DIMID *)ID {
-    const DIMMeta *meta;
-    
-    // (a) get from meta cache
-    meta = [_metaTable objectForKey:ID.address];
-    if (meta) {
-        return meta;
-    }
-    
-    do {
-        // (b) get from meta data source
-        NSAssert(_metaDataSource, @"meta data source not set");
-        meta = [_metaDataSource metaForID:ID];
-        if (meta) {
-            break;
-        }
-        
-        // (c) get from local storage
-        meta = [self loadMetaForID:ID];
-        if (meta) {
-            break;
-        }
-        
-        break;
-    } while (YES);
-    
-    // (d) cache it
-    if ([meta matchID:ID]) {
-        [_metaTable setObject:meta forKey:ID.address];
-    } else {
-        NSAssert(meta == nil, @"meta error: %@, %@", meta, ID);
-        NSLog(@"meta not found: %@", ID);
-    }
-    return meta;
-}
-
-#pragma mark - DIMMetaDelegate
+#pragma mark DIMBarrackDelegate
 
 - (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID {
     
@@ -258,9 +191,9 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return NO;
     }
     
-    // (b) check meta delegate
-    if ([_metaDelegate respondsToSelector:@selector(saveMeta:forID:)]) {
-        return [_metaDelegate saveMeta:meta forID:ID];
+    // (b) save by delegate
+    if ([_delegate saveMeta:meta forID:ID]) {
+        return YES;
     }
     
     // default "Documents/.mkm/{address}/meta.plist"
@@ -269,53 +202,10 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         NSLog(@"meta file already exists: %@, IGNORE!", path);
         return YES;
     }
+    
+    // (c) save to local storage
     return [meta writeToBinaryFile:path];
 }
-
-#pragma mark - DIMEntityDataSource
-
-- (nullable  const DIMMeta *)metaForEntity:(const DIMEntity *)entity {
-    const DIMMeta *meta;
-    const DIMID *ID = entity.ID;
-    
-    // (a) call 'metaForID:' of meta data source
-    meta = [self metaForID:ID];
-    if (meta) {
-        return meta;
-    }
-    
-    // (b) check entity data source
-    if (![_entityDataSource respondsToSelector:@selector(metaForEntity:)]) {
-        // not implement
-        return nil;
-    }
-    
-    // (c) get from entity data source
-    meta = [_entityDataSource metaForEntity:entity];
-    
-    // (d) cache it
-    if ([meta matchID:ID]) {
-        [_metaTable setObject:meta forKey:ID.address];
-    } else {
-        NSAssert(meta == nil, @"meta error: %@, %@", meta, ID);
-        NSLog(@"meta not found: %@", ID);
-    }
-    return meta;
-}
-
-- (NSString *)nameOfEntity:(const DIMEntity *)entity {
-    // (a) get from entity data source
-    NSString *name = [_entityDataSource nameOfEntity:entity];
-    if (name.length > 0) {
-        return name;
-    }
-    
-    // (b) get from profile
-    DIMProfile *profile = [_profileDataSource profileForID:entity.ID];
-    return profile.name;
-}
-
-#pragma mark - DIMAccountDelegate
 
 - (nullable DIMAccount *)accountWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
@@ -332,9 +222,8 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return account;
     }
     
-    // (c) get from account delegate
-    NSAssert(_accountDelegate, @"account delegate not set");
-    account = [_accountDelegate accountWithID:ID];
+    // (c) get from delegate
+    account = [_delegate accountWithID:ID];
     if (account) {
         [self addAccount:account];
         return account;
@@ -346,22 +235,6 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return account;
 }
 
-#pragma mark - DIMUserDataSource
-
-- (NSInteger)numberOfContactsInUser:(const DIMUser *)user {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    NSAssert(_userDataSource, @"user data source not set");
-    return [_userDataSource numberOfContactsInUser:user];
-}
-
-- (const DIMID *)user:(const DIMUser *)user contactAtIndex:(NSInteger)index {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    NSAssert(_userDataSource, @"user data source not set");
-    return [_userDataSource user:user contactAtIndex:index];
-}
-
-#pragma mark - DIMUserDelegate
-
 - (nullable DIMUser *)userWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     DIMUser *user;
@@ -372,9 +245,8 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return user;
     }
     
-    // (b) get from user delegate
-    NSAssert(_userDelegate, @"user delegate not set");
-    user = [_userDelegate userWithID:ID];
+    // (b) get from delegate
+    user = [_delegate userWithID:ID];
     if (user) {
         [self addUser:user];
         return user;
@@ -386,48 +258,6 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return user;
 }
 
-- (BOOL)user:(const DIMUser *)user addContact:(const DIMID *)contact {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    NSAssert(MKMNetwork_IsPerson(contact.type), @"contact error: %@", contact);
-    NSAssert(_userDelegate, @"user delegate not set");
-    return [_userDelegate user:user addContact:contact];
-}
-
-- (BOOL)user:(const DIMUser *)user removeContact:(const DIMID *)contact {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    NSAssert(MKMNetwork_IsPerson(contact.type), @"contact error: %@", contact);
-    NSAssert(_userDelegate, @"user delegate not set");
-    return [_userDelegate user:user removeContact:contact];
-}
-
-#pragma mark DIMGroupDataSource
-
-- (const DIMID *)founderOfGroup:(const DIMGroup *)group {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(_groupDataSource, @"group data source not set");
-    return [_groupDataSource founderOfGroup:group];
-}
-
-- (nullable const DIMID *)ownerOfGroup:(const DIMGroup *)group {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(_groupDataSource, @"group data source not set");
-    return [_groupDataSource ownerOfGroup:group];
-}
-
-- (NSInteger)numberOfMembersInGroup:(const DIMGroup *)group {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(_groupDataSource, @"group data source not set");
-    return [_groupDataSource numberOfMembersInGroup:group];
-}
-
-- (const DIMID *)group:(const DIMGroup *)group memberAtIndex:(NSInteger)index {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(_groupDataSource, @"group data source not set");
-    return [_groupDataSource group:group memberAtIndex:index];
-}
-
-#pragma mark DIMGroupDelegate
-
 - (nullable DIMGroup *)groupWithID:(const DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     DIMGroup *group;
@@ -438,90 +268,90 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         return group;
     }
     
-    // (b) get from group delegate
-    NSAssert(_groupDelegate, @"group delegate not set");
-    group = [_groupDelegate groupWithID:ID];
+    // (b) get from delegate
+    group = [_delegate groupWithID:ID];
     if (group) {
         [self addGroup:group];
         return group;
     }
     
     // (c) create directly
-    if (ID.type == MKMNetwork_Polylogue) {
-        group = [[DIMPolylogue alloc] initWithID:ID];
-    } else if (ID.type == MKMNetwork_Chatroom) {
-        group = [[DIMChatroom alloc] initWithID:ID];
-    } else {
-        NSAssert(false, @"group ID type not support: %d", ID.type);
-    }
+    group = [[DIMGroup alloc] initWithID:ID];
     [self addGroup:group];
     return group;
 }
 
-- (BOOL)group:(const DIMGroup *)group addMember:(const DIMID *)member {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(MKMNetwork_IsCommunicator(member.type), @"member error: %@", member);
-    NSAssert(_groupDelegate, @"group delegate not set");
-    return [_groupDelegate group:group addMember:member];
-}
+#pragma mark - DIMEntityDataSource
 
-- (BOOL)group:(const DIMGroup *)group removeMember:(const DIMID *)member {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group error: %@", group);
-    NSAssert(MKMNetwork_IsCommunicator(member.type), @"member error: %@", member);
-    NSAssert(_groupDelegate, @"group delegate not set");
-    return [_groupDelegate group:group removeMember:member];
-}
-
-#pragma mark DIMMemberDelegate
-
-- (DIMMember *)memberWithID:(const DIMID *)ID groupID:(const DIMID *)gID {
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"member ID error: %@", ID);
-    NSAssert(MKMNetwork_IsGroup(gID.type), @"group ID error: %@", gID);
+- (nullable const DIMMeta *)metaForID:(const DIMID *)ID {
+    const DIMMeta *meta;
     
-    MemberTableM *table = [_groupMemberTable objectForKey:gID.address];
-    DIMMember *member;
-    
-    // (a) get from group member cache
-    member = [table objectForKey:ID.address];
-    if (member) {
-        return member;
+    // (a) get from meta cache
+    meta = [_metaTable objectForKey:ID.address];
+    if (meta) {
+        return meta;
     }
     
-    // (b) get from group member delegate
-    NSAssert(_memberDelegate, @"member delegate not set");
-    member = [_memberDelegate memberWithID:ID groupID:gID];
-    if (member) {
-        [self addMember:member];
-        return member;
+    // (b) get from entity data source
+    meta = [_entityDataSource metaForID:ID];
+    if ([meta matchID:ID]) {
+        [_metaTable setObject:meta forKey:ID.address];
+        return meta;
     }
     
-    // (c) create directly
-    member = [[DIMMember alloc] initWithGroupID:gID accountID:ID];
-    [self addMember:member];
-    return member;
+    // (c) get from local storage
+    meta = [self loadMetaForID:ID];
+    if (meta) {
+        [_metaTable setObject:meta forKey:ID.address];
+    }
+    //NSAssert(meta, @"failed to get meta for ID: %@", ID);
+    return meta;
 }
-                     
-#pragma mark DIMChatroomDataSource
-
-- (NSInteger)numberOfAdminsInChatroom:(const DIMChatroom *)grp {
-    NSAssert(grp.ID.type == MKMNetwork_Chatroom, @"not a chatroom: %@", grp);
-    NSAssert(_chatroomDataSource, @"chatroom data source not set");
-    return [_chatroomDataSource numberOfAdminsInChatroom:grp];
-}
-
-- (const DIMID *)chatroom:(const DIMChatroom *)grp adminAtIndex:(NSInteger)index {
-    NSAssert(grp.ID.type == MKMNetwork_Chatroom, @"not a chatroom: %@", grp);
-    NSAssert(_chatroomDataSource, @"chatroom data source not set");
-    return [_chatroomDataSource chatroom:grp adminAtIndex:index];
-}
-
-#pragma mark - DIMProfileDataSource
 
 - (DIMProfile *)profileForID:(const DIMID *)ID {
-    //NSAssert(_profileDataSource, @"profile data source not set");
-    DIMProfile *profile = [_profileDataSource profileForID:ID];
+    DIMProfile *profile = [_entityDataSource profileForID:ID];
     //NSAssert(profile, @"failed to get profile for ID: %@", ID);
     return profile;
+}
+
+#pragma mark - DIMUserDataSource
+
+- (DIMPrivateKey *)privateKeyForSignatureOfUser:(const DIMID *)user {
+    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
+    NSAssert(_userDataSource, @"user data source not set");
+    return [_userDataSource privateKeyForSignatureOfUser:user];
+}
+
+- (NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(const DIMID *)user {
+    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
+    NSAssert(_userDataSource, @"user data source not set");
+    return [_userDataSource privateKeysForDecryptionOfUser:user];
+}
+
+- (NSArray<const DIMID *> *)contactsOfUser:(const DIMID *)user {
+    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
+    NSAssert(_userDataSource, @"user data source not set");
+    return [_userDataSource contactsOfUser:user];
+}
+
+#pragma mark - DIMGroupDataSource
+
+- (const DIMID *)founderOfGroup:(const DIMID *)group {
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    NSAssert(_groupDataSource, @"group data source not set");
+    return [_groupDataSource founderOfGroup:group];
+}
+
+- (nullable const DIMID *)ownerOfGroup:(const DIMID *)group {
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    NSAssert(_groupDataSource, @"group data source not set");
+    return [_groupDataSource ownerOfGroup:group];
+}
+
+- (NSArray<const DIMID *> *)membersOfGroup:(const DIMID *)group {
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
+    NSAssert(_groupDataSource, @"group data source not set");
+    return [_groupDataSource membersOfGroup:group];
 }
 
 @end

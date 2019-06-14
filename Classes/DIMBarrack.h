@@ -12,15 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define DIMFacebook()            [DIMBarrack sharedInstance]
 
+#define DIMMetaForID(ID)         [DIMFacebook() metaForID:(ID)]
+#define DIMProfileForID(ID)      [DIMFacebook() profileForID:(ID)]
+
 #define DIMAccountWithID(ID)     [DIMFacebook() accountWithID:(ID)]
 #define DIMUserWithID(ID)        [DIMFacebook() userWithID:(ID)]
-
 #define DIMGroupWithID(ID)       [DIMFacebook() groupWithID:(ID)]
-#define DIMMemberWithID(ID, gID) [DIMFacebook() memberWithID:(ID) groupID:(gID)]
 
-#define DIMMetaForID(ID)         [DIMFacebook() metaForID:(ID)]
-#define DIMPublicKeyForID(ID)    DIMMetaForID(ID).key
-#define DIMProfileForID(ID)      [DIMFacebook() profileForID:(ID)]
+@protocol DIMBarrackDelegate;
 
 /**
  *  Entity pool to manage User/Contace/Group/Member instances
@@ -28,47 +27,47 @@ NS_ASSUME_NONNULL_BEGIN
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
  */
-@interface DIMBarrack : NSObject <DIMMetaDataSource,
-                                  DIMMetaDelegate,
-                                  DIMEntityDataSource,
-                                  DIMAccountDelegate,
+@interface DIMBarrack : NSObject <DIMEntityDataSource,
                                   DIMUserDataSource,
-                                  DIMUserDelegate,
-                                  //-
-                                  DIMGroupDataSource,
-                                  DIMGroupDelegate,
-                                  DIMMemberDelegate,
-                                  DIMChatroomDataSource,
-                                  //-
-                                  DIMProfileDataSource>
+                                  DIMGroupDataSource>
 
-@property (weak, nonatomic) id<DIMMetaDataSource> metaDataSource;
-@property (weak, nonatomic) id<DIMMetaDelegate> metaDelegate;
 @property (weak, nonatomic) id<DIMEntityDataSource> entityDataSource;
-@property (weak, nonatomic) id<DIMAccountDelegate> accountDelegate;
 @property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
-@property (weak, nonatomic) id<DIMUserDelegate> userDelegate;
-
 @property (weak, nonatomic) id<DIMGroupDataSource> groupDataSource;
-@property (weak, nonatomic) id<DIMGroupDelegate> groupDelegate;
-@property (weak, nonatomic) id<DIMMemberDelegate> memberDelegate;
-@property (weak, nonatomic) id<DIMChatroomDataSource> chatroomDataSource;
 
-@property (weak, nonatomic) id<DIMProfileDataSource> profileDataSource;
+@property (weak, nonatomic) id<DIMBarrackDelegate> delegate;
 
 + (instancetype)sharedInstance;
 
 - (void)addAccount:(DIMAccount *)account;
 - (void)addUser:(DIMUser *)user;
-
 - (void)addGroup:(DIMGroup *)group;
-- (void)addMember:(DIMMember *)member;
+
+- (nullable DIMAccount *)accountWithID:(const DIMID *)ID;
+- (nullable DIMUser *)userWithID:(const DIMID *)ID;
+- (nullable DIMGroup *)groupWithID:(const DIMID *)ID;
+
+- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID;
 
 /**
- Call it when receive 'UIApplicationDidReceiveMemoryWarningNotification',
- this will remove 50% of unused objects from the cache
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return reduced object count
  */
-- (void)reduceMemory;
+- (NSInteger)reduceMemory;
+
+@end
+
+#pragma mark - Barrack Delegate
+
+@protocol DIMBarrackDelegate <NSObject>
+
+- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID;
+
+- (nullable DIMAccount *)accountWithID:(const DIMID *)ID;
+- (nullable DIMUser *)userWithID:(const DIMID *)ID;
+- (nullable DIMGroup *)groupWithID:(const DIMID *)ID;
 
 @end
 

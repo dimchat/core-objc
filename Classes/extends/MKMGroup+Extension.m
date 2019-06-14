@@ -18,7 +18,8 @@
         return [founder isEqual:ID];
     } else {
         const DIMMeta *meta = self.meta;
-        const DIMPublicKey *PK = DIMPublicKeyForID(ID);
+        const DIMPublicKey *PK = [DIMMetaForID(ID) key];
+        NSAssert(PK, @"failed to get meta for ID: %@", ID);
         return [meta matchPublicKey:PK];
     }
 }

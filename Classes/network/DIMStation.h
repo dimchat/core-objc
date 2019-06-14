@@ -52,29 +52,29 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMStationDelegate <NSObject>
 
 /**
- Received a new data package from the station
-
- @param server - current station
- @param data - data package to send
+ *  Received a new data package from the station
+ *
+ * @param server - current station
+ * @param data - data package to send
  */
 - (void)station:(const DIMStation *)server didReceivePackage:(const NSData *)data;
 
 @optional
 
 /**
- Send data package to station success
- 
- @param server - current station
- @param data - data package sent
+ *  Send data package to station success
+ *
+ * @param server - current station
+ * @param data - data package sent
  */
 - (void)station:(const DIMStation *)server didSendPackage:(const NSData *)data;
 
 /**
- Failed to send data package to station
- 
- @param server - current station
- @param data - data package to send
- @param error - error informatin
+ *  Failed to send data package to station
+ *
+ * @param server - current station
+ * @param data - data package to send
+ * @param error - error information
  */
 - (void)station:(const DIMStation *)server sendPackage:(const NSData *)data didFailWithError:(const NSError *)error;
 
