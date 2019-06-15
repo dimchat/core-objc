@@ -311,7 +311,18 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 - (DIMProfile *)profileForID:(const DIMID *)ID {
     DIMProfile *profile = [_entityDataSource profileForID:ID];
     //NSAssert(profile, @"failed to get profile for ID: %@", ID);
-    return profile;
+    DIMPublicKey *PK = nil;
+    if (MKMNetwork_IsCommunicator(ID.type)) {
+        PK = DIMMetaForID(ID).key;
+    } else if (MKMNetwork_IsGroup(ID.type)) {
+        DIMGroup *group = DIMGroupWithID(ID);
+        PK = DIMMetaForID(group.owner).key;
+    }
+    if ([profile verify:PK]) {
+        return profile;
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - DIMUserDataSource

@@ -11,16 +11,11 @@
 @implementation MKMProfile (Account)
 
 - (NSString *)avatar {
-    return _valid ? [_properties objectForKey:@"avatar"] : nil;
+    return (NSString *)[self dataForKey:@"avatar"];
 }
 
 - (void)setAvatar:(NSString *)avatar {
-    if ([avatar length] > 0) {
-        [_storeDictionary setObject:avatar forKey:@"avatar"];
-    } else {
-        [_storeDictionary removeObjectForKey:@"avatar"];
-    }
-    [self reset];
+    [self setData:avatar forKey:@"avatar"];
 }
 
 @end
@@ -28,16 +23,11 @@
 @implementation MKMProfile (Group)
 
 - (NSString *)logo {
-    return _valid ? [_properties objectForKey:@"logo"] : nil;
+    return (NSString *)[self dataForKey:@"logo"];
 }
 
 - (void)setLogo:(NSString *)logo {
-    if ([logo length] > 0) {
-        [_storeDictionary setObject:logo forKey:@"logo"];
-    } else {
-        [_storeDictionary removeObjectForKey:@"logo"];
-    }
-    [self reset];
+    [self setData:logo forKey:@"logo"];
 }
 
 @end
