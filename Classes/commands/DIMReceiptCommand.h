@@ -10,13 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMReceiptCommand : DIMCommand
+@interface DIMCommand (Receipt)
 
-@property (readonly, strong, nonatomic) NSString *message;
+//@property (readonly, strong, nonatomic) NSString *message;
 
 // original message info
 @property (strong, nonatomic, nullable) DIMEnvelope *envelope;
 @property (strong, nonatomic, nullable) NSData *signature;
+
+@end
+
+@interface DIMReceiptCommand : DIMCommand
 
 /**
  *  Command message: {

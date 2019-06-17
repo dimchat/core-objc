@@ -31,7 +31,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 
 #pragma mark DKDInstantMessageDelegate
 
-- (NSURL *)message:(const DKDInstantMessage *)iMsg
+- (NSURL *)message:(const DIMInstantMessage *)iMsg
             upload:(const NSData *)data
           filename:(nullable const NSString *)name
            withKey:(NSDictionary *)password {
@@ -44,7 +44,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     return [_delegate uploadEncryptedFileData:CT forMessage:iMsg];
 }
 
-- (nullable NSData *)message:(const DKDInstantMessage *)iMsg
+- (nullable NSData *)message:(const DIMInstantMessage *)iMsg
                     download:(const NSURL *)url
                      withKey:(NSDictionary *)password {
     
@@ -57,8 +57,8 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     return nil;
 }
 
-- (nullable NSData *)message:(const DKDInstantMessage *)iMsg
-              encryptContent:(const DKDMessageContent *)content
+- (nullable NSData *)message:(const DIMInstantMessage *)iMsg
+              encryptContent:(const DIMContent *)content
                      withKey:(NSDictionary *)password {
     
     DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
@@ -69,7 +69,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     return [symmetricKey encrypt:data];
 }
 
-- (nullable NSData *)message:(const DKDInstantMessage *)iMsg
+- (nullable NSData *)message:(const DIMInstantMessage *)iMsg
                   encryptKey:(const NSDictionary *)password
                  forReceiver:(const NSString *)receiver {
     
@@ -83,9 +83,9 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 
 #pragma mark DKDSecureMessageDelegate
 
-- (nullable DKDMessageContent *)message:(const DKDSecureMessage *)sMsg
-                            decryptData:(const NSData *)data
-                                withKey:(const NSDictionary *)password {
+- (nullable DIMContent *)message:(const DIMSecureMessage *)sMsg
+                     decryptData:(const NSData *)data
+                         withKey:(const NSDictionary *)password {
     
     DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
@@ -98,10 +98,10 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     NSString *json = [plaintext UTF8String]; // remove garbage at end
     NSDictionary *dict = [[json data] jsonDictionary];
     // pack message content
-    return [[DKDMessageContent alloc] initWithDictionary:dict];
+    return [[DIMContent alloc] initWithDictionary:dict];
 }
 
-- (nullable NSDictionary *)message:(const DKDSecureMessage *)sMsg
+- (nullable NSDictionary *)message:(const DIMSecureMessage *)sMsg
                     decryptKeyData:(nullable const NSData *)key
                         fromSender:(const NSString *)sender
                         toReceiver:(const NSString *)receiver
@@ -152,7 +152,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     return PW;
 }
 
-- (nullable NSData *)message:(const DKDSecureMessage *)sMsg
+- (nullable NSData *)message:(const DIMSecureMessage *)sMsg
                     signData:(const NSData *)data
                    forSender:(const NSString *)sender {
     
@@ -164,7 +164,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 
 #pragma mark DKDReliableMessageDelegate
 
-- (BOOL)message:(const DKDReliableMessage *)rMsg
+- (BOOL)message:(const DIMReliableMessage *)rMsg
      verifyData:(const NSData *)data
   withSignature:(const NSData *)signature
       forSender:(const NSString *)sender {

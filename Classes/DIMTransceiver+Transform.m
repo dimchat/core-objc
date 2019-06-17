@@ -6,6 +6,9 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "DIMContentType.h"
+#import "DIMForwardContent.h"
+
 #import "DIMBarrack.h"
 #import "DIMKeyStore.h"
 
@@ -130,7 +133,7 @@
     NSAssert(iMsg.content, @"content cannot be empty");
     
     // 3. check: top-secret message
-    if (iMsg.content.type == DIMMessageType_Forward) {
+    if (iMsg.content.type == DIMContentType_Forward) {
         // do it again to drop the wrapper,
         // the secret inside the content is the real message
         rMsg = iMsg.content.forwardMessage;

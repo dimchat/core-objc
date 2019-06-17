@@ -10,9 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMBroadcastCommand : DIMCommand
+@interface DIMCommand (Broadcast)
 
 @property (readonly, strong, nonatomic) NSString *title;
+
+@end
+
+@interface DIMBroadcastCommand : DIMCommand
 
 /**
  *  Command message: {

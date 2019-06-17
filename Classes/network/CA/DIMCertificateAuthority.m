@@ -21,8 +21,6 @@
         return ca;
     } else if ([ca isKindOfClass:[NSDictionary class]]) {
         return [[self alloc] initWithDictionary:ca];
-    } else if ([ca isKindOfClass:[NSString class]]) {
-        return [[self alloc] initWithJSONString:ca];
     } else {
         NSAssert(!ca, @"unexpected CA: %@", ca);
         return nil;

@@ -17,8 +17,6 @@
         return validity;
     } else if ([validity isKindOfClass:[NSDictionary class]]) {
         return [[self alloc] initWithDictionary:validity];
-    } else if ([validity isKindOfClass:[NSString class]]) {
-        return [[self alloc] initWithJSONString:validity];
     } else {
         NSAssert(!validity, @"unexpected validity: %@", validity);
         return nil;

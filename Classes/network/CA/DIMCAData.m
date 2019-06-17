@@ -18,8 +18,6 @@
         return data;
     } else if ([data isKindOfClass:[NSDictionary class]]) {
         return [[self alloc] initWithDictionary:data];
-    } else if ([data isKindOfClass:[NSString class]]) {
-        return [[self alloc] initWithJSONString:data];
     } else {
         NSAssert(!data, @"unexpected data: %@", data);
         return nil;

@@ -33,9 +33,9 @@
     }
 }
 
-- (BOOL)matchReceipt:(const DIMReceiptCommand *)cmd {
+- (BOOL)matchReceipt:(const DIMCommand *)cmd {
     
-    DIMMessageContent *content = self.content;
+    DIMContent *content = self.content;
     
     // check signature
     NSString *sig1 = [cmd objectForKey:@"signature"];

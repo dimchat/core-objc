@@ -6,115 +6,62 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "NSDate+Timestamp.h"
+
+#import "DIMContentType.h"
+
 #import "DIMCommand.h"
 
-@interface DIMCommand ()
+@implementation DIMContent (Command)
 
-@property (strong, nonatomic) NSString *command;
+- (NSString *)command {
+    return [_storeDictionary objectForKey:@"command"];
+}
 
 @end
 
 @implementation DIMCommand
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _command = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithType:(DIMMessageType)type {
-    NSAssert(false, @"DON'T call me");
-    return [self initWithCommand:@"NOOP"];
-}
-
-/* designated initializer */
 - (instancetype)initWithCommand:(const NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DIMMessageType_Command]) {
+    if (self = [self initWithType:DIMContentType_Command]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];
         }
-        _command = nil; // lazy
     }
     return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    DIMCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.command = _command;
-    }
-    return command;
-}
-
-- (NSString *)command {
-    if (!_command) {
-        _command = [_storeDictionary objectForKey:@"command"];
-    }
-    return _command;
 }
 
 @end
 
 #pragma mark -
 
-@interface DIMHistoryCommand ()
+@implementation DIMCommand (History)
 
-@property (strong, nonatomic) NSString *command;
+- (NSDate *)time {
+    NSNumber *timestamp = [_storeDictionary objectForKey:@"time"];
+    NSAssert(timestamp != nil, @"time error: %@", _storeDictionary);
+    return NSDateFromNumber(timestamp);
+}
 
 @end
 
 @implementation DIMHistoryCommand
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _command = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithType:(DIMMessageType)type {
-    NSAssert(false, @"DON'T call me");
-    return [self initWithHistoryCommand:@"NOOP"];
-}
-
-- (instancetype)initWithCommand:(const NSString *)cmd {
-    NSAssert(false, @"DON'T call me");
-    return [self initWithHistoryCommand:@"NOOP"];
-}
-
-/* designated initializer */
 - (instancetype)initWithHistoryCommand:(const NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DIMMessageType_History]) {
+    if (self = [super initWithType:DIMContentType_History]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];
         }
-        _command = nil; // lazy
+        // time
+        NSDate *time = [[NSDate alloc] init];
+        NSNumber *timestemp = NSNumberFromDate(time);
+        [_storeDictionary setObject:timestemp forKey:@"time"];
     }
     return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    DIMHistoryCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.command = _command;
-    }
-    return command;
-}
-
-- (NSString *)command {
-    if (!_command) {
-        _command = [_storeDictionary objectForKey:@"command"];
-    }
-    return _command;
 }
 
 @end

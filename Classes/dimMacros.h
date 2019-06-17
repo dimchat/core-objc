@@ -51,23 +51,10 @@
 // Types
 #define DIMDictionary                   DKDDictionary
 
-// Content
-#define DIMMessageContent               DKDMessageContent
-#define DIMMessageType                  DKDMessageType
-#define DIMMessageType_Text             DKDMessageType_Text
-#define DIMMessageType_File             DKDMessageType_File
-#define DIMMessageType_Image            DKDMessageType_Image
-#define DIMMessageType_Audio            DKDMessageType_Audio
-#define DIMMessageType_Video            DKDMessageType_Video
-#define DIMMessageType_Page             DKDMessageType_Page
-#define DIMMessageType_Quote            DKDMessageType_Quote
-#define DIMMessageType_Command          DKDMessageType_Command
-#define DIMMessageType_History          DKDMessageType_History
-#define DIMMessageType_Forward          DKDMessageType_Forward
-#define DIMMessageType_Unknown          DKDMessageType_Unknown
+#define DIMEnvelope                     DKDEnvelope
+#define DIMContent                      DKDContent
 
 // Message
-#define DIMEnvelope                     DKDEnvelope
 #define DIMMessage                      DKDMessage
 #define DIMInstantMessage               DKDInstantMessage
 #define DIMSecureMessage                DKDSecureMessage

@@ -15,8 +15,6 @@
         return subject;
     } else if ([subject isKindOfClass:[NSDictionary class]]) {
         return [[self alloc] initWithDictionary:subject];
-    } else if ([subject isKindOfClass:[NSString class]]) {
-        return [[self alloc] initWithJSONString:subject];
     } else {
         NSAssert(!subject, @"unexpected subject: %@", subject);
         return nil;

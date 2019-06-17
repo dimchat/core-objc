@@ -10,14 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMMetaCommand : DIMCommand {
-    
-    const DIMID *_ID;
-    const DIMMeta *_meta;
-}
+@interface DIMCommand (Meta)
 
 @property (readonly, strong, nonatomic) const DIMID *ID;
 @property (readonly, strong, nonatomic, nullable) const DIMMeta *meta;
+
+@end
+
+@interface DIMMetaCommand : DIMCommand
 
 /**
  *  Command message: {

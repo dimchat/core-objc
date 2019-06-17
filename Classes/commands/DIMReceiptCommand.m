@@ -13,87 +13,24 @@
 
 #import "DIMReceiptCommand.h"
 
-@interface DIMReceiptCommand () {
-    
-    DIMEnvelope *_envelope;
-    NSData *_signature;
-}
-
-@property (strong, nonatomic) NSString *message;
-
-@end
-
-@implementation DIMReceiptCommand
-
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _message = nil;
-        _envelope = nil;
-        _signature = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithCommand:(const NSString *)cmd {
-    if (self = [super initWithCommand:cmd]) {
-        // lazy
-        _message = nil;
-        _envelope = nil;
-        _signature = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithMessage:(const NSString *)message {
-    if (self = [self initWithCommand:DKDSystemCommand_Receipt]) {
-        // message
-        if (message) {
-            [_storeDictionary setObject:message forKey:@"message"];
-        }
-    }
-    return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    DIMReceiptCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.message = _message;
-        command.envelope = _envelope;
-        command.signature = _signature;
-    }
-    return self;
-}
-
-- (NSString *)message {
-    if (!_message) {
-        _message = [_storeDictionary objectForKey:@"message"];
-    }
-    return _message;
-}
+@implementation DIMCommand (Receipt)
 
 - (nullable DIMEnvelope *)envelope {
-    if (!_envelope) {
-        NSString *sender = [_storeDictionary objectForKey:@"sender"];
-        NSString *receiver = [_storeDictionary objectForKey:@"receiver"];
-        if (sender != nil && receiver != nil) {
-            NSNumber *number = [_storeDictionary objectForKey:@"time"];
-            NSDate *time = NSDateFromNumber(number);
-            
-            _envelope = [[DIMEnvelope alloc] initWithSender:sender
-                                                   receiver:receiver
-                                                       time:time];
-        }
+    NSString *sender = [_storeDictionary objectForKey:@"sender"];
+    NSString *receiver = [_storeDictionary objectForKey:@"receiver"];
+    if (sender && receiver) {
+        NSNumber *number = [_storeDictionary objectForKey:@"time"];
+        NSDate *time = NSDateFromNumber(number);
+        
+        return [[DIMEnvelope alloc] initWithSender:sender
+                                          receiver:receiver
+                                              time:time];
+    } else {
+        return nil;
     }
-    return _envelope;
 }
 
 - (void)setEnvelope:(DIMEnvelope *)envelope {
-    if (NSObjectEquals(_envelope, envelope)) {
-        return ;
-    }
-    _envelope = envelope;
-    
     if (envelope) {
         const NSString *sender = envelope.sender;
         const NSString *receiver = envelope.receiver;
@@ -111,24 +48,30 @@
 }
 
 - (NSData *)signature {
-    if (!_signature) {
-        NSString *CT = [_storeDictionary objectForKey:@"signature"];
-        _signature = [CT base64Decode];
-    }
-    return _signature;
+    NSString *CT = [_storeDictionary objectForKey:@"signature"];
+    return [CT base64Decode];
 }
 
 - (void)setSignature:(NSData *)signature {
-    if (NSObjectEquals(_signature, signature)) {
-        return ;
-    }
-    _signature = signature;
-    
     if (signature) {
         [_storeDictionary setObject:[signature base64Encode] forKey:@"signature"];
     } else {
         [_storeDictionary removeObjectForKey:@"signature"];
     }
+}
+
+@end
+
+@implementation DIMReceiptCommand
+
+- (instancetype)initWithMessage:(const NSString *)message {
+    if (self = [self initWithCommand:DIMSystemCommand_Receipt]) {
+        // message
+        if (message) {
+            [_storeDictionary setObject:message forKey:@"message"];
+        }
+    }
+    return self;
 }
 
 @end

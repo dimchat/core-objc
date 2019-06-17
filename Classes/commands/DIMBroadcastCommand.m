@@ -8,53 +8,24 @@
 
 #import "DIMBroadcastCommand.h"
 
-@interface DIMBroadcastCommand ()
+@implementation DIMCommand (Broadcast)
 
-@property (strong, nonatomic) NSString *title;
+- (NSString *)title {
+    return [_storeDictionary objectForKey:@"title"];
+}
 
 @end
 
 @implementation DIMBroadcastCommand
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _title = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithCommand:(const NSString *)cmd {
-    if (self = [super initWithCommand:cmd]) {
-        // lazy
-        _title = nil;
-    }
-    return self;
-}
-
 - (instancetype)initWithTitle:(const NSString *)title {
-    if (self = [self initWithCommand:DKDSystemCommand_Broadcast]) {
+    if (self = [self initWithCommand:DIMSystemCommand_Broadcast]) {
         // title
         if (title) {
             [_storeDictionary setObject:title forKey:@"title"];
         }
     }
     return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    DIMBroadcastCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.title = _title;
-    }
-    return self;
-}
-
-- (NSString *)title {
-    if (!_title) {
-        _title = [_storeDictionary objectForKey:@"title"];
-    }
-    return _title;
 }
 
 @end
