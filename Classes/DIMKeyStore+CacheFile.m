@@ -70,7 +70,7 @@ static NSString *s_directory = nil;
         return NO;
     }
     const DIMID *ID = self.currentUser.ID;
-    if (!ID.isValid) {
+    if (![ID isValid]) {
         NSAssert(self.currentUser == nil, @"Current user invalid: %@", self.currentUser);
         return NO;
     }
@@ -81,7 +81,7 @@ static NSString *s_directory = nil;
 
 - (BOOL)reload {
     const DIMID *ID = self.currentUser.ID;
-    if (!ID.isValid) {
+    if (![ID isValid]) {
         NSAssert(self.currentUser == nil, @"Current user invalid: %@", self.currentUser);
         return NO;
     }

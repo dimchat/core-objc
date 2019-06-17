@@ -139,7 +139,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     if ([account isKindOfClass:[DIMUser class]]) {
         // add to user table
         [self addUser:(DIMUser *)account];
-    } else if (account.ID.isValid) {
+    } else if ([account.ID isValid]) {
         if (account.dataSource == nil) {
             account.dataSource = self;
         }
@@ -148,7 +148,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 }
 
 - (void)addUser:(DIMUser *)user {
-    if (user.ID.isValid) {
+    if ([user.ID isValid]) {
         if (user.dataSource == nil) {
             user.dataSource = self;
         }
@@ -162,7 +162,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 }
 
 - (void)addGroup:(DIMGroup *)group {
-    if (group.ID.isValid) {
+    if ([group.ID isValid]) {
         if (group.dataSource == nil) {
             group.dataSource = self;
         }
@@ -311,7 +311,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 - (DIMProfile *)profileForID:(const DIMID *)ID {
     DIMProfile *profile = [_entityDataSource profileForID:ID];
     //NSAssert(profile, @"failed to get profile for ID: %@", ID);
-    DIMPublicKey *PK = nil;
+    const DIMPublicKey *PK = nil;
     if (MKMNetwork_IsCommunicator(ID.type)) {
         PK = DIMMetaForID(ID).key;
     } else if (MKMNetwork_IsGroup(ID.type)) {
@@ -321,6 +321,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     if ([profile verify:PK]) {
         return profile;
     } else {
+        NSLog(@"profile signature not match: %@", profile);
         return nil;
     }
 }

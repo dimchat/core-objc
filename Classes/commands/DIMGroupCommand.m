@@ -108,7 +108,7 @@
     DIMID *ID;
     for (item in list) {
         ID = [DIMID IDWithID:item];
-        NSAssert(ID.isValid, @"members item error: %@", item);
+        NSAssert([ID isValid], @"members item error: %@", item);
         [mArray addObject:ID];
     }
     // replace the members array to avoid building IDs from string again
