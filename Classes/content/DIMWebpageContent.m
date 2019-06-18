@@ -13,7 +13,7 @@
 
 #import "DIMWebpageContent.h"
 
-@implementation DIMContent (Webpage)
+@implementation DIMWebpageContent
 
 - (instancetype)initWithURL:(const NSURL *)url
                       title:(nullable const NSString *)title
@@ -43,6 +43,11 @@
         }
     }
     return self;
+}
+
+- (NSURL *)URL {
+    NSString *string = [_storeDictionary objectForKey:@"URL"];
+    return [NSURL URLWithString:string];
 }
 
 - (NSString *)title {

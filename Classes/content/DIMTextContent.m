@@ -10,7 +10,7 @@
 
 #import "DIMTextContent.h"
 
-@implementation DIMContent (Text)
+@implementation DIMTextContent
 
 - (instancetype)initWithText:(const NSString *)text {
     NSAssert(text, @"text cannot be empty");

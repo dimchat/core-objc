@@ -72,6 +72,8 @@
 		E9F3AA7E21CBD03C009690F6 /* DIMStation.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA6921CBD03C009690F6 /* DIMStation.m */; };
 		E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA9B21CC00B6009690F6 /* dimMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
+		E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9FC8E2622B92EE80013FCD3 /* DIMHistoryCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,6 +197,8 @@
 		E9F3AA6921CBD03C009690F6 /* DIMStation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMStation.m; sourceTree = "<group>"; };
 		E9F3AA9B21CC00B6009690F6 /* dimMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dimMacros.h; sourceTree = "<group>"; };
 		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
+		E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
+		E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +273,8 @@
 			children = (
 				E9CF980F21FF548F0092DD8B /* DIMCommand.h */,
 				E9CF981021FF548F0092DD8B /* DIMCommand.m */,
+				E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */,
+				E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */,
 				E9CF981321FF567B0092DD8B /* DIMHandshakeCommand.h */,
 				E9CF981421FF567B0092DD8B /* DIMHandshakeCommand.m */,
 				E9E824B6224BE0B700A029F1 /* DIMBroadcastCommand.h */,
@@ -398,6 +404,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */,
 				E9790893225EDE450024C830 /* DKDInstantMessage+Extension.h in Headers */,
 				E94D2B3922B7BC9C00FF4AD5 /* DIMContentType.h in Headers */,
 				E94D2B3B22B7BC9C00FF4AD5 /* DIMTextContent.h in Headers */,
@@ -602,6 +609,7 @@
 				E9BBBDEE223BB70900E6ACDA /* DIMTransceiver+Transform.m in Sources */,
 				E9CF981A21FF5BA40092DD8B /* DIMMetaCommand.m in Sources */,
 				E9E824B9224BE0B700A029F1 /* DIMBroadcastCommand.m in Sources */,
+				E9FC8E2622B92EE80013FCD3 /* DIMHistoryCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

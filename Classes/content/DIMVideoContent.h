@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (Video)
+@interface DIMVideoContent : DIMFileContent
 
 @property (strong, nonatomic) const NSData *videoData;
 @property (readonly, strong, nonatomic, nullable) const NSData *snapshot;

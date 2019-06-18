@@ -10,7 +10,7 @@
 
 #import "DIMForwardContent.h"
 
-@implementation DIMContent (TopSecret)
+@implementation DIMForwardContent
 
 - (instancetype)initWithForwardMessage:(const DKDReliableMessage *)rMsg {
     NSAssert(rMsg, @"forward message cannot be empty");
@@ -25,7 +25,7 @@
 
 - (DKDReliableMessage *)forwardMessage {
     NSDictionary *forward = [_storeDictionary objectForKey:@"forward"];
-    DKDReliableMessage *msg = [DKDReliableMessage messageWithMessage:forward];
+    DKDReliableMessage *msg = DKDReliableMessageFromDictionary(forward);
     if (msg != forward) {
         if (msg) {
             // replace the message object

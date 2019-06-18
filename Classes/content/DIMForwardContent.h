@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (TopSecret)
+@interface DIMForwardContent : DIMContent
 
 // Top-Secret message forwarded by a proxy (Service Provider)
 @property (readonly, nonatomic) DIMReliableMessage *forwardMessage;

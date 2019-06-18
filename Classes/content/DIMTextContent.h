@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (Text)
+@interface DIMTextContent : DIMContent
 
 @property (readonly, strong, nonatomic) NSString *text;
 

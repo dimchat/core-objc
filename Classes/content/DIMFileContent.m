@@ -13,7 +13,7 @@
 
 #import "DIMFileContent.h"
 
-@implementation DIMContent (File)
+@implementation DIMFileContent
 
 - (instancetype)initWithFileData:(const NSData *)data
                         filename:(nullable const NSString *)name {

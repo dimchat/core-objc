@@ -16,7 +16,7 @@
 
 @end
 
-@implementation DIMContent (Audio)
+@implementation DIMAudioContent
 
 - (instancetype)initWithAudioData:(const NSData *)data
                          filename:(nullable const NSString *)name {

@@ -26,10 +26,10 @@
     DIMID *ID = MKMIDFromString([dict objectForKey:@"ID"]);
 //    // founder
 //    DIMID *founder = [dict objectForKey:@"founder"];
-//    founder = [DIMID IDWithID:founder];
+//    founder = MKMIDFromString(founder);
 //    // owner
 //    DIMID *owner = [dict objectForKey:@"owner"];
-//    owner = [DIMID IDWithID:owner];
+//    owner = MKMIDFromString(owner);
     
     // CA
     DIMCertificateAuthority *CA = [dict objectForKey:@"CA"];

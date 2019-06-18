@@ -13,7 +13,21 @@
 
 #import "DIMReceiptCommand.h"
 
-@implementation DIMCommand (Receipt)
+@implementation DIMReceiptCommand
+
+- (instancetype)initWithMessage:(const NSString *)message {
+    if (self = [self initWithCommand:DIMSystemCommand_Receipt]) {
+        // message
+        if (message) {
+            [_storeDictionary setObject:message forKey:@"message"];
+        }
+    }
+    return self;
+}
+
+- (NSString *)message {
+    return [_storeDictionary objectForKey:@"message"];
+}
 
 - (nullable DIMEnvelope *)envelope {
     NSString *sender = [_storeDictionary objectForKey:@"sender"];
@@ -21,10 +35,7 @@
     if (sender && receiver) {
         NSNumber *number = [_storeDictionary objectForKey:@"time"];
         NSDate *time = NSDateFromNumber(number);
-        
-        return [[DIMEnvelope alloc] initWithSender:sender
-                                          receiver:receiver
-                                              time:time];
+        return DKDEnvelopeCreate(sender, receiver, time);
     } else {
         return nil;
     }
@@ -32,13 +43,9 @@
 
 - (void)setEnvelope:(DIMEnvelope *)envelope {
     if (envelope) {
-        const NSString *sender = envelope.sender;
-        const NSString *receiver = envelope.receiver;
-        NSDate *time = envelope.time;
-        NSNumber *timestamp = NSNumberFromDate(time);
-        
-        [_storeDictionary setObject:sender forKey:@"sender"];
-        [_storeDictionary setObject:receiver forKey:@"receiver"];
+        NSNumber *timestamp = NSNumberFromDate(envelope.time);
+        [_storeDictionary setObject:envelope.sender forKey:@"sender"];
+        [_storeDictionary setObject:envelope.receiver forKey:@"receiver"];
         [_storeDictionary setObject:timestamp forKey:@"time"];
     } else {
         [_storeDictionary removeObjectForKey:@"sender"];
@@ -58,20 +65,6 @@
     } else {
         [_storeDictionary removeObjectForKey:@"signature"];
     }
-}
-
-@end
-
-@implementation DIMReceiptCommand
-
-- (instancetype)initWithMessage:(const NSString *)message {
-    if (self = [self initWithCommand:DIMSystemCommand_Receipt]) {
-        // message
-        if (message) {
-            [_storeDictionary setObject:message forKey:@"message"];
-        }
-    }
-    return self;
 }
 
 @end

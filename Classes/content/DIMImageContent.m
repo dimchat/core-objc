@@ -18,7 +18,7 @@
 
 @end
 
-@implementation DIMContent (Image)
+@implementation DIMImageContent
 
 - (instancetype)initWithImageData:(const NSData *)data
                          filename:(nullable const NSString *)name {

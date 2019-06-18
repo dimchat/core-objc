@@ -11,6 +11,7 @@
 #import "NSData+Crypto.h"
 
 #import "DKDInstantMessage+Extension.h"
+#import "DIMContentType.h"
 
 #import "DIMBarrack.h"
 #import "DIMKeyStore.h"
@@ -25,6 +26,8 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
+        // register all content classes
+        [DIMContent loadContentClasses];
     }
     return self;
 }
@@ -98,7 +101,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     NSString *json = [plaintext UTF8String]; // remove garbage at end
     NSDictionary *dict = [[json data] jsonDictionary];
     // pack message content
-    return [[DIMContent alloc] initWithDictionary:dict];
+    return DKDContentFromDictionary(dict);
 }
 
 - (nullable NSDictionary *)message:(const DIMSecureMessage *)sMsg

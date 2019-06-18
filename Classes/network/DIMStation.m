@@ -45,12 +45,12 @@
 //            // get from meta.key
 //            DIMMeta *meta = [dict objectForKey:@"meta"];
 //            if (meta) {
-//                meta = [DIMMeta metaWithMeta:meta];
+//                meta = MKMMetaFromDictionary(meta);
 //                PK = meta.key;
 //            }
 //        }
 //    }
-//    PK = [DIMPublicKey keyWithKey:PK];
+//    PK = MKMPublicKeyFromDictionary(PK);
     
     // host
     NSString *host = [dict objectForKey:@"host"];

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (Image)
+@interface DIMImageContent : DIMFileContent
 
 @property (strong, nonatomic) const NSData *imageData;
 @property (readonly, strong, nonatomic, nullable) const NSData *thumbnail;

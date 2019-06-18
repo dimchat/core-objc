@@ -136,7 +136,8 @@
     if (iMsg.content.type == DIMContentType_Forward) {
         // do it again to drop the wrapper,
         // the secret inside the content is the real message
-        rMsg = iMsg.content.forwardMessage;
+        DIMForwardContent *content = (DIMForwardContent *)iMsg.content;
+        rMsg = content.forwardMessage;
         
         return [self verifyAndDecryptMessage:rMsg users:users];
     }

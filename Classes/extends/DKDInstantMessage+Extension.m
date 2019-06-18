@@ -33,7 +33,7 @@
     }
 }
 
-- (BOOL)matchReceipt:(const DIMCommand *)cmd {
+- (BOOL)matchReceipt:(const DIMReceiptCommand *)cmd {
     
     DIMContent *content = self.content;
     

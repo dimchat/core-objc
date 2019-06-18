@@ -72,6 +72,8 @@
 		E9FC8E0C22B9089E0013FCD3 /* DIMWebpageContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8DFC22B9089E0013FCD3 /* DIMWebpageContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC8E0F22B909200013FCD3 /* MKMProfile+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8E0D22B9091F0013FCD3 /* MKMProfile+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC8E1022B909200013FCD3 /* MKMProfile+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC8E0E22B9091F0013FCD3 /* MKMProfile+Extension.m */; };
+		E9FC8E2B22B92F7E0013FCD3 /* DIMHistoryCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC8E2922B92F7E0013FCD3 /* DIMHistoryCommand.m */; };
+		E9FC8E2C22B92F7E0013FCD3 /* DIMHistoryCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8E2A22B92F7E0013FCD3 /* DIMHistoryCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,6 +197,8 @@
 		E9FC8DFC22B9089E0013FCD3 /* DIMWebpageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMWebpageContent.h; sourceTree = "<group>"; };
 		E9FC8E0D22B9091F0013FCD3 /* MKMProfile+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMProfile+Extension.h"; sourceTree = "<group>"; };
 		E9FC8E0E22B9091F0013FCD3 /* MKMProfile+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMProfile+Extension.m"; sourceTree = "<group>"; };
+		E9FC8E2922B92F7E0013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
+		E9FC8E2A22B92F7E0013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +331,8 @@
 			children = (
 				E9BBC19822427EF100E6ACDA /* DIMCommand.h */,
 				E9BBC19E22427EF100E6ACDA /* DIMCommand.m */,
+				E9FC8E2A22B92F7E0013FCD3 /* DIMHistoryCommand.h */,
+				E9FC8E2922B92F7E0013FCD3 /* DIMHistoryCommand.m */,
 				E9BBC19922427EF100E6ACDA /* DIMGroupCommand.h */,
 				E9BBC19D22427EF100E6ACDA /* DIMGroupCommand.m */,
 				E9BBC19A22427EF100E6ACDA /* DIMHandshakeCommand.h */,
@@ -371,22 +377,22 @@
 		E9FC8DEC22B9089E0013FCD3 /* content */ = {
 			isa = PBXGroup;
 			children = (
-				E9FC8DED22B9089E0013FCD3 /* DIMVideoContent.m */,
-				E9FC8DEE22B9089E0013FCD3 /* DIMFileContent.h */,
+				E9FC8DF622B9089E0013FCD3 /* DIMContentType.h */,
+				E9FC8DF222B9089E0013FCD3 /* DIMContentType.m */,
+				E9FC8DF822B9089E0013FCD3 /* DIMTextContent.h */,
 				E9FC8DEF22B9089E0013FCD3 /* DIMTextContent.m */,
+				E9FC8DEE22B9089E0013FCD3 /* DIMFileContent.h */,
+				E9FC8DFA22B9089E0013FCD3 /* DIMFileContent.m */,
+				E9FC8DF922B9089E0013FCD3 /* DIMImageContent.h */,
 				E9FC8DF022B9089E0013FCD3 /* DIMImageContent.m */,
 				E9FC8DF122B9089E0013FCD3 /* DIMAudioContent.h */,
-				E9FC8DF222B9089E0013FCD3 /* DIMContentType.m */,
+				E9FC8DF722B9089E0013FCD3 /* DIMAudioContent.m */,
+				E9FC8DF522B9089E0013FCD3 /* DIMVideoContent.h */,
+				E9FC8DED22B9089E0013FCD3 /* DIMVideoContent.m */,
+				E9FC8DFC22B9089E0013FCD3 /* DIMWebpageContent.h */,
 				E9FC8DF322B9089E0013FCD3 /* DIMWebpageContent.m */,
 				E9FC8DF422B9089E0013FCD3 /* DIMForwardContent.h */,
-				E9FC8DF522B9089E0013FCD3 /* DIMVideoContent.h */,
-				E9FC8DF622B9089E0013FCD3 /* DIMContentType.h */,
-				E9FC8DF722B9089E0013FCD3 /* DIMAudioContent.m */,
-				E9FC8DF822B9089E0013FCD3 /* DIMTextContent.h */,
-				E9FC8DF922B9089E0013FCD3 /* DIMImageContent.h */,
-				E9FC8DFA22B9089E0013FCD3 /* DIMFileContent.m */,
 				E9FC8DFB22B9089E0013FCD3 /* DIMForwardContent.m */,
-				E9FC8DFC22B9089E0013FCD3 /* DIMWebpageContent.h */,
 			);
 			path = content;
 			sourceTree = "<group>";
@@ -398,6 +404,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9FC8E2C22B92F7E0013FCD3 /* DIMHistoryCommand.h in Headers */,
 				E9FC8E0F22B909200013FCD3 /* MKMProfile+Extension.h in Headers */,
 				E9FC8E0522B9089E0013FCD3 /* DIMVideoContent.h in Headers */,
 				E9FC8E0C22B9089E0013FCD3 /* DIMWebpageContent.h in Headers */,
@@ -602,6 +609,7 @@
 				E9BBC1B522427EF100E6ACDA /* DIMCAValidity.m in Sources */,
 				E9BBC1B322427EF100E6ACDA /* DIMCASubject.m in Sources */,
 				E9BBC1BE22427EF100E6ACDA /* DIMKeyStore+CacheFile.m in Sources */,
+				E9FC8E2B22B92F7E0013FCD3 /* DIMHistoryCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

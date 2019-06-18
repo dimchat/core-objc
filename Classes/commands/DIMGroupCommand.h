@@ -6,21 +6,17 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMCommand.h"
+#import "DIMHistoryCommand.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommand (Group)
+@interface DIMGroupCommand : DIMHistoryCommand
 
-// Group ID for group message already defined in DKDMessageContent
+// Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) const MKMID *group;
 
 @property (readonly, strong, nonatomic, nullable) const DIMID *member;
 @property (readonly, strong, nonatomic, nullable) const NSArray<const DIMID *> *members;
-
-@end
-
-@interface DIMGroupCommand : DIMHistoryCommand
 
 /**
  *  Group history command: {

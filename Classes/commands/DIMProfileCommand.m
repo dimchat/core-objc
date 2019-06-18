@@ -14,7 +14,28 @@
 
 #import "DIMProfileCommand.h"
 
-@implementation DIMCommand (Profile)
+@implementation DIMProfileCommand
+
+- (instancetype)initWithID:(const DIMID *)ID
+                      meta:(nullable const DIMMeta *)meta
+                   profile:(nullable DIMProfile *)profile {
+    if (self = [self initWithCommand:DIMSystemCommand_Profile]) {
+        // ID
+        if (ID) {
+            [_storeDictionary setObject:ID forKey:@"ID"];
+        }
+        // meta
+        if ([meta matchID:ID]) {
+            [_storeDictionary setObject:meta forKey:@"meta"];
+        }
+        
+        // profile
+        if ([profile.ID isEqual:ID]) {
+            [_storeDictionary setObject:profile forKey:@"profile"];
+        }
+    }
+    return self;
+}
 
 - (nullable DIMProfile *)profile {
     DIMProfile *p = nil;
@@ -44,7 +65,7 @@
         p = MKMProfileFromDictionary(mDict);
     }
     /*
-     // verify profile
+    // verify profile
     if (_profile) {
         DIMBarrack *barrack = [DIMBarrack sharedInstance];
         DIMMeta *meta = DIMMetaWithID(_ID);
@@ -55,31 +76,6 @@
     }
      */
     return p;
-}
-
-@end
-
-@implementation DIMProfileCommand
-
-- (instancetype)initWithID:(const DIMID *)ID
-                      meta:(nullable const DIMMeta *)meta
-                   profile:(nullable DIMProfile *)profile {
-    if (self = [self initWithCommand:DIMSystemCommand_Profile]) {
-        // ID
-        if (ID) {
-            [_storeDictionary setObject:ID forKey:@"ID"];
-        }
-        // meta
-        if ([meta matchID:ID]) {
-            [_storeDictionary setObject:meta forKey:@"meta"];
-        }
-        
-        // profile
-        if ([profile.ID isEqual:ID]) {
-            [_storeDictionary setObject:profile forKey:@"profile"];
-        }
-    }
-    return self;
 }
 
 @end

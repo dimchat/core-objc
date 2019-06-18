@@ -8,25 +8,6 @@
 
 #import "DIMMetaCommand.h"
 
-@implementation DIMCommand (Meta)
-
-- (const DIMID *)ID {
-    return MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
-}
-
-- (nullable const DIMMeta *)meta {
-    NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
-    DIMMeta *m = MKMMetaFromDictionary(dict);
-    if ([m matchID:self.ID]) {
-        return m;
-    } else {
-        NSAssert(m == nil, @"meta not match ID: %@, %@", self.ID, m);
-        return nil;
-    }
-}
-
-@end
-
 @implementation DIMMetaCommand
 
 - (instancetype)initWithID:(const DIMID *)ID
@@ -42,6 +23,21 @@
         }
     }
     return self;
+}
+
+- (const DIMID *)ID {
+    return MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
+}
+
+- (nullable const DIMMeta *)meta {
+    NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
+    DIMMeta *m = MKMMetaFromDictionary(dict);
+    if ([m matchID:self.ID]) {
+        return m;
+    } else {
+        NSAssert(m == nil, @"meta not match ID: %@, %@", self.ID, m);
+        return nil;
+    }
 }
 
 @end

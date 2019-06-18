@@ -18,16 +18,12 @@ typedef NS_ENUM(UInt8, DIMHandshakeState) {
     DIMHandshake_Success, // S -> C, handshake accepted
 };
 
-@interface DIMCommand (Handshake)
+@interface DIMHandshakeCommand : DIMCommand
 
 @property (readonly, strong, nonatomic) NSString *message;
 @property (readonly, strong, nonatomic, nullable) NSString *sessionKey;
 
 @property (readonly, nonatomic) DIMHandshakeState state;
-
-@end
-
-@interface DIMHandshakeCommand : DIMCommand
 
 /**
  *  Command message: {

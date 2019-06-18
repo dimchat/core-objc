@@ -26,14 +26,14 @@ typedef NS_ENUM(UInt8, DIMMessageState) {
     DIMMessageState_Error = -1, // failed to send
 };
 
-@class DIMCommand;
+@class DIMReceiptCommand;
 
 @interface DKDInstantMessage (Extension)
 
 @property (nonatomic) DIMMessageState state;
 @property (strong , nonatomic, nullable) NSString *error;
 
-- (BOOL)matchReceipt:(const DIMCommand *)cmd;
+- (BOOL)matchReceipt:(const DIMReceiptCommand *)cmd;
 
 @end
 

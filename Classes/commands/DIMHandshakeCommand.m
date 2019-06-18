@@ -8,7 +8,26 @@
 
 #import "DIMHandshakeCommand.h"
 
-@implementation DIMCommand (Handshake)
+@implementation DIMHandshakeCommand
+
+- (instancetype)initWithMessage:(const NSString *)message
+                     sessionKey:(nullable const NSString *)session {
+    if (self = [self initWithCommand:DIMSystemCommand_Handshake]) {
+        // message
+        if (message) {
+            [_storeDictionary setObject:message forKey:@"message"];
+        }
+        // session key
+        if (session) {
+            [_storeDictionary setObject:session forKey:@"session"];
+        }
+    }
+    return self;
+}
+
+- (instancetype)initWithSessionKey:(nullable const NSString *)session {
+    return [self initWithMessage:@"Hello world!" sessionKey:session];
+}
 
 - (NSString *)message {
     return [_storeDictionary objectForKey:@"message"];
@@ -29,29 +48,6 @@
     } else {
         return DIMHandshake_Start;
     }
-}
-
-@end
-
-@implementation DIMHandshakeCommand
-
-- (instancetype)initWithMessage:(const NSString *)message
-                     sessionKey:(nullable const NSString *)session {
-    if (self = [self initWithCommand:DIMSystemCommand_Handshake]) {
-        // message
-        if (message) {
-            [_storeDictionary setObject:message forKey:@"message"];
-        }
-        // session key
-        if (session) {
-            [_storeDictionary setObject:session forKey:@"session"];
-        }
-    }
-    return self;
-}
-
-- (instancetype)initWithSessionKey:(nullable const NSString *)session {
-    return [self initWithMessage:@"Hello world!" sessionKey:session];
 }
 
 @end

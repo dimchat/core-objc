@@ -10,13 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommand (Profile)
+@interface DIMProfileCommand : DIMMetaCommand
 
 @property (readonly, strong, nonatomic, nullable) DIMProfile *profile;
-
-@end
-
-@interface DIMProfileCommand : DIMMetaCommand
 
 /**
  *  Command message: {

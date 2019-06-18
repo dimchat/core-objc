@@ -78,4 +78,10 @@ typedef NS_ENUM(UInt8, DIMContentType) {
     DIMContentType_Forward = 0xFF  // 1111 1111
 };
 
+@interface DIMContent (RegisterClasses)
+
++ (void)loadContentClasses;
+
+@end
+
 NS_ASSUME_NONNULL_END

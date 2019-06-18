@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (Audio)
+@interface DIMAudioContent : DIMFileContent
 
 @property (strong, nonatomic) const NSData *audioData;
 

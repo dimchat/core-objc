@@ -18,7 +18,7 @@
 
 @end
 
-@implementation DIMContent (Video)
+@implementation DIMVideoContent
 
 - (instancetype)initWithVideoData:(const NSData *)data
                          filename:(nullable const NSString *)name {

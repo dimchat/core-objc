@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent (File)
+@interface DIMFileContent : DIMContent
 
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;

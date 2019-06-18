@@ -8,14 +8,6 @@
 
 #import "DIMBroadcastCommand.h"
 
-@implementation DIMCommand (Broadcast)
-
-- (NSString *)title {
-    return [_storeDictionary objectForKey:@"title"];
-}
-
-@end
-
 @implementation DIMBroadcastCommand
 
 - (instancetype)initWithTitle:(const NSString *)title {
@@ -26,6 +18,10 @@
         }
     }
     return self;
+}
+
+- (NSString *)title {
+    return [_storeDictionary objectForKey:@"title"];
 }
 
 @end

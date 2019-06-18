@@ -6,19 +6,15 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "NSDate+Timestamp.h"
-
 #import "DIMContentType.h"
 
+#import "DIMHandshakeCommand.h"
+#import "DIMBroadcastCommand.h"
+#import "DIMReceiptCommand.h"
+#import "DIMMetaCommand.h"
+#import "DIMProfileCommand.h"
+
 #import "DIMCommand.h"
-
-@implementation DIMContent (Command)
-
-- (NSString *)command {
-    return [_storeDictionary objectForKey:@"command"];
-}
-
-@end
 
 @implementation DIMCommand
 
@@ -33,35 +29,66 @@
     return self;
 }
 
-@end
-
-#pragma mark -
-
-@implementation DIMCommand (History)
-
-- (NSDate *)time {
-    NSNumber *timestamp = [_storeDictionary objectForKey:@"time"];
-    NSAssert(timestamp != nil, @"time error: %@", _storeDictionary);
-    return NSDateFromNumber(timestamp);
+- (NSString *)command {
+    return [_storeDictionary objectForKey:@"command"];
 }
 
 @end
 
-@implementation DIMHistoryCommand
+static NSMutableDictionary<NSString *, Class> *command_classes(void) {
+    static NSMutableDictionary<NSString *, Class> *classes = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        classes = [[NSMutableDictionary alloc] init];
+        // handshake
+        [classes setObject:[DIMHandshakeCommand class] forKey:DIMSystemCommand_Handshake];
+        // broadcast
+        [classes setObject:[DIMBroadcastCommand class] forKey:DIMSystemCommand_Broadcast];
+        // receipt
+        [classes setObject:[DIMReceiptCommand class] forKey:DIMSystemCommand_Receipt];
+        // meta
+        [classes setObject:[DIMMetaCommand class] forKey:DIMSystemCommand_Meta];
+        // profile
+        [classes setObject:[DIMProfileCommand class] forKey:DIMSystemCommand_Profile];
+    });
+    return classes;
+}
 
-- (instancetype)initWithHistoryCommand:(const NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DIMContentType_History]) {
-        // command
-        if (cmd) {
-            [_storeDictionary setObject:cmd forKey:@"command"];
-        }
-        // time
-        NSDate *time = [[NSDate alloc] init];
-        NSNumber *timestemp = NSNumberFromDate(time);
-        [_storeDictionary setObject:timestemp forKey:@"time"];
+@implementation DIMCommand (Runtime)
+
++ (void)registerClass:(nullable Class)cmdClass forCommand:(NSString *)cmd {
+    NSAssert(![cmdClass isEqual:self], @"only subclass");
+    NSAssert([cmdClass isSubclassOfClass:self], @"class error: %@", cmdClass);
+    if (cmdClass) {
+        [command_classes() setObject:cmdClass forKey:cmd];
+    } else {
+        [command_classes() removeObjectForKey:cmd];
     }
-    return self;
+}
+
++ (nullable instancetype)getInstance:(id)content {
+    if (!content) {
+        return nil;
+    }
+    if ([content isKindOfClass:[DIMCommand class]]) {
+        // return Command object directly
+        return content;
+    }
+    NSAssert([content isKindOfClass:[NSDictionary class]],
+             @"command should be a dictionary: %@", content);
+    if (![self isEqual:[DIMCommand class]]) {
+        // subclass
+        NSAssert([self isSubclassOfClass:[DIMCommand class]], @"command class error");
+        return [[self alloc] initWithDictionary:content];
+    }
+    // create instance by subclass with command
+    NSString *command = [content objectForKey:@"command"];
+    Class clazz = [command_classes() objectForKey:command];
+    if (clazz) {
+        return [clazz getInstance:content];
+    } else {
+        return [[self alloc] initWithDictionary:content];
+    }
 }
 
 @end
