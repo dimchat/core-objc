@@ -93,7 +93,7 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:receiver];
     if (!scKey) {
         // create a new key & save it into the Key Store
-        scKey = [[DIMSymmetricKey alloc] init];
+        scKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
         [self setCipherKey:scKey forAccount:receiver];
     }
     return scKey;
@@ -131,7 +131,7 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:group];
     if (!scKey) {
         // create a new key & save it into the Key Store
-        scKey = [[DIMSymmetricKey alloc] init];
+        scKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
         [self setCipherKey:scKey forGroup:group];
     }
     return scKey;

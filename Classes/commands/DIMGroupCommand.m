@@ -12,7 +12,7 @@
 
 - (nullable const DIMID *)member {
     NSString *str = [_storeDictionary objectForKey:@"member"];
-    DIMID *ID = [DIMID IDWithID:str];
+    DIMID *ID = MKMIDFromString(str);
     if (ID != str) {
         if (ID) {
             // replace the member ID object
@@ -36,7 +36,7 @@
     NSString *item;
     DIMID *ID;
     for (item in list) {
-        ID = [DIMID IDWithID:item];
+        ID = MKMIDFromString(item);
         NSAssert([ID isValid], @"members item error: %@", item);
         [mArray addObject:ID];
     }

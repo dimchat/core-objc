@@ -27,8 +27,8 @@
     DIMSecureMessage *sMsg = nil;
     
     // 1. encrypt 'content' to 'data' for receiver
-    const DIMID *receiver = [DIMID IDWithID:iMsg.envelope.receiver];
-    const DIMID *group = [DIMID IDWithID:iMsg.content.group];
+    const DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
+    const DIMID *group = MKMIDFromString(iMsg.content.group);
     if (group) {
         // if 'group' exists and the 'receiver' is a group ID,
         // they must be equal
@@ -70,14 +70,14 @@
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
                                                   users:(const NSArray<const DIMUser *> *)users {
     NSAssert(rMsg.signature, @"signature cannot be empty");
-    const DIMID *sender = [DIMID IDWithID:rMsg.envelope.sender];
-    const DIMID *receiver = [DIMID IDWithID:rMsg.envelope.receiver];
+    const DIMID *sender = MKMIDFromString(rMsg.envelope.sender);
+    const DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
     
     // [Meta Protocol] check meta in first contact message
     const DIMMeta *meta = DIMMetaForID(sender);
     if (!meta) {
         // first contact, try meta in message package
-        meta = [DIMMeta metaWithMeta:rMsg.meta];
+        meta = MKMMetaFromDictionary(rMsg.meta);
         if ([meta matchID:sender]) {
             DIMBarrack *barrack = [DIMBarrack sharedInstance];
             [barrack saveMeta:meta forID:sender];
@@ -92,7 +92,7 @@
     }
     
     // check recipient
-    const DIMID *groupID = [DIMID IDWithID:rMsg.group];
+    const DIMID *groupID = MKMIDFromString(rMsg.group);
     const DIMUser *user = nil;
     if (MKMNetwork_IsGroup(receiver.type)) {
         NSAssert(!groupID || [groupID isEqual:receiver], @"group error: %@ != %@", receiver, groupID);

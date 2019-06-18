@@ -174,7 +174,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     NSString *path = meta_filepath(ID, NO);
     if (file_exists(path)) {
         NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        return [[DIMMeta alloc] initWithDictionary:dict];
+        return MKMMetaFromDictionary(dict);
     }
     return nil;
 }

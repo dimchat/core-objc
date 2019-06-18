@@ -23,8 +23,7 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     // ID
-    DIMID *ID = [dict objectForKey:@"ID"];
-    ID = [DIMID IDWithID:ID];
+    DIMID *ID = MKMIDFromString([dict objectForKey:@"ID"]);
 //    // founder
 //    DIMID *founder = [dict objectForKey:@"founder"];
 //    founder = [DIMID IDWithID:founder];

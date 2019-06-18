@@ -36,8 +36,7 @@
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     // ID
-    DIMID *ID = [dict objectForKey:@"ID"];
-    ID = [DIMID IDWithID:ID];
+    DIMID *ID = MKMIDFromString([dict objectForKey:@"ID"]);
 //    // public key
 //    DIMPublicKey *PK = [dict objectForKey:@"publicKey"];
 //    if (!PK) {

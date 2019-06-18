@@ -73,7 +73,7 @@
 
 - (DIMPublicKey *)publicKey {
     DIMPublicKey *PK = [_storeDictionary objectForKey:@"PublicKey"];
-    return [DIMPublicKey keyWithKey:PK];
+    return MKMPublicKeyFromDictionary(PK);
 }
 
 - (void)setPublicKey:(DIMPublicKey *)publicKey {

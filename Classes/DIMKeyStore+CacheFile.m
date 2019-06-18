@@ -106,7 +106,7 @@ static NSString *s_directory = nil;
     NSDictionary *keyDict;
     for (from in keyTableDict) {
         keyMapDict = [keyTableDict objectForKey:from];
-        fromAddress = [DIMAddress addressWithAddress:from];
+        fromAddress = MKMAddressFromString(from);
         keyMap = [self.keyTable objectForKey:fromAddress];
         if (!keyMap) {
             keyMap = [[KeyMap alloc] init];
@@ -114,12 +114,12 @@ static NSString *s_directory = nil;
         }
         for (to in keyMapDict) {
             keyDict = [keyMapDict objectForKey:to];
-            toAddress = [DIMAddress addressWithAddress:to];
+            toAddress = MKMAddressFromString(to);
             if ([keyMap objectForKey:toAddress]) {
                 // key exists
                 continue;
             }
-            cipherKey = [DIMSymmetricKey keyWithKey:keyDict];
+            cipherKey = MKMSymmetricKeyFromDictionary(keyDict);
             if (cipherKey != nil) {
                 [keyMap setObject:cipherKey forKey:toAddress];
                 changed = YES;

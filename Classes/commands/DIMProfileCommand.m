@@ -17,27 +17,31 @@
 @implementation DIMCommand (Profile)
 
 - (nullable DIMProfile *)profile {
-    DIMProfile *p;
+    DIMProfile *p = nil;
     NSObject *data = [_storeDictionary objectForKey:@"profile"];
     if ([data isKindOfClass:[NSDictionary class]]) {
         // (v1.1)
-        //  profile (dictionary): {
+        //  'ID'      : '{ID}',
+        //  'profile' : {
         //      "ID"        : "{ID}",
-        //      "data"      : "{...}",
+        //      "data"      : "{JsON}",
         //      "signature" : "{BASE64}"
         //  }
-        p = [DIMProfile profileWithProfile:data];
+        p = MKMProfileFromDictionary(data);
     } else if ([data isKindOfClass:[NSString class]]) {
+        const DIMID *ID = [self ID];
+        NSAssert(ID, @"ID not found");
+        NSString *signature = [_storeDictionary objectForKey:@"signature"];
+        NSAssert(signature, @"signature not found");
         // (v1.0)
-        //  profile data (JsON)
-        //  profile signature (Base64)
+        //  'ID'        : '{ID}',
+        //  'profile'   : '{JsON}',
+        //  'signature' : '{BASE64}'
         NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
         [mDict setObject:[self ID] forKey:@"ID"];
         [mDict setObject:data forKey:@"data"];
-        NSString *sig = [_storeDictionary objectForKey:@"signature"];
-        NSAssert(sig, @"signature not found");
-        [mDict setObject:sig forKey:@"signature"];
-        p = [DIMProfile profileWithProfile:mDict];
+        [mDict setObject:signature forKey:@"signature"];
+        p = MKMProfileFromDictionary(mDict);
     }
     /*
      // verify profile

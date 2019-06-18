@@ -11,13 +11,12 @@
 @implementation DIMCommand (Meta)
 
 - (const DIMID *)ID {
-    NSString *str = [_storeDictionary objectForKey:@"ID"];
-    return [DIMID IDWithID:str];
+    return MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
 }
 
 - (nullable const DIMMeta *)meta {
     NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
-    DIMMeta *m = [DIMMeta metaWithMeta:dict];
+    DIMMeta *m = MKMMetaFromDictionary(dict);
     if ([m matchID:self.ID]) {
         return m;
     } else {

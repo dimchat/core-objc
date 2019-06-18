@@ -36,7 +36,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
           filename:(nullable const NSString *)name
            withKey:(NSDictionary *)password {
     
-    DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
+    DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     NSData *CT = [symmetricKey encrypt:data];
     NSLog(@"encrypt file %@: %lu bytes -> %lu bytes", name, data.length, CT.length);
@@ -50,7 +50,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     
     NSData *CT = [_delegate downloadEncryptedFileData:url forMessage:iMsg];
     if (CT) {
-        DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
+        DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
         NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
         return [symmetricKey decrypt:CT];
     }
@@ -61,7 +61,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
               encryptContent:(const DIMContent *)content
                      withKey:(NSDictionary *)password {
     
-    DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
+    DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     
     NSString *json = [content jsonString];
@@ -75,7 +75,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     
     NSString *json = [password jsonString];
     NSData *data = [json data];
-    DIMID *ID = [DIMID IDWithID:receiver];
+    DIMID *ID = MKMIDFromString(receiver);
     DIMAccount *account = DIMAccountWithID(ID);
     NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
     return [account encrypt:data];
@@ -87,7 +87,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
                      decryptData:(const NSData *)data
                          withKey:(const NSDictionary *)password {
     
-    DIMSymmetricKey *symmetricKey = [DIMSymmetricKey keyWithKey:password];
+    DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     // decrypt message.data
     NSData *plaintext = [symmetricKey decrypt:data];
@@ -109,9 +109,9 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     DIMSymmetricKey *PW = nil;
     
     DIMKeyStore *store = [DIMKeyStore sharedInstance];
-    DIMID *from = [DIMID IDWithID:sender];
-    DIMID *to = [DIMID IDWithID:receiver];
-    DIMID *groupID = [DIMID IDWithID:group];
+    DIMID *from = MKMIDFromString(sender);
+    DIMID *to = MKMIDFromString(receiver);
+    DIMID *groupID = MKMIDFromString(group);
     
     if (key) {
         // decrypt key data with the receiver's private key
@@ -123,18 +123,18 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
         // create symmetric key
         NSString *json = [plaintext UTF8String]; // remove garbage at end
         NSDictionary *dict = [[json data] jsonDictionary];
-        PW = [[DIMSymmetricKey alloc] initWithDictionary:dict];
+        PW = MKMSymmetricKeyFromDictionary(dict);
         NSAssert(PW, @"invalid key: %@", dict);
         
         // set the new key in key store
         if (group) {
             [store setCipherKey:PW
-                     fromMember:[DIMID IDWithID:sender]
-                        inGroup:[DIMID IDWithID:group]];
+                     fromMember:MKMIDFromString(sender)
+                        inGroup:MKMIDFromString(group)];
             NSLog(@"got key from group member: %@, %@", sender, group);
         } else {
             [store setCipherKey:PW
-                    fromAccount:[DIMID IDWithID:sender]];
+                    fromAccount:MKMIDFromString(sender)];
             NSLog(@"got key from contact: %@", sender);
         }
     }
@@ -155,8 +155,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 - (nullable NSData *)message:(const DIMSecureMessage *)sMsg
                     signData:(const NSData *)data
                    forSender:(const NSString *)sender {
-    
-    DIMID *ID = [DIMID IDWithID:sender];
+    DIMID *ID = MKMIDFromString(sender);
     DIMUser *user = DIMUserWithID(ID);
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
@@ -168,8 +167,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
      verifyData:(const NSData *)data
   withSignature:(const NSData *)signature
       forSender:(const NSString *)sender {
-    
-    DIMID *ID = [DIMID IDWithID:sender];
+    DIMID *ID = MKMIDFromString(sender);
     DIMAccount *account = DIMAccountWithID(ID);
     NSAssert(account, @"failed to verify with sender: %@", sender);
     return [account verify:data withSignature:signature];
@@ -185,8 +183,8 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
                   callback:(nullable DIMTransceiverCallback)callback
                dispersedly:(BOOL)split {
     // transforming
-    const DIMID *receiver = [DIMID IDWithID:iMsg.envelope.receiver];
-    const DIMID *groupID = [DIMID IDWithID:iMsg.content.group];
+    const DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
+    const DIMID *groupID = MKMIDFromString(iMsg.content.group);
     DIMReliableMessage *rMsg = [self encryptAndSignMessage:iMsg];
     if (!rMsg) {
         NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
