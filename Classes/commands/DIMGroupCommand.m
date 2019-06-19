@@ -10,8 +10,8 @@
 
 @implementation DIMGroupCommand
 
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const MKMID *)groupID {
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
@@ -22,9 +22,9 @@
     return self;
 }
 
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const DIMID *)groupID
-                         member:(const DIMID *)memberID {
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID
+                         member:(DIMID *)memberID {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
@@ -39,9 +39,9 @@
     return self;
 }
 
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const MKMID *)groupID
-                        members:(const NSArray<const MKMID *> *)list {
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID
+                        members:(NSArray<DIMID *> *)list {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
@@ -56,7 +56,7 @@
     return self;
 }
 
-- (nullable const DIMID *)member {
+- (nullable DIMID *)member {
     NSString *str = [_storeDictionary objectForKey:@"member"];
     DIMID *ID = MKMIDFromString(str);
     if (ID != str) {
@@ -71,13 +71,13 @@
     return ID;
 }
 
-- (const NSArray<const DIMID *> *)members {
+- (NSArray<DIMID *> *)members {
     NSArray *list = [_storeDictionary objectForKey:@"members"];
     if (list.count == 0) {
         return nil;
     }
     //list = [list copy];
-    NSMutableArray<const DIMID *> *mArray;
+    NSMutableArray<DIMID *> *mArray;
     mArray = [[NSMutableArray alloc] initWithCapacity:list.count];
     NSString *item;
     DIMID *ID;
@@ -158,16 +158,16 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMInviteCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(const DIMID *)memberID {
+- (instancetype)initWithGroup:(DIMID *)groupID
+                       member:(DIMID *)memberID {
     
     return [super initWithCommand:DIMGroupCommand_Invite
                             group:groupID
                            member:memberID];
 }
 
-- (instancetype)initWithGroup:(const MKMID *)groupID
-                      members:(const NSArray<const MKMID *> *)list {
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list {
     
     return [super initWithCommand:DIMGroupCommand_Invite
                             group:groupID
@@ -178,16 +178,16 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMExpelCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(const DIMID *)memberID {
+- (instancetype)initWithGroup:(DIMID *)groupID
+                       member:(DIMID *)memberID {
     
     return [super initWithCommand:DIMGroupCommand_Expel
                             group:groupID
                            member:memberID];
 }
 
-- (instancetype)initWithGroup:(const MKMID *)groupID
-                      members:(const NSArray<const MKMID *> *)list {
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list {
     
     return [super initWithCommand:DIMGroupCommand_Expel
                             group:groupID
@@ -198,7 +198,7 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMJoinCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID {
+- (instancetype)initWithGroup:(DIMID *)groupID {
     
     return [super initWithCommand:DIMGroupCommand_Join group:groupID];
 }
@@ -207,7 +207,7 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMQuitCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID {
+- (instancetype)initWithGroup:(DIMID *)groupID {
     
     return [super initWithCommand:DIMGroupCommand_Quit group:groupID];
 }
@@ -218,8 +218,8 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMResetGroupCommand
 
-- (instancetype)initWithGroup:(const MKMID *)groupID
-                      members:(const NSArray<const MKMID *> *)list {
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list {
     
     return [super initWithCommand:@"reset" group:groupID members:list];
 }
@@ -228,7 +228,7 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 @implementation DIMQueryGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID {
+- (instancetype)initWithGroup:(DIMID *)groupID {
     
     return [super initWithCommand:@"query" group:groupID];
 }

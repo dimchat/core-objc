@@ -27,8 +27,8 @@
     DIMSecureMessage *sMsg = nil;
     
     // 1. encrypt 'content' to 'data' for receiver
-    const DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
-    const DIMID *group = MKMIDFromString(iMsg.content.group);
+    DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
+    DIMID *group = MKMIDFromString(iMsg.content.group);
     if (group) {
         // if 'group' exists and the 'receiver' is a group ID,
         // they must be equal
@@ -68,13 +68,13 @@
 }
 
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
-                                                  users:(const NSArray<const DIMUser *> *)users {
+                                                  users:(NSArray<DIMUser *> *)users {
     NSAssert(rMsg.signature, @"signature cannot be empty");
-    const DIMID *sender = MKMIDFromString(rMsg.envelope.sender);
-    const DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
+    DIMID *sender = MKMIDFromString(rMsg.envelope.sender);
+    DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
     
     // [Meta Protocol] check meta in first contact message
-    const DIMMeta *meta = DIMMetaForID(sender);
+    DIMMeta *meta = DIMMetaForID(sender);
     if (!meta) {
         // first contact, try meta in message package
         meta = MKMMetaFromDictionary(rMsg.meta);
@@ -92,8 +92,8 @@
     }
     
     // check recipient
-    const DIMID *groupID = MKMIDFromString(rMsg.group);
-    const DIMUser *user = nil;
+    DIMID *groupID = MKMIDFromString(rMsg.group);
+    DIMUser *user = nil;
     if (MKMNetwork_IsGroup(receiver.type)) {
         NSAssert(!groupID || [groupID isEqual:receiver], @"group error: %@ != %@", receiver, groupID);
         groupID = receiver;
@@ -101,7 +101,7 @@
         user = users.firstObject;
         receiver = user.ID;
     } else {
-        for (const DIMUser *item in users) {
+        for (DIMUser *item in users) {
             if ([item.ID isEqual:receiver]) {
                 user = item;
                 NSLog(@"got new message for: %@", item.ID);

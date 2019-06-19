@@ -10,7 +10,7 @@
 
 @implementation DIMBroadcastCommand
 
-- (instancetype)initWithTitle:(const NSString *)title {
+- (instancetype)initWithTitle:(NSString *)title {
     if (self = [self initWithCommand:DIMSystemCommand_Broadcast]) {
         // title
         if (title) {

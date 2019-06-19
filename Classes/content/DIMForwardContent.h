@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      forward : {...}  // reliable (secure + certified) message
  *  }
  */
-- (instancetype)initWithForwardMessage:(const DIMReliableMessage *)rMsg;
+- (instancetype)initWithForwardMessage:(DIMReliableMessage *)rMsg;
 
 @end
 

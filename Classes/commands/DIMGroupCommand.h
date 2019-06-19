@@ -13,10 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMGroupCommand : DIMHistoryCommand
 
 // Group ID for group message already defined in DKDContent
-//@property (strong, nonatomic, nullable) const MKMID *group;
+//@property (strong, nonatomic, nullable) DIMID *group;
 
-@property (readonly, strong, nonatomic, nullable) const DIMID *member;
-@property (readonly, strong, nonatomic, nullable) const NSArray<const DIMID *> *members;
+@property (readonly, strong, nonatomic, nullable) DIMID *member;
+@property (readonly, strong, nonatomic, nullable) NSArray<DIMID *> *members;
 
 /**
  *  Group history command: {
@@ -27,8 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      group   : "{GROUP_ID}",
  *  }
  */
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const DIMID *)groupID;
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID;
 
 /**
  *  Group history command: {
@@ -40,9 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
  *      member  : "{MEMBER_ID}",
  *  }
  */
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const DIMID *)groupID
-                         member:(const DIMID *)memberID;
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID
+                         member:(DIMID *)memberID;
 
 /**
  *  Group history command: {
@@ -54,9 +54,9 @@ NS_ASSUME_NONNULL_BEGIN
  *      members : ["{MEMBER_ID}", ],
  *  }
  */
-- (instancetype)initWithCommand:(const NSString *)cmd
-                          group:(const DIMID *)groupID
-                        members:(const NSArray<const DIMID *> *)list;
+- (instancetype)initWithCommand:(NSString *)cmd
+                          group:(DIMID *)groupID
+                        members:(NSArray<DIMID *> *)list;
 
 @end
 
@@ -64,33 +64,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMInviteCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(const DIMID *)memberID;
+- (instancetype)initWithGroup:(DIMID *)groupID
+                       member:(DIMID *)memberID;
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                      members:(const NSArray<const DIMID *> *)list;
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list;
 
 @end
 
 @interface DIMExpelCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                       member:(const DIMID *)memberID;
+- (instancetype)initWithGroup:(DIMID *)groupID
+                       member:(DIMID *)memberID;
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                      members:(const NSArray<const DIMID *> *)list;
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list;
 
 @end
 
 @interface DIMJoinCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID;
+- (instancetype)initWithGroup:(DIMID *)groupID;
 
 @end
 
 @interface DIMQuitCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID;
+- (instancetype)initWithGroup:(DIMID *)groupID;
 
 @end
 
@@ -98,14 +98,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMResetGroupCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID
-                      members:(const NSArray<const DIMID *> *)list;
+- (instancetype)initWithGroup:(DIMID *)groupID
+                      members:(NSArray<DIMID *> *)list;
 
 @end
 
 @interface DIMQueryGroupCommand : DIMGroupCommand
 
-- (instancetype)initWithGroup:(const DIMID *)groupID;
+- (instancetype)initWithGroup:(DIMID *)groupID;
 
 @end
 

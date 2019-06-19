@@ -13,7 +13,7 @@
 @implementation DIMServiceProvider
 
 /* designated initializer */
-- (instancetype)initWithID:(const DIMID *)ID {
+- (instancetype)initWithID:(DIMID *)ID {
     if (self = [super initWithID:ID]) {
         _CA = nil;
         _home = nil;
@@ -73,7 +73,7 @@
 
 #pragma mark Station
 
-- (BOOL)verifyStation:(const DIMStation *)server {
+- (BOOL)verifyStation:(DIMStation *)server {
     DIMCertificateAuthority *CA = server.CA;
     return [CA verifyWithPublicKey:self.publicKey];
 }

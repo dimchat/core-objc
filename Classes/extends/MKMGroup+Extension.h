@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKMGroup (Extension)
 
-- (BOOL)isFounder:(const MKMID *)ID;
+- (BOOL)isFounder:(MKMID *)ID;
 
 @end
 

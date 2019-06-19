@@ -15,7 +15,7 @@
 
 @implementation DIMReceiptCommand
 
-- (instancetype)initWithMessage:(const NSString *)message {
+- (instancetype)initWithMessage:(NSString *)message {
     if (self = [self initWithCommand:DIMSystemCommand_Receipt]) {
         // message
         if (message) {

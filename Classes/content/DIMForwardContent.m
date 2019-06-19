@@ -10,9 +10,15 @@
 
 #import "DIMForwardContent.h"
 
+@interface DIMForwardContent ()
+
+@property (nonatomic) DIMReliableMessage *forwardMessage;
+
+@end
+
 @implementation DIMForwardContent
 
-- (instancetype)initWithForwardMessage:(const DKDReliableMessage *)rMsg {
+- (instancetype)initWithForwardMessage:(DKDReliableMessage *)rMsg {
     NSAssert(rMsg, @"forward message cannot be empty");
     if (self = [self initWithType:DIMContentType_Forward]) {
         // top-secret message
@@ -23,20 +29,38 @@
     return self;
 }
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _forwardMessage = nil;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    DIMForwardContent *content = [[self class] allocWithZone:zone];
+    content = [content initWithDictionary:_storeDictionary];
+    if (content) {
+        content.forwardMessage = _forwardMessage;
+    }
+    return content;
+}
+
 - (DKDReliableMessage *)forwardMessage {
-    NSDictionary *forward = [_storeDictionary objectForKey:@"forward"];
-    DKDReliableMessage *msg = DKDReliableMessageFromDictionary(forward);
-    if (msg != forward) {
-        if (msg) {
+    if (!_forwardMessage) {
+        NSDictionary *forward = [_storeDictionary objectForKey:@"forward"];
+        _forwardMessage = DKDReliableMessageFromDictionary(forward);
+        
+        if (_forwardMessage != forward) {
             // replace the message object
-            [_storeDictionary setObject:msg forKey:@"forward"];
-        } else {
-            NSAssert(false, @"forward message error: %@", forward);
-            //[_storeDictionary removeObjectForKey:key];
+            NSAssert([_forwardMessage isKindOfClass:[DKDReliableMessage class]],
+                     @"forward message error: %@", forward);
+            [_storeDictionary setObject:_forwardMessage forKey:@"forward"];
         }
     }
-    NSAssert(msg, @"forward message not found: %@", self);
-    return msg;
+    NSAssert(_forwardMessage, @"forward message not found: %@", self);
+    return _forwardMessage;
 }
 
 @end

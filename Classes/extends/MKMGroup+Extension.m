@@ -12,13 +12,13 @@
 
 @implementation MKMGroup (Extension)
 
-- (BOOL)isFounder:(const MKMID *)ID {
-    const DIMID *founder = self.founder;
+- (BOOL)isFounder:(DIMID *)ID {
+    DIMID *founder = self.founder;
     if (founder) {
         return [founder isEqual:ID];
     } else {
-        const DIMMeta *meta = self.meta;
-        const DIMPublicKey *PK = [DIMMetaForID(ID) key];
+        DIMMeta *meta = self.meta;
+        DIMPublicKey *PK = [DIMMetaForID(ID) key];
         NSAssert(PK, @"failed to get meta for ID: %@", ID);
         return [meta matchPublicKey:PK];
     }

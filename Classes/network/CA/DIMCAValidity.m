@@ -23,14 +23,14 @@
     }
 }
 
-- (instancetype)initWithNotBefore:(const NSDate *)from
-                         notAfter:(const NSDate *)to {
+- (instancetype)initWithNotBefore:(NSDate *)from
+                         notAfter:(NSDate *)to {
     NSDictionary *dict = @{@"NotBefore":NSNumberFromDate(from),
                            @"NotAfter" :NSNumberFromDate(to),
                            };
     if (self = [super initWithDictionary:dict]) {
-        _notBefore = [from copy];
-        _notAfter = [to copy];
+        _notBefore = from;
+        _notAfter = to;
     }
     return self;
 }

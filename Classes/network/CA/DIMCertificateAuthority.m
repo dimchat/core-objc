@@ -90,7 +90,7 @@
     return [_storeDictionary objectForKey:@"Extensions"];
 }
 
-- (void)setExtraValue:(id)value forKey:(const NSString *)key {
+- (void)setExtraValue:(id)value forKey:(NSString *)key {
     NSAssert(value, @"extra value cannot be empty");
     NSMutableDictionary *ext = [_storeDictionary objectForKey:@"Extensions"];
     if (!ext) {
@@ -104,7 +104,7 @@
 
 #pragma mark - Verify
 
-- (BOOL)verifyWithPublicKey:(const DIMPublicKey *)PK {
+- (BOOL)verifyWithPublicKey:(DIMPublicKey *)PK {
     NSString *json = [_storeDictionary objectForKey:@"Info"];
     return [PK verify:[json data] withSignature:self.signature];
 }

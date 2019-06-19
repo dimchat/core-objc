@@ -15,8 +15,8 @@
 
 @implementation DIMFileContent
 
-- (instancetype)initWithFileData:(const NSData *)data
-                        filename:(nullable const NSString *)name {
+- (instancetype)initWithFileData:(NSData *)data
+                        filename:(nullable NSString *)name {
     NSAssert(data.length > 0, @"file data cannot be empty");
     if (self = [self initWithType:DIMContentType_File]) {
         
@@ -48,12 +48,12 @@
     }
 }
 
-- (nullable const NSData *)fileData {
+- (nullable NSData *)fileData {
 //    return _attachment;
     return nil;
 }
 
-- (void)setFileData:(const NSData *)fileData {
+- (void)setFileData:(NSData *)fileData {
 //    _attachment = fileData;
     
     // update filename with MD5 string

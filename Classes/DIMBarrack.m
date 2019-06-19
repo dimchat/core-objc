@@ -55,7 +55,7 @@ static inline NSString *base_directory(void) {
  @param ID - entity ID
  @return "Documents/.mkm/{address}/meta.plist"
  */
-static inline NSString *meta_filepath(const DIMID *ID, BOOL autoCreate) {
+static inline NSString *meta_filepath(DIMID *ID, BOOL autoCreate) {
     NSString *dir = base_directory();
     dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
     // check base directory exists
@@ -68,11 +68,11 @@ static inline NSString *meta_filepath(const DIMID *ID, BOOL autoCreate) {
 
 #pragma mark -
 
-typedef NSMutableDictionary<const DIMAddress *, const DIMMeta *> MetaTableM;
+typedef NSMutableDictionary<DIMAddress *, DIMMeta *> MetaTableM;
 
-typedef NSMutableDictionary<const DIMAddress *, DIMAccount *> AccountTableM;
-typedef NSMutableDictionary<const DIMAddress *, DIMUser *> UserTableM;
-typedef NSMutableDictionary<const DIMAddress *, DIMGroup *> GroupTableM;
+typedef NSMutableDictionary<DIMAddress *, DIMAccount *> AccountTableM;
+typedef NSMutableDictionary<DIMAddress *, DIMUser *> UserTableM;
+typedef NSMutableDictionary<DIMAddress *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
@@ -84,7 +84,7 @@ typedef NSMutableDictionary<const DIMAddress *, DIMGroup *> GroupTableM;
 }
 
 // default "Documents/.mkm/{address}/meta.plist"
-- (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID;
+- (nullable DIMMeta *)loadMetaForID:(DIMID *)ID;
 
 @end
 
@@ -152,7 +152,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
         if (user.dataSource == nil) {
             user.dataSource = self;
         }
-        const DIMAddress *key = user.ID.address;
+        DIMAddress *key = user.ID.address;
         [_userTable setObject:user forKey:key];
         // erase from account table
         if ([_accountTable objectForKey:key]) {
@@ -170,7 +170,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     }
 }
 
-- (nullable const DIMMeta *)loadMetaForID:(const DIMID *)ID {
+- (nullable DIMMeta *)loadMetaForID:(DIMID *)ID {
     NSString *path = meta_filepath(ID, NO);
     if (file_exists(path)) {
         NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -181,7 +181,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark DIMBarrackDelegate
 
-- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID {
+- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
     
     // (a) check meta with ID
     if ([meta matchID:ID]) {
@@ -207,7 +207,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return [meta writeToBinaryFile:path];
 }
 
-- (nullable DIMAccount *)accountWithID:(const DIMID *)ID {
+- (nullable DIMAccount *)accountWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
     DIMAccount *account;
     
@@ -235,7 +235,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return account;
 }
 
-- (nullable DIMUser *)userWithID:(const DIMID *)ID {
+- (nullable DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     DIMUser *user;
     
@@ -258,7 +258,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return user;
 }
 
-- (nullable DIMGroup *)groupWithID:(const DIMID *)ID {
+- (nullable DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     DIMGroup *group;
     
@@ -283,8 +283,8 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMEntityDataSource
 
-- (nullable const DIMMeta *)metaForID:(const DIMID *)ID {
-    const DIMMeta *meta;
+- (nullable DIMMeta *)metaForID:(DIMID *)ID {
+    DIMMeta *meta;
     
     // (a) get from meta cache
     meta = [_metaTable objectForKey:ID.address];
@@ -308,10 +308,10 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return meta;
 }
 
-- (nullable DIMProfile *)profileForID:(const DIMID *)ID {
+- (nullable DIMProfile *)profileForID:(DIMID *)ID {
     DIMProfile *profile = [_entityDataSource profileForID:ID];
     //NSAssert(profile, @"failed to get profile for ID: %@", ID);
-    const DIMPublicKey *PK = nil;
+    DIMPublicKey *PK = nil;
     if (MKMNetwork_IsCommunicator(ID.type)) {
         PK = DIMMetaForID(ID).key;
     } else if (MKMNetwork_IsGroup(ID.type)) {
@@ -328,19 +328,19 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMUserDataSource
 
-- (DIMPrivateKey *)privateKeyForSignatureOfUser:(const DIMID *)user {
+- (DIMPrivateKey *)privateKeyForSignatureOfUser:(DIMID *)user {
     NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
     NSAssert(_userDataSource, @"user data source not set");
     return [_userDataSource privateKeyForSignatureOfUser:user];
 }
 
-- (NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(const DIMID *)user {
+- (NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(DIMID *)user {
     NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
     NSAssert(_userDataSource, @"user data source not set");
     return [_userDataSource privateKeysForDecryptionOfUser:user];
 }
 
-- (NSArray<const DIMID *> *)contactsOfUser:(const DIMID *)user {
+- (NSArray<DIMID *> *)contactsOfUser:(DIMID *)user {
     NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
     NSAssert(_userDataSource, @"user data source not set");
     return [_userDataSource contactsOfUser:user];
@@ -348,19 +348,19 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 #pragma mark - DIMGroupDataSource
 
-- (const DIMID *)founderOfGroup:(const DIMID *)group {
+- (DIMID *)founderOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
     return [_groupDataSource founderOfGroup:group];
 }
 
-- (nullable const DIMID *)ownerOfGroup:(const DIMID *)group {
+- (nullable DIMID *)ownerOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
     return [_groupDataSource ownerOfGroup:group];
 }
 
-- (NSArray<const DIMID *> *)membersOfGroup:(const DIMID *)group {
+- (NSArray<DIMID *> *)membersOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
     return [_groupDataSource membersOfGroup:group];

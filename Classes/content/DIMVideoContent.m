@@ -20,8 +20,8 @@
 
 @implementation DIMVideoContent
 
-- (instancetype)initWithVideoData:(const NSData *)data
-                         filename:(nullable const NSString *)name {
+- (instancetype)initWithVideoData:(NSData *)data
+                         filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:nil]) {
         // type
         self.type = DIMContentType_Video;
@@ -31,15 +31,15 @@
     return self;
 }
 
-- (const NSData *)videoData {
+- (NSData *)videoData {
     return [self fileData];
 }
 
-- (void)setVideoData:(const NSData *)videoData {
+- (void)setVideoData:(NSData *)videoData {
     self.fileData = videoData;
 }
 
-- (nullable const NSData *)snapshot {
+- (nullable NSData *)snapshot {
     NSString *ss = [_storeDictionary objectForKey:@"snapshot"];
     return [ss base64Decode];
 }

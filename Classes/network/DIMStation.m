@@ -23,7 +23,7 @@
 @implementation DIMStation
 
 /* designated initializer */
-- (instancetype)initWithID:(const DIMID *)ID {
+- (instancetype)initWithID:(DIMID *)ID {
     if (self = [super initWithID:ID]) {
         _host = nil;
         _port = 9394;
@@ -83,11 +83,11 @@
     return self;
 }
 
-- (instancetype)initWithID:(const DIMID *)ID
-                      host:(const NSString *)IP
+- (instancetype)initWithID:(DIMID *)ID
+                      host:(NSString *)IP
                       port:(UInt32)port {
     if (self = [self initWithID:ID]) {
-        _host = [IP copy];
+        _host = IP;
         _port = port;
     }
     return self;
@@ -145,12 +145,12 @@
     return self.SP.home;
 }
 
-- (NSData *)encrypt:(const NSData *)plaintext {
+- (NSData *)encrypt:(NSData *)plaintext {
     // 1. get key for encryption from CA.info.publicKey
-    const MKMPublicKey *key = [self publicKey];
+    DIMPublicKey *key = [self publicKey];
     if (key == nil) {
         // 2. get key for encryption from meta
-        const MKMMeta *meta = [self meta];
+        DIMMeta *meta = [self meta];
         // NOTICE: meta.key will never changed,
         //         so use profile.key to encrypt is the better way
         key = [meta key];
@@ -161,17 +161,17 @@
 
 #pragma mark - DIMTransceiverDelegate
 
-- (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler {
+- (BOOL)sendPackage:(NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler {
     NSAssert(false, @"override me");
     return NO;
 }
 
-- (NSURL *)uploadEncryptedFileData:(const NSData *)CT forMessage:(const DKDInstantMessage *)iMsg {
+- (NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DKDInstantMessage *)iMsg {
     NSAssert(false, @"override me");
     return nil;
 }
 
-- (nullable NSData *)downloadEncryptedFileData:(const NSURL *)url forMessage:(const DKDInstantMessage *)iMsg {
+- (nullable NSData *)downloadEncryptedFileData:(NSURL *)url forMessage:(DKDInstantMessage *)iMsg {
     NSAssert(false, @"override me");
     return nil;
 }

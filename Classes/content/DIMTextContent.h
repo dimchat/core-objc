@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      text : "..."
  *  }
  */
-- (instancetype)initWithText:(const NSString *)text;
+- (instancetype)initWithText:(NSString *)text;
 
 @end
 

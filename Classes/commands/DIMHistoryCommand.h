@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // command parameters
  *  }
  */
-- (instancetype)initWithHistoryCommand:(const NSString *)cmd;
+- (instancetype)initWithHistoryCommand:(NSString *)cmd;
 
 @end
 

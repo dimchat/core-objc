@@ -41,8 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
-- (instancetype)initWithID:(const DIMID *)ID
-                      host:(const NSString *)IP
+- (instancetype)initWithID:(DIMID *)ID
+                      host:(NSString *)IP
                       port:(UInt32)port;
 
 @end
@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param server - current station
  * @param data - data package to send
  */
-- (void)station:(const DIMStation *)server didReceivePackage:(const NSData *)data;
+- (void)station:(DIMStation *)server didReceivePackage:(NSData *)data;
 
 @optional
 
@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param server - current station
  * @param data - data package sent
  */
-- (void)station:(const DIMStation *)server didSendPackage:(const NSData *)data;
+- (void)station:(DIMStation *)server didSendPackage:(NSData *)data;
 
 /**
  *  Failed to send data package to station
@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param data - data package to send
  * @param error - error information
  */
-- (void)station:(const DIMStation *)server sendPackage:(const NSData *)data didFailWithError:(const NSError *)error;
+- (void)station:(DIMStation *)server sendPackage:(NSData *)data didFailWithError:(NSError *)error;
 
 @end
 

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
-@property (strong, nonatomic, nullable) const NSData *fileData;
+@property (strong, nonatomic, nullable) NSData *fileData;
 @property (readonly, strong, nonatomic, nullable) NSString *filename;
 
 /**
@@ -28,8 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename : "..."
  *  }
  */
-- (instancetype)initWithFileData:(const NSData *)data
-                        filename:(nullable const NSString *)name;
+- (instancetype)initWithFileData:(NSData *)data
+                        filename:(nullable NSString *)name;
 
 @end
 

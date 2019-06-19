@@ -28,10 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
  *      desc  : "..."
  *  }
  */
-- (instancetype)initWithURL:(const NSURL *)url
-                      title:(nullable const NSString *)title
-                description:(nullable const NSString *)desc
-                       icon:(nullable const NSData *)icon;
+- (instancetype)initWithURL:(NSURL *)url
+                      title:(nullable NSString *)title
+                description:(nullable NSString *)desc
+                       icon:(nullable NSData *)icon;
 
 @end
 

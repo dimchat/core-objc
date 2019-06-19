@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)sharedInstance;
 
-//- (DIMSymmetricKey *)cipherKeyFrom:(const DIMID *)sender to:(const DIMID *)receiver;
+//- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender to:(DIMID *)receiver;
 //
-//- (void)cacheCipherKey:(DIMSymmetricKey *)key from:(const DIMID *)sender to:(const DIMID *)receiver;
+//- (void)cacheCipherKey:(DIMSymmetricKey *)key from:(DIMID *)sender to:(DIMID *)receiver;
 
 #pragma mark - Cipher key to encpryt message for account(contact)
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param receiver - friend ID
  @return passphrase
  */
-- (DIMSymmetricKey *)cipherKeyForAccount:(const DIMID *)receiver;
+- (DIMSymmetricKey *)cipherKeyForAccount:(DIMID *)receiver;
 
 /**
  Save the cipher key for the friend(contact)
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param key - passphrase
  @param receiver - friend ID
  */
-- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(const DIMID *)receiver;
+- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(DIMID *)receiver;
 
 #pragma mark - Cipher key from contact to decrypt message
 
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param sender - friend ID
  @return passphrase
  */
-- (DIMSymmetricKey *)cipherKeyFromAccount:(const DIMID *)sender;
+- (DIMSymmetricKey *)cipherKeyFromAccount:(DIMID *)sender;
 
 /**
  Save the cipher key from the friend(contact)
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param key - passphrase
  @param sender - friend ID
  */
-- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(const DIMID *)sender;
+- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(DIMID *)sender;
 
 #pragma mark - Cipher key to encrypt message for all group members
 
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param group - group ID
  @return passphrase
  */
-- (DIMSymmetricKey *)cipherKeyForGroup:(const DIMID *)group;
+- (DIMSymmetricKey *)cipherKeyForGroup:(DIMID *)group;
 
 /**
  Save the cipher key for all members in the group
@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param key - passphrase
  @param group - group ID
  */
-- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(const DIMID *)group;
+- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(DIMID *)group;
 
 #pragma mark - Cipher key from a member in the group to decrypt message
 
@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param group - group ID
  @return passphrase
  */
-- (DIMSymmetricKey *)cipherKeyFromMember:(const DIMID *)sender inGroup:(const DIMID *)group;
+- (DIMSymmetricKey *)cipherKeyFromMember:(DIMID *)sender inGroup:(DIMID *)group;
 
 /**
  Save the cipher key from the group member
@@ -98,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param sender - group member ID
  @param group - group ID
  */
-- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(const DIMID *)sender inGroup:(const DIMID *)group;
+- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(DIMID *)sender inGroup:(DIMID *)group;
 
 @end
 

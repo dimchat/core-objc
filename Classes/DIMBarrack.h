@@ -43,11 +43,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addUser:(DIMUser *)user;
 - (void)addGroup:(DIMGroup *)group;
 
-- (nullable DIMAccount *)accountWithID:(const DIMID *)ID;
-- (nullable DIMUser *)userWithID:(const DIMID *)ID;
-- (nullable DIMGroup *)groupWithID:(const DIMID *)ID;
+- (nullable DIMAccount *)accountWithID:(DIMID *)ID;
+- (nullable DIMUser *)userWithID:(DIMID *)ID;
+- (nullable DIMGroup *)groupWithID:(DIMID *)ID;
 
-- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID;
+- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
@@ -63,11 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMBarrackDelegate <NSObject>
 
-- (BOOL)saveMeta:(const MKMMeta *)meta forID:(const MKMID *)ID;
+- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 
-- (nullable DIMAccount *)accountWithID:(const DIMID *)ID;
-- (nullable DIMUser *)userWithID:(const DIMID *)ID;
-- (nullable DIMGroup *)groupWithID:(const DIMID *)ID;
+- (nullable DIMAccount *)accountWithID:(DIMID *)ID;
+- (nullable DIMUser *)userWithID:(DIMID *)ID;
+- (nullable DIMGroup *)groupWithID:(DIMID *)ID;
 
 @end
 

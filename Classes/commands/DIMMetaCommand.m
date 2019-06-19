@@ -8,36 +8,78 @@
 
 #import "DIMMetaCommand.h"
 
+@interface DIMMetaCommand ()
+
+@property (strong, nonatomic) DIMID *ID;
+@property (strong, nonatomic, nullable) DIMMeta *meta;
+
+@end
+
 @implementation DIMMetaCommand
 
-- (instancetype)initWithID:(const DIMID *)ID
-                      meta:(nullable const DIMMeta *)meta {
+- (instancetype)initWithID:(DIMID *)ID
+                      meta:(nullable DIMMeta *)meta {
     if (self = [self initWithCommand:DIMSystemCommand_Meta]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
+        _ID = ID;
+        
         // meta
-        if ([meta matchID:ID]) {
+        if (meta) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
+        _meta = meta;
     }
     return self;
 }
 
-- (const DIMID *)ID {
-    return MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _ID = nil;
+        _meta = nil;
+    }
+    return self;
 }
 
-- (nullable const DIMMeta *)meta {
+- (id)copyWithZone:(NSZone *)zone {
+    DIMMetaCommand *cmd = [[self class] allocWithZone:zone];
+    cmd = [cmd initWithDictionary:_storeDictionary];
+    if (cmd) {
+        cmd.ID = _ID;
+        cmd.meta = _meta;
+    }
+    return cmd;
+}
+
+- (DIMID *)ID {
+    if (!_ID) {
+        _ID = MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
+    }
+    return _ID;
+}
+
+- (nullable DIMMeta *)meta {
+    if (_meta) {
+        return _meta;
+    }
     NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
     DIMMeta *m = MKMMetaFromDictionary(dict);
-    if ([m matchID:self.ID]) {
-        return m;
-    } else {
+    // check whether match ID
+    if (![m matchID:self.ID]) {
         NSAssert(m == nil, @"meta not match ID: %@, %@", self.ID, m);
         return nil;
     }
+    if (m != dict) {
+        // replace the meta object
+        NSAssert([m isKindOfClass:[DIMMeta class]], @"meta error: %@", dict);
+        [_storeDictionary setObject:m forKey:@"meta"];
+    }
+    _meta = m;
+    return _meta;
 }
 
 @end

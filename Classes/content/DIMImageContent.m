@@ -20,8 +20,8 @@
 
 @implementation DIMImageContent
 
-- (instancetype)initWithImageData:(const NSData *)data
-                         filename:(nullable const NSString *)name {
+- (instancetype)initWithImageData:(NSData *)data
+                         filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
         // type
         self.type = DIMContentType_Image;
@@ -31,15 +31,15 @@
     return self;
 }
 
-- (const NSData *)imageData {
+- (NSData *)imageData {
     return [self fileData];
 }
 
-- (void)setImageData:(const NSData *)imageData {
+- (void)setImageData:(NSData *)imageData {
     self.fileData = imageData;
 }
 
-- (nullable const NSData *)thumbnail {
+- (nullable NSData *)thumbnail {
     NSString *small = [_storeDictionary objectForKey:@"thumbnail"];
     return [small base64Decode];
 }

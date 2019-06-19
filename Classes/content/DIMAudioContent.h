@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMAudioContent : DIMFileContent
 
-@property (strong, nonatomic) const NSData *audioData;
+@property (strong, nonatomic) NSData *audioData;
 
 /**
  *  Audio message: {
@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename : "..."
  *  }
  */
-- (instancetype)initWithAudioData:(const NSData *)data
-                         filename:(nullable const NSString *)name;
+- (instancetype)initWithAudioData:(NSData *)data
+                         filename:(nullable NSString *)name;
 
 @end
 

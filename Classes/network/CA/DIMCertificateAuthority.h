@@ -25,9 +25,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)caWithCA:(id)ca;
 
-- (BOOL)verifyWithPublicKey:(const DIMPublicKey *)PK;
+- (BOOL)verifyWithPublicKey:(DIMPublicKey *)PK;
 
-- (void)setExtraValue:(id)value forKey:(const NSString *)key;
+- (void)setExtraValue:(id)value forKey:(NSString *)key;
 
 @end
 

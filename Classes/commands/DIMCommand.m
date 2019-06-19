@@ -16,9 +16,15 @@
 
 #import "DIMCommand.h"
 
+@interface DIMCommand ()
+
+@property (strong, nonatomic) NSString *command;
+
+@end
+
 @implementation DIMCommand
 
-- (instancetype)initWithCommand:(const NSString *)cmd {
+- (instancetype)initWithCommand:(NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
     if (self = [self initWithType:DIMContentType_Command]) {
         // command
@@ -29,8 +35,29 @@
     return self;
 }
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _command = nil;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    DIMCommand *cmd = [[self class] allocWithZone:zone];
+    cmd = [cmd initWithDictionary:_storeDictionary];
+    if (cmd) {
+        cmd.command = _command;
+    }
+    return cmd;
+}
+
 - (NSString *)command {
-    return [_storeDictionary objectForKey:@"command"];
+    if (!_command) {
+        _command = [_storeDictionary objectForKey:@"command"];
+    }
+    return _command;
 }
 
 @end

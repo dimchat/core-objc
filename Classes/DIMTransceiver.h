@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  Handler to call after sending package complete
  *  executed by application
  */
-typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error);
+typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
 
 @protocol DIMTransceiverDelegate <NSObject>
 
@@ -25,7 +25,7 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
  *  @param handler - completion handler
  *  @return NO on data/delegate error
  */
-- (BOOL)sendPackage:(const NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
+- (BOOL)sendPackage:(NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
 
 /**
  *  Upload encrypted data to CDN
@@ -34,7 +34,7 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
  *  @param iMsg - instant message
  *  @return download URL
  */
-- (NSURL *)uploadEncryptedFileData:(const NSData *)CT forMessage:(const DIMInstantMessage *)iMsg;
+- (NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DIMInstantMessage *)iMsg;
 
 /**
  *  Download encrypted data from CDN, and decrypt it when finished
@@ -43,7 +43,7 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
  *  @param iMsg - instant message
  *  @return encrypted file data
  */
-- (nullable NSData *)downloadEncryptedFileData:(const NSURL *)url forMessage:(const DIMInstantMessage *)iMsg;
+- (nullable NSData *)downloadEncryptedFileData:(NSURL *)url forMessage:(DIMInstantMessage *)iMsg;
 
 @end
 
@@ -53,7 +53,7 @@ typedef void (^DIMTransceiverCompletionHandler)(const NSError * _Nullable error)
  *  Callback for sending message
  *  set by application and executed by DIM Core
  */
-typedef void (^DIMTransceiverCallback)(const DIMReliableMessage *rMsg, const NSError * _Nullable error);
+typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Nullable error);
 
 @interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
                                       DKDSecureMessageDelegate,

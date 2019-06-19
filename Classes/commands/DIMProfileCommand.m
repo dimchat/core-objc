@@ -14,10 +14,16 @@
 
 #import "DIMProfileCommand.h"
 
+@interface DIMProfileCommand ()
+
+@property (strong, nonatomic, nullable) DIMProfile *profile;
+
+@end
+
 @implementation DIMProfileCommand
 
-- (instancetype)initWithID:(const DIMID *)ID
-                      meta:(nullable const DIMMeta *)meta
+- (instancetype)initWithID:(DIMID *)ID
+                      meta:(nullable DIMMeta *)meta
                    profile:(nullable DIMProfile *)profile {
     if (self = [self initWithCommand:DIMSystemCommand_Profile]) {
         // ID
@@ -25,19 +31,41 @@
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
         // meta
-        if ([meta matchID:ID]) {
+        if (meta) {
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
         
         // profile
-        if ([profile.ID isEqual:ID]) {
+        if (profile) {
             [_storeDictionary setObject:profile forKey:@"profile"];
         }
+        _profile = profile;
     }
     return self;
 }
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _profile = nil;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    DIMProfileCommand *cmd = [[self class] allocWithZone:zone];
+    cmd = [cmd initWithDictionary:_storeDictionary];
+    if (cmd) {
+        cmd.profile = _profile;
+    }
+    return cmd;
+}
+
 - (nullable DIMProfile *)profile {
+    if (_profile) {
+        return _profile;
+    }
     DIMProfile *p = nil;
     NSObject *data = [_storeDictionary objectForKey:@"profile"];
     if ([data isKindOfClass:[NSDictionary class]]) {
@@ -49,8 +77,15 @@
         //      "signature" : "{BASE64}"
         //  }
         p = MKMProfileFromDictionary(data);
+        
+        if (p != data) {
+            // replace the profile object
+            NSAssert([p isKindOfClass:[DIMProfile class]],
+                     @"profile error: %@", data);
+            [_storeDictionary setObject:p forKey:@"profile"];
+        }
     } else if ([data isKindOfClass:[NSString class]]) {
-        const DIMID *ID = [self ID];
+        DIMID *ID = [self ID];
         NSAssert(ID, @"ID not found");
         NSString *signature = [_storeDictionary objectForKey:@"signature"];
         NSAssert(signature, @"signature not found");
@@ -75,7 +110,8 @@
         }
     }
      */
-    return p;
+    _profile = p;
+    return _profile;
 }
 
 @end

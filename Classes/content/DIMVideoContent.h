@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMVideoContent : DIMFileContent
 
-@property (strong, nonatomic) const NSData *videoData;
-@property (readonly, strong, nonatomic, nullable) const NSData *snapshot;
+@property (strong, nonatomic) NSData *videoData;
+@property (readonly, strong, nonatomic, nullable) NSData *snapshot;
 
 /**
  *  Video message: {
@@ -26,8 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename : "..."
  *  }
  */
-- (instancetype)initWithVideoData:(const NSData *)data
-                         filename:(nullable const NSString *)name;
+- (instancetype)initWithVideoData:(NSData *)data
+                         filename:(nullable NSString *)name;
 
 @end
 

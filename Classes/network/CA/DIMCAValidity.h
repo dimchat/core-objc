@@ -17,8 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)validityWithValidity:(id)validity;
 
-- (instancetype)initWithNotBefore:(const NSDate *)from
-                         notAfter:(const NSDate *)to;
+- (instancetype)initWithNotBefore:(NSDate *)from
+                         notAfter:(NSDate *)to;
 
 @end
 

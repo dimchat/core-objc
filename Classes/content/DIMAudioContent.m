@@ -18,8 +18,8 @@
 
 @implementation DIMAudioContent
 
-- (instancetype)initWithAudioData:(const NSData *)data
-                         filename:(nullable const NSString *)name {
+- (instancetype)initWithAudioData:(NSData *)data
+                         filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
         // type
         self.type = DIMContentType_Audio;
@@ -29,11 +29,11 @@
     return self;
 }
 
-- (const NSData *)audioData {
+- (NSData *)audioData {
     return [self fileData];
 }
 
-- (void)setAudioData:(const NSData *)audioData {
+- (void)setAudioData:(NSData *)audioData {
     self.fileData = audioData;
 }
 

@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return InstantMessage object
  */
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
-                                                  users:(const NSArray<const DIMUser *> *)users;
+                                                  users:(NSArray<DIMUser *> *)users;
 
 @end
 

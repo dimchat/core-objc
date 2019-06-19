@@ -13,9 +13,9 @@
 #define DIM_KEYSTORE_FILENAME @"keystore.plist"
 
 // receiver -> key
-typedef NSMutableDictionary<const DIMAddress *, DIMSymmetricKey *> KeyMap;
+typedef NSMutableDictionary<DIMAddress *, DIMSymmetricKey *> KeyMap;
 // sender -> map<receiver, key>
-typedef NSMutableDictionary<const DIMAddress *, KeyMap *> KeyTable;
+typedef NSMutableDictionary<DIMAddress *, KeyMap *> KeyTable;
 
 @interface DIMKeyStore ()
 
@@ -47,7 +47,7 @@ static NSString *s_directory = nil;
 }
 
 // "Library/Caches/.ks/{address}/keystore_*.plist"
-- (NSString *)_pathWithID:(const DIMID *)ID filename:(NSString *)name {
+- (NSString *)_pathWithID:(DIMID *)ID filename:(NSString *)name {
     NSString *dir = self.directory;
     dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
     
@@ -69,7 +69,7 @@ static NSString *s_directory = nil;
         // nothing changed
         return NO;
     }
-    const DIMID *ID = self.currentUser.ID;
+    DIMID *ID = self.currentUser.ID;
     if (![ID isValid]) {
         NSAssert(self.currentUser == nil, @"Current user invalid: %@", self.currentUser);
         return NO;
@@ -80,7 +80,7 @@ static NSString *s_directory = nil;
 }
 
 - (BOOL)reload {
-    const DIMID *ID = self.currentUser.ID;
+    DIMID *ID = self.currentUser.ID;
     if (![ID isValid]) {
         NSAssert(self.currentUser == nil, @"Current user invalid: %@", self.currentUser);
         return NO;

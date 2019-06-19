@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // command parameters
  *  }
  */
-- (instancetype)initWithCommand:(const NSString *)cmd;
+- (instancetype)initWithCommand:(NSString *)cmd;
 
 @end
 

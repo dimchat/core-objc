@@ -14,9 +14,9 @@
 #import "DIMKeyStore.h"
 
 // receiver -> key
-typedef NSMutableDictionary<const DIMAddress *, DIMSymmetricKey *> KeyMap;
+typedef NSMutableDictionary<DIMAddress *, DIMSymmetricKey *> KeyMap;
 // sender -> map<receiver, key>
-typedef NSMutableDictionary<const DIMAddress *, KeyMap *> KeyTable;
+typedef NSMutableDictionary<DIMAddress *, KeyMap *> KeyTable;
 
 @interface DIMKeyStore ()
 
@@ -61,16 +61,16 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     }
 }
 
-- (DIMSymmetricKey *)cipherKeyFrom:(const MKMID *)sender
-                                to:(const MKMID *)receiver {
+- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
+                                to:(DIMID *)receiver {
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     KeyMap *keyMap = [_keyTable objectForKey:sender.address];
     return [keyMap objectForKey:receiver.address];
 }
 
-- (void)cacheCipherKey:(MKMSymmetricKey *)key
-                  from:(const MKMID *)sender
-                    to:(const MKMID *)receiver {
+- (void)cacheCipherKey:(DIMSymmetricKey *)key
+                  from:(DIMID *)sender
+                    to:(DIMID *)receiver {
     NSAssert(key, @"cipher key cannot be empty");
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     KeyMap *keyMap = [_keyTable objectForKey:sender.address];
@@ -86,8 +86,8 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 
 #pragma mark - Cipher key to encpryt message for account(contact)
 
-- (DIMSymmetricKey *)cipherKeyForAccount:(const DIMID *)receiver {
-    const DIMID *sender =_currentUser.ID;
+- (DIMSymmetricKey *)cipherKeyForAccount:(DIMID *)receiver {
+    DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"account error: %@", receiver);
     DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:receiver];
@@ -99,8 +99,8 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     return scKey;
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(const DIMID *)receiver {
-    const DIMID *sender =_currentUser.ID;
+- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(DIMID *)receiver {
+    DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"account error: %@", receiver);
     [self cacheCipherKey:key from:sender to:receiver];
@@ -108,15 +108,15 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 
 #pragma mark - Cipher key from account(contact) to decrypt message
 
-- (DIMSymmetricKey *)cipherKeyFromAccount:(const DIMID *)sender {
-    const DIMID *receiver =_currentUser.ID;
+- (DIMSymmetricKey *)cipherKeyFromAccount:(DIMID *)sender {
+    DIMID *receiver =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"receiver error: %@", receiver);
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"account error: %@", sender);
     return [self cipherKeyFrom:sender to:receiver];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(const DIMID *)sender {
-    const DIMID *receiver =_currentUser.ID;
+- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(DIMID *)sender {
+    DIMID *receiver =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(receiver.type), @"receiver error: %@", receiver);
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"account error: %@", sender);
     [self cacheCipherKey:key from:sender to:receiver];
@@ -124,8 +124,8 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 
 #pragma mark - Cipher key to encrypt message for all group members
 
-- (DIMSymmetricKey *)cipherKeyForGroup:(const DIMID *)group {
-    const DIMID *sender =_currentUser.ID;
+- (DIMSymmetricKey *)cipherKeyForGroup:(DIMID *)group {
+    DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     DIMSymmetricKey *scKey = [self cipherKeyFrom:sender to:group];
@@ -137,8 +137,8 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
     return scKey;
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(const DIMID *)group {
-    const DIMID *sender =_currentUser.ID;
+- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(DIMID *)group {
+    DIMID *sender =_currentUser.ID;
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     [self cacheCipherKey:key from:sender to:group];
@@ -146,13 +146,13 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 
 #pragma mark - Cipher key from a member in the group to decrypt message
 
-- (DIMSymmetricKey *)cipherKeyFromMember:(const DIMID *)sender inGroup:(const DIMID *)group {
+- (DIMSymmetricKey *)cipherKeyFromMember:(DIMID *)sender inGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"member error: %@", sender);
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     return [self cipherKeyFrom:sender to:group];
 }
 
-- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(const DIMID *)sender inGroup:(const DIMID *)group {
+- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(DIMID *)sender inGroup:(DIMID *)group {
     NSAssert(key, @"cipher key cannot be empty");
     NSAssert(MKMNetwork_IsCommunicator(sender.type), @"member error: %@", sender);
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);

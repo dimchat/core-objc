@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
-- (BOOL)verifyStation:(const DIMStation *)server;
+- (BOOL)verifyStation:(DIMStation *)server;
 
 @end
 
@@ -29,9 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMServiceProviderDataSource <NSObject>
 
-- (NSInteger)numberOfStationsInServiceProvider:(const DIMServiceProvider *)SP;
+- (NSInteger)numberOfStationsInServiceProvider:(DIMServiceProvider *)SP;
 
-- (DIMStation *)serviceProvider:(const DIMServiceProvider *)SP
+- (DIMStation *)serviceProvider:(DIMServiceProvider *)SP
                  stationAtIndex:(NSInteger)index;
 
 @end

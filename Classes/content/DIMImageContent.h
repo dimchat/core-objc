@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMImageContent : DIMFileContent
 
-@property (strong, nonatomic) const NSData *imageData;
-@property (readonly, strong, nonatomic, nullable) const NSData *thumbnail;
+@property (strong, nonatomic) NSData *imageData;
+@property (readonly, strong, nonatomic, nullable) NSData *thumbnail;
 
 /**
  *  Image message: {
@@ -26,8 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename  : "..."
  *  }
  */
-- (instancetype)initWithImageData:(const NSData *)data
-                         filename:(nullable const NSString *)name;
+- (instancetype)initWithImageData:(NSData *)data
+                         filename:(nullable NSString *)name;
 
 @end
 

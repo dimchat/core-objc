@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // broadcast info
  *  }
  */
-- (instancetype)initWithTitle:(const NSString *)title;
+- (instancetype)initWithTitle:(NSString *)title;
 
 @end
 

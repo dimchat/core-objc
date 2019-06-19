@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      signature : "..." // the same signature with the original message
  *  }
  */
-- (instancetype)initWithMessage:(const NSString *)message;
+- (instancetype)initWithMessage:(NSString *)message;
 
 @end
 

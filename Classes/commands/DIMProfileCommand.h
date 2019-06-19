@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      profile   : {...}      // when profile is empty, means query for ID
  *  }
  */
-- (instancetype)initWithID:(const DIMID *)ID
-                      meta:(nullable const DIMMeta *)meta
+- (instancetype)initWithID:(DIMID *)ID
+                      meta:(nullable DIMMeta *)meta
                    profile:(nullable DIMProfile *)profile;
 
 @end
