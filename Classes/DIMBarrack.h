@@ -49,6 +49,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 
+- (BOOL)saveProfile:(DIMProfile *)profile;
+- (BOOL)verifyProfile:(DIMProfile *)profile;
+
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
  * this will remove 50% of cached objects
@@ -64,6 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMBarrackDelegate <NSObject>
 
 - (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
+- (BOOL)saveProfile:(DIMProfile *)profile;
 
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID;
 - (nullable DIMUser *)userWithID:(DIMID *)ID;

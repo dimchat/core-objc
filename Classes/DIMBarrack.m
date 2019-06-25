@@ -50,10 +50,10 @@ static inline NSString *base_directory(void) {
 }
 
 /**
- Get meta filepath in Documents Directory
- 
- @param ID - entity ID
- @return "Documents/.mkm/{address}/meta.plist"
+ *  Get meta filepath in Documents Directory
+ *
+ * @param ID - entity ID
+ * @return "Documents/.mkm/{address}/meta.plist"
  */
 static inline NSString *meta_filepath(DIMID *ID, BOOL autoCreate) {
     NSString *dir = base_directory();
@@ -64,6 +64,23 @@ static inline NSString *meta_filepath(DIMID *ID, BOOL autoCreate) {
         make_dirs(dir);
     }
     return [dir stringByAppendingPathComponent:@"meta.plist"];
+}
+
+/**
+ *  Get profile filepath in Documents Directory
+ *
+ * @param ID - entity ID
+ * @return "Documents/.mkm/{address}/profile.plist"
+ */
+static inline NSString *profile_filepath(DIMID *ID, BOOL autoCreate) {
+    NSString *dir = base_directory();
+    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
+    // check base directory exists
+    if (autoCreate && !file_exists(dir)) {
+        // make sure directory exists
+        make_dirs(dir);
+    }
+    return [dir stringByAppendingPathComponent:@"profile.plist"];
 }
 
 #pragma mark -
@@ -207,6 +224,42 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return [meta writeToBinaryFile:path];
 }
 
+- (BOOL)saveProfile:(MKMProfile *)profile {
+    
+    // (a) save by delegate
+    if ([_delegate saveProfile:profile]) {
+        return YES;
+    }
+    
+    // (b) try to verify it
+    if (![self verifyProfile:profile]) {
+        //return NO;
+    }
+    
+    // default "Documents/.mkm/{address}/profile.plist"
+    DIMID *ID = profile.ID;
+    NSString *path = profile_filepath(ID, YES);
+    
+    // (c) save to local storage
+    return [profile writeToBinaryFile:path];
+}
+
+- (BOOL)verifyProfile:(MKMProfile *)profile {
+    DIMID *ID = profile.ID;
+    DIMPublicKey *PK = nil;
+    if (MKMNetwork_IsCommunicator(ID.type)) {
+        PK = DIMMetaForID(ID).key;
+    } else if (MKMNetwork_IsGroup(ID.type)) {
+        DIMGroup *group = DIMGroupWithID(ID);
+        PK = DIMMetaForID(group.owner).key;
+    }
+    if (PK && [profile verify:PK]) {
+        return YES;
+    }
+    NSLog(@"profile signature not match: %@", profile);
+    return NO;
+}
+
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
     DIMAccount *account;
@@ -310,19 +363,13 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 
 - (nullable DIMProfile *)profileForID:(DIMID *)ID {
     DIMProfile *profile = [_entityDataSource profileForID:ID];
-    //NSAssert(profile, @"failed to get profile for ID: %@", ID);
-    DIMPublicKey *PK = nil;
-    if (MKMNetwork_IsCommunicator(ID.type)) {
-        PK = DIMMetaForID(ID).key;
-    } else if (MKMNetwork_IsGroup(ID.type)) {
-        DIMGroup *group = DIMGroupWithID(ID);
-        PK = DIMMetaForID(group.owner).key;
-    }
-    if (PK && [profile verify:PK]) {
+    
+    // try to verify it
+    if ([self verifyProfile:profile]) {
         return profile;
     } else {
         NSLog(@"profile signature not match: %@", profile);
-        return nil;
+        return profile;
     }
 }
 
