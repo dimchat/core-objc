@@ -10,15 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define DIMFacebook()            [DIMBarrack sharedInstance]
-
-#define DIMMetaForID(ID)         [DIMFacebook() metaForID:(ID)]
-#define DIMProfileForID(ID)      [DIMFacebook() profileForID:(ID)]
-
-#define DIMAccountWithID(ID)     [DIMFacebook() accountWithID:(ID)]
-#define DIMUserWithID(ID)        [DIMFacebook() userWithID:(ID)]
-#define DIMGroupWithID(ID)       [DIMFacebook() groupWithID:(ID)]
-
 @protocol DIMBarrackDelegate;
 
 /**
@@ -37,8 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) id<DIMBarrackDelegate> delegate;
 
-+ (instancetype)sharedInstance;
-
 - (void)addAccount:(DIMAccount *)account;
 - (void)addUser:(DIMUser *)user;
 - (void)addGroup:(DIMGroup *)group;
@@ -47,10 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable DIMUser *)userWithID:(DIMID *)ID;
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID;
 
-- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
-
-- (BOOL)saveProfile:(DIMProfile *)profile;
-- (BOOL)verifyProfile:(DIMProfile *)profile;
+// default "Documents/.mkm/{address}/meta.plist"
+- (nullable DIMMeta *)loadMetaForID:(DIMID *)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
@@ -65,9 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Barrack Delegate
 
 @protocol DIMBarrackDelegate <NSObject>
-
-- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
-- (BOOL)saveProfile:(DIMProfile *)profile;
 
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID;
 - (nullable DIMUser *)userWithID:(DIMID *)ID;

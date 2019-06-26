@@ -159,21 +159,4 @@
     return [key encrypt:plaintext];
 }
 
-#pragma mark - DIMTransceiverDelegate
-
-- (BOOL)sendPackage:(NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler {
-    NSAssert(false, @"override me");
-    return NO;
-}
-
-- (NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DKDInstantMessage *)iMsg {
-    NSAssert(false, @"override me");
-    return nil;
-}
-
-- (nullable NSData *)downloadEncryptedFileData:(NSURL *)url forMessage:(DKDInstantMessage *)iMsg {
-    NSAssert(false, @"override me");
-    return nil;
-}
-
 @end

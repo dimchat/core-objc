@@ -6,7 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
 #import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
 
@@ -14,16 +13,12 @@
 #import "DIMContentType.h"
 #import "DIMFileContent.h"
 
-#import "DIMBarrack.h"
 #import "DIMKeyStore.h"
-
 #import "DIMTransceiver+Transform.h"
 
 #import "DIMTransceiver.h"
 
 @implementation DIMTransceiver
-
-SingletonImplementations(DIMTransceiver, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -109,7 +104,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     NSString *json = [password jsonString];
     NSData *data = [json data];
     DIMID *ID = MKMIDFromString(receiver);
-    DIMAccount *account = DIMAccountWithID(ID);
+    DIMAccount *account = [_barrackDelegate accountWithID:ID];
     NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
     return [account encrypt:data];
 }
@@ -171,50 +166,38 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
 
 - (nullable NSDictionary *)message:(DIMSecureMessage *)sMsg
                     decryptKeyData:(nullable NSData *)key
-                        fromSender:(NSString *)sender
-                        toReceiver:(NSString *)receiver
-                           inGroup:(nullable NSString *)group {
+                              from:(NSString *)sender
+                                to:(NSString *)receiver {
     DIMSymmetricKey *PW = nil;
     
-    DIMKeyStore *store = [DIMKeyStore sharedInstance];
     DIMID *from = MKMIDFromString(sender);
     DIMID *to = MKMIDFromString(receiver);
-    DIMID *groupID = MKMIDFromString(group);
     
     if (key) {
         // decrypt key data with the receiver's private key
-        DIMUser *user = DIMUserWithID(to);
+        DIMID *ID = MKMIDFromString(sMsg.envelope.receiver);
+        DIMUser *user = [_barrackDelegate userWithID:ID];
         NSAssert(user, @"failed to decrypt for receiver: %@", receiver);
         NSData *plaintext = [user decrypt:key];
-        NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
-        
-        // create symmetric key
-        NSString *json = [plaintext UTF8String]; // remove garbage at end
-        NSDictionary *dict = [[json data] jsonDictionary];
-        PW = MKMSymmetricKeyFromDictionary(dict);
-        NSAssert(PW, @"invalid key: %@", dict);
-        
-        // set the new key in key store
-        if (group) {
-            [store setCipherKey:PW
-                     fromMember:MKMIDFromString(sender)
-                        inGroup:MKMIDFromString(group)];
-            NSLog(@"got key from group member: %@, %@", sender, group);
+        if (plaintext.length > 0) {
+            // create symmetric key
+            NSString *json = [plaintext UTF8String]; // remove garbage at end
+            NSDictionary *dict = [[json data] jsonDictionary];
+            PW = MKMSymmetricKeyFromDictionary(dict);
+            if (PW) {
+                // set the new key in key store
+                [_cipherKeyDataSource cacheCipherKey:PW from:from to:to];
+                NSLog(@"got key from %@ to %@", sender, receiver);
+            }
         } else {
-            [store setCipherKey:PW
-                    fromAccount:MKMIDFromString(sender)];
-            NSLog(@"got key from contact: %@", sender);
+            NSAssert(false, @"failed to decrypt key in msg: %@", sMsg);
         }
     }
     
     if (!PW) {
         // if key data is empty, get it from key store
-        if (group) {
-            PW = [store cipherKeyFromMember:from inGroup:groupID];
-        } else {
-            PW = [store cipherKeyFromAccount:from];
-        }
-        NSAssert(PW, @"failed to get symmetric from %@, group: %@", from, group);
+        PW = [_cipherKeyDataSource cipherKeyFrom:from to:to];
+        NSAssert(PW, @"failed to get password from %@ to %@", sender, receiver);
     }
     
     return PW;
@@ -224,7 +207,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
                     signData:(NSData *)data
                    forSender:(NSString *)sender {
     DIMID *ID = MKMIDFromString(sender);
-    DIMUser *user = DIMUserWithID(ID);
+    DIMUser *user = [_barrackDelegate userWithID:ID];
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
 }
@@ -236,7 +219,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
   withSignature:(NSData *)signature
       forSender:(NSString *)sender {
     DIMID *ID = MKMIDFromString(sender);
-    DIMAccount *account = DIMAccountWithID(ID);
+    DIMAccount *account = [_barrackDelegate accountWithID:ID];
     NSAssert(account, @"failed to verify with sender: %@", sender);
     return [account verify:data withSignature:signature];
 }
@@ -265,7 +248,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     BOOL OK = YES;
     if (split && MKMNetwork_IsGroup(receiver.type)) {
         NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
-        DIMGroup *group = DIMGroupWithID(groupID);
+        DIMGroup *group = [_barrackDelegate groupWithID:groupID];
         NSArray *messages = [rMsg splitForMembers:group.members];
         if (messages.count == 0) {
             NSLog(@"failed to split msg, send it to group: %@", receiver);

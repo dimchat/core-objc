@@ -6,7 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
 #import "NSDictionary+Binary.h"
 
 #import "DIMBarrack.h"
@@ -57,30 +56,13 @@ static inline NSString *base_directory(void) {
  */
 static inline NSString *meta_filepath(DIMID *ID, BOOL autoCreate) {
     NSString *dir = base_directory();
-    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
+    dir = [dir stringByAppendingPathComponent:ID.address];
     // check base directory exists
     if (autoCreate && !file_exists(dir)) {
         // make sure directory exists
         make_dirs(dir);
     }
     return [dir stringByAppendingPathComponent:@"meta.plist"];
-}
-
-/**
- *  Get profile filepath in Documents Directory
- *
- * @param ID - entity ID
- * @return "Documents/.mkm/{address}/profile.plist"
- */
-static inline NSString *profile_filepath(DIMID *ID, BOOL autoCreate) {
-    NSString *dir = base_directory();
-    dir = [dir stringByAppendingPathComponent:(NSString *)ID.address];
-    // check base directory exists
-    if (autoCreate && !file_exists(dir)) {
-        // make sure directory exists
-        make_dirs(dir);
-    }
-    return [dir stringByAppendingPathComponent:@"profile.plist"];
 }
 
 #pragma mark -
@@ -99,9 +81,6 @@ typedef NSMutableDictionary<DIMAddress *, DIMGroup *> GroupTableM;
     UserTableM *_userTable;
     GroupTableM *_groupTable;
 }
-
-// default "Documents/.mkm/{address}/meta.plist"
-- (nullable DIMMeta *)loadMetaForID:(DIMID *)ID;
 
 @end
 
@@ -124,8 +103,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 @implementation DIMBarrack
-
-SingletonImplementations(DIMBarrack, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -197,68 +174,6 @@ SingletonImplementations(DIMBarrack, sharedInstance)
 }
 
 #pragma mark DIMBarrackDelegate
-
-- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    
-    // (a) check meta with ID
-    if ([meta matchID:ID]) {
-        [_metaTable setObject:meta forKey:ID.address];
-    } else {
-        NSAssert(false, @"meta not match ID:%@, %@", ID, meta);
-        return NO;
-    }
-    
-    // (b) save by delegate
-    if ([_delegate saveMeta:meta forID:ID]) {
-        return YES;
-    }
-    
-    // default "Documents/.mkm/{address}/meta.plist"
-    NSString *path = meta_filepath(ID, YES);
-    if (file_exists(path)) {
-        NSLog(@"meta file already exists: %@, IGNORE!", path);
-        return YES;
-    }
-    
-    // (c) save to local storage
-    return [meta writeToBinaryFile:path];
-}
-
-- (BOOL)saveProfile:(MKMProfile *)profile {
-    
-    // (a) save by delegate
-    if ([_delegate saveProfile:profile]) {
-        return YES;
-    }
-    
-    // (b) try to verify it
-    if (![self verifyProfile:profile]) {
-        //return NO;
-    }
-    
-    // default "Documents/.mkm/{address}/profile.plist"
-    DIMID *ID = profile.ID;
-    NSString *path = profile_filepath(ID, YES);
-    
-    // (c) save to local storage
-    return [profile writeToBinaryFile:path];
-}
-
-- (BOOL)verifyProfile:(MKMProfile *)profile {
-    DIMID *ID = profile.ID;
-    DIMPublicKey *PK = nil;
-    if (MKMNetwork_IsCommunicator(ID.type)) {
-        PK = DIMMetaForID(ID).key;
-    } else if (MKMNetwork_IsGroup(ID.type)) {
-        DIMGroup *group = DIMGroupWithID(ID);
-        PK = DIMMetaForID(group.owner).key;
-    }
-    if (PK && [profile verify:PK]) {
-        return YES;
-    }
-    NSLog(@"profile signature not match: %@", profile);
-    return NO;
-}
 
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
@@ -346,6 +261,7 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     }
     
     // (b) get from entity data source
+    NSAssert(_entityDataSource, @"entity data source not set");
     meta = [_entityDataSource metaForID:ID];
     if ([meta matchID:ID]) {
         [_metaTable setObject:meta forKey:ID.address];
@@ -361,16 +277,28 @@ SingletonImplementations(DIMBarrack, sharedInstance)
     return meta;
 }
 
-- (nullable DIMProfile *)profileForID:(DIMID *)ID {
-    DIMProfile *profile = [_entityDataSource profileForID:ID];
-    
-    // try to verify it
-    if ([self verifyProfile:profile]) {
-        return profile;
-    } else {
-        NSLog(@"profile signature not match: %@", profile);
-        return profile;
+- (BOOL)saveMeta:(MKMMeta *)meta forID:(MKMID *)ID {
+    if (![meta matchID:ID]) {
+        NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
+        return NO;
     }
+    // 1. try saving by delegate
+    NSAssert(_entityDataSource, @"entity data source not set");
+    if ([_entityDataSource saveMeta:meta forID:ID]) {
+        return YES;
+    }
+    // 2. check default directary
+    NSString *path = meta_filepath(ID, YES);
+    if (file_exists(path)) {
+        // no need to update meta file
+        return YES;
+    }
+    return [meta writeToBinaryFile:path];
+}
+
+- (nullable DIMProfile *)profileForID:(DIMID *)ID {
+    NSAssert(_entityDataSource, @"entity data source not set");
+    return [_entityDataSource profileForID:ID];
 }
 
 #pragma mark - DIMUserDataSource

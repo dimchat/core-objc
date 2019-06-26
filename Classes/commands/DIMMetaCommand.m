@@ -46,8 +46,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMMetaCommand *cmd = [[self class] allocWithZone:zone];
-    cmd = [cmd initWithDictionary:_storeDictionary];
+    DIMMetaCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.ID = _ID;
         cmd.meta = _meta;

@@ -10,95 +10,68 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol DIMCipherKeyDataSource <NSObject>
+
+/**
+ *  Get cipher key for encrypt message from 'sender' to 'receiver'
+ *
+ * @param sender - user or contact ID
+ * @param receiver - contact or user/group ID
+ * @return cipher key
+ */
+- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
+                                to:(DIMID *)receiver;
+
+/**
+ *  Cache cipher key for reusing, with the direction (from 'sender' to 'receiver')
+ *
+ * @param key - cipher key
+ * @param sender - user or contact ID
+ * @param receiver - contact or user/group ID
+ */
+- (void)cacheCipherKey:(DIMSymmetricKey *)key
+                  from:(DIMID *)sender
+                    to:(DIMID *)receiver;
+
+/**
+ *  Update/create cipher key for encrypt message content
+ *
+ * @param key - old key to be reused (nullable)
+ * @param sender - user ID
+ * @param receiver - contact/group ID
+ * @return new key
+ */
+- (DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
+                               from:(DIMID *)sender
+                                 to:(DIMID *)receiver;
+
+@end
+
 /**
  *  Cache for Cipher Key with direction: <from, to>
  */
-@interface DIMKeyStore : NSObject
+@interface DIMKeyStore : NSObject <DIMCipherKeyDataSource>
 
 /**
- Current User
+ *  Load cipher key table into memory cache
+ *
+ * @param keyMap - cipher keys(with direction) from local storage
+ * @return NO on nothing changed
  */
-@property (strong, nonatomic) DIMUser *currentUser;
-
-+ (instancetype)sharedInstance;
-
-//- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender to:(DIMID *)receiver;
-//
-//- (void)cacheCipherKey:(DIMSymmetricKey *)key from:(DIMID *)sender to:(DIMID *)receiver;
-
-#pragma mark - Cipher key to encpryt message for account(contact)
+- (BOOL)loadKeys:(NSDictionary *)keyMap;
 
 /**
- Get a cipher key to encrypt message for a friend(contact)
-
- @param receiver - friend ID
- @return passphrase
+ *  Callback for saving cipher key table into local storage
+ *
+ * @param keyMap - all cipher keys(with direction) from memory cache
+ * @return YES on success
  */
-- (DIMSymmetricKey *)cipherKeyForAccount:(DIMID *)receiver;
+- (BOOL)saveKeys:(NSDictionary *)keyMap;
 
 /**
- Save the cipher key for the friend(contact)
-
- @param key - passphrase
- @param receiver - friend ID
+ *  Trigger for saving cipher key table
  */
-- (void)setCipherKey:(DIMSymmetricKey *)key forAccount:(DIMID *)receiver;
-
-#pragma mark - Cipher key from contact to decrypt message
-
-/**
- Get a cipher key from a friend(contact) to decrypt message
-
- @param sender - friend ID
- @return passphrase
- */
-- (DIMSymmetricKey *)cipherKeyFromAccount:(DIMID *)sender;
-
-/**
- Save the cipher key from the friend(contact)
-
- @param key - passphrase
- @param sender - friend ID
- */
-- (void)setCipherKey:(DIMSymmetricKey *)key fromAccount:(DIMID *)sender;
-
-#pragma mark - Cipher key to encrypt message for all group members
-
-/**
- Get a cipher key to encrypt message for all members in a group
-
- @param group - group ID
- @return passphrase
- */
-- (DIMSymmetricKey *)cipherKeyForGroup:(DIMID *)group;
-
-/**
- Save the cipher key for all members in the group
-
- @param key - passphrase
- @param group - group ID
- */
-- (void)setCipherKey:(DIMSymmetricKey *)key forGroup:(DIMID *)group;
-
-#pragma mark - Cipher key from a member in the group to decrypt message
-
-/**
- Get a cipher key from a group member to decrypt message
-
- @param sender - group member ID
- @param group - group ID
- @return passphrase
- */
-- (DIMSymmetricKey *)cipherKeyFromMember:(DIMID *)sender inGroup:(DIMID *)group;
-
-/**
- Save the cipher key from the group member
-
- @param key - passphrase
- @param sender - group member ID
- @param group - group ID
- */
-- (void)setCipherKey:(DIMSymmetricKey *)key fromMember:(DIMID *)sender inGroup:(DIMID *)group;
+- (void)flush;
 
 @end
 

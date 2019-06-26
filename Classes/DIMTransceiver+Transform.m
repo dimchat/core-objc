@@ -16,17 +16,39 @@
 
 @implementation DIMTransceiver (Transform)
 
+- (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
+    // 1. get old key from store
+    DIMSymmetricKey *reusedKey;
+    reusedKey = [_cipherKeyDataSource cipherKeyFrom:sender to:receiver];
+    // 2. get new key from delegate
+    DIMSymmetricKey *newKey;
+    newKey = [_cipherKeyDataSource reuseCipherKey:reusedKey from:sender to:receiver];
+    if (!newKey) {
+        if (!reusedKey) {
+            // 3. create a new key
+            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
+        } else {
+            newKey = reusedKey;
+        }
+    }
+    // 4. update new key into the key store
+    if (![newKey isEqual:reusedKey]) {
+        [_cipherKeyDataSource cacheCipherKey:newKey from:sender to:receiver];
+    }
+    return newKey;
+}
+
 - (nullable DIMReliableMessage *)encryptAndSignMessage:(DIMInstantMessage *)iMsg {
     NSAssert(iMsg.content, @"content cannot be empty");
     if (iMsg.delegate == nil) {
         iMsg.delegate = self;
     }
     
-    DIMKeyStore *store = [DIMKeyStore sharedInstance];
     DIMSymmetricKey *scKey = nil;
     DIMSecureMessage *sMsg = nil;
     
     // 1. encrypt 'content' to 'data' for receiver
+    DIMID *sender = MKMIDFromString(iMsg.envelope.sender);
     DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
     DIMID *group = MKMIDFromString(iMsg.content.group);
     if (group) {
@@ -45,16 +67,16 @@
             // split group message
             members = @[receiver];
         } else {
-            members = DIMGroupWithID(group).members;
+            members = [_barrackDelegate groupWithID:group].members;
             NSAssert(members.count > 0, @"group members cannot be empty");
         }
-        scKey = [store cipherKeyForGroup:group];
+        scKey = [self _passwordFrom:sender to:group];
         NSAssert(scKey != nil, @"failed to generate key for group: %@", group);
         sMsg = [iMsg encryptWithKey:scKey forMembers:members];
     } else {
         // personal message
         NSAssert(iMsg.content.group == nil, @"content error: %@", iMsg);
-        scKey = [store cipherKeyForAccount:receiver];
+        scKey = [self _passwordFrom:sender to:receiver];
         NSAssert(scKey != nil, @"failed to generate key for contact: %@", receiver);
         sMsg = [iMsg encryptWithKey:scKey];
     }
@@ -74,13 +96,12 @@
     DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
     
     // [Meta Protocol] check meta in first contact message
-    DIMMeta *meta = DIMMetaForID(sender);
+    DIMMeta *meta = [_entityDataSource metaForID:sender];
     if (!meta) {
         // first contact, try meta in message package
         meta = MKMMetaFromDictionary(rMsg.meta);
         if ([meta matchID:sender]) {
-            DIMBarrack *barrack = [DIMBarrack sharedInstance];
-            [barrack saveMeta:meta forID:sender];
+            [_entityDataSource saveMeta:meta forID:sender];
         } else {
             NSAssert(false, @"meta error: %@, %@", sender, meta);
             return nil;

@@ -47,8 +47,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMHistoryCommand *cmd = [[self class] allocWithZone:zone];
-    cmd = [cmd initWithDictionary:_storeDictionary];
+    DIMHistoryCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.time = _time;
     }

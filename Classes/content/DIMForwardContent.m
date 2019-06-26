@@ -39,8 +39,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMForwardContent *content = [[self class] allocWithZone:zone];
-    content = [content initWithDictionary:_storeDictionary];
+    DIMForwardContent *content = [super copyWithZone:zone];
     if (content) {
         content.forwardMessage = _forwardMessage;
     }

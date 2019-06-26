@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMStationDelegate;
 
-@interface DIMStation : DIMAccount <DIMTransceiverDelegate> {
+@interface DIMStation : DIMAccount {
     
     NSString *_host;
     UInt32 _port;

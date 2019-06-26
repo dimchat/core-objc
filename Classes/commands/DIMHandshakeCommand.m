@@ -55,8 +55,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMHandshakeCommand *cmd = [[self class] allocWithZone:zone];
-    cmd = [cmd initWithDictionary:_storeDictionary];
+    DIMHandshakeCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.message = _message;
         cmd.sessionKey = _sessionKey;
