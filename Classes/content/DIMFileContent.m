@@ -13,6 +13,13 @@
 
 #import "DIMFileContent.h"
 
+@interface DIMFileContent () {
+    
+    id _attachment;
+}
+
+@end
+
 @implementation DIMFileContent
 
 - (instancetype)initWithFileData:(NSData *)data
@@ -49,12 +56,11 @@
 }
 
 - (nullable NSData *)fileData {
-//    return _attachment;
-    return nil;
+    return _attachment;
 }
 
 - (void)setFileData:(NSData *)fileData {
-//    _attachment = fileData;
+    _attachment = fileData;
     
     // update filename with MD5 string
     if (fileData.length > 0) {
@@ -65,6 +71,11 @@
         }
         //NSAssert([self.filename isEqualToString:filename], @"filename error");
         [_storeDictionary setObject:filename forKey:@"filename"];
+        
+        // file data
+        [_storeDictionary setObject:[fileData base64Encode] forKey:@"data"];
+    } else {
+        [_storeDictionary removeObjectForKey:@"data"];
     }
 }
 

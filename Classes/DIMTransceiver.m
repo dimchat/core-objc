@@ -68,6 +68,35 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     
+    // 1. check attachment for File/Image/Audio/Video message content
+    switch (content.type) {
+        case DIMContentType_File:
+        case DIMContentType_Image:
+        case DIMContentType_Audio:
+        case DIMContentType_Video:
+        {
+            DIMFileContent *file = (DIMFileContent *)content;
+            NSAssert(file.fileData != nil, @"content.fileData should not be empty");
+            NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
+            
+            NSString *filename = file.filename;
+            NSURL *url = [self message:iMsg
+                                upload:file.fileData
+                              filename:filename
+                               withKey:symmetricKey];
+            if (url) {
+                // replace 'data' with 'URL'
+                file.URL = url;
+                file.fileData = nil;
+            }
+            //[iMsg setObject:file forKey:@"content"];
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
     NSString *json = [content jsonString];
     NSData *data = [json data];
     return [symmetricKey encrypt:data];
@@ -129,7 +158,7 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
                 // save the symmetric key for decrypte file data later
                 [file setObject:symmetricKey forKey:@"password"];
             }
-            content = file;
+            //content = file;
         }
             break;
             
