@@ -12,6 +12,7 @@
 
 #import "DKDInstantMessage+Extension.h"
 #import "DIMContentType.h"
+#import "DIMFileContent.h"
 
 #import "DIMBarrack.h"
 #import "DIMKeyStore.h"
@@ -100,8 +101,43 @@ SingletonImplementations(DIMTransceiver, sharedInstance)
     }
     NSString *json = [plaintext UTF8String]; // remove garbage at end
     NSDictionary *dict = [[json data] jsonDictionary];
-    // pack message content
-    return DKDContentFromDictionary(dict);
+    
+    // pack message with content
+    DIMContent *content = DKDContentFromDictionary(dict);
+    DIMInstantMessage *iMsg;
+    iMsg = [[DIMInstantMessage alloc] initWithContent:content
+                                             envelope:sMsg.envelope];
+    
+    // check attachment for File/Image/Audio/Video message content
+    switch (content.type) {
+        case DIMContentType_File:
+        case DIMContentType_Image:
+        case DIMContentType_Audio:
+        case DIMContentType_Video:
+        {
+            DIMFileContent *file = (DIMFileContent *)content;
+            NSAssert(file.URL != nil, @"content.URL should not be empty");
+            NSAssert(file.fileData == nil, @"content.fileData already download");
+            
+            NSData *fileData = [self message:iMsg
+                                    download:file.URL
+                                     withKey:symmetricKey];
+            if (fileData) {
+                file.fileData = fileData;
+                file.URL = nil;
+            } else {
+                // save the symmetric key for decrypte file data later
+                [file setObject:symmetricKey forKey:@"password"];
+            }
+            content = file;
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    return content;
 }
 
 - (nullable NSDictionary *)message:(DIMSecureMessage *)sMsg
