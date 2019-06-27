@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSData *fileData;
 @property (readonly, strong, nonatomic, nullable) NSString *filename;
 
+// for decrypt file data after download from CDN
+@property (strong, nonatomic, nullable) NSDictionary *password;
+
 /**
  *  File message: {
  *      type : 0x10,

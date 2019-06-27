@@ -57,6 +57,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         _entityDataSource = nil;
         _userDataSource = nil;
         _groupDataSource = nil;
+        
+        _delegate = nil;
     }
     return self;
 }
@@ -216,7 +218,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    if (![meta matchID:ID]) {
+    if (![self cacheMeta:meta forID:ID]) {
         NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
         return NO;
     }
@@ -255,7 +257,22 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (DIMID *)founderOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
-    return [_groupDataSource founderOfGroup:group];
+    // 1. get from data source
+    DIMID *founder = [_groupDataSource founderOfGroup:group];
+    if (founder) {
+        return founder;
+    }
+    // 2. check each member's public key with group meta
+    DIMMeta *groupMeta = [self metaForID:group];
+    NSArray<DIMID *> *members = [self membersOfGroup:group];
+    DIMMeta *meta;
+    for (DIMID *member in members) {
+        meta = [self metaForID:member];
+        if ([groupMeta matchPublicKey:meta.key]) {
+            return member;
+        }
+    }
+    return nil;
 }
 
 - (nullable DIMID *)ownerOfGroup:(DIMID *)group {

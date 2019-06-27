@@ -42,6 +42,7 @@
         case DIMContentType_Audio:
         case DIMContentType_Video:
         {
+            // upload file data onto CDN and save the URL in message content
             DIMFileContent *file = (DIMFileContent *)content;
             NSAssert(file.fileData != nil, @"content.fileData should not be empty");
             NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
@@ -98,9 +99,6 @@
     
     // pack message with content
     DIMContent *content = DKDContentFromDictionary(dict);
-    DIMInstantMessage *iMsg;
-    iMsg = [[DIMInstantMessage alloc] initWithContent:content
-                                             envelope:sMsg.envelope];
     
     // check attachment for File/Image/Audio/Video message content
     switch (content.type) {
@@ -109,6 +107,10 @@
         case DIMContentType_Audio:
         case DIMContentType_Video:
         {
+            DIMInstantMessage *iMsg;
+            iMsg = [[DIMInstantMessage alloc] initWithContent:content
+                                                     envelope:sMsg.envelope];
+            // download from CDN
             DIMFileContent *file = (DIMFileContent *)content;
             NSAssert(file.URL != nil, @"content.URL should not be empty");
             NSAssert(file.fileData == nil, @"content.fileData already download");
@@ -120,7 +122,7 @@
                 file.URL = nil;
             } else {
                 // save the symmetric key for decrypte file data later
-                [file setObject:symmetricKey forKey:@"password"];
+                file.password = symmetricKey;
             }
             //content = file;
         }

@@ -82,20 +82,22 @@ typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
 
 - (BOOL)updateKeys:(NSDictionary *)keyMap {
     BOOL changed = NO;
+    DIMSymmetricKey *oldKey, *newKey;
     for (NSString *from in keyMap) {
         DIMAddress *fromAddress = MKMAddressFromString(from);
         NSDictionary *keyTable = [keyMap objectForKey:from];
         for (NSString *to in keyTable) {
             DIMAddress *toAddress = MKMAddressFromString(to);
             NSDictionary *keyDict = [keyTable objectForKey:to];
+            newKey = MKMSymmetricKeyFromDictionary(keyDict);
+            NSAssert(newKey, @"key error(%@ -> %@): %@", from, to, keyDict);
             // check whether exists an old key
-            if ([self _cipherKeyFrom:fromAddress to:toAddress]) {
+            oldKey = [self _cipherKeyFrom:fromAddress to:toAddress];
+            if (![oldKey isEqual:newKey]) {
                 changed = YES;
             }
             // cache key with direction
-            DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(keyDict);
-            NSAssert(key, @"cipher key error(%@ -> %@): %@", from, to, keyDict);
-            [self _cacheCipherKey:key from:fromAddress to:toAddress];
+            [self _cacheCipherKey:newKey from:fromAddress to:toAddress];
         }
     }
     return changed;

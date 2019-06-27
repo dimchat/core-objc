@@ -83,4 +83,16 @@
     return [_storeDictionary objectForKey:@"filename"];
 }
 
+- (void)setPassword:(NSDictionary *)password {
+    if (password) {
+        [_storeDictionary setObject:password forKey:@"password"];
+    } else {
+        [_storeDictionary removeObjectForKey:@"password"];
+    }
+}
+
+- (nullable NSDictionary *)password {
+    return [_storeDictionary objectForKey:@"password"];
+}
+
 @end
