@@ -44,6 +44,9 @@ typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
     if (self = [super init]) {
         _keyMap = [[KeyMap alloc] init];
         
+        // load keys from local storage
+        [self updateKeys:[self loadKeys]];
+        
         _dirty = NO;
     }
     return self;
@@ -67,7 +70,17 @@ typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
     return [_keyMap writeToBinaryFile:path];
 }
 
-- (BOOL)loadKeys:(NSDictionary *)keyMap {
+- (NSDictionary *)loadKeys {
+    NSString *dir = caches_directory();
+    NSString *path = [dir stringByAppendingPathComponent:@"keystore.plist"];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:path]) {
+        return [NSDictionary dictionaryWithContentsOfFile:path];
+    }
+    return nil;
+}
+
+- (BOOL)updateKeys:(NSDictionary *)keyMap {
     BOOL changed = NO;
     for (NSString *from in keyMap) {
         DIMAddress *fromAddress = MKMAddressFromString(from);

@@ -7,14 +7,12 @@
 //
 
 #import "NSObject+JsON.h"
-#import "NSData+Crypto.h"
 
-#import "DKDInstantMessage+Extension.h"
 #import "DIMContentType.h"
 #import "DIMFileContent.h"
 
+#import "DIMBarrack.h"
 #import "DIMKeyStore.h"
-#import "DIMTransceiver+Transform.h"
 
 #import "DIMTransceiver.h"
 
@@ -30,32 +28,6 @@
 
 #pragma mark DKDInstantMessageDelegate
 
-- (NSURL *)message:(DIMInstantMessage *)iMsg
-            upload:(NSData *)data
-          filename:(nullable NSString *)name
-           withKey:(NSDictionary *)password {
-    
-    DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
-    NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
-    NSData *CT = [symmetricKey encrypt:data];
-    NSLog(@"encrypt file %@: %lu bytes -> %lu bytes", name, data.length, CT.length);
-    
-    return [_delegate uploadEncryptedFileData:CT forMessage:iMsg];
-}
-
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
-                    download:(NSURL *)url
-                     withKey:(NSDictionary *)password {
-    
-    NSData *CT = [_delegate downloadEncryptedFileData:url forMessage:iMsg];
-    if (CT) {
-        DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
-        NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
-        return [symmetricKey decrypt:CT];
-    }
-    return nil;
-}
-
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
               encryptContent:(DIMContent *)content
                      withKey:(NSDictionary *)password {
@@ -63,7 +35,7 @@
     DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     
-    // 1. check attachment for File/Image/Audio/Video message content
+    // check attachment for File/Image/Audio/Video message content
     switch (content.type) {
         case DIMContentType_File:
         case DIMContentType_Image:
@@ -73,12 +45,10 @@
             DIMFileContent *file = (DIMFileContent *)content;
             NSAssert(file.fileData != nil, @"content.fileData should not be empty");
             NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
-            
-            NSString *filename = file.filename;
-            NSURL *url = [self message:iMsg
-                                upload:file.fileData
-                              filename:filename
-                               withKey:symmetricKey];
+            // encrypt and upload
+            NSData *CT = [symmetricKey encrypt:file.fileData];
+            NSURL *url = [_delegate uploadEncryptedFileData:CT
+                                                 forMessage:iMsg];
             if (url) {
                 // replace 'data' with 'URL'
                 file.URL = url;
@@ -142,12 +112,11 @@
             DIMFileContent *file = (DIMFileContent *)content;
             NSAssert(file.URL != nil, @"content.URL should not be empty");
             NSAssert(file.fileData == nil, @"content.fileData already download");
-            
-            NSData *fileData = [self message:iMsg
-                                    download:file.URL
-                                     withKey:symmetricKey];
+            // download and decrypt
+            NSData *fileData = [_delegate downloadEncryptedFileData:file.URL
+                                                         forMessage:iMsg];
             if (fileData) {
-                file.fileData = fileData;
+                file.fileData = [symmetricKey decrypt:fileData];
                 file.URL = nil;
             } else {
                 // save the symmetric key for decrypte file data later
@@ -222,73 +191,6 @@
     DIMAccount *account = [_barrackDelegate accountWithID:ID];
     NSAssert(account, @"failed to verify with sender: %@", sender);
     return [account verify:data withSignature:signature];
-}
-
-@end
-
-#pragma mark - Convenience
-
-@implementation DIMTransceiver (Send)
-
-- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
-                  callback:(nullable DIMTransceiverCallback)callback
-               dispersedly:(BOOL)split {
-    // transforming
-    DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
-    DIMID *groupID = MKMIDFromString(iMsg.content.group);
-    DIMReliableMessage *rMsg = [self encryptAndSignMessage:iMsg];
-    if (!rMsg) {
-        NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
-        iMsg.state = DIMMessageState_Error;
-        iMsg.error = @"Encryption failed.";
-        return NO;
-    }
-    
-    // trying to send out
-    BOOL OK = YES;
-    if (split && MKMNetwork_IsGroup(receiver.type)) {
-        NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
-        DIMGroup *group = [_barrackDelegate groupWithID:groupID];
-        NSArray *messages = [rMsg splitForMembers:group.members];
-        if (messages.count == 0) {
-            NSLog(@"failed to split msg, send it to group: %@", receiver);
-            OK = [self sendReliableMessage:rMsg callback:callback];
-        } else {
-            for (rMsg in messages) {
-                if ([self sendReliableMessage:rMsg callback:callback]) {
-                    //NSLog(@"group message sent to %@", rMsg.envelope.receiver);
-                } else {
-                    OK = NO;
-                }
-            }
-        }
-    } else {
-        OK = [self sendReliableMessage:rMsg callback:callback];
-    }
-    
-    // sending status
-    if (OK) {
-        iMsg.state = DIMMessageState_Sending;
-    } else {
-        NSLog(@"cannot send message now, put in waiting queue: %@", iMsg);
-        iMsg.state = DIMMessageState_Waiting;
-    }
-    return OK;
-}
-
-- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
-                   callback:(DIMTransceiverCallback)callback {
-    NSData *data = [rMsg jsonData];
-    if (data) {
-        NSAssert(_delegate, @"transceiver delegate not set");
-        return [_delegate sendPackage:data
-                    completionHandler:^(NSError * _Nullable error) {
-                        !callback ?: callback(rMsg, error);
-                    }];
-    } else {
-        NSAssert(false, @"message data error: %@", rMsg);
-        return NO;
-    }
 }
 
 @end

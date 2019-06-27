@@ -53,15 +53,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMKeyStore : NSObject <DIMCipherKeyDataSource>
 
 /**
- *  Load cipher key table into memory cache
- *
- * @param keyMap - cipher keys(with direction) from local storage
- * @return NO on nothing changed
+ *  Trigger for saving cipher key table
  */
-- (BOOL)loadKeys:(NSDictionary *)keyMap;
+- (void)flush;
 
 /**
  *  Callback for saving cipher key table into local storage
+ *  (Override it to access database)
  *
  * @param keyMap - all cipher keys(with direction) from memory cache
  * @return YES on success
@@ -69,9 +67,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)saveKeys:(NSDictionary *)keyMap;
 
 /**
- *  Trigger for saving cipher key table
+ *  Load cipher key table from local storage
+ *  (Override it to access database)
+ *
+ * @return keys map
  */
-- (void)flush;
+- (NSDictionary *)loadKeys;
+
+/**
+ *  Update cipher key table into memory cache
+ *
+ * @param keyMap - cipher keys(with direction) from local storage
+ * @return NO on nothing changed
+ */
+- (BOOL)updateKeys:(NSDictionary *)keyMap;
 
 @end
 

@@ -6,6 +6,10 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "NSObject+JsON.h"
+
+#import "DKDInstantMessage+Extension.h"
+
 #import "DIMContentType.h"
 #import "DIMForwardContent.h"
 
@@ -165,6 +169,71 @@
     
     // OK
     return iMsg;
+}
+
+@end
+
+@implementation DIMTransceiver (Send)
+
+- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
+                  callback:(nullable DIMTransceiverCallback)callback
+               dispersedly:(BOOL)split {
+    // transforming
+    DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
+    DIMID *groupID = MKMIDFromString(iMsg.content.group);
+    DIMReliableMessage *rMsg = [self encryptAndSignMessage:iMsg];
+    if (!rMsg) {
+        NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
+        iMsg.state = DIMMessageState_Error;
+        iMsg.error = @"Encryption failed.";
+        return NO;
+    }
+    
+    // trying to send out
+    BOOL OK = YES;
+    if (split && MKMNetwork_IsGroup(receiver.type)) {
+        NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
+        DIMGroup *group = [_barrackDelegate groupWithID:groupID];
+        NSArray *messages = [rMsg splitForMembers:group.members];
+        if (messages.count == 0) {
+            NSLog(@"failed to split msg, send it to group: %@", receiver);
+            OK = [self sendReliableMessage:rMsg callback:callback];
+        } else {
+            for (rMsg in messages) {
+                if ([self sendReliableMessage:rMsg callback:callback]) {
+                    //NSLog(@"group message sent to %@", rMsg.envelope.receiver);
+                } else {
+                    OK = NO;
+                }
+            }
+        }
+    } else {
+        OK = [self sendReliableMessage:rMsg callback:callback];
+    }
+    
+    // sending status
+    if (OK) {
+        iMsg.state = DIMMessageState_Sending;
+    } else {
+        NSLog(@"cannot send message now, put in waiting queue: %@", iMsg);
+        iMsg.state = DIMMessageState_Waiting;
+    }
+    return OK;
+}
+
+- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
+                   callback:(DIMTransceiverCallback)callback {
+    NSData *data = [rMsg jsonData];
+    if (data) {
+        NSAssert(_delegate, @"transceiver delegate not set");
+        return [_delegate sendPackage:data
+                    completionHandler:^(NSError * _Nullable error) {
+                        !callback ?: callback(rMsg, error);
+                    }];
+    } else {
+        NSAssert(false, @"message data error: %@", rMsg);
+        return NO;
+    }
 }
 
 @end

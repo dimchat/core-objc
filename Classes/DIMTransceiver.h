@@ -6,7 +6,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMBarrack.h"
+#import "dimMacros.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -49,6 +49,7 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
 
 #pragma mark -
 
+@protocol DIMBarrackDelegate;
 @protocol DIMCipherKeyDataSource;
 
 /**
@@ -75,27 +76,5 @@ typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Null
 @property (weak, nonatomic) id<DIMCipherKeyDataSource> cipherKeyDataSource;
 
 @end
-
-#pragma mark - Convenience
-
-@interface DIMTransceiver (Send)
-
-/**
- *  Send message (secured + certified) to target station
- *
- *  @param iMsg - instant message
- *  @param callback - callback function
- *  @param split - if it's a group message, split it before sending out
- *  @return NO on data/delegate error
- */
-- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
-                  callback:(nullable DIMTransceiverCallback)callback
-               dispersedly:(BOOL)split;
-
-//- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
-//                   callback:(nullable DIMTransceiverCallback)callback;
-
-@end
-
 
 NS_ASSUME_NONNULL_END

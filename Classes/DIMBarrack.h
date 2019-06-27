@@ -28,16 +28,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) id<DIMBarrackDelegate> delegate;
 
-- (void)addAccount:(DIMAccount *)account;
-- (void)addUser:(DIMUser *)user;
-- (void)addGroup:(DIMGroup *)group;
+- (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
+
+- (BOOL)cacheAccount:(DIMAccount *)account;
+- (BOOL)cacheUser:(DIMUser *)user;
+- (BOOL)cacheGroup:(DIMGroup *)group;
 
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID;
 - (nullable DIMUser *)userWithID:(DIMID *)ID;
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID;
-
-// default "Documents/.mkm/{address}/meta.plist"
-- (nullable DIMMeta *)loadMetaForID:(DIMID *)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
@@ -53,8 +52,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMBarrackDelegate <NSObject>
 
+/**
+ *  Create account with ID
+ *
+ * @param ID - account ID
+ * @return account
+ */
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID;
+
+/**
+ *  Create user with ID
+ *
+ * @param ID - user ID
+ * @return user
+ */
 - (nullable DIMUser *)userWithID:(DIMID *)ID;
+
+/**
+ *  Create group with ID
+ *
+ * @param ID - group ID
+ * @return group
+ */
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID;
 
 @end
