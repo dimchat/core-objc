@@ -6,6 +6,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Singleton.h"
+
 #import "DIMGroupCommand.h"
 
 @implementation DIMGroupCommand
@@ -94,8 +96,7 @@
 
 static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
     static NSMutableDictionary<NSString *, Class> *classes = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    SingletonDispatchOnce(^{
         classes = [[NSMutableDictionary alloc] init];
         // invite
         [classes setObject:[DIMInviteCommand class] forKey:DIMGroupCommand_Invite];

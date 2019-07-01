@@ -6,6 +6,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Singleton.h"
+
 #import "DIMContentType.h"
 
 #import "DIMHandshakeCommand.h"
@@ -63,8 +65,7 @@
 
 static NSMutableDictionary<NSString *, Class> *command_classes(void) {
     static NSMutableDictionary<NSString *, Class> *classes = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    SingletonDispatchOnce(^{
         classes = [[NSMutableDictionary alloc] init];
         // handshake
         [classes setObject:[DIMHandshakeCommand class] forKey:DIMSystemCommand_Handshake];
