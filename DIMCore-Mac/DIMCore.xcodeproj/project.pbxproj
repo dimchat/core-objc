@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E94C8DF522DDE1E20017F998 /* NSData+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E94C8DF122DDE1E20017F998 /* NSData+Extension.h */; };
+		E94C8DF622DDE1E20017F998 /* NSData+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C8DF422DDE1E20017F998 /* NSData+Extension.m */; };
 		E97908A1225F2FBA0024C830 /* DKDInstantMessage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E979089D225F2FB90024C830 /* DKDInstantMessage+Extension.m */; };
 		E97908A2225F2FBA0024C830 /* DKDInstantMessage+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E97908A0225F2FBA0024C830 /* DKDInstantMessage+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC14C22427EBC00E6ACDA /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBC14222427EBC00E6ACDA /* DIMCore.framework */; };
@@ -124,6 +126,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E94C8DF122DDE1E20017F998 /* NSData+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Extension.h"; sourceTree = "<group>"; };
+		E94C8DF422DDE1E20017F998 /* NSData+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Extension.m"; sourceTree = "<group>"; };
 		E979089D225F2FB90024C830 /* DKDInstantMessage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DKDInstantMessage+Extension.m"; sourceTree = "<group>"; };
 		E97908A0225F2FBA0024C830 /* DKDInstantMessage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DKDInstantMessage+Extension.h"; sourceTree = "<group>"; };
 		E9BBC14222427EBC00E6ACDA /* DIMCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DIMCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -284,6 +288,8 @@
 				E9BBC16022427EF100E6ACDA /* MKMGroup+Extension.m */,
 				E9FC8E0D22B9091F0013FCD3 /* MKMProfile+Extension.h */,
 				E9FC8E0E22B9091F0013FCD3 /* MKMProfile+Extension.m */,
+				E94C8DF122DDE1E20017F998 /* NSData+Extension.h */,
+				E94C8DF422DDE1E20017F998 /* NSData+Extension.m */,
 			);
 			path = extends;
 			sourceTree = "<group>";
@@ -407,6 +413,7 @@
 				E9E824CF224BF64700A029F1 /* DIMReceiptCommand.h in Headers */,
 				E9E824CE224BF64700A029F1 /* DIMBroadcastCommand.h in Headers */,
 				E9BBC1B122427EF100E6ACDA /* DIMCAData.h in Headers */,
+				E94C8DF522DDE1E20017F998 /* NSData+Extension.h in Headers */,
 				E9BBC1D822427EF100E6ACDA /* DIMMetaCommand.h in Headers */,
 				E9BBC1DA22427EF100E6ACDA /* DIMGroupCommand.h in Headers */,
 				E9BBC1BF22427EF100E6ACDA /* dimMacros.h in Headers */,
@@ -589,6 +596,7 @@
 				E9FC8DFF22B9089E0013FCD3 /* DIMTextContent.m in Sources */,
 				E9BBC1D622427EF100E6ACDA /* DIMHandshakeCommand.m in Sources */,
 				E9BBC1B222427EF100E6ACDA /* DIMCAData.m in Sources */,
+				E94C8DF622DDE1E20017F998 /* NSData+Extension.m in Sources */,
 				E9FC8E0722B9089E0013FCD3 /* DIMAudioContent.m in Sources */,
 				E9BBC1AC22427EF100E6ACDA /* DIMServiceProvider.m in Sources */,
 				E9BBC1B522427EF100E6ACDA /* DIMCAValidity.m in Sources */,

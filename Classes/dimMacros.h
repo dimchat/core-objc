@@ -59,6 +59,5 @@
 #define DIMInstantMessage               DKDInstantMessage
 #define DIMSecureMessage                DKDSecureMessage
 #define DIMReliableMessage              DKDReliableMessage
-#define DIMEncryptedKeyMap              DKDEncryptedKeyMap
 
 #endif /* dimMacros_h */

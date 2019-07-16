@@ -7,6 +7,8 @@
 //
 
 #import "NSObject+JsON.h"
+#import "NSData+Crypto.h"
+#import "NSString+Crypto.h"
 
 #import "DIMContentType.h"
 #import "DIMFileContent.h"
@@ -15,6 +17,17 @@
 #import "DIMKeyStore.h"
 
 #import "DIMTransceiver.h"
+
+static inline BOOL isBroadcast(DIMMessage *msg) {
+    DIMID *receiver = MKMIDFromString([msg group]);
+    if (receiver) {
+        // group message
+        return MKMIsEveryone(receiver);
+    }
+    receiver = MKMIDFromString(msg.envelope.receiver);
+    // group or split message
+    return MKMIsBroadcast(receiver);
+}
 
 @implementation DIMTransceiver
 
@@ -68,6 +81,16 @@
     return [symmetricKey encrypt:data];
 }
 
+- (nullable NSObject *)message:(DKDInstantMessage *)iMsg
+                    encodeData:(NSData *)data {
+    if (isBroadcast(iMsg)) {
+        // broadcast message content will not be encrypted (just encoded to JsON),
+        // so no need to encode to Base64 here
+        return [data UTF8String];
+    }
+    return [data base64Encode];
+}
+
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                   encryptKey:(NSDictionary *)password
                  forReceiver:(NSString *)receiver {
@@ -78,6 +101,15 @@
     DIMAccount *account = [_barrackDelegate accountWithID:ID];
     NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
     return [account encrypt:data];
+}
+
+- (nullable NSObject *)message:(DKDInstantMessage *)iMsg
+                 encodeKeyData:(NSData *)keyData {
+    if (isBroadcast(iMsg)) {
+        NSAssert(!keyData, @"broadcast message has no key");
+        return nil;
+    }
+    return [keyData base64Encode];
 }
 
 #pragma mark DKDSecureMessageDelegate
@@ -135,6 +167,16 @@
     return content;
 }
 
+- (nullable NSData *)message:(DKDSecureMessage *)sMsg
+                  decodeData:(NSObject *)dataString {
+    if (isBroadcast(sMsg)) {
+        // broadcast message content will not be encrypted (just encoded to JsON),
+        // so return the string data directly
+        return [(NSString *)dataString data];
+    }
+    return [(NSString *)dataString base64Decode];
+}
+
 - (nullable NSDictionary *)message:(DIMSecureMessage *)sMsg
                     decryptKeyData:(nullable NSData *)key
                               from:(NSString *)sender
@@ -174,6 +216,15 @@
     return PW;
 }
 
+- (nullable NSData *)message:(DKDSecureMessage *)sMsg
+               decodeKeyData:(NSObject *)keyString {
+    if (isBroadcast(sMsg)) {
+        NSAssert(!keyString, @"broadcast message has no key");
+        return nil;
+    }
+    return [(NSString *)keyString base64Decode];
+}
+
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                     signData:(NSData *)data
                    forSender:(NSString *)sender {
@@ -181,6 +232,11 @@
     DIMUser *user = [_barrackDelegate userWithID:ID];
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
+}
+
+- (nullable NSObject *)message:(DKDSecureMessage *)sMsg
+               encodeSignature:(NSData *)signature {
+    return [signature base64Encode];
 }
 
 #pragma mark DKDReliableMessageDelegate
@@ -193,6 +249,11 @@
     DIMAccount *account = [_barrackDelegate accountWithID:ID];
     NSAssert(account, @"failed to verify with sender: %@", sender);
     return [account verify:data withSignature:signature];
+}
+
+- (nullable NSData *)message:(DKDReliableMessage *)rMsg
+             decodeSignature:(NSObject *)signatureString {
+    return [(NSString *)signatureString base64Decode];
 }
 
 @end

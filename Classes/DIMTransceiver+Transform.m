@@ -43,10 +43,10 @@
 }
 
 - (nullable DIMReliableMessage *)encryptAndSignMessage:(DIMInstantMessage *)iMsg {
-    NSAssert(iMsg.content, @"content cannot be empty");
     if (iMsg.delegate == nil) {
         iMsg.delegate = self;
     }
+    NSAssert(iMsg.content, @"content cannot be empty");
     
     DIMSymmetricKey *scKey = nil;
     DIMSecureMessage *sMsg = nil;
@@ -84,17 +84,20 @@
         NSAssert(scKey != nil, @"failed to generate key for contact: %@", receiver);
         sMsg = [iMsg encryptWithKey:scKey];
     }
-    NSAssert(sMsg.data, @"data cannot be empty");
-    
-    // 2. sign 'data' by sender
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
     }
+    
+    // 2. sign 'data' by sender
+    NSAssert(sMsg.data, @"data cannot be empty");
     return [sMsg sign];
 }
 
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
                                                   users:(NSArray<DIMUser *> *)users {
+    if (rMsg.delegate == nil) {
+        rMsg.delegate = self;
+    }
     NSAssert(rMsg.signature, @"signature cannot be empty");
     DIMID *sender = MKMIDFromString(rMsg.envelope.sender);
     DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
@@ -110,10 +113,6 @@
             NSAssert(false, @"meta error: %@, %@", sender, meta);
             return nil;
         }
-    }
-    
-    if (rMsg.delegate == nil) {
-        rMsg.delegate = self;
     }
     
     // check recipient
@@ -141,6 +140,9 @@
     
     // 1. verify 'data' with 'signature'
     DIMSecureMessage *sMsg = [rMsg verify];
+    if (sMsg.delegate == nil) {
+        sMsg.delegate = self;
+    }
     NSAssert(sMsg.data, @"data cannot be empty");
     
     // 2. decrypt 'data' to 'content'
@@ -148,12 +150,13 @@
     if (groupID) {
         // group message
         sMsg = [sMsg trimForMember:user.ID];
-        sMsg.delegate = self;
         iMsg = [sMsg decryptForMember:receiver];
     } else {
         // personal message
-        sMsg.delegate = self;
         iMsg = [sMsg decrypt];
+    }
+    if (iMsg.delegate == nil) {
+        iMsg.delegate = self;
     }
     NSAssert(iMsg.content, @"content cannot be empty");
     
