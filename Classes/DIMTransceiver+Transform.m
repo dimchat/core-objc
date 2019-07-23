@@ -72,7 +72,8 @@
             members = @[receiver];
         } else {
             members = [_barrackDelegate groupWithID:group].members;
-            NSAssert(members.count > 0, @"group members cannot be empty");
+            // FIXME: new group's member list may be empty
+            //NSAssert(members.count > 0, @"group members cannot be empty");
         }
         scKey = [self _passwordFrom:sender to:group];
         NSAssert(scKey != nil, @"failed to generate key for group: %@", group);
@@ -150,6 +151,9 @@
     if (groupID) {
         // group message
         sMsg = [sMsg trimForMember:user.ID];
+        if (sMsg.delegate == nil) {
+            sMsg.delegate = self;
+        }
         iMsg = [sMsg decryptForMember:receiver];
     } else {
         // personal message
