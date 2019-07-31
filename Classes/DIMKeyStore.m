@@ -6,10 +6,44 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Singleton.h"
 #import "NSObject+JsON.h"
 #import "NSDictionary+Binary.h"
 
 #import "DIMKeyStore.h"
+
+#define _Plain @"PLAIN"
+
+/**
+ *  Symmetric key for broadcast message,
+ *  which will do nothing when en/decoding message data
+ *
+ *      keyInfo format: {
+ *          algorithm: "PLAIN",
+ *          data     : ""       // empty data
+ *      }
+ */
+@interface _PlainKey : MKMSymmetricKey
+
++ (instancetype)sharedInstance;
+
+@end
+
+@implementation _PlainKey
+
+- (NSData *)encrypt:(NSData *)plaintext {
+    return plaintext;
+}
+
+- (nullable NSData *)decrypt:(NSData *)ciphertext {
+    return ciphertext;
+}
+
+SingletonImplementations(_PlainKey, sharedInstance)
+
+@end
+
+#pragma mark -
 
 // "Library/Caches"
 static inline NSString *caches_directory(void) {
@@ -20,9 +54,9 @@ static inline NSString *caches_directory(void) {
 }
 
 // receiver -> key
-typedef NSMutableDictionary<DIMAddress *, DIMSymmetricKey *> KeyTable;
+typedef NSMutableDictionary<DIMID *, DIMSymmetricKey *> KeyTable;
 // sender -> map<receiver, key>
-typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
+typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 @interface DIMKeyStore () {
     
@@ -42,6 +76,9 @@ typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
 
 - (instancetype)init {
     if (self = [super init]) {
+        
+        [MKMSymmetricKey registerClass:[_PlainKey class] forAlgorithm:_Plain];
+        
         _keyMap = [[KeyMap alloc] init];
         
         // load keys from local storage
@@ -84,61 +121,66 @@ typedef NSMutableDictionary<DIMAddress *, KeyTable *> KeyMap;
     BOOL changed = NO;
     DIMSymmetricKey *oldKey, *newKey;
     for (NSString *from in keyMap) {
-        DIMAddress *fromAddress = MKMAddressFromString(from);
+        DIMID *sender = MKMIDFromString(from);
         NSDictionary *keyTable = [keyMap objectForKey:from];
         for (NSString *to in keyTable) {
-            DIMAddress *toAddress = MKMAddressFromString(to);
+            DIMID *receiver = MKMIDFromString(to);
             NSDictionary *keyDict = [keyTable objectForKey:to];
             newKey = MKMSymmetricKeyFromDictionary(keyDict);
             NSAssert(newKey, @"key error(%@ -> %@): %@", from, to, keyDict);
             // check whether exists an old key
-            oldKey = [self _cipherKeyFrom:fromAddress to:toAddress];
+            oldKey = [self _cipherKeyFrom:sender to:receiver];
             if (![oldKey isEqual:newKey]) {
                 changed = YES;
             }
             // cache key with direction
-            [self _cacheCipherKey:newKey from:fromAddress to:toAddress];
+            [self _cacheCipherKey:newKey from:sender to:receiver];
         }
     }
     return changed;
 }
 
-- (DIMSymmetricKey *)_cipherKeyFrom:(DIMAddress *)fromAddress
-                                 to:(DIMAddress *)toAddress {
-    NSAssert(MKMNetwork_IsCommunicator(fromAddress.network),
-             @"sender error: %@", fromAddress);
-    KeyTable *keyTable = [_keyMap objectForKey:fromAddress];
-    return [keyTable objectForKey:toAddress];
+- (DIMSymmetricKey *)_cipherKeyFrom:(DIMID *)sender
+                                 to:(DIMID *)receiver {
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    KeyTable *keyTable = [_keyMap objectForKey:sender];
+    return [keyTable objectForKey:receiver];
 }
 
 - (void)_cacheCipherKey:(DIMSymmetricKey *)key
-                   from:(DIMAddress *)fromAddress
-                     to:(DIMAddress *)toAddress {
-    NSAssert(MKMNetwork_IsCommunicator(fromAddress.network),
-             @"sender error: %@", fromAddress);
+                   from:(DIMID *)sender
+                     to:(DIMID *)receiver {
+    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
     if (!key) {
         NSAssert(false, @"cipher key cannot be empty");
         return ;
     }
-    KeyTable *keyTable = [_keyMap objectForKey:fromAddress];
+    KeyTable *keyTable = [_keyMap objectForKey:sender];
     if (!keyTable) {
         keyTable = [[KeyTable alloc] init];
-        [_keyMap setObject:keyTable forKey:fromAddress];
+        [_keyMap setObject:keyTable forKey:sender];
     }
-    [keyTable setObject:key forKey:toAddress];
+    [keyTable setObject:key forKey:receiver];
 }
 
 #pragma mark - DIMTransceiverDataSource
 
 - (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
                                 to:(DIMID *)receiver {
-    return [self _cipherKeyFrom:sender.address to:receiver.address];
+    if (MKMIsBroadcast(receiver)) {
+        return [_PlainKey sharedInstance];
+    }
+    return [self _cipherKeyFrom:sender to:receiver];
 }
 
 - (void)cacheCipherKey:(DIMSymmetricKey *)key
                   from:(DIMID *)sender
                     to:(DIMID *)receiver {
-    [self _cacheCipherKey:key from:sender.address to:receiver.address];
+    if (MKMIsBroadcast(receiver)) {
+        // broadcast message has no key
+        return;
+    }
+    [self _cacheCipherKey:key from:sender to:receiver];
     _dirty = key != nil;
 }
 

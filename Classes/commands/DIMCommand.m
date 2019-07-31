@@ -11,7 +11,6 @@
 #import "DIMContentType.h"
 
 #import "DIMHandshakeCommand.h"
-#import "DIMBroadcastCommand.h"
 #import "DIMReceiptCommand.h"
 #import "DIMMetaCommand.h"
 #import "DIMProfileCommand.h"
@@ -69,8 +68,6 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
         classes = [[NSMutableDictionary alloc] init];
         // handshake
         [classes setObject:[DIMHandshakeCommand class] forKey:DIMSystemCommand_Handshake];
-        // broadcast
-        [classes setObject:[DIMBroadcastCommand class] forKey:DIMSystemCommand_Broadcast];
         // receipt
         [classes setObject:[DIMReceiptCommand class] forKey:DIMSystemCommand_Receipt];
         // meta

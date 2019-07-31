@@ -24,11 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
  *  Extract instant message from a reliable message received
  *
  *  @param rMsg - reliable message
- *  @param users - my accounts
  *  @return InstantMessage object
  */
-- (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg
-                                                  users:(NSArray<DIMUser *> *)users;
+- (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg;
 
 @end
 

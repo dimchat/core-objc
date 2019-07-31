@@ -9,11 +9,11 @@
 #import "DIMBarrack.h"
 
 typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
-typedef NSMutableDictionary<DIMAddress *, DIMMeta *> MetaTableM;
+typedef NSMutableDictionary<DIMID *, DIMMeta *> MetaTableM;
 
-typedef NSMutableDictionary<DIMAddress *, DIMAccount *> AccountTableM;
-typedef NSMutableDictionary<DIMAddress *, DIMUser *> UserTableM;
-typedef NSMutableDictionary<DIMAddress *, DIMGroup *> GroupTableM;
+typedef NSMutableDictionary<DIMID *, DIMAccount *> AccountTableM;
+typedef NSMutableDictionary<DIMID *, DIMUser *> UserTableM;
+typedef NSMutableDictionary<DIMID *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
@@ -109,8 +109,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     DIMID *ID = user.ID;
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     // erase from account table
-    if ([_accountTable objectForKey:ID.address]) {
-        [_accountTable removeObjectForKey:ID.address];
+    if ([_accountTable objectForKey:ID]) {
+        [_accountTable removeObjectForKey:ID];
     }
     if ([ID isValid]) {
         if (user.dataSource == nil) {
@@ -154,12 +154,12 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
     // get from account cache
-    DIMAccount *account = [_accountTable objectForKey:ID.address];
+    DIMAccount *account = [_accountTable objectForKey:ID];
     if (account) {
         return account;
     }
     // get from user cache
-    account = [_userTable objectForKey:ID.address];
+    account = [_userTable objectForKey:ID];
     if (account) {
         return account;
     }
@@ -170,7 +170,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (nullable DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     // get from user cache
-    DIMUser *user = [_userTable objectForKey:ID.address];
+    DIMUser *user = [_userTable objectForKey:ID];
     if (user) {
         return user;
     }
@@ -181,7 +181,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     // get from group cache
-    DIMGroup *group = [_groupTable objectForKey:ID.address];
+    DIMGroup *group = [_groupTable objectForKey:ID];
     if (group) {
         return group;
     }
@@ -193,7 +193,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable DIMMeta *)metaForID:(DIMID *)ID {
     // get from meta cache
-    DIMMeta *meta = [_metaTable objectForKey:ID.address];
+    DIMMeta *meta = [_metaTable objectForKey:ID];
     if (meta) {
         return meta;
     }

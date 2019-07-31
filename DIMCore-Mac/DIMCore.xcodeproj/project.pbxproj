@@ -48,8 +48,6 @@
 		E9BBC1FC22427FCC00E6ACDA /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBC1EB22427EFF00E6ACDA /* DaoKeDao.framework */; };
 		E9BBC1FD22427FCF00E6ACDA /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBC1F422427F1000E6ACDA /* MingKeMing.framework */; };
 		E9E824CC224BF64700A029F1 /* DIMReceiptCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E824C8224BF64700A029F1 /* DIMReceiptCommand.m */; };
-		E9E824CD224BF64700A029F1 /* DIMBroadcastCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E824C9224BF64700A029F1 /* DIMBroadcastCommand.m */; };
-		E9E824CE224BF64700A029F1 /* DIMBroadcastCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9E824CA224BF64700A029F1 /* DIMBroadcastCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9E824CF224BF64700A029F1 /* DIMReceiptCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9E824CB224BF64700A029F1 /* DIMReceiptCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC8DFD22B9089E0013FCD3 /* DIMVideoContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC8DED22B9089E0013FCD3 /* DIMVideoContent.m */; };
 		E9FC8DFE22B9089E0013FCD3 /* DIMFileContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8DEE22B9089E0013FCD3 /* DIMFileContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -172,8 +170,6 @@
 		E9BBC1E422427EFF00E6ACDA /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao-Mac/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
 		E9BBC1EE22427F1000E6ACDA /* MingKeMing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MingKeMing.xcodeproj; path = "../../mkm-objc/MingKeMing-Mac/MingKeMing.xcodeproj"; sourceTree = "<group>"; };
 		E9E824C8224BF64700A029F1 /* DIMReceiptCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMReceiptCommand.m; sourceTree = "<group>"; };
-		E9E824C9224BF64700A029F1 /* DIMBroadcastCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMBroadcastCommand.m; sourceTree = "<group>"; };
-		E9E824CA224BF64700A029F1 /* DIMBroadcastCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMBroadcastCommand.h; sourceTree = "<group>"; };
 		E9E824CB224BF64700A029F1 /* DIMReceiptCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMReceiptCommand.h; sourceTree = "<group>"; };
 		E9FC8DED22B9089E0013FCD3 /* DIMVideoContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMVideoContent.m; sourceTree = "<group>"; };
 		E9FC8DEE22B9089E0013FCD3 /* DIMFileContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFileContent.h; sourceTree = "<group>"; };
@@ -336,8 +332,6 @@
 				E9BBC19C22427EF100E6ACDA /* DIMMetaCommand.m */,
 				E9BBC19B22427EF100E6ACDA /* DIMProfileCommand.h */,
 				E9BBC19622427EF100E6ACDA /* DIMProfileCommand.m */,
-				E9E824CA224BF64700A029F1 /* DIMBroadcastCommand.h */,
-				E9E824C9224BF64700A029F1 /* DIMBroadcastCommand.m */,
 				E9E824CB224BF64700A029F1 /* DIMReceiptCommand.h */,
 				E9E824C8224BF64700A029F1 /* DIMReceiptCommand.m */,
 			);
@@ -411,7 +405,6 @@
 				E9FC8E0822B9089E0013FCD3 /* DIMTextContent.h in Headers */,
 				E97908A2225F2FBA0024C830 /* DKDInstantMessage+Extension.h in Headers */,
 				E9E824CF224BF64700A029F1 /* DIMReceiptCommand.h in Headers */,
-				E9E824CE224BF64700A029F1 /* DIMBroadcastCommand.h in Headers */,
 				E9BBC1B122427EF100E6ACDA /* DIMCAData.h in Headers */,
 				E94C8DF522DDE1E20017F998 /* NSData+Extension.h in Headers */,
 				E9BBC1D822427EF100E6ACDA /* DIMMetaCommand.h in Headers */,
@@ -586,7 +579,6 @@
 				E9BBC1DF22427EF100E6ACDA /* DIMCommand.m in Sources */,
 				E9BBC1DE22427EF100E6ACDA /* DIMGroupCommand.m in Sources */,
 				E9BBC1BD22427EF100E6ACDA /* DIMKeyStore.m in Sources */,
-				E9E824CD224BF64700A029F1 /* DIMBroadcastCommand.m in Sources */,
 				E9FC8DFD22B9089E0013FCD3 /* DIMVideoContent.m in Sources */,
 				E9BBC1D722427EF100E6ACDA /* DIMProfileCommand.m in Sources */,
 				E9FC8E0B22B9089E0013FCD3 /* DIMForwardContent.m in Sources */,

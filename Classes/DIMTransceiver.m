@@ -39,6 +39,40 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
     return self;
 }
 
+- (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
+    // 1. get old key from store
+    DIMSymmetricKey *reusedKey;
+    reusedKey = [_cipherKeyDataSource cipherKeyFrom:sender to:receiver];
+    // 2. get new key from delegate
+    DIMSymmetricKey *newKey;
+    newKey = [_cipherKeyDataSource reuseCipherKey:reusedKey from:sender to:receiver];
+    if (!newKey) {
+        if (!reusedKey) {
+            // 3. create a new key
+            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
+        } else {
+            newKey = reusedKey;
+        }
+    }
+    // 4. update new key into the key store
+    if (![newKey isEqual:reusedKey]) {
+        [_cipherKeyDataSource cacheCipherKey:newKey from:sender to:receiver];
+    }
+    return newKey;
+}
+
+- (DIMSymmetricKey *)_password:(NSDictionary *)password
+                          from:(DIMID *)sender
+                            to:(DIMID *)receiver {
+    DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
+    if (key) {
+        // cache the new key in key store
+        [_cipherKeyDataSource cacheCipherKey:key from:sender to:receiver];
+        NSLog(@"got key from %@ to %@", sender, receiver);
+    }
+    return key;
+}
+
 #pragma mark DKDInstantMessageDelegate
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
@@ -49,33 +83,22 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
     
     // check attachment for File/Image/Audio/Video message content
-    switch (content.type) {
-        case DIMContentType_File:
-        case DIMContentType_Image:
-        case DIMContentType_Audio:
-        case DIMContentType_Video:
-        {
-            // upload file data onto CDN and save the URL in message content
-            DIMFileContent *file = (DIMFileContent *)content;
-            NSAssert(file.fileData != nil, @"content.fileData should not be empty");
-            NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
-            // encrypt and upload
-            NSData *CT = [symmetricKey encrypt:file.fileData];
-            NSURL *url = [_delegate uploadEncryptedFileData:CT
-                                                 forMessage:iMsg];
-            if (url) {
-                // replace 'data' with 'URL'
-                file.URL = url;
-                file.fileData = nil;
-            }
-            //[iMsg setObject:file forKey:@"content"];
+    if ([content isKindOfClass:[DIMFileContent class]]) {
+        DIMFileContent *file = (DIMFileContent *)content;
+        NSAssert(file.fileData != nil, @"content.fileData should not be empty");
+        NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
+        // encrypt and upload file data onto CDN and save the URL in message content
+        NSData *CT = [symmetricKey encrypt:file.fileData];
+        NSURL *url = [_delegate uploadEncryptedFileData:CT forMessage:iMsg];
+        if (url) {
+            // replace 'data' with 'URL'
+            file.URL = url;
+            file.fileData = nil;
         }
-            break;
-            
-        default:
-            break;
+        //[iMsg setObject:file forKey:@"content"];
     }
     
+    // encrypt it with password
     NSString *json = [content jsonString];
     NSData *data = [json data];
     return [symmetricKey encrypt:data];
@@ -94,21 +117,25 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                   encryptKey:(NSDictionary *)password
                  forReceiver:(NSString *)receiver {
+    if (isBroadcast(iMsg, _barrack)) {
+        // broadcast message has no key
+        return nil;
+    }
+    // TODO: check whether support reused key
     
-    NSString *json = [password jsonString];
-    NSData *data = [json data];
+    // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMAccount *account = [_barrack accountWithID:ID];
     NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
+    NSString *json = [password jsonString];
+    NSData *data = [json data];
     return [account encrypt:data];
 }
 
 - (nullable NSObject *)message:(DKDInstantMessage *)iMsg
                  encodeKeyData:(NSData *)keyData {
-    if (isBroadcast(iMsg, _barrack)) {
-        NSAssert(!keyData, @"broadcast message has no key");
-        return nil;
-    }
+    NSAssert(!isBroadcast(iMsg, _barrack) || !keyData, @"broadcast message has no key");
+    // encode to Base64
     return [keyData base64Encode];
 }
 
@@ -117,51 +144,41 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
 - (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
                      decryptData:(NSData *)data
                          withKey:(NSDictionary *)password {
-    
     DIMSymmetricKey *symmetricKey = MKMSymmetricKeyFromDictionary(password);
     NSAssert(symmetricKey == password, @"irregular symmetric key: %@", password);
+    
     // decrypt message.data
     NSData *plaintext = [symmetricKey decrypt:data];
     if (plaintext.length == 0) {
         NSAssert(false, @"failed to decrypt data: %@, key: %@", data, password);
         return nil;
     }
+    // build Content with JsON
     NSString *json = [plaintext UTF8String]; // remove garbage at end
     NSDictionary *dict = [[json data] jsonDictionary];
-    
-    // pack message with content
     DIMContent *content = DKDContentFromDictionary(dict);
+    NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", json);
     
     // check attachment for File/Image/Audio/Video message content
-    switch (content.type) {
-        case DIMContentType_File:
-        case DIMContentType_Image:
-        case DIMContentType_Audio:
-        case DIMContentType_Video:
-        {
-            DIMInstantMessage *iMsg;
-            iMsg = [[DIMInstantMessage alloc] initWithContent:content
-                                                     envelope:sMsg.envelope];
-            // download from CDN
-            DIMFileContent *file = (DIMFileContent *)content;
-            NSAssert(file.URL != nil, @"content.URL should not be empty");
-            NSAssert(file.fileData == nil, @"content.fileData already download");
-            // download and decrypt
-            NSData *fileData = [_delegate downloadEncryptedFileData:file.URL
-                                                         forMessage:iMsg];
-            if (fileData) {
-                file.fileData = [symmetricKey decrypt:fileData];
-                file.URL = nil;
-            } else {
-                // save the symmetric key for decrypte file data later
-                file.password = symmetricKey;
-            }
-            //content = file;
+    if ([content isKindOfClass:[DIMFileContent class]]) {
+        DIMFileContent *file = (DIMFileContent *)content;
+        NSAssert(file.URL != nil, @"content.URL should not be empty");
+        NSAssert(file.fileData == nil, @"content.fileData already download");
+        DIMInstantMessage *iMsg;
+        iMsg = [[DIMInstantMessage alloc] initWithContent:content
+                                                 envelope:sMsg.envelope];
+        // download from CDN
+        NSData *fileData = [_delegate downloadEncryptedFileData:file.URL
+                                                     forMessage:iMsg];
+        if (fileData) {
+            // decrypt file data
+            file.fileData = [symmetricKey decrypt:fileData];
+            file.URL = nil;
+        } else {
+            // save the symmetric key for decrypte file data later
+            file.password = symmetricKey;
         }
-            break;
-            
-        default:
-            break;
+        //content = file;
     }
     
     return content;
@@ -181,47 +198,34 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
                     decryptKeyData:(nullable NSData *)key
                               from:(NSString *)sender
                                 to:(NSString *)receiver {
-    DIMSymmetricKey *PW = nil;
-    
+    NSAssert(!isBroadcast(sMsg, _barrack) || !key, @"broadcast message has no key");
     DIMID *from = [_barrack IDWithString:sender];
     DIMID *to = [_barrack IDWithString:receiver];
     
+    DIMSymmetricKey *PW = nil;
     if (key) {
         // decrypt key data with the receiver's private key
         DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
         DIMUser *user = [_barrack userWithID:ID];
         NSAssert(user, @"failed to decrypt for receiver: %@", receiver);
         NSData *plaintext = [user decrypt:key];
-        if (plaintext.length > 0) {
-            // create symmetric key
-            NSString *json = [plaintext UTF8String]; // remove garbage at end
-            NSDictionary *dict = [[json data] jsonDictionary];
-            PW = MKMSymmetricKeyFromDictionary(dict);
-            if (PW) {
-                // set the new key in key store
-                [_cipherKeyDataSource cacheCipherKey:PW from:from to:to];
-                NSLog(@"got key from %@ to %@", sender, receiver);
-            }
-        } else {
-            NSAssert(false, @"failed to decrypt key in msg: %@", sMsg);
-        }
+        NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
+        // create symmetric key from JsON data
+        NSString *json = [plaintext UTF8String]; // remove garbage at end
+        NSDictionary *dict = [[json data] jsonDictionary];
+        PW = [self _password:dict from:from to:to];
     }
-    
     if (!PW) {
         // if key data is empty, get it from key store
-        PW = [_cipherKeyDataSource cipherKeyFrom:from to:to];
+        PW = [self _passwordFrom:from to:to];
         NSAssert(PW, @"failed to get password from %@ to %@", sender, receiver);
     }
-    
     return PW;
 }
 
 - (nullable NSData *)message:(DKDSecureMessage *)sMsg
                decodeKeyData:(NSObject *)keyString {
-    if (isBroadcast(sMsg, _barrack)) {
-        NSAssert(!keyString, @"broadcast message has no key");
-        return nil;
-    }
+    NSAssert(!isBroadcast(sMsg, _barrack) || !keyString, @"broadcast message has no key");
     return [(NSString *)keyString base64Decode];
 }
 

@@ -31,7 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // network
 #define DIMSystemCommand_Handshake @"handshake"
-#define DIMSystemCommand_Broadcast @"broadcast"
 
 // message
 #define DIMSystemCommand_Receipt   @"receipt"
