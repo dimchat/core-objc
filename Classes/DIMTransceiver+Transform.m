@@ -52,9 +52,9 @@
     DIMSecureMessage *sMsg = nil;
     
     // 1. encrypt 'content' to 'data' for receiver
-    DIMID *sender = MKMIDFromString(iMsg.envelope.sender);
-    DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
-    DIMID *group = MKMIDFromString(iMsg.content.group);
+    DIMID *sender = [_barrack IDWithString:iMsg.envelope.sender];
+    DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
+    DIMID *group = [_barrack IDWithString:iMsg.content.group];
     if (group) {
         // if 'group' exists and the 'receiver' is a group ID,
         // they must be equal
@@ -71,7 +71,7 @@
             // split group message
             members = @[receiver];
         } else {
-            members = [_barrackDelegate groupWithID:group].members;
+            members = [_barrack groupWithID:group].members;
             // FIXME: new group's member list may be empty
             //NSAssert(members.count > 0, @"group members cannot be empty");
         }
@@ -100,16 +100,16 @@
         rMsg.delegate = self;
     }
     NSAssert(rMsg.signature, @"signature cannot be empty");
-    DIMID *sender = MKMIDFromString(rMsg.envelope.sender);
-    DIMID *receiver = MKMIDFromString(rMsg.envelope.receiver);
+    DIMID *sender = [_barrack IDWithString:rMsg.envelope.sender];
+    DIMID *receiver = [_barrack IDWithString:rMsg.envelope.receiver];
     
     // [Meta Protocol] check meta in first contact message
-    DIMMeta *meta = [_entityDataSource metaForID:sender];
+    DIMMeta *meta = [_barrack metaForID:sender];
     if (!meta) {
         // first contact, try meta in message package
         meta = MKMMetaFromDictionary(rMsg.meta);
         if ([meta matchID:sender]) {
-            [_entityDataSource saveMeta:meta forID:sender];
+            [_barrack saveMeta:meta forID:sender];
         } else {
             NSAssert(false, @"meta error: %@, %@", sender, meta);
             return nil;
@@ -117,7 +117,7 @@
     }
     
     // check recipient
-    DIMID *groupID = MKMIDFromString(rMsg.group);
+    DIMID *groupID = [_barrack IDWithString:rMsg.group];
     DIMUser *user = nil;
     if (MKMNetwork_IsGroup(receiver.type)) {
         NSAssert(!groupID || [groupID isEqual:receiver], @"group error: %@ != %@", receiver, groupID);
@@ -186,8 +186,8 @@
                   callback:(nullable DIMTransceiverCallback)callback
                dispersedly:(BOOL)split {
     // transforming
-    DIMID *receiver = MKMIDFromString(iMsg.envelope.receiver);
-    DIMID *groupID = MKMIDFromString(iMsg.content.group);
+    DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
+    DIMID *groupID = [_barrack IDWithString:iMsg.content.group];
     DIMReliableMessage *rMsg = [self encryptAndSignMessage:iMsg];
     if (!rMsg) {
         NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
@@ -200,7 +200,7 @@
     BOOL OK = YES;
     if (split && MKMNetwork_IsGroup(receiver.type)) {
         NSAssert([receiver isEqual:groupID], @"group ID error: %@", iMsg);
-        DIMGroup *group = [_barrackDelegate groupWithID:groupID];
+        DIMGroup *group = [_barrack groupWithID:groupID];
         NSArray *messages = [rMsg splitForMembers:group.members];
         if (messages.count == 0) {
             NSLog(@"failed to split msg, send it to group: %@", receiver);

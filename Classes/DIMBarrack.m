@@ -8,6 +8,7 @@
 
 #import "DIMBarrack.h"
 
+typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
 typedef NSMutableDictionary<DIMAddress *, DIMMeta *> MetaTableM;
 
 typedef NSMutableDictionary<DIMAddress *, DIMAccount *> AccountTableM;
@@ -16,6 +17,7 @@ typedef NSMutableDictionary<DIMAddress *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
+    IDTableM *_idTable;
     MetaTableM *_metaTable;
     
     AccountTableM *_accountTable;
@@ -47,6 +49,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (instancetype)init {
     if (self = [super init]) {
+        _idTable = [[IDTableM alloc] init];
         _metaTable = [[MetaTableM alloc] init];
         
         _accountTable = [[AccountTableM alloc] init];
@@ -57,19 +60,24 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         _entityDataSource = nil;
         _userDataSource = nil;
         _groupDataSource = nil;
-        
-        _delegate = nil;
     }
     return self;
 }
 
 - (NSInteger)reduceMemory {
     NSInteger finger = 0;
+    finger = thanos(_idTable, finger);
     finger = thanos(_metaTable, finger);
     finger = thanos(_accountTable, finger);
     finger = thanos(_userTable, finger);
     finger = thanos(_groupTable, finger);
     return (finger & 1) + (finger >> 1);
+}
+
+- (BOOL)cacheID:(MKMID *)ID {
+    NSAssert([ID isValid], @"ID error: %@", ID);
+    [_idTable setObject:ID forKey:ID];
+    return YES;
 }
 
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID {
@@ -127,72 +135,56 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return NO;
 }
 
-#pragma mark DIMBarrackDelegate
+- (nullable DIMID *)IDWithString:(NSString *)string {
+    // get from ID cache
+    DIMID *ID = [_idTable objectForKey:string];
+    if (ID) {
+        return ID;
+    }
+    // create and cache it
+    ID = MKMIDFromString(string);
+    if (ID) {
+        [self cacheID:ID];
+        return ID;
+    }
+    // failed to create ID
+    return nil;
+}
 
 - (nullable DIMAccount *)accountWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsCommunicator(ID.type), @"account ID error: %@", ID);
-    DIMAccount *account;
-    
-    // (a) get from account cache
-    account = [_accountTable objectForKey:ID.address];
+    // get from account cache
+    DIMAccount *account = [_accountTable objectForKey:ID.address];
     if (account) {
         return account;
     }
-    // (b) get from user cache
+    // get from user cache
     account = [_userTable objectForKey:ID.address];
     if (account) {
         return account;
     }
-    
-    // (c) get from delegate
-    account = [_delegate accountWithID:ID];
-    if (account) {
-        [self cacheAccount:account];
-        return account;
-    }
-    
     // failed to get account
     return nil;
 }
 
 - (nullable DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
-    DIMUser *user;
-    
-    // (a) get from user cache
-    user = [_userTable objectForKey:ID.address];
+    // get from user cache
+    DIMUser *user = [_userTable objectForKey:ID.address];
     if (user) {
         return user;
     }
-    
-    // (b) get from delegate
-    user = [_delegate userWithID:ID];
-    if (user) {
-        [self cacheUser:user];
-        return user;
-    }
-    
     // failed to get user
     return nil;
 }
 
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    DIMGroup *group;
-    
-    // (a) get from group cache
-    group = [_groupTable objectForKey:ID.address];
+    // get from group cache
+    DIMGroup *group = [_groupTable objectForKey:ID.address];
     if (group) {
         return group;
     }
-    
-    // (b) get from delegate
-    group = [_delegate groupWithID:ID];
-    if (group) {
-        [self cacheGroup:group];
-        return group;
-    }
-    
     // failed to get group
     return nil;
 }
@@ -200,21 +192,21 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 #pragma mark - DIMEntityDataSource
 
 - (nullable DIMMeta *)metaForID:(DIMID *)ID {
-    // (a) get from meta cache
+    // get from meta cache
     DIMMeta *meta = [_metaTable objectForKey:ID.address];
     if (meta) {
         return meta;
     }
-    // (b) get from entity data source
+    // get from entity data source
     NSAssert(_entityDataSource, @"entity data source not set");
     meta = [_entityDataSource metaForID:ID];
-    // (c) check and cache it
+    // check and cache it
     if ([self cacheMeta:meta forID:ID]) {
         return meta;
-    } else {
-        NSAssert(!meta, @"meta error: %@ -> %@", ID, meta);
-        return nil;
     }
+    // failed to get meta
+    NSAssert(!meta, @"meta error: %@ -> %@", ID, meta);
+    return nil;
 }
 
 - (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
@@ -257,12 +249,12 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (DIMID *)founderOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
     NSAssert(_groupDataSource, @"group data source not set");
-    // 1. get from data source
+    // get from data source
     DIMID *founder = [_groupDataSource founderOfGroup:group];
     if (founder) {
         return founder;
     }
-    // 2. check each member's public key with group meta
+    // check each member's public key with group meta
     DIMMeta *groupMeta = [self metaForID:group];
     NSArray<DIMID *> *members = [self membersOfGroup:group];
     DIMMeta *meta;

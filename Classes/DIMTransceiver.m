@@ -18,13 +18,13 @@
 
 #import "DIMTransceiver.h"
 
-static inline BOOL isBroadcast(DIMMessage *msg) {
-    DIMID *receiver = MKMIDFromString([msg group]);
+static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
+    DIMID *receiver = [barrack IDWithString:[msg group]];
     if (receiver) {
         // group message
         return MKMIsEveryone(receiver);
     }
-    receiver = MKMIDFromString(msg.envelope.receiver);
+    receiver = [barrack IDWithString:msg.envelope.receiver];
     // group or split message
     return MKMIsBroadcast(receiver);
 }
@@ -83,7 +83,7 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
 
 - (nullable NSObject *)message:(DKDInstantMessage *)iMsg
                     encodeData:(NSData *)data {
-    if (isBroadcast(iMsg)) {
+    if (isBroadcast(iMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so no need to encode to Base64 here
         return [data UTF8String];
@@ -97,15 +97,15 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
     
     NSString *json = [password jsonString];
     NSData *data = [json data];
-    DIMID *ID = MKMIDFromString(receiver);
-    DIMAccount *account = [_barrackDelegate accountWithID:ID];
+    DIMID *ID = [_barrack IDWithString:receiver];
+    DIMAccount *account = [_barrack accountWithID:ID];
     NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
     return [account encrypt:data];
 }
 
 - (nullable NSObject *)message:(DKDInstantMessage *)iMsg
                  encodeKeyData:(NSData *)keyData {
-    if (isBroadcast(iMsg)) {
+    if (isBroadcast(iMsg, _barrack)) {
         NSAssert(!keyData, @"broadcast message has no key");
         return nil;
     }
@@ -169,7 +169,7 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
 
 - (nullable NSData *)message:(DKDSecureMessage *)sMsg
                   decodeData:(NSObject *)dataString {
-    if (isBroadcast(sMsg)) {
+    if (isBroadcast(sMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
         return [(NSString *)dataString data];
@@ -183,13 +183,13 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
                                 to:(NSString *)receiver {
     DIMSymmetricKey *PW = nil;
     
-    DIMID *from = MKMIDFromString(sender);
-    DIMID *to = MKMIDFromString(receiver);
+    DIMID *from = [_barrack IDWithString:sender];
+    DIMID *to = [_barrack IDWithString:receiver];
     
     if (key) {
         // decrypt key data with the receiver's private key
-        DIMID *ID = MKMIDFromString(sMsg.envelope.receiver);
-        DIMUser *user = [_barrackDelegate userWithID:ID];
+        DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
+        DIMUser *user = [_barrack userWithID:ID];
         NSAssert(user, @"failed to decrypt for receiver: %@", receiver);
         NSData *plaintext = [user decrypt:key];
         if (plaintext.length > 0) {
@@ -218,7 +218,7 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
 
 - (nullable NSData *)message:(DKDSecureMessage *)sMsg
                decodeKeyData:(NSObject *)keyString {
-    if (isBroadcast(sMsg)) {
+    if (isBroadcast(sMsg, _barrack)) {
         NSAssert(!keyString, @"broadcast message has no key");
         return nil;
     }
@@ -228,8 +228,8 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                     signData:(NSData *)data
                    forSender:(NSString *)sender {
-    DIMID *ID = MKMIDFromString(sender);
-    DIMUser *user = [_barrackDelegate userWithID:ID];
+    DIMID *ID = [_barrack IDWithString:sender];
+    DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
 }
@@ -245,8 +245,8 @@ static inline BOOL isBroadcast(DIMMessage *msg) {
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
       forSender:(NSString *)sender {
-    DIMID *ID = MKMIDFromString(sender);
-    DIMAccount *account = [_barrackDelegate accountWithID:ID];
+    DIMID *ID = [_barrack IDWithString:sender];
+    DIMAccount *account = [_barrack accountWithID:ID];
     NSAssert(account, @"failed to verify with sender: %@", sender);
     return [account verify:data withSignature:signature];
 }

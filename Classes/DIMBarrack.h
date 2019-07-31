@@ -10,8 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMBarrackDelegate;
-
 /**
  *  Entity pool to manage User/Contace/Group/Member instances
  *
@@ -26,32 +24,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
 @property (weak, nonatomic) id<DIMGroupDataSource> groupDataSource;
 
-@property (weak, nonatomic) id<DIMBarrackDelegate> delegate;
-
+- (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 
 - (BOOL)cacheAccount:(DIMAccount *)account;
 - (BOOL)cacheUser:(DIMUser *)user;
 - (BOOL)cacheGroup:(DIMGroup *)group;
 
-- (nullable DIMAccount *)accountWithID:(DIMID *)ID;
-- (nullable DIMUser *)userWithID:(DIMID *)ID;
-- (nullable DIMGroup *)groupWithID:(DIMID *)ID;
-
 /**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
+ *  Create ID with string
  *
- * @return reduced object count
+ * @param string - ID string
+ * @return ID
  */
-- (NSInteger)reduceMemory;
-
-@end
-
-#pragma mark - Barrack Delegate
-
-@protocol DIMBarrackDelegate <NSObject>
-
+- (nullable DIMID *)IDWithString:(NSString *)string;
 /**
  *  Create account with ID
  *
@@ -75,6 +61,14 @@ NS_ASSUME_NONNULL_BEGIN
  * @return group
  */
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID;
+
+/**
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return reduced object count
+ */
+- (NSInteger)reduceMemory;
 
 @end
 

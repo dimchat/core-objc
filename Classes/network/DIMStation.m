@@ -116,14 +116,19 @@
 }
 
 - (BOOL)isEqual:(id)object {
+    if ([super isEqual:object]) {
+        YES;
+    }
+    NSAssert([object isKindOfClass:[DIMStation class]], @"error: %@", object);
     DIMStation *server = (DIMStation *)object;
-    if ([server.ID isEqual:_ID]) {
-        return YES;
+    if (!NSStringEquals(server.host, _host)) {
+        return NO;
     }
-    if (NSStringEquals(server.host, _host) && server.port == _port) {
-        return YES;
+    if (server.port != _port) {
+        return NO;
     }
-    return NO;
+    // others?
+    return YES;
 }
 
 - (NSString *)name {
