@@ -1,5 +1,5 @@
 //
-//  DIMKeyStore.h
+//  DIMKeyCache.h
 //  DIMCore
 //
 //  Created by Albert Moky on 2018/10/12.
@@ -50,15 +50,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Cache for Cipher Key with direction: <from, to>
  */
-@interface DIMKeyStore : NSObject <DIMCipherKeyDataSource>
+@interface DIMKeyCache : NSObject <DIMCipherKeyDataSource>
 
 /**
- *  Trigger for saving cipher key table
+ *  Trigger for saving cipher key map
  */
 - (void)flush;
 
 /**
- *  Callback for saving cipher key table into local storage
+ *  Callback for saving cipher key map into local storage
  *  (Override it to access database)
  *
  * @param keyMap - all cipher keys(with direction) from memory cache
@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)saveKeys:(NSDictionary *)keyMap;
 
 /**
- *  Load cipher key table from local storage
+ *  Load cipher key map from local storage
  *  (Override it to access database)
  *
  * @return keys map
@@ -75,12 +75,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)loadKeys;
 
 /**
- *  Update cipher key table into memory cache
+ *  Update cipher key map into memory cache
  *
  * @param keyMap - cipher keys(with direction) from local storage
  * @return NO on nothing changed
  */
 - (BOOL)updateKeys:(NSDictionary *)keyMap;
+
+/**
+ *  Trigger for load and update cipher key map
+ */
+- (BOOL)updateKeys;
 
 @end
 

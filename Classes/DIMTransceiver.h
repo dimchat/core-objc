@@ -49,7 +49,7 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
 
 #pragma mark -
 
-@class DIMBarrack;
+@protocol DIMSocialNetworkDataSource;
 @protocol DIMCipherKeyDataSource;
 
 /**
@@ -64,14 +64,14 @@ typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Null
     
     __weak id<DIMTransceiverDelegate> _delegate;
     
-    __weak id<DIMCipherKeyDataSource> _cipherKeyDataSource;
-    DIMBarrack *_barrack;
+    __weak id<DIMSocialNetworkDataSource> _barrack;
+    __weak id<DIMCipherKeyDataSource> _keyCache;
 }
 
 @property (weak, nonatomic) id<DIMTransceiverDelegate> delegate;
 
-@property (weak, nonatomic) id<DIMCipherKeyDataSource> cipherKeyDataSource;
-@property (strong, nonatomic) DIMBarrack *barrack;
+@property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
+@property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
 
 @end
 

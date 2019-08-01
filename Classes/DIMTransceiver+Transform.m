@@ -14,7 +14,7 @@
 #import "DIMForwardContent.h"
 
 #import "DIMBarrack.h"
-#import "DIMKeyStore.h"
+#import "DIMKeyCache.h"
 
 #import "DIMTransceiver+Transform.h"
 

@@ -10,26 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Entity pool to manage User/Contace/Group/Member instances
- *
- *      1st, get instance here to avoid create same instance,
- *      2nd, if they were updated, we can refresh them immediately here
- */
-@interface DIMBarrack : NSObject <DIMEntityDataSource,
-                                  DIMUserDataSource,
-                                  DIMGroupDataSource>
-
-@property (weak, nonatomic) id<DIMEntityDataSource> entityDataSource;
-@property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
-@property (weak, nonatomic) id<DIMGroupDataSource> groupDataSource;
-
-- (BOOL)cacheID:(DIMID *)ID;
-- (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
-
-- (BOOL)cacheAccount:(DIMAccount *)account;
-- (BOOL)cacheUser:(DIMUser *)user;
-- (BOOL)cacheGroup:(DIMGroup *)group;
+@protocol DIMSocialNetworkDataSource <DIMEntityDataSource>
 
 /**
  *  Create ID with string
@@ -61,6 +42,29 @@ NS_ASSUME_NONNULL_BEGIN
  * @return group
  */
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID;
+
+@end
+
+/**
+ *  Entity pool to manage User/Contace/Group/Member instances
+ *
+ *      1st, get instance here to avoid create same instance,
+ *      2nd, if they were updated, we can refresh them immediately here
+ */
+@interface DIMBarrack : NSObject <DIMSocialNetworkDataSource,
+                                  DIMUserDataSource,
+                                  DIMGroupDataSource>
+
+@property (weak, nonatomic) id<DIMEntityDataSource> entityDataSource;
+@property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
+@property (weak, nonatomic) id<DIMGroupDataSource> groupDataSource;
+
+- (BOOL)cacheID:(DIMID *)ID;
+- (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
+
+- (BOOL)cacheAccount:(DIMAccount *)account;
+- (BOOL)cacheUser:(DIMUser *)user;
+- (BOOL)cacheGroup:(DIMGroup *)group;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',

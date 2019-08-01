@@ -14,11 +14,12 @@
 #import "DIMFileContent.h"
 
 #import "DIMBarrack.h"
-#import "DIMKeyStore.h"
+#import "DIMKeyCache.h"
 
 #import "DIMTransceiver.h"
 
-static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
+static inline BOOL isBroadcast(DIMMessage *msg,
+                               id<DIMSocialNetworkDataSource> barrack) {
     DIMID *receiver = [barrack IDWithString:[msg group]];
     if (receiver) {
         // group message
@@ -42,10 +43,10 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
 - (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
     // 1. get old key from store
     DIMSymmetricKey *reusedKey;
-    reusedKey = [_cipherKeyDataSource cipherKeyFrom:sender to:receiver];
+    reusedKey = [_keyCache cipherKeyFrom:sender to:receiver];
     // 2. get new key from delegate
     DIMSymmetricKey *newKey;
-    newKey = [_cipherKeyDataSource reuseCipherKey:reusedKey from:sender to:receiver];
+    newKey = [_keyCache reuseCipherKey:reusedKey from:sender to:receiver];
     if (!newKey) {
         if (!reusedKey) {
             // 3. create a new key
@@ -56,7 +57,7 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
     }
     // 4. update new key into the key store
     if (![newKey isEqual:reusedKey]) {
-        [_cipherKeyDataSource cacheCipherKey:newKey from:sender to:receiver];
+        [_keyCache cacheCipherKey:newKey from:sender to:receiver];
     }
     return newKey;
 }
@@ -67,7 +68,7 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMBarrack *barrack) {
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
     if (key) {
         // cache the new key in key store
-        [_cipherKeyDataSource cacheCipherKey:key from:sender to:receiver];
+        [_keyCache cacheCipherKey:key from:sender to:receiver];
         NSLog(@"got key from %@ to %@", sender, receiver);
     }
     return key;

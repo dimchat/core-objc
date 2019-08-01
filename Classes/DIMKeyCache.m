@@ -1,5 +1,5 @@
 //
-//  DIMKeyStore.m
+//  DIMKeyCache.m
 //  DIMCore
 //
 //  Created by Albert Moky on 2018/10/12.
@@ -8,9 +8,8 @@
 
 #import "NSObject+Singleton.h"
 #import "NSObject+JsON.h"
-#import "NSDictionary+Binary.h"
 
-#import "DIMKeyStore.h"
+#import "DIMKeyCache.h"
 
 #define _Plain @"PLAIN"
 
@@ -45,20 +44,12 @@ SingletonImplementations(_PlainKey, sharedInstance)
 
 #pragma mark -
 
-// "Library/Caches"
-static inline NSString *caches_directory(void) {
-    NSArray *paths;
-    paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
-                                                NSUserDomainMask, YES);
-    return paths.firstObject;
-}
-
 // receiver -> key
 typedef NSMutableDictionary<DIMID *, DIMSymmetricKey *> KeyTable;
 // sender -> map<receiver, key>
 typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
-@interface DIMKeyStore () {
+@interface DIMKeyCache () {
     
     KeyMap *_keyMap;
     
@@ -67,7 +58,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 @end
 
-@implementation DIMKeyStore
+@implementation DIMKeyCache
 
 - (void)dealloc {
     [self flush];
@@ -82,7 +73,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
         _keyMap = [[KeyMap alloc] init];
         
         // load keys from local storage
-        [self updateKeys:[self loadKeys]];
+        [self updateKeys];
         
         _dirty = NO;
     }
@@ -101,20 +92,17 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 }
 
 - (BOOL)saveKeys:(NSDictionary *)keyMap {
-    // "Library/Caches/keystore.plist"
-    NSString *dir = caches_directory();
-    NSString *path = [dir stringByAppendingPathComponent:@"keystore.plist"];
-    return [_keyMap writeToBinaryFile:path];
+    NSAssert(false, @"override me!");
+    return NO;
 }
 
 - (NSDictionary *)loadKeys {
-    NSString *dir = caches_directory();
-    NSString *path = [dir stringByAppendingPathComponent:@"keystore.plist"];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:path]) {
-        return [NSDictionary dictionaryWithContentsOfFile:path];
-    }
+    NSAssert(false, @"override me!");
     return nil;
+}
+
+- (BOOL) updateKeys {
+    return [self updateKeys:[self loadKeys]];
 }
 
 - (BOOL)updateKeys:(NSDictionary *)keyMap {
