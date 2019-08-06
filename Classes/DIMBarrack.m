@@ -159,34 +159,19 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         return account;
     }
     // get from user cache
-    account = [_userTable objectForKey:ID];
-    if (account) {
-        return account;
-    }
-    // failed to get account
-    return nil;
+    return [self userWithID:ID];
 }
 
 - (nullable DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsPerson(ID.type), @"user ID error: %@", ID);
     // get from user cache
-    DIMUser *user = [_userTable objectForKey:ID];
-    if (user) {
-        return user;
-    }
-    // failed to get user
-    return nil;
+    return [_userTable objectForKey:ID];
 }
 
 - (nullable DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     // get from group cache
-    DIMGroup *group = [_groupTable objectForKey:ID];
-    if (group) {
-        return group;
-    }
-    // failed to get group
-    return nil;
+    return [_groupTable objectForKey:ID];
 }
 
 #pragma mark - DIMEntityDataSource
