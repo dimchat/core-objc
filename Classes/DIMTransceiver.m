@@ -155,10 +155,9 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         return nil;
     }
     // build Content with JsON
-    NSString *json = [plaintext UTF8String]; // remove garbage at end
-    NSDictionary *dict = [[json data] jsonDictionary];
+    NSDictionary *dict = [plaintext jsonDictionary];
     DIMContent *content = DKDContentFromDictionary(dict);
-    NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", json);
+    NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", plaintext);
     
     // check attachment for File/Image/Audio/Video message content
     if ([content isKindOfClass:[DIMFileContent class]]) {
