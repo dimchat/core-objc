@@ -74,7 +74,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return (finger & 1) + (finger >> 1);
 }
 
-- (BOOL)cacheID:(MKMID *)ID {
+- (BOOL)cacheID:(DIMID *)ID {
     NSAssert([ID isValid], @"ID error: %@", ID);
     [_idTable setObject:ID forKey:ID];
     return YES;

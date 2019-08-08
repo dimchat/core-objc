@@ -60,4 +60,9 @@
 #define DIMSecureMessage                DKDSecureMessage
 #define DIMReliableMessage              DKDReliableMessage
 
+#define DIMMessageDelegate              DKDMessageDelegate
+#define DIMInstantMessageDelegate       DKDInstantMessageDelegate
+#define DIMSecureMessageDelegate        DKDSecureMessageDelegate
+#define DIMReliableMessageDelegate      DKDReliableMessageDelegate
+
 #endif /* dimMacros_h */

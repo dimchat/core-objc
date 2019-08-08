@@ -172,8 +172,8 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     _dirty = key != nil;
 }
 
-- (nonnull DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
-                                       from:(DIMID *)sender to:(DIMID *)receiver {
+- (DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
+                               from:(DIMID *)sender to:(DIMID *)receiver {
     // TODO: check whether renew the old key
     return key;
 }

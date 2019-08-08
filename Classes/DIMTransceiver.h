@@ -58,9 +58,9 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
  */
 typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Nullable error);
 
-@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
-                                      DKDSecureMessageDelegate,
-                                      DKDReliableMessageDelegate> {
+@interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
+                                      DIMSecureMessageDelegate,
+                                      DIMReliableMessageDelegate> {
     
     __weak id<DIMTransceiverDelegate> _delegate;
     

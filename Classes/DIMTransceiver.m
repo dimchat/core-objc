@@ -105,7 +105,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return [symmetricKey encrypt:data];
 }
 
-- (nullable NSObject *)message:(DKDInstantMessage *)iMsg
+- (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                     encodeData:(NSData *)data {
     if (isBroadcast(iMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
@@ -133,7 +133,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return [account encrypt:data];
 }
 
-- (nullable NSObject *)message:(DKDInstantMessage *)iMsg
+- (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                  encodeKeyData:(NSData *)keyData {
     NSAssert(!isBroadcast(iMsg, _barrack) || !keyData, @"broadcast message has no key");
     // encode to Base64
@@ -184,7 +184,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return content;
 }
 
-- (nullable NSData *)message:(DKDSecureMessage *)sMsg
+- (nullable NSData *)message:(DIMSecureMessage *)sMsg
                   decodeData:(NSObject *)dataString {
     if (isBroadcast(sMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
@@ -223,7 +223,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return PW;
 }
 
-- (nullable NSData *)message:(DKDSecureMessage *)sMsg
+- (nullable NSData *)message:(DIMSecureMessage *)sMsg
                decodeKeyData:(NSObject *)keyString {
     NSAssert(!isBroadcast(sMsg, _barrack) || !keyString, @"broadcast message has no key");
     return [(NSString *)keyString base64Decode];
@@ -238,7 +238,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return [user sign:data];
 }
 
-- (nullable NSObject *)message:(DKDSecureMessage *)sMsg
+- (nullable NSObject *)message:(DIMSecureMessage *)sMsg
                encodeSignature:(NSData *)signature {
     return [signature base64Encode];
 }
@@ -255,7 +255,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return [account verify:data withSignature:signature];
 }
 
-- (nullable NSData *)message:(DKDReliableMessage *)rMsg
+- (nullable NSData *)message:(DIMReliableMessage *)rMsg
              decodeSignature:(NSObject *)signatureString {
     return [(NSString *)signatureString base64Decode];
 }
