@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param chatroom - group ID
  * @return admins list (ID)
  */
-- (NSArray<DIMID *> *)adminsOfChatroom:(DIMID *)chatroom;
+- (nullable NSArray<DIMID *> *)adminsOfChatroom:(DIMID *)chatroom;
 
 @end
 

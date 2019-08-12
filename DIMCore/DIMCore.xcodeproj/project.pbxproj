@@ -231,10 +231,10 @@
 		E91F2AFF23014B2600BE05D0 /* group */ = {
 			isa = PBXGroup;
 			children = (
-				E91F2B0423014B2600BE05D0 /* DIMChatroom.h */,
-				E91F2B0223014B2600BE05D0 /* DIMChatroom.m */,
 				E91F2B0523014B2600BE05D0 /* DIMPolylogue.h */,
 				E91F2B0123014B2600BE05D0 /* DIMPolylogue.m */,
+				E91F2B0423014B2600BE05D0 /* DIMChatroom.h */,
+				E91F2B0223014B2600BE05D0 /* DIMChatroom.m */,
 			);
 			path = group;
 			sourceTree = "<group>";

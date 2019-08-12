@@ -8,7 +8,7 @@
 
 #import "MKMProfile+Extension.h"
 
-@implementation MKMProfile (Account)
+@implementation MKMProfile (User)
 
 - (NSString *)avatar {
     return (NSString *)[self dataForKey:@"avatar"];

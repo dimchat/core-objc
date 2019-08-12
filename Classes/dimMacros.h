@@ -25,8 +25,8 @@
 #define DIMEntityDataSource             MKMEntityDataSource
 
 // User
-#define DIMAccount                      MKMAccount
 #define DIMUser                         MKMUser
+#define DIMLocalUser                    MKMLocalUser
 #define DIMUserDataSource               MKMUserDataSource
 
 // Group

@@ -34,7 +34,7 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
  *  @param iMsg - instant message
  *  @return download URL
  */
-- (NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DIMInstantMessage *)iMsg;
+- (nullable NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DIMInstantMessage *)iMsg;
 
 /**
  *  Download encrypted data from CDN, and decrypt it when finished

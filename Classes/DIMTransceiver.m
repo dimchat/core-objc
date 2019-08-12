@@ -126,11 +126,11 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
-    DIMAccount *account = [_barrack accountWithID:ID];
-    NSAssert(account, @"failed to encrypt with receiver: %@", receiver);
+    DIMUser *user = [_barrack userWithID:ID];
+    NSAssert(user, @"failed to encrypt with receiver: %@", receiver);
     NSString *json = [password jsonString];
     NSData *data = [json data];
-    return [account encrypt:data];
+    return [user encrypt:data];
 }
 
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
@@ -206,7 +206,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (key) {
         // decrypt key data with the receiver's private key
         DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
-        DIMUser *user = [_barrack userWithID:ID];
+        DIMLocalUser *user = [_barrack userWithID:ID];
         NSAssert(user, @"failed to decrypt for receiver: %@", receiver);
         NSData *plaintext = [user decrypt:key];
         NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
@@ -233,7 +233,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                     signData:(NSData *)data
                    forSender:(NSString *)sender {
     DIMID *ID = [_barrack IDWithString:sender];
-    DIMUser *user = [_barrack userWithID:ID];
+    DIMLocalUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
 }
@@ -250,9 +250,9 @@ static inline BOOL isBroadcast(DIMMessage *msg,
   withSignature:(NSData *)signature
       forSender:(NSString *)sender {
     DIMID *ID = [_barrack IDWithString:sender];
-    DIMAccount *account = [_barrack accountWithID:ID];
-    NSAssert(account, @"failed to verify with sender: %@", sender);
-    return [account verify:data withSignature:signature];
+    DIMUser *user = [_barrack userWithID:ID];
+    NSAssert(user, @"failed to verify with sender: %@", sender);
+    return [user verify:data withSignature:signature];
 }
 
 - (nullable NSData *)message:(DIMReliableMessage *)rMsg

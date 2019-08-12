@@ -19,13 +19,13 @@
 - (instancetype)initWithID:(DIMID *)ID {
     NSAssert(false, @"DON'T call me");
     DIMID *group = nil;
-    return [self initWithGroup:group account:ID];
+    return [self initWithGroup:group user:ID];
 }
 
 /* designated initializer */
 - (instancetype)initWithGroup:(DIMID *)group
-                      account:(DIMID *)ID {
-    NSAssert(MKMNetwork_IsCommunicator(ID.type), @"member ID error: %@", ID);
+                         user:(DIMID *)ID {
+    NSAssert(MKMNetwork_IsUser(ID.type), @"member ID error: %@", ID);
     NSAssert(!group || MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
     if (self = [super initWithID:ID]) {
         _group = group;
@@ -50,8 +50,8 @@
 @implementation DIMFounder
 
 - (instancetype)initWithGroup:(DIMID *)group
-                      account:(DIMID *)ID {
-    if (self = [super initWithGroup:group account:ID]) {
+                         user:(DIMID *)ID {
+    if (self = [super initWithGroup:group user:ID]) {
         _role = DIMMember_Founder;
     }
     return self;
@@ -62,8 +62,8 @@
 @implementation DIMOwner
 
 - (instancetype)initWithGroup:(DIMID *)group
-                      account:(DIMID *)ID {
-    if (self = [super initWithGroup:group account:ID]) {
+                         user:(DIMID *)ID {
+    if (self = [super initWithGroup:group user:ID]) {
         _role = DIMMember_Owner;
     }
     return self;
@@ -74,8 +74,8 @@
 @implementation DIMAdmin
 
 - (instancetype)initWithGroup:(DIMID *)group
-                      account:(DIMID *)ID {
-    if (self = [super initWithGroup:group account:ID]) {
+                         user:(DIMID *)ID {
+    if (self = [super initWithGroup:group user:ID]) {
         _role = DIMMember_Admin;
     }
     return self;

@@ -19,8 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @param receiver - contact or user/group ID
  * @return cipher key
  */
-- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
-                                to:(DIMID *)receiver;
+- (nullable DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
+                                         to:(DIMID *)receiver;
 
 /**
  *  Cache cipher key for reusing, with the direction (from 'sender' to 'receiver')
@@ -41,9 +41,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @param receiver - contact/group ID
  * @return new key
  */
-- (DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
-                               from:(DIMID *)sender
-                                 to:(DIMID *)receiver;
+- (nullable DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
+                                        from:(DIMID *)sender
+                                          to:(DIMID *)receiver;
 
 @end
 
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return keys map
  */
-- (NSDictionary *)loadKeys;
+- (nullable NSDictionary *)loadKeys;
 
 /**
  *  Update cipher key map into memory cache

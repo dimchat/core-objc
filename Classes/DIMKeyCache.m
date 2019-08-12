@@ -81,7 +81,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 }
 
 - (void)flush {
-    if (!_dirty) {
+    if (!_dirty || !_keyMap) {
         // nothing changed
         return ;
     }
@@ -96,13 +96,17 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     return NO;
 }
 
-- (NSDictionary *)loadKeys {
+- (nullable NSDictionary *)loadKeys {
     NSAssert(false, @"override me!");
     return nil;
 }
 
 - (BOOL) updateKeys {
-    return [self updateKeys:[self loadKeys]];
+    NSDictionary *keys = [self loadKeys];
+    if (!keys) {
+        return NO;
+    }
+    return [self updateKeys:keys];
 }
 
 - (BOOL)updateKeys:(NSDictionary *)keyMap {
@@ -128,9 +132,9 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     return changed;
 }
 
-- (DIMSymmetricKey *)_cipherKeyFrom:(DIMID *)sender
-                                 to:(DIMID *)receiver {
-    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+- (nullable DIMSymmetricKey *)_cipherKeyFrom:(DIMID *)sender
+                                          to:(DIMID *)receiver {
+    NSAssert(MKMNetwork_IsUser(sender.type), @"sender error: %@", sender);
     KeyTable *keyTable = [_keyMap objectForKey:sender];
     return [keyTable objectForKey:receiver];
 }
@@ -138,7 +142,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 - (void)_cacheCipherKey:(DIMSymmetricKey *)key
                    from:(DIMID *)sender
                      to:(DIMID *)receiver {
-    NSAssert(MKMNetwork_IsCommunicator(sender.type), @"sender error: %@", sender);
+    NSAssert(MKMNetwork_IsUser(sender.type), @"sender error: %@", sender);
     if (!key) {
         NSAssert(false, @"cipher key cannot be empty");
         return ;
@@ -153,8 +157,8 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 #pragma mark - DIMTransceiverDataSource
 
-- (DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
-                                to:(DIMID *)receiver {
+- (nullable DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
+                                         to:(DIMID *)receiver {
     if (MKMIsBroadcast(receiver)) {
         return [_PlainKey sharedInstance];
     }
@@ -172,8 +176,9 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     _dirty = key != nil;
 }
 
-- (DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
-                               from:(DIMID *)sender to:(DIMID *)receiver {
+- (nullable DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
+                                        from:(DIMID *)sender
+                                          to:(DIMID *)receiver {
     // TODO: check whether renew the old key
     return key;
 }

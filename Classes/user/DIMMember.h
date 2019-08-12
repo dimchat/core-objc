@@ -84,7 +84,7 @@ typedef NS_ENUM(UInt8, DIMMemberTypePlus) {
 };
 typedef UInt8 DIMMemberRole;
 
-@interface DIMMember : DIMAccount {
+@interface DIMMember : DIMUser {
     
     DIMID *_group;
     
@@ -95,7 +95,7 @@ typedef UInt8 DIMMemberRole;
 @property (nonatomic) DIMMemberRole role;
 
 - (instancetype)initWithGroup:(DIMID *)group
-                      account:(DIMID *)ID
+                         user:(DIMID *)ID
 NS_DESIGNATED_INITIALIZER;
 
 @end

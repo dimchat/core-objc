@@ -19,13 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @return ID
  */
 - (nullable DIMID *)IDWithString:(NSString *)string;
-/**
- *  Create account with ID
- *
- * @param ID - account ID
- * @return account
- */
-- (nullable DIMAccount *)accountWithID:(DIMID *)ID;
 
 /**
  *  Create user with ID
@@ -33,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user
  */
-- (nullable DIMUser *)userWithID:(DIMID *)ID;
+- (nullable __kindof DIMUser *)userWithID:(DIMID *)ID;
 
 /**
  *  Create group with ID
@@ -41,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable DIMGroup *)groupWithID:(DIMID *)ID;
+- (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID;
 
 @end
 
@@ -55,14 +48,13 @@ NS_ASSUME_NONNULL_BEGIN
                                   DIMUserDataSource,
                                   DIMGroupDataSource>
 
-@property (weak, nonatomic) id<DIMEntityDataSource> entityDataSource;
-@property (weak, nonatomic) id<DIMUserDataSource> userDataSource;
-@property (weak, nonatomic) id<DIMGroupDataSource> groupDataSource;
+@property (weak, nonatomic, nullable) id<DIMEntityDataSource> entityDataSource;
+@property (weak, nonatomic, nullable) id<DIMUserDataSource> userDataSource;
+@property (weak, nonatomic, nullable) id<DIMGroupDataSource> groupDataSource;
 
-- (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 
-- (BOOL)cacheAccount:(DIMAccount *)account;
+- (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheUser:(DIMUser *)user;
 - (BOOL)cacheGroup:(DIMGroup *)group;
 

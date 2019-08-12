@@ -19,7 +19,7 @@
     return self;
 }
 
-- (nullable DIMID *)owner {
+- (DIMID *)owner {
     DIMID *ID = [super owner];
     if ([ID isValid]) {
         NSAssert([[self founder] isEqual:ID], @"polylugue's owner is founder");
