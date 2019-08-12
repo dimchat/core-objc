@@ -22,7 +22,6 @@
 #define DIMMeta                         MKMMeta
 #define DIMProfile                      MKMProfile
 #define DIMEntity                       MKMEntity
-#define DIMEntityDataSource             MKMEntityDataSource
 
 // User
 #define DIMUser                         MKMUser

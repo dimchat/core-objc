@@ -10,6 +10,27 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol DIMEntityDataSource <MKMEntityDataSource>
+
+/**
+ *  Save meta into local storage
+ *
+ * @param meta - Meta info
+ * @param ID - entity ID
+ * @return YES on success
+ */
+- (BOOL)saveMeta:(MKMMeta *)meta forID:(MKMID *)ID;
+
+/**
+ *  Save profile into local storage
+ *
+ * @param profile - The Additional Information
+ * @return YES on success
+ */
+- (BOOL)saveProfile:(DIMProfile *)profile;
+
+@end
+
 @protocol DIMSocialNetworkDataSource <DIMEntityDataSource>
 
 /**
@@ -46,13 +67,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface DIMBarrack : NSObject <DIMSocialNetworkDataSource,
                                   DIMUserDataSource,
-                                  DIMGroupDataSource>
+                                  DIMGroupDataSource> {
+    
+    __weak __kindof id<DIMEntityDataSource> _entityDataSource;
+    __weak __kindof id<DIMUserDataSource> _userDataSource;
+    __weak __kindof id<DIMGroupDataSource> _groupDataSource;
+}
 
 @property (weak, nonatomic, nullable) id<DIMEntityDataSource> entityDataSource;
 @property (weak, nonatomic, nullable) id<DIMUserDataSource> userDataSource;
 @property (weak, nonatomic, nullable) id<DIMGroupDataSource> groupDataSource;
 
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
+- (BOOL)cacheProfile:(DIMProfile *)profile; // verify it with meta.key
 
 - (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheUser:(DIMUser *)user;
