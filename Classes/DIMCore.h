@@ -31,6 +31,14 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/MKMProfile+Extension.h>
 #import <DIMCore/DKDInstantMessage+Extension.h>
 
+// Group
+#import <DIMCore/DIMPolylogue.h>
+#import <DIMCore/DIMChatroom.h>
+
+// User
+#import <DIMCore/DIMMember.h>
+#import <DIMCore/DIMContact.h>
+
 // CA
 #import <DIMCore/DIMCASubject.h>
 #import <DIMCore/DIMCAValidity.h>

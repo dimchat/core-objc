@@ -20,31 +20,19 @@
 #define DIMID                           MKMID
 #define DIMAddress                      MKMAddress
 #define DIMMeta                         MKMMeta
+#define DIMProfile                      MKMProfile
 #define DIMEntity                       MKMEntity
-
 #define DIMEntityDataSource             MKMEntityDataSource
+
+// User
+#define DIMAccount                      MKMAccount
+#define DIMUser                         MKMUser
+#define DIMUserDataSource               MKMUserDataSource
 
 // Group
 #define DIMGroup                        MKMGroup
-#define DIMPolylogue                    MKMPolylogue
-#define DIMChatroom                     MKMChatroom
-
-#define DIMMember                       MKMMember
-#define DIMFounder                      MKMFounder
-#define DIMOwner                        MKMOwner
-#define DIMAdmin                        MKMAdmin
-
 #define DIMGroupDataSource              MKMGroupDataSource
-#define DIMChatroomDataSource           MKMChatroomDataSource
 
-//-
-#define DIMAccount                      MKMAccount
-#define DIMUser                         MKMUser
-#define DIMContact                      MKMContact
-
-#define DIMUserDataSource               MKMUserDataSource
-
-#define DIMProfile                      MKMProfile
 
 #import <DaoKeDao/DaoKeDao.h>
 
