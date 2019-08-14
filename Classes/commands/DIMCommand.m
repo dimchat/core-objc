@@ -8,8 +8,6 @@
 
 #import "NSObject+Singleton.h"
 
-#import "DIMContentType.h"
-
 #import "DIMHandshakeCommand.h"
 #import "DIMReceiptCommand.h"
 #import "DIMMetaCommand.h"
@@ -27,7 +25,7 @@
 
 - (instancetype)initWithCommand:(NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [self initWithType:DIMContentType_Command]) {
+    if (self = [self initWithType:DKDContentType_Command]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];

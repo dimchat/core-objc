@@ -8,8 +8,6 @@
 
 #import "NSString+Crypto.h"
 
-#import "DIMContentType.h"
-
 #import "DIMImageContent.h"
 
 @interface DIMContent (Hacking)
@@ -24,7 +22,7 @@
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
         // type
-        self.type = DIMContentType_Image;
+        self.type = DKDContentType_Image;
         
         // TODO: thumbnail
     }

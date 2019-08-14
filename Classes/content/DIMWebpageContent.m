@@ -9,8 +9,6 @@
 #import "NSData+Crypto.h"
 #import "NSString+Crypto.h"
 
-#import "DIMContentType.h"
-
 #import "DIMWebpageContent.h"
 
 @implementation DIMWebpageContent
@@ -20,7 +18,7 @@
                 description:(nullable NSString *)desc
                        icon:(nullable NSData *)icon {
     NSAssert(url, @"URL cannot be empty");
-    if (self = [self initWithType:DIMContentType_Page]) {
+    if (self = [self initWithType:DKDContentType_Page]) {
         // url
         if (url) {
             [_storeDictionary setObject:[url absoluteString] forKey:@"URL"];

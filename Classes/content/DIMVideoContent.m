@@ -8,8 +8,6 @@
 
 #import "NSString+Crypto.h"
 
-#import "DIMContentType.h"
-
 #import "DIMVideoContent.h"
 
 @interface DIMContent (Hacking)
@@ -24,7 +22,7 @@
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:nil]) {
         // type
-        self.type = DIMContentType_Video;
+        self.type = DKDContentType_Video;
         
         // TODO: snapshot
     }

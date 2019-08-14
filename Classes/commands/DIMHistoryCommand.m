@@ -8,8 +8,6 @@
 
 #import "NSDate+Timestamp.h"
 
-#import "DIMContentType.h"
-
 #import "DIMGroupCommand.h"
 
 #import "DIMHistoryCommand.h"
@@ -24,7 +22,7 @@
 
 - (instancetype)initWithHistoryCommand:(NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [super initWithType:DIMContentType_History]) {
+    if (self = [super initWithType:DKDContentType_History]) {
         // command
         if (cmd) {
             [_storeDictionary setObject:cmd forKey:@"command"];

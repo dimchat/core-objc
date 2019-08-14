@@ -22,6 +22,7 @@
 #define DIMMeta                         MKMMeta
 #define DIMProfile                      MKMProfile
 #define DIMEntity                       MKMEntity
+#define DIMEntityDataSource             MKMEntityDataSource
 
 // User
 #define DIMUser                         MKMUser
@@ -40,6 +41,7 @@
 
 #define DIMEnvelope                     DKDEnvelope
 #define DIMContent                      DKDContent
+#define DIMForwardContent               DKDForwardContent
 
 // Message
 #define DIMMessage                      DKDMessage

@@ -6,15 +6,13 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMContentType.h"
-
 #import "DIMTextContent.h"
 
 @implementation DIMTextContent
 
 - (instancetype)initWithText:(NSString *)text {
     NSAssert(text, @"text cannot be empty");
-    if (self = [self initWithType:DIMContentType_Text]) {
+    if (self = [self initWithType:DKDContentType_Text]) {
         // text
         if (text) {
             [_storeDictionary setObject:text forKey:@"text"];

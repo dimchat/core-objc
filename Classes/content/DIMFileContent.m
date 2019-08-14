@@ -8,8 +8,6 @@
 
 #import "NSData+Extension.h"
 
-#import "DIMContentType.h"
-
 #import "DIMFileContent.h"
 
 @interface DIMFileContent () {
@@ -24,7 +22,7 @@
 - (instancetype)initWithFileData:(NSData *)data
                         filename:(nullable NSString *)name {
     NSAssert(data.length > 0, @"file data cannot be empty");
-    if (self = [self initWithType:DIMContentType_File]) {
+    if (self = [self initWithType:DKDContentType_File]) {
         
         // filename
         if (name) {

@@ -50,14 +50,12 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMStation.h>
 
 // Content
-#import <DIMCore/DIMContentType.h>
 #import <DIMCore/DIMTextContent.h>
 #import <DIMCore/DIMFileContent.h>
 #import <DIMCore/DIMImageContent.h>
 #import <DIMCore/DIMAudioContent.h>
 #import <DIMCore/DIMVideoContent.h>
 #import <DIMCore/DIMWebpageContent.h>
-#import <DIMCore/DIMForwardContent.h>
 
 // Commands
 #import <DIMCore/DIMCommand.h>
@@ -72,6 +70,5 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMBarrack.h>
 #import <DIMCore/DIMKeyCache.h>
 #import <DIMCore/DIMTransceiver.h>
-#import <DIMCore/DIMTransceiver+Transform.h>
 
 #endif /* ! __DIM_CORE__ */

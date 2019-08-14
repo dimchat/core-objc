@@ -6,23 +6,17 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSDate+Timestamp.h"
-
 #import "DIMBarrack.h"
 
-typedef NSMutableDictionary<DIMID *, DIMMeta *> MetaTableM;
-typedef NSMutableDictionary<DIMID *, DIMProfile *> ProfileTableM;
-
 typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
+typedef NSMutableDictionary<DIMID *, DIMMeta *> MetaTableM;
 typedef NSMutableDictionary<DIMID *, DIMUser *> UserTableM;
 typedef NSMutableDictionary<DIMID *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
-    MetaTableM *_metaTable;
-    ProfileTableM *_profileTable;
-    
     IDTableM *_idTable;
+    MetaTableM *_metaTable;
     UserTableM *_userTable;
     GroupTableM *_groupTable;
 }
@@ -50,54 +44,21 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (instancetype)init {
     if (self = [super init]) {
-        _metaTable = [[MetaTableM alloc] init];
-        _profileTable = [[ProfileTableM alloc] init];
-        
         _idTable = [[IDTableM alloc] init];
+        _metaTable = [[MetaTableM alloc] init];
         _userTable = [[UserTableM alloc] init];
         _groupTable = [[GroupTableM alloc] init];
-        
-        // delegates
-        _entityDataSource = nil;
-        _userDataSource = nil;
-        _groupDataSource = nil;
     }
     return self;
 }
 
 - (NSInteger)reduceMemory {
     NSInteger finger = 0;
-    finger = thanos(_metaTable, finger);
-    finger = thanos(_profileTable, finger);
     finger = thanos(_idTable, finger);
+    finger = thanos(_metaTable, finger);
     finger = thanos(_userTable, finger);
     finger = thanos(_groupTable, finger);
     return finger >> 1;
-}
-
-- (BOOL)_verifyProfile:(DIMProfile *)profile {
-    if (!profile) {
-        return NO;
-    } else if ([profile isValid]) {
-        // already verified
-        return YES;
-    }
-    DIMID *ID = profile.ID;
-    NSAssert([ID isValid], @"profile ID not valid: %@", profile);
-    DIMMeta *meta = nil;
-    // check signer
-    if (MKMNetwork_IsUser(ID.type)) {
-        // verify with user's meta.key
-        meta = [self metaForID:ID];
-    } else if (MKMNetwork_IsGroup(ID.type)) {
-        // verify with group owner's meta.key
-        DIMGroup *group = [self groupWithID:ID];
-        DIMID *owner = group.owner;
-        if ([owner isValid]) {
-            meta = [self metaForID:owner];
-        }
-    }
-    return [profile verify:meta.key];
 }
 
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID {
@@ -107,18 +68,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         return NO;
     }
     [_metaTable setObject:meta forKey:ID.address];
-    return YES;
-}
-
-- (BOOL)cacheProfile:(DIMProfile *)profile {
-    if (![self _verifyProfile:profile]) {
-        NSAssert(false, @"profile not valid: %@", profile);
-        return NO;
-    }
-    // set last update time
-    NSDate *now = [[NSDate alloc] init];
-    [profile setObject:NSNumberFromDate(now) forKey:@"lastTime"];
-    [_profileTable setObject:profile forKey:profile.ID];
     return YES;
 }
 
@@ -196,108 +145,50 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return [_groupTable objectForKey:ID];
 }
 
-#pragma mark - DIMEntityDataSource
-
-- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    if (![self cacheMeta:meta forID:ID]) {
-        NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
-        return NO;
-    }
-    // try saving it by delegate
-    return [_entityDataSource saveMeta:meta forID:ID];
-}
-
-- (BOOL)saveProfile:(MKMProfile *)profile {
-    if (![self cacheProfile:profile]) {
-        NSAssert(false, @"profile invalid: %@", profile);
-        return NO;
-    }
-    return [_entityDataSource saveProfile:profile];
-}
-
 #pragma mark - MKMEntityDataSource
 
 - (nullable DIMMeta *)metaForID:(DIMID *)ID {
-    // get from meta cache
-    DIMMeta *meta = [_metaTable objectForKey:ID];
-    if (meta) {
-        return meta;
-    }
-    // get from entity data source
-    meta = [_entityDataSource metaForID:ID];
-    if (!meta) {
-        // failed to get meta
-        return nil;
-    }
-    // check and cache it
-    if (![self cacheMeta:meta forID:ID]) {
-        NSAssert(false, @"failed to cache meta: %@ -> %@", ID, meta);
-        return nil;
-    }
-    return meta;
+    NSAssert([ID isValid], @"ID not valid: %@", ID);
+    return [_metaTable objectForKey:ID];
 }
 
 - (nullable __kindof DIMProfile *)profileForID:(DIMID *)ID {
-    // get from profile cache
-    DIMProfile *profile = [_profileTable objectForKey:ID];
-    NSNumber *timestamp = [profile objectForKey:@"lastTime"];
-    if (timestamp != nil) {
-        NSDate *lastTime = NSDateFromNumber(timestamp);
-        NSTimeInterval ti = [lastTime timeIntervalSinceNow];
-        if (fabs(ti) < 3600) {
-            // not expired yet
-            return profile;
-        }
-        NSLog(@"profile expired: %@", lastTime);
-        [_profileTable removeObjectForKey:ID];
-    }
-    // get from entity data source
-    profile = [_entityDataSource profileForID:ID];
-    // check and cache it
-    if (!profile || ![self cacheProfile:profile]) {
-        // place an empty profile for cache
-        profile = [[DIMProfile alloc] initWithID:ID];
-        // set last update time
-        NSDate *now = [[NSDate alloc] init];
-        [profile setObject:NSNumberFromDate(now) forKey:@"lastTime"];
-        [_profileTable setObject:profile forKey:profile.ID];
-        return nil;
-    }
-    return profile;
+    NSAssert([ID isValid], @"ID not valid: %@", ID);
+    return nil;
 }
 
 #pragma mark - MKMUserDataSource
 
 - (nullable DIMPrivateKey *)privateKeyForSignatureOfUser:(DIMID *)user {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    return [_userDataSource privateKeyForSignatureOfUser:user];
+    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    return nil;
 }
 
 - (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(DIMID *)user {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    return [_userDataSource privateKeysForDecryptionOfUser:user];
+    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    return nil;
 }
 
 - (nullable NSArray<DIMID *> *)contactsOfUser:(DIMID *)user {
-    NSAssert(MKMNetwork_IsPerson(user.type), @"user error: %@", user);
-    return [_userDataSource contactsOfUser:user];
+    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    return nil;
 }
 
 #pragma mark - MKMGroupDataSource
 
 - (nullable DIMID *)founderOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
-    return [_groupDataSource founderOfGroup:group];
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    return nil;
 }
 
 - (nullable DIMID *)ownerOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
-    return [_groupDataSource ownerOfGroup:group];
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    return nil;
 }
 
 - (nullable NSArray<DIMID *> *)membersOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group error: %@", group);
-    return [_groupDataSource membersOfGroup:group];
+    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    return nil;
 }
 
 @end

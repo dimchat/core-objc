@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMContentType.h"
-
 #import "DIMAudioContent.h"
 
 @interface DIMContent (Hacking)
@@ -22,7 +20,7 @@
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
         // type
-        self.type = DIMContentType_Audio;
+        self.type = DKDContentType_Audio;
         
         // TODO: Automatic Speech Recognition
     }

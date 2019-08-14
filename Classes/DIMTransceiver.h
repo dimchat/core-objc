@@ -6,7 +6,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
+#import "DIMProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -49,29 +49,57 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
 
 #pragma mark -
 
-@protocol DIMSocialNetworkDataSource;
-@protocol DIMCipherKeyDataSource;
-
 /**
  *  Callback for sending message
  *  set by application and executed by DIM Core
  */
 typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Nullable error);
 
-@interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
-                                      DIMSecureMessageDelegate,
-                                      DIMReliableMessageDelegate> {
+@interface DIMTransceiver : DIMProtocol {
     
     __weak id<DIMTransceiverDelegate> _delegate;
-    
-    __weak id<DIMSocialNetworkDataSource> _barrack;
-    __weak id<DIMCipherKeyDataSource> _keyCache;
 }
 
 @property (weak, nonatomic) id<DIMTransceiverDelegate> delegate;
 
-@property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
-@property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
+@end
+
+@interface DIMTransceiver (Transform)
+
+/**
+ *  Pack instant message to reliable message for delivering
+ *
+ *  @param iMsg - instant message
+ *  @return ReliableMessage Object
+ */
+- (nullable DIMReliableMessage *)encryptAndSignMessage:(DIMInstantMessage *)iMsg;
+
+/**
+ *  Extract instant message from a reliable message received
+ *
+ *  @param rMsg - reliable message
+ *  @return InstantMessage object
+ */
+- (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg;
+
+@end
+
+@interface DIMTransceiver (Send)
+
+/**
+ *  Send message (secured + certified) to target station
+ *
+ *  @param iMsg - instant message
+ *  @param callback - callback function
+ *  @param split - if it's a group message, split it before sending out
+ *  @return NO on data/delegate error
+ */
+- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
+                  callback:(nullable DIMTransceiverCallback)callback
+               dispersedly:(BOOL)split;
+
+//- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
+//                   callback:(nullable DIMTransceiverCallback)callback;
 
 @end
 
