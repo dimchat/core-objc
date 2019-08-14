@@ -127,6 +127,25 @@
 }
 
 - (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg {
+    /*
+    // [Meta Protocol] check meta in first contact message
+    DIMID *sender = [_barrack IDWithString:rMsg.envelope.sender];
+    DIMMeta *meta = [_barrack metaForID:sender];
+    if (!meta) {
+        // first contact, try meta in message package
+        meta = MKMMetaFromDictionary(rMsg.meta);
+        if (!meta) {
+            // TODO: query meta for sender from DIM network
+            NSAssert(false, @"failed to get meta for sender: %@", sender);
+            return nil;
+        }
+        NSAssert([meta matchID:sender], @"meta not match: %@, %@", sender, meta);
+        if (![_barrack saveMeta:meta forID:sender]) {
+            NSAssert(false, @"save meta error: %@, %@", sender, meta);
+            return nil;
+        }
+    }
+     */
     // 1. verify 'data' with 'signature'
     if (rMsg.delegate == nil) {
         rMsg.delegate = self;
