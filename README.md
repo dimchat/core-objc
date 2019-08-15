@@ -33,6 +33,7 @@ Facebook.h/m
 + (instancetype)sharedInstance;
 
 - (BOOL)savePrivateKey:(DIMPrivateKey *)SK forID:(DIMID *)ID;
+- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 - (BOOL)saveProfile:(DIMProfile *)profile;
 
 @end
@@ -42,6 +43,46 @@ Facebook.h/m
 @implementation DIMFacebook
 
 SingletonImplementations(DIMFacebook, sharedInstance)
+
+- (instancetype)init {
+    if (self = [super init]) {
+        // register new asymmetric cryptography key classes
+        [MKMPrivateKey registerClass:[MKMECCPrivateKey class] forAlgorithm:ACAlgorithmECC];
+        [MKMPublicKey registerClass:[MKMECCPublicKey class] forAlgorithm:ACAlgorithmECC];
+        
+        // register new address classes
+        [MKMAddress registerClass:[MKMAddressETH class]];
+        
+        // register new meta classes
+        [MKMMeta registerClass:[MKMMetaBTC class] forVersion:MKMMetaVersion_BTC];
+        [MKMMeta registerClass:[MKMMetaBTC class] forVersion:MKMMetaVersion_ExBTC];
+        [MKMMeta registerClass:[MKMMetaETH class] forVersion:MKMMetaVersion_ETH];
+        [MKMMeta registerClass:[MKMMetaETH class] forVersion:MKMMetaVersion_ExETH];
+    }
+    return self;
+}
+
+- (BOOL)savePrivateKey:(DIMPrivateKey *)SK forID:(DIMID *)ID {
+    return [SK saveKeyWithIdentifier:ID.address];
+}
+
+- (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
+    if (![self cacheMeta:meta forID:ID]) {
+        NSAssert(false, @"meta not match ID: %@ -> %@", ID, meta);
+        return NO;
+    }
+    // TODO: save meta to local/persistent storage
+    return NO;
+}
+
+- (BOOL)saveProfile:(DIMProfile *)profile {
+    if (![self verifyProfile:profile]) {
+        // profile error
+        return NO;
+    }
+    // TODO: save to local storage
+    return NO;
+}
 
 - (BOOL)verifyProfile:(DIMProfile *)profile {
     if (!profile) {
@@ -54,79 +95,49 @@ SingletonImplementations(DIMFacebook, sharedInstance)
     NSAssert([ID isValid], @"Invalid ID: %@", ID);
     DIMMeta *meta = nil;
     // check signer
-    if (MKMNetwork_IsCommunicator(ID.type)) {
-        // verify with account's meta.key
+    if (MKMNetwork_IsUser(ID.type)) {
+        // verify with user's meta.key
         meta = [self metaForID:ID];
     } else if (MKMNetwork_IsGroup(ID.type)) {
         // verify with group owner's meta.key
         DIMGroup *group = DIMGroupWithID(ID);
-        DIMID *owner = group.owner;
-        if ([owner isValid]) {
-            meta = [self metaForID:owner];
-        }
+        meta = [self metaForID:group.owner];
     }
     return [profile verify:meta.key];
 }
 
-- (BOOL)saveProfile:(DIMProfile *)profile {
-    if (![self verifyProfile:profile]) {
-        // profile error
-        return NO;
-    }
-    // TODO: save to local storage
-    return NO;
-}
-
-- (BOOL)savePrivateKey:(DIMPrivateKey *)SK forID:(DIMID *)ID {
-    return [SK saveKeyWithIdentifier:ID.address];
-}
-
 #pragma mark - DIMSocialNetworkDataSource
 
-- (nullable DIMAccount *)accountWithID:(DIMID *)ID {
-    DIMAccount *account = [super accountWithID:ID];
-    if (account) {
-        return account;
-    }
-    // check meta
-    DIMMeta *meta = DIMMetaForID(ID);
-    if (!meta) {
-        NSLog(@"meta not found: %@", ID);
-        return nil;
-    }
-    // create it with type
-    if (MKMNetwork_IsStation(ID.type)) {
-        account = [[DIMServer alloc] initWithID:ID];
-    } else if (MKMNetwork_IsPerson(ID.type)) {
-        account = [[DIMAccount alloc] initWithID:ID];
-    }
-    NSAssert(account, @"account error: %@", ID);
-    [self cacheAccount:account];
-    return account;
-}
-
-- (nullable DIMUser *)userWithID:(DIMID *)ID {
-    if (!MKMNetwork_IsPerson(ID.type)) {
-        return nil;
-    }
+- (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
     DIMUser *user = [super userWithID:ID];
     if (user) {
         return user;
     }
     // check meta and private key
     DIMMeta *meta = DIMMetaForID(ID);
-    DIMPrivateKey *key = [self privateKeyForSignatureOfUser:ID];
-    if (!meta || !key) {
-        NSLog(@"meta/private key not found: %@", ID);
+    if (!meta) {
+        NSLog(@"meta key not found: %@", ID);
         return nil;
     }
-    // create it
-    user = [[DIMUser alloc] initWithID:ID];
+    if (MKMNetwork_IsPerson(ID.type)) {
+        DIMPrivateKey *key = [self privateKeyForSignatureOfUser:ID];
+        if (!key) {
+            user = [[DIMContact alloc] initWithID:ID];
+        } else {
+            user = [[DIMLocalUser alloc] initWithID:ID];
+        }
+    } else if (MKMNetwork_IsStation(ID.type)) {
+        // FIXME: make sure the station not been erased from the memory cache
+        user = [[DIMServer alloc] initWithID:ID];
+    } else {
+        // TODO: implements other types
+        NSAssert(false, @"user type not support: %@", ID);
+    }
     [self cacheUser:user];
     return user;
 }
 
-- (nullable DIMGroup *)groupWithID:(DIMID *)ID {
+- (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
     DIMGroup *group = [super groupWithID:ID];
     if (group) {
         return group;
@@ -142,8 +153,10 @@ SingletonImplementations(DIMFacebook, sharedInstance)
         group = [[DIMPolylogue alloc] initWithID:ID];
     } else if (ID.type == MKMNetwork_Chatroom) {
         group = [[DIMChatroom alloc] initWithID:ID];
+    } else {
+        // TODO: implements other types
+        NSAssert(false, @"group type not support: %@", ID);
     }
-    NSAssert(group, @"group error: %@", ID);
     [self cacheGroup:group];
     return group;
 }
@@ -199,15 +212,6 @@ SingletonImplementations(DIMMessanger, sharedInstance)
         // register all content classes
         [DIMContent loadContentClasses];
         
-        // register new address classes
-        [MKMAddress registerClass:[MKMAddressETH class]];
-        
-        // register new meta classes
-        [MKMMeta registerClass:[MKMMetaBTC class] forVersion:MKMMetaVersion_BTC];
-        [MKMMeta registerClass:[MKMMetaBTC class] forVersion:MKMMetaVersion_ExBTC];
-        [MKMMeta registerClass:[MKMMetaETH class] forVersion:MKMMetaVersion_ETH];
-        [MKMMeta registerClass:[MKMMetaETH class] forVersion:MKMMetaVersion_ExETH];
-        
         // delegates
         _barrack = [DIMFacebook sharedInstance];
         _keyCache = [DIMKeyStore sharedInstance];
@@ -238,7 +242,7 @@ static inline DIMUser *register(NSString *username) {
     [facebook saveMeta:meta forID:ID];
     
     // 5. create user with ID
-    return DIMUserWithID(ID);
+    return [facebook userWithID:ID];
 }
 ```
 
@@ -293,4 +297,4 @@ Receive.m
 }
 ```
 
-Copyright &copy; 2018 Albert Moky
+Copyright &copy; 2019 Albert Moky

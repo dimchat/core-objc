@@ -62,7 +62,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    NSAssert([ID isValid], @"ID error: %@", ID);
     if (![meta matchID:ID]) {
         NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
         return NO;
@@ -72,39 +71,26 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)cacheID:(DIMID *)ID {
-    if (![ID isValid]) {
-        NSAssert(false, @"ID not valid: %@", ID);
-        return NO;
-    }
+    NSAssert([ID isValid], @"ID not valid: %@", ID);
     [_idTable setObject:ID forKey:ID];
     return YES;
 }
 
 - (BOOL)cacheUser:(DIMUser *)user {
-    DIMID *ID = user.ID;
-    NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
-    if (![ID isValid]) {
-        NSAssert(false, @"user ID not valid: %@", ID);
-        return NO;
-    }
+    NSAssert(MKMNetwork_IsUser(user.ID.type), @"user ID error: %@", user.ID);
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
-    [_userTable setObject:user forKey:ID];
+    [_userTable setObject:user forKey:user.ID];
     return YES;
 }
 
 - (BOOL)cacheGroup:(DIMGroup *)group {
-    DIMID *ID = group.ID;
-    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    if (![ID isValid]) {
-        NSAssert(false, @"group ID not valid: %@", ID);
-        return NO;
-    }
+    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group ID error: %@", group.ID);
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
-    [_groupTable setObject:group forKey:ID];
+    [_groupTable setObject:group forKey:group.ID];
     return YES;
 }
 
@@ -113,6 +99,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (nullable DIMID *)IDWithString:(NSString *)string {
     if (!string) {
         return nil;
+    } else if ([string isKindOfClass:[DIMID class]]) {
+        return (DIMID *)string;
     }
     // get from ID cache
     DIMID *ID = [_idTable objectForKey:string];
@@ -121,27 +109,20 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     }
     // create and cache it
     ID = MKMIDFromString(string);
-    if (!ID) {
-        NSAssert(false, @"failed to create ID: %@", string);
-        return nil;
+    if (ID && [self cacheID:ID]) {
+        return ID;
     }
-    // check and cache it
-    if (![self cacheID:ID]) {
-        NSAssert(false, @"failed to cache ID: %@", ID);
-        return nil;
-    }
-    return ID;
+    NSAssert(false, @"failed to create ID: %@", string);
+    return nil;
 }
 
 - (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
-    // get from user cache
     return [_userTable objectForKey:ID];
 }
 
 - (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    // get from group cache
     return [_groupTable objectForKey:ID];
 }
 
