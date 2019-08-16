@@ -101,7 +101,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     return nil;
 }
 
-- (BOOL) updateKeys {
+- (BOOL)updateKeys {
     NSDictionary *keys = [self loadKeys];
     if (!keys) {
         return NO;

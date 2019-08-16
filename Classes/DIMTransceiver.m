@@ -50,12 +50,12 @@
 #pragma mark DKDSecureMessageDelegate
 
 - (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
-                     decryptData:(NSData *)data
+                  decryptContent:(NSData *)data
                          withKey:(NSDictionary *)password {
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
     NSAssert(key == password, @"irregular symmetric key: %@", password);
     
-    DIMContent *content = [super message:sMsg decryptData:data withKey:key];
+    DIMContent *content = [super message:sMsg decryptContent:data withKey:key];
     NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", sMsg);
     
     // check attachment for File/Image/Audio/Video message content
