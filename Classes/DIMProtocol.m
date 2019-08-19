@@ -61,27 +61,44 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return newKey;
 }
 
-#pragma mark - DIMInstantMessageDelegate
-
-- (NSData *)message:(DIMInstantMessage *)iMsg encodeContent:(DIMContent *)content {
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+               encodeContent:(DIMContent *)content {
     NSString *json = [content jsonString];
     return [json data];
 }
 
-- (NSData *)message:(DIMInstantMessage *)iMsg encodeKey:(DIMSymmetricKey *)password {
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+                   encodeKey:(DIMSymmetricKey *)password {
+    if (isBroadcast(iMsg, _barrack)) {
+        // broadcast message has no key
+        return nil;
+    }
     NSString *json = [password jsonString];
     return [json data];
 }
 
-#pragma mark - DIMSecureMessageDelegate
-
-- (DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg decodeKey:(NSData *)data {
+- (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
+                            decodeKey:(NSData *)data {
     NSDictionary *dict = [data jsonDictionary];
+    // TODO: translate short keys
+    //       'A' -> 'algorithm'
+    //       'D' -> 'data'
+    //       'M' -> 'mode'
+    //       'P' -> 'padding'
     return MKMSymmetricKeyFromDictionary(dict);
 }
 
-- (DIMContent *)message:(DIMSecureMessage *)sMsg decodeContent:(NSData *)data {
+- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
+                   decodeContent:(NSData *)data {
     NSDictionary *dict = [data jsonDictionary];
+    // TODO: translate short keys
+    //       'F' -> 'sender'
+    //       'T' -> 'receiver'
+    //       'W' -> 'time'
+    //       'D' -> 'data'
+    //       'S' -> 'signature'
+    //       'K' -> 'key'
+    //       'M' -> 'meta'
     return DKDContentFromDictionary(dict);
 }
 
@@ -102,17 +119,17 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                  forReceiver:(NSString *)receiver {
     if (isBroadcast(iMsg, _barrack)) {
         // broadcast message has no key
+        NSAssert(false, @"should not call this");
         return nil;
     }
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
     NSAssert(key == password, @"irregular symmetric key: %@", password);
     // TODO: check whether support reused key
-    
+    NSData *data = [self message:iMsg encodeKey:key];
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to encrypt with receiver: %@", receiver);
-    NSData *data = [self message:iMsg encodeKey:key];
     return [user encrypt:data];
 }
 

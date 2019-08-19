@@ -10,46 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMInstantMessageDelegate <DKDInstantMessageDelegate>
-
-/**
- *  Encode message content to binary data
- *
- * @param content - message content
- * @return plaintext
- */
-- (NSData *)message:(DIMInstantMessage *)iMsg encodeContent:(DIMContent *)content;
-
-/**
- *  Encode symmetric key to binary data
- *
- * @param password - symmetric key
- * @return plaintext
- */
-- (NSData *)message:(DIMInstantMessage *)iMsg encodeKey:(DIMSymmetricKey *)password;
-
-@end
-
-@protocol DIMSecureMessageDelegate <DKDSecureMessageDelegate>
-
-/**
- *  Decode binary data to message content
- *
- * @param data - plaintext
- * @return symmetric key
- */
-- (DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg decodeKey:(NSData *)data;
-
-/**
- *  Decode binary data to message content
- *
- * @param data - plaintext
- * @return message content
- */
-- (DIMContent *)message:(DIMSecureMessage *)sMsg decodeContent:(NSData *)data;
-
-@end
-
 @protocol DIMSocialNetworkDataSource;
 @protocol DIMCipherKeyDataSource;
 
@@ -65,6 +25,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
 
 - (DIMSymmetricKey *)passwordFrom:(DIMID *)sender to:(DIMID *)receiver;
+
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+               encodeContent:(DIMContent *)content;
+- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
+                   decodeContent:(NSData *)data;
+
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+                   encodeKey:(DIMSymmetricKey *)password;
+- (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
+                            decodeKey:(NSData *)data;
 
 @end
 
