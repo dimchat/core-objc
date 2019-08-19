@@ -71,6 +71,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                    encodeKey:(DIMSymmetricKey *)password {
     if (isBroadcast(iMsg, _barrack)) {
         // broadcast message has no key
+        NSAssert(false, @"should not call this");
         return nil;
     }
     NSString *json = [password jsonString];
@@ -119,7 +120,6 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                  forReceiver:(NSString *)receiver {
     if (isBroadcast(iMsg, _barrack)) {
         // broadcast message has no key
-        NSAssert(false, @"should not call this");
         return nil;
     }
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
