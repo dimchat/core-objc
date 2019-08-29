@@ -24,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
 @property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
 
-- (DIMSymmetricKey *)passwordFrom:(DIMID *)sender to:(DIMID *)receiver;
-
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
             serializeContent:(DIMContent *)content;
 - (nullable DIMContent *)message:(DIMSecureMessage *)sMsg

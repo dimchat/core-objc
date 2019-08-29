@@ -39,28 +39,6 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 
 @implementation DIMProtocol
 
-- (DIMSymmetricKey *)passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
-    // 1. get old key from store
-    DIMSymmetricKey *reusedKey;
-    reusedKey = [_keyCache cipherKeyFrom:sender to:receiver];
-    // 2. get new key from delegate
-    DIMSymmetricKey *newKey;
-    newKey = [_keyCache reuseCipherKey:reusedKey from:sender to:receiver];
-    if (!newKey) {
-        if (!reusedKey) {
-            // 3. create a new key
-            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
-        } else {
-            newKey = reusedKey;
-        }
-    }
-    // 4. update new key into the key store
-    if (![newKey isEqual:reusedKey]) {
-        [_keyCache cacheCipherKey:newKey from:sender to:receiver];
-    }
-    return newKey;
-}
-
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
             serializeContent:(DIMContent *)content {
     NSString *json = [content jsonString];
@@ -135,12 +113,13 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
     NSAssert(key == password, @"irregular symmetric key: %@", password);
     // TODO: check whether support reused key
+    
     NSData *data = [self message:iMsg serializeKey:key];
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
-    DIMUser *user = [_barrack userWithID:ID];
-    NSAssert(user, @"failed to encrypt with receiver: %@", receiver);
-    return [user encrypt:data];
+    DIMUser *contact = [_barrack userWithID:ID];
+    NSAssert(contact, @"failed to encrypt key for receiver: %@", receiver);
+    return [contact encrypt:data];
 }
 
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
@@ -176,18 +155,18 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         // decrypt key data with the receiver/group member's private key
         DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
         DIMLocalUser *user = [_barrack userWithID:ID];
-        NSAssert(user, @"failed to decrypt for receiver: %@, %@", receiver, ID);
+        NSAssert(user, @"failed to decrypt key for receiver: %@, %@", receiver, ID);
         NSData *plaintext = [user decrypt:key];
         NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
-        // decode it to symmetric key
+        // deserialize it to symmetric key
         PW = [self message:sMsg deserializeKey:plaintext];
         // cache the new key in key store
         [_keyCache cacheCipherKey:PW from:from to:to];
-        NSLog(@"got key from %@ to %@", sender, receiver);
+        //NSLog(@"got key from %@ to %@", sender, receiver);
     }
     if (!PW) {
         // if key data is empty, get it from key store
-        PW = [self passwordFrom:from to:to];
+        PW = [_keyCache cipherKeyFrom:from to:to];
         NSAssert(PW, @"failed to get password from %@ to %@", sender, receiver);
     }
     return PW;
@@ -233,6 +212,11 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 
 #pragma mark DKDReliableMessageDelegate
 
+- (nullable NSData *)message:(DIMReliableMessage *)rMsg
+             decodeSignature:(NSObject *)signatureString {
+    return [(NSString *)signatureString base64Decode];
+}
+
 - (BOOL)message:(DIMReliableMessage *)rMsg
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
@@ -241,11 +225,6 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to verify with sender: %@", sender);
     return [user verify:data withSignature:signature];
-}
-
-- (nullable NSData *)message:(DIMReliableMessage *)rMsg
-             decodeSignature:(NSObject *)signatureString {
-    return [(NSString *)signatureString base64Decode];
 }
 
 @end

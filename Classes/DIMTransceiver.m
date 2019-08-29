@@ -87,6 +87,28 @@
 
 @implementation DIMTransceiver (Transform)
 
+- (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
+    // 1. get old key from store
+    DIMSymmetricKey *reusedKey;
+    reusedKey = [_keyCache cipherKeyFrom:sender to:receiver];
+    // 2. get new key from delegate
+    DIMSymmetricKey *newKey;
+    newKey = [_keyCache reuseCipherKey:reusedKey from:sender to:receiver];
+    if (!newKey) {
+        if (!reusedKey) {
+            // 3. create a new key
+            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
+        } else {
+            newKey = reusedKey;
+        }
+    }
+    // 4. update new key into the key store
+    if (![newKey isEqual:reusedKey]) {
+        [_keyCache cacheCipherKey:newKey from:sender to:receiver];
+    }
+    return newKey;
+}
+
 - (nullable DIMReliableMessage *)encryptAndSignMessage:(DIMInstantMessage *)iMsg {
     DIMID *sender = [_barrack IDWithString:iMsg.envelope.sender];
     DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
@@ -110,11 +132,11 @@
     DIMSecureMessage *sMsg;
     if (!group) {
         // personal message
-        DIMSymmetricKey *password = [self passwordFrom:sender to:receiver];
+        DIMSymmetricKey *password = [self _passwordFrom:sender to:receiver];
         sMsg = [iMsg encryptWithKey:password];
     } else {
         // group message
-        DIMSymmetricKey *password = [self passwordFrom:sender to:group.ID];
+        DIMSymmetricKey *password = [self _passwordFrom:sender to:group.ID];
         sMsg = [iMsg encryptWithKey:password forMembers:group.members];
     }
     
