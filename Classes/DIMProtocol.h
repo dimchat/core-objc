@@ -27,14 +27,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (DIMSymmetricKey *)passwordFrom:(DIMID *)sender to:(DIMID *)receiver;
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
-               encodeContent:(DIMContent *)content;
+            serializeContent:(DIMContent *)content;
 - (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
-                   decodeContent:(NSData *)data;
+              deserializeContent:(NSData *)data;
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
-                   encodeKey:(DIMSymmetricKey *)password;
+                serializeKey:(DIMSymmetricKey *)password;
 - (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
-                            decodeKey:(NSData *)data;
+                       deserializeKey:(NSData *)data;
 
 @end
 
