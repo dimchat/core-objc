@@ -326,3 +326,124 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 }
 
 @end
+
+@implementation DIMTransceiver (Transform)
+
+- (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
+    // 1. get old key from store
+    DIMSymmetricKey *reusedKey;
+    reusedKey = [_keyCache cipherKeyFrom:sender to:receiver];
+    // 2. get new key from delegate
+    DIMSymmetricKey *newKey;
+    newKey = [_keyCache reuseCipherKey:reusedKey from:sender to:receiver];
+    if (!newKey) {
+        if (!reusedKey) {
+            // 3. create a new key
+            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
+        } else {
+            newKey = reusedKey;
+        }
+    }
+    // 4. update new key into the key store
+    if (![newKey isEqual:reusedKey]) {
+        [_keyCache cacheCipherKey:newKey from:sender to:receiver];
+    }
+    return newKey;
+}
+
+- (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg {
+    DIMID *sender = [_barrack IDWithString:iMsg.envelope.sender];
+    DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
+    // if 'group' exists and the 'receiver' is a group ID,
+    // they must be equal
+    DIMID *group = [_barrack IDWithString:iMsg.group];
+
+    // 1. get symmetric key
+    DIMSymmetricKey *password = nil;
+    if (group) {
+        // group message
+        password = [self _passwordFrom:sender to:group];
+    } else {
+        password = [self _passwordFrom:sender to:receiver];
+    }
+    
+    if (iMsg.delegate == nil) {
+        iMsg.delegate = self;
+    }
+    NSAssert(iMsg.content, @"content cannot be empty");
+    
+    // 2. encrypt 'content' to 'data' for receiver/group members
+    DIMSecureMessage *sMsg = nil;
+    if (MKMNetwork_IsGroup(receiver.type)) {
+        // group message
+        DIMGroup *grp = [_barrack groupWithID:receiver];
+        sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
+    } else {
+        // personal message (or split group message)
+        NSAssert(MKMNetwork_IsUser(receiver.type), @"error ID: %@", receiver);
+        sMsg = [iMsg encryptWithKey:password];
+    }
+    
+    // OK
+    sMsg.delegate = self;
+    return sMsg;
+}
+
+- (nullable DIMReliableMessage *)signMessage:(DIMSecureMessage *)sMsg {
+    if (sMsg.delegate == nil) {
+        sMsg.delegate = self;
+    }
+    NSAssert(sMsg.data, @"data cannot be empty");
+    
+    // 1. sign 'data' by sender
+    DIMReliableMessage *rMsg = [sMsg sign];
+    
+    // OK
+    rMsg.delegate = self;
+    return rMsg;
+}
+
+- (nullable DIMSecureMessage *)verifyMessage:(DIMReliableMessage *)rMsg {
+    //
+    //  TODO: check [Meta Protocol]
+    //        make sure the sender's meta exists
+    //        (do in by application)
+    //
+    
+    if (rMsg.delegate == nil) {
+        rMsg.delegate = self;
+    }
+    NSAssert(rMsg.signature, @"signature cannot be empty");
+    
+    // 1. verify 'data' with 'signature'
+    DIMSecureMessage *sMsg = [rMsg verify];
+    
+    // OK
+    sMsg.delegate = self;
+    return sMsg;
+}
+
+- (nullable DIMInstantMessage *)decryptMessage:(DIMSecureMessage *)sMsg {
+    //
+    //  NOTICE: make sure the receiver is YOU!
+    //          which means the receiver's private key exists;
+    //          if the receiver is a group ID, split it first
+    //
+    
+    if (sMsg.delegate == nil) {
+        sMsg.delegate = self;
+    }
+    NSAssert(sMsg.data, @"data cannot be empty");
+    
+    // 1. decrypt 'data' to 'content'
+    DIMInstantMessage *iMsg = [sMsg decrypt];
+    
+    // TODO: check: top-secret message
+    //       (do it by application)
+    
+    // OK
+    iMsg.delegate = self;
+    return iMsg;
+}
+
+@end

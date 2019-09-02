@@ -91,4 +91,16 @@ typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Null
 
 @end
 
+@interface DIMTransceiver (Transform)
+
+- (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg;
+
+- (nullable DIMReliableMessage *)signMessage:(DIMSecureMessage *)sMsg;
+
+- (nullable DIMSecureMessage *)verifyMessage:(DIMReliableMessage *)rMsg;
+
+- (nullable DIMInstantMessage *)decryptMessage:(DIMSecureMessage *)sMsg;
+
+@end
+
 NS_ASSUME_NONNULL_END
