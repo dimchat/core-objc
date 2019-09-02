@@ -6,7 +6,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMProtocol.h"
+#import "dimMacros.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -49,57 +49,45 @@ typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
 
 #pragma mark -
 
+@protocol DIMSocialNetworkDataSource;
+@protocol DIMCipherKeyDataSource;
+
 /**
  *  Callback for sending message
  *  set by application and executed by DIM Core
  */
 typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Nullable error);
 
-@interface DIMTransceiver : DIMProtocol {
-    
+@interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
+                                      DIMSecureMessageDelegate,
+                                      DIMReliableMessageDelegate> {
+                                          
+    __weak id<DIMSocialNetworkDataSource> _barrack;
+    __weak id<DIMCipherKeyDataSource> _keyCache;
+
     __weak id<DIMTransceiverDelegate> _delegate;
 }
 
+@property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
+@property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
+
 @property (weak, nonatomic) id<DIMTransceiverDelegate> delegate;
 
-@end
-
-@interface DIMTransceiver (Transform)
+/**
+ *  De/serialize message content
+ */
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+            serializeContent:(DIMContent *)content;
+- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
+              deserializeContent:(NSData *)data;
 
 /**
- *  Pack instant message to reliable message for delivering
- *
- *  @param iMsg - instant message
- *  @return ReliableMessage Object
+ *  De/serialize symmetric key
  */
-- (nullable DIMReliableMessage *)encryptAndSignMessage:(DIMInstantMessage *)iMsg;
-
-/**
- *  Extract instant message from a reliable message received
- *
- *  @param rMsg - reliable message
- *  @return InstantMessage object
- */
-- (nullable DIMInstantMessage *)verifyAndDecryptMessage:(DIMReliableMessage *)rMsg;
-
-@end
-
-@interface DIMTransceiver (Send)
-
-/**
- *  Send message (secured + certified) to target station
- *
- *  @param iMsg - instant message
- *  @param callback - callback function
- *  @param split - if it's a group message, split it before sending out
- *  @return NO on data/delegate error
- */
-- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
-                  callback:(nullable DIMTransceiverCallback)callback
-               dispersedly:(BOOL)split;
-
-//- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
-//                   callback:(nullable DIMTransceiverCallback)callback;
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+                serializeKey:(DIMSymmetricKey *)password;
+- (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
+                       deserializeKey:(NSData *)data;
 
 @end
 

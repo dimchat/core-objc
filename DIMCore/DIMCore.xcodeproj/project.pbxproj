@@ -37,8 +37,6 @@
 		E95A80CC22060142007EA611 /* DIMProfileCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E95A80CA22060142007EA611 /* DIMProfileCommand.m */; };
 		E9790893225EDE450024C830 /* DKDInstantMessage+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E9790891225EDE450024C830 /* DKDInstantMessage+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9790894225EDE450024C830 /* DKDInstantMessage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9790892225EDE450024C830 /* DKDInstantMessage+Extension.m */; };
-		E9B2FCA623045CE100E153EE /* DIMProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = E9B2FCA423045CE100E153EE /* DIMProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9B2FCA723045CE100E153EE /* DIMProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B2FCA523045CE100E153EE /* DIMProtocol.m */; };
 		E9BBBD2B223A479E00E6ACDA /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBBD28223A479800E6ACDA /* MingKeMing.framework */; };
 		E9BBBD47223AA13500E6ACDA /* DIMKeyCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BBBD41223AA13500E6ACDA /* DIMKeyCache.m */; };
 		E9BBBD48223AA13500E6ACDA /* DIMKeyCache.h in Headers */ = {isa = PBXBuildFile; fileRef = E9BBBD42223AA13500E6ACDA /* DIMKeyCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -158,8 +156,6 @@
 		E95A80CA22060142007EA611 /* DIMProfileCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMProfileCommand.m; sourceTree = "<group>"; };
 		E9790891225EDE450024C830 /* DKDInstantMessage+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DKDInstantMessage+Extension.h"; sourceTree = "<group>"; };
 		E9790892225EDE450024C830 /* DKDInstantMessage+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DKDInstantMessage+Extension.m"; sourceTree = "<group>"; };
-		E9B2FCA423045CE100E153EE /* DIMProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMProtocol.h; sourceTree = "<group>"; };
-		E9B2FCA523045CE100E153EE /* DIMProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMProtocol.m; sourceTree = "<group>"; };
 		E9BBBD21223A479800E6ACDA /* MingKeMing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MingKeMing.xcodeproj; path = "../../mkm-objc/MingKeMing/MingKeMing.xcodeproj"; sourceTree = "<group>"; };
 		E9BBBD41223AA13500E6ACDA /* DIMKeyCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMKeyCache.m; sourceTree = "<group>"; };
 		E9BBBD42223AA13500E6ACDA /* DIMKeyCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMKeyCache.h; sourceTree = "<group>"; };
@@ -356,8 +352,6 @@
 				E9BBBD41223AA13500E6ACDA /* DIMKeyCache.m */,
 				E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */,
 				E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */,
-				E9B2FCA423045CE100E153EE /* DIMProtocol.h */,
-				E9B2FCA523045CE100E153EE /* DIMProtocol.m */,
 				E9BBBD43223AA13500E6ACDA /* DIMTransceiver.h */,
 				E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */,
 				E9F3AA9B21CC00B6009690F6 /* dimMacros.h */,
@@ -417,7 +411,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9B2FCA623045CE100E153EE /* DIMProtocol.h in Headers */,
 				E9790893225EDE450024C830 /* DKDInstantMessage+Extension.h in Headers */,
 				E93D437222A6B79700422EDF /* MKMProfile+Extension.h in Headers */,
 				E91F2B1523014BF600BE05D0 /* DIMMember.h in Headers */,
@@ -596,7 +589,6 @@
 				E94D2B4E22B7CC9000FF4AD5 /* DIMFileContent.m in Sources */,
 				E91F2B0D23014B2600BE05D0 /* DIMChatroom.m in Sources */,
 				E9790894225EDE450024C830 /* DKDInstantMessage+Extension.m in Sources */,
-				E9B2FCA723045CE100E153EE /* DIMProtocol.m in Sources */,
 				E94D2B4D22B7CC8C00FF4AD5 /* DIMImageContent.m in Sources */,
 				E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */,
 				E9F3AA7E21CBD03C009690F6 /* DIMStation.m in Sources */,
