@@ -19,6 +19,8 @@
 		E94C8DF622DDE1E20017F998 /* NSData+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C8DF422DDE1E20017F998 /* NSData+Extension.m */; };
 		E959902722F2CE0600C97D2D /* DIMKeyCache.h in Headers */ = {isa = PBXBuildFile; fileRef = E959902522F2CE0500C97D2D /* DIMKeyCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E959902822F2CE0600C97D2D /* DIMKeyCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E959902622F2CE0600C97D2D /* DIMKeyCache.m */; };
+		E96D14A0231F9B5300B5EA59 /* DIMRobot.m in Sources */ = {isa = PBXBuildFile; fileRef = E96D149E231F9B5300B5EA59 /* DIMRobot.m */; };
+		E96D14A1231F9B5300B5EA59 /* DIMRobot.h in Headers */ = {isa = PBXBuildFile; fileRef = E96D149F231F9B5300B5EA59 /* DIMRobot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E97908A1225F2FBA0024C830 /* DKDInstantMessage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E979089D225F2FB90024C830 /* DKDInstantMessage+Extension.m */; };
 		E97908A2225F2FBA0024C830 /* DKDInstantMessage+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E97908A0225F2FBA0024C830 /* DKDInstantMessage+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9BBC14C22427EBC00E6ACDA /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9BBC14222427EBC00E6ACDA /* DIMCore.framework */; };
@@ -138,6 +140,8 @@
 		E94C8DF422DDE1E20017F998 /* NSData+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Extension.m"; sourceTree = "<group>"; };
 		E959902522F2CE0500C97D2D /* DIMKeyCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMKeyCache.h; sourceTree = "<group>"; };
 		E959902622F2CE0600C97D2D /* DIMKeyCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMKeyCache.m; sourceTree = "<group>"; };
+		E96D149E231F9B5300B5EA59 /* DIMRobot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMRobot.m; sourceTree = "<group>"; };
+		E96D149F231F9B5300B5EA59 /* DIMRobot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMRobot.h; sourceTree = "<group>"; };
 		E979089D225F2FB90024C830 /* DKDInstantMessage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DKDInstantMessage+Extension.m"; sourceTree = "<group>"; };
 		E97908A0225F2FBA0024C830 /* DKDInstantMessage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DKDInstantMessage+Extension.h"; sourceTree = "<group>"; };
 		E9BBC14222427EBC00E6ACDA /* DIMCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DIMCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -231,8 +235,10 @@
 			isa = PBXGroup;
 			children = (
 				E91F2B27230152E800BE05D0 /* DIMContact.h */,
-				E91F2B28230152E800BE05D0 /* DIMMember.m */,
 				E91F2B29230152E800BE05D0 /* DIMContact.m */,
+				E96D149F231F9B5300B5EA59 /* DIMRobot.h */,
+				E96D149E231F9B5300B5EA59 /* DIMRobot.m */,
+				E91F2B28230152E800BE05D0 /* DIMMember.m */,
 				E91F2B2A230152E800BE05D0 /* DIMMember.h */,
 			);
 			path = user;
@@ -411,6 +417,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E96D14A1231F9B5300B5EA59 /* DIMRobot.h in Headers */,
 				E91F2B32230152E800BE05D0 /* DIMMember.h in Headers */,
 				E91F2B2D230152E800BE05D0 /* DIMChatroom.h in Headers */,
 				E91F2B2F230152E800BE05D0 /* DIMContact.h in Headers */,
@@ -612,6 +619,7 @@
 				E9BBC1B522427EF100E6ACDA /* DIMCAValidity.m in Sources */,
 				E9BBC1B322427EF100E6ACDA /* DIMCASubject.m in Sources */,
 				E9FC8E2B22B92F7E0013FCD3 /* DIMHistoryCommand.m in Sources */,
+				E96D14A0231F9B5300B5EA59 /* DIMRobot.m in Sources */,
 				E91F2B2B230152E800BE05D0 /* DIMPolylogue.m in Sources */,
 				E959902822F2CE0600C97D2D /* DIMKeyCache.m in Sources */,
 			);

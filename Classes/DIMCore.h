@@ -38,6 +38,7 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 // User
 #import <DIMCore/DIMMember.h>
 #import <DIMCore/DIMContact.h>
+#import <DIMCore/DIMRobot.h>
 
 // CA
 #import <DIMCore/DIMCASubject.h>
