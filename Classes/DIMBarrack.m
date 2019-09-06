@@ -66,7 +66,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
         return NO;
     }
-    [_metaTable setObject:meta forKey:ID.address];
+    [_metaTable setObject:meta forKey:ID];
     return YES;
 }
 
