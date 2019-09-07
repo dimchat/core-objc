@@ -17,6 +17,10 @@
 
 @implementation DIMMetaCommand
 
+- (instancetype)initWithID:(DIMID *)ID {
+    return [self initWithID:ID meta:nil];
+}
+
 - (instancetype)initWithID:(DIMID *)ID
                       meta:(nullable DIMMeta *)meta {
     if (self = [self initWithCommand:DIMSystemCommand_Meta]) {

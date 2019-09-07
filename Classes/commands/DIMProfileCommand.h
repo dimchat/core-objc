@@ -29,6 +29,12 @@ NS_ASSUME_NONNULL_BEGIN
                       meta:(nullable DIMMeta *)meta
                    profile:(nullable DIMProfile *)profile;
 
+- (instancetype)initWithID:(DIMID *)ID
+                   profile:(DIMProfile *)profile;
+
+// query command
+- (instancetype)initWithID:(DIMID *)ID;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -22,6 +22,14 @@
 
 @implementation DIMProfileCommand
 
+- (instancetype)initWithID:(DIMID *)ID {
+    return [self initWithID:ID meta:nil profile:nil];
+}
+
+- (instancetype)initWithID:(DIMID *)ID profile:(DIMProfile *)profile {
+    return [self initWithID:ID meta:nil profile:profile];
+}
+
 - (instancetype)initWithID:(DIMID *)ID
                       meta:(nullable DIMMeta *)meta
                    profile:(nullable DIMProfile *)profile {

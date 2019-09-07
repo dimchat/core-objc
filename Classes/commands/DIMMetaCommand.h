@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (instancetype)initWithID:(DIMID *)ID
                       meta:(nullable DIMMeta *)meta;
+// query command
+- (instancetype)initWithID:(DIMID *)ID;
 
 @end
 
