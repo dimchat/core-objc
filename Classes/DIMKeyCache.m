@@ -159,7 +159,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 - (nullable DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
                                          to:(DIMID *)receiver {
-    if (MKMIsBroadcast(receiver)) {
+    if ([receiver isBroadcast]) {
         return [_PlainKey sharedInstance];
     }
     return [self _cipherKeyFrom:sender to:receiver];
@@ -168,7 +168,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 - (void)cacheCipherKey:(DIMSymmetricKey *)key
                   from:(DIMID *)sender
                     to:(DIMID *)receiver {
-    if (MKMIsBroadcast(receiver)) {
+    if ([receiver isBroadcast]) {
         // broadcast message has no key
         return;
     }

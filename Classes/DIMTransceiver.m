@@ -68,13 +68,10 @@
 static inline BOOL isBroadcast(DIMMessage *msg,
                                id<DIMSocialNetworkDataSource> barrack) {
     DIMID *receiver = [barrack IDWithString:[msg group]];
-    if (receiver) {
-        // group message
-        return MKMIsEveryone(receiver);
+    if (!receiver) {
+        receiver = [barrack IDWithString:msg.envelope.receiver];
     }
-    receiver = [barrack IDWithString:msg.envelope.receiver];
-    // group or split message
-    return MKMIsBroadcast(receiver);
+    return [receiver isBroadcast];
 }
 
 @implementation DIMTransceiver
