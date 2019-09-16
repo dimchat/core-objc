@@ -30,6 +30,14 @@
 
 @implementation _PlainKey
 
+- (instancetype)init {
+    NSDictionary *dict = @{@"algorithm": @"PLAIN"};
+    if (self = [self initWithDictionary:dict]) {
+        //
+    }
+    return self;
+}
+
 - (NSData *)encrypt:(NSData *)plaintext {
     return plaintext;
 }
