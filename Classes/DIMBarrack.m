@@ -6,8 +6,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
-
 #import "DIMBarrack.h"
 
 typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
@@ -98,22 +96,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 #pragma mark - DIMSocialNetworkDataSource
 
-static inline DIMID *anyone(void) {
-    static DIMID *s_anyone = nil;
-    SingletonDispatchOnce(^{
-        s_anyone = MKMAnyone();
-    });
-    return s_anyone;
-}
-
-static inline DIMID *everyone(void) {
-    static DIMID *s_everyone = nil;
-    SingletonDispatchOnce(^{
-        s_everyone = MKMEveryone();
-    });
-    return s_everyone;
-}
-
 - (nullable DIMID *)IDWithString:(NSString *)string {
     if (!string) {
         return nil;
@@ -125,20 +107,8 @@ static inline DIMID *everyone(void) {
     if (ID) {
         return ID;
     }
-    // broadcast IDs
-    NSUInteger length = [string length];
-    if ((length == 8 && [[string lowercaseString] isEqualToString:@"everyone"]) ||
-        (length == 19 && [[string lowercaseString] isEqualToString:everyone()])) {
-        // "everyone" or "everyone@everywhere"
-        ID = everyone();
-    } else if ((length == 6 && [[string lowercaseString] isEqualToString:@"anyone"]) ||
-               (length == 15 && [[string lowercaseString] isEqualToString:anyone()])) {
-        // "anyone" or "anyone@anywhere"
-        ID = anyone();
-    } else {
-        // create it from string
-        ID = MKMIDFromString(string);
-    }
+    // create and cache it
+    ID = MKMIDFromString(string);
     if (ID && [self cacheID:ID]) {
         return ID;
     }
@@ -231,7 +201,7 @@ static inline DIMID *everyone(void) {
         if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
             // Consensus: the owner of group 'everyone@everywhere'
             //            'anyone@anywhere'
-            owner = @"anyone";
+            owner = @"anyone@anywhere";
         } else {
             // DISCUSS: who should be the owner of group 'xxx@everywhere'?
             //          'anyone@anywhere', or 'xxx.owner@anywhere'
@@ -258,13 +228,19 @@ static inline DIMID *everyone(void) {
         if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
             // Consensus: the member of group 'everyone@everywhere'
             //            'anyone@anywhere'
-            member = @"anyone";
+            member = @"anyone@anywhere";
         } else {
             // DISCUSS: who should be the member of group 'xxx@everywhere'?
             //          'anyone@anywhere', or 'xxx.member@anywhere'
             member = [name stringByAppendingString:@".member@anywhere"];
         }
-        return [[NSArray alloc] initWithObjects:[self IDWithString:member], nil];
+        DIMID *ID = [self IDWithString:member];
+        DIMID *owner = [self ownerOfGroup:group];
+        if ([ID isEqual:owner]) {
+            return [[NSArray alloc] initWithObjects:owner, nil];
+        } else {
+            return [[NSArray alloc] initWithObjects:owner, ID, nil];
+        }
     }
     return nil;
 }
