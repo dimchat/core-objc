@@ -6,6 +6,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Singleton.h"
+
 #import "DIMBarrack.h"
 
 typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
@@ -96,6 +98,22 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 #pragma mark - DIMSocialNetworkDataSource
 
+static inline DIMID *anyone(void) {
+    static DIMID *s_anyone = nil;
+    SingletonDispatchOnce(^{
+        s_anyone = MKMAnyone();
+    });
+    return s_anyone;
+}
+
+static inline DIMID *everyone(void) {
+    static DIMID *s_everyone = nil;
+    SingletonDispatchOnce(^{
+        s_everyone = MKMEveryone();
+    });
+    return s_everyone;
+}
+
 - (nullable DIMID *)IDWithString:(NSString *)string {
     if (!string) {
         return nil;
@@ -107,8 +125,20 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if (ID) {
         return ID;
     }
-    // create and cache it
-    ID = MKMIDFromString(string);
+    // broadcast IDs
+    NSUInteger length = [string length];
+    if ((length == 8 && [[string lowercaseString] isEqualToString:@"everyone"]) ||
+        (length == 19 && [[string lowercaseString] isEqualToString:everyone()])) {
+        // "everyone" or "everyone@everywhere"
+        ID = everyone();
+    } else if ((length == 6 && [[string lowercaseString] isEqualToString:@"anyone"]) ||
+               (length == 15 && [[string lowercaseString] isEqualToString:anyone()])) {
+        // "anyone" or "anyone@anywhere"
+        ID = anyone();
+    } else {
+        // create it from string
+        ID = MKMIDFromString(string);
+    }
     if (ID && [self cacheID:ID]) {
         return ID;
     }
@@ -118,12 +148,24 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
-    return [_userTable objectForKey:ID];
+    DIMUser *user = [_userTable objectForKey:ID];
+    if (!user && [ID isBroadcast]) {
+        // anyone
+        user = [[DIMUser alloc] initWithID:ID];
+        [self cacheUser:user];
+    }
+    return user;
 }
 
 - (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
-    return [_groupTable objectForKey:ID];
+    DIMGroup *group = [_groupTable objectForKey:ID];
+    if (!group && [ID isBroadcast]) {
+        // everyone
+        group = [[DIMGroup alloc] initWithID:ID];
+        [self cacheGroup:group];
+    }
+    return group;
 }
 
 #pragma mark - MKMEntityDataSource
@@ -159,16 +201,71 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable DIMID *)founderOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    // check for broadcast
+    if ([group isBroadcast]) {
+        NSString *founder;
+        NSString *name = [group name];
+        NSUInteger len = [name length];
+        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
+            // Consensus: the founder of group 'everyone@everywhere'
+            //            'Albert Moky'
+            founder = @"moky@anywhere";
+        } else {
+            // DISCUSS: who should be the founder of group 'xxx@everywhere'?
+            //          'anyone@anywhere', or 'xxx.founder@anywhere'
+            founder = [name stringByAppendingString:@".founder@anywhere"];
+        }
+        return [self IDWithString:founder];
+    }
+    //NSAssert(false, @"failed to get founder: %@", group);
     return nil;
 }
 
 - (nullable DIMID *)ownerOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    // check for broadcast
+    if ([group isBroadcast]) {
+        NSString *owner;
+        NSString *name = [group name];
+        NSUInteger len = [name length];
+        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
+            // Consensus: the owner of group 'everyone@everywhere'
+            //            'anyone@anywhere'
+            owner = @"anyone";
+        } else {
+            // DISCUSS: who should be the owner of group 'xxx@everywhere'?
+            //          'anyone@anywhere', or 'xxx.owner@anywhere'
+            owner = [name stringByAppendingString:@".owner@anywhere"];
+        }
+        return [self IDWithString:owner];
+    }
+    // check group type
+    if (group.type == MKMNetwork_Polylogue) {
+        // the polylogue's owner is its founder
+        return [self founderOfGroup:group];
+    }
+    NSAssert(false, @"group owner not support yet: %@", group);
     return nil;
 }
 
 - (nullable NSArray<DIMID *> *)membersOfGroup:(DIMID *)group {
     NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    // check for broadcast
+    if ([group isBroadcast]) {
+        NSString *member;
+        NSString *name = [group name];
+        NSUInteger len = [name length];
+        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
+            // Consensus: the member of group 'everyone@everywhere'
+            //            'anyone@anywhere'
+            member = @"anyone";
+        } else {
+            // DISCUSS: who should be the member of group 'xxx@everywhere'?
+            //          'anyone@anywhere', or 'xxx.member@anywhere'
+            member = [name stringByAppendingString:@".member@anywhere"];
+        }
+        return [[NSArray alloc] initWithObjects:[self IDWithString:member], nil];
+    }
     return nil;
 }
 

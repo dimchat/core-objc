@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
  * this will remove 50% of cached objects
  *
- * @return reduced object count
+ * @return number of survivors
  */
 - (NSInteger)reduceMemory;
 
