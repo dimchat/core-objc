@@ -13,8 +13,8 @@
 #pragma mark Admins of Chatroom
 
 - (NSArray<DIMID *> *)admins {
-    NSAssert(_dataSource, @"chatroom data source not set yet");
-    NSArray *list = [_dataSource adminsOfChatroom:_ID];
+    NSAssert(self.dataSource, @"chatroom data source not set yet");
+    NSArray *list = [self.dataSource adminsOfChatroom:_ID];
     return [list copy];
 }
 
@@ -22,7 +22,7 @@
     if ([self.owner isEqual:ID]) {
         return YES;
     }
-    NSAssert(_dataSource, @"chatroom data source not set yet");
+    NSAssert(self.dataSource, @"chatroom data source not set yet");
     NSArray<DIMID *> *admins = [self admins];
     NSInteger count = [admins count];
     if (count <= 0) {
