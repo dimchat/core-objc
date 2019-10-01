@@ -187,7 +187,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         }
         return [self IDWithString:founder];
     }
-    //NSAssert(false, @"failed to get founder: %@", group);
     return nil;
 }
 
@@ -209,12 +208,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         }
         return [self IDWithString:owner];
     }
-    // check group type
-    if (group.type == MKMNetwork_Polylogue) {
-        // the polylogue's owner is its founder
-        return [self founderOfGroup:group];
-    }
-    NSAssert(false, @"group owner not support yet: %@", group);
     return nil;
 }
 
