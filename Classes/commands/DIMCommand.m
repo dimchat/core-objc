@@ -96,21 +96,18 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
         // return Command object directly
         return content;
     }
-    NSAssert([content isKindOfClass:[NSDictionary class]],
-             @"command should be a dictionary: %@", content);
-    if (![self isEqual:[DIMCommand class]]) {
-        // subclass
-        NSAssert([self isSubclassOfClass:[DIMCommand class]], @"command class error");
-        return [[self alloc] initWithDictionary:content];
+    NSAssert([content isKindOfClass:[NSDictionary class]], @"command error: %@", content);
+    if ([self isEqual:[DIMCommand class]]) {
+        // create instance by subclass with command name
+        NSString *command = [content objectForKey:@"command"];
+        Class clazz = [command_classes() objectForKey:command];
+        if (clazz) {
+            NSAssert([clazz isSubclassOfClass:[DIMCommand class]], @"command class error: %@", clazz);
+            return [clazz getInstance:content];
+        }
     }
-    // create instance by subclass with command
-    NSString *command = [content objectForKey:@"command"];
-    Class clazz = [command_classes() objectForKey:command];
-    if (clazz) {
-        return [clazz getInstance:content];
-    } else {
-        return [[self alloc] initWithDictionary:content];
-    }
+    // custom command
+    return [[self alloc] initWithDictionary:content];
 }
 
 @end

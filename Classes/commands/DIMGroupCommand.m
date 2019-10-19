@@ -134,22 +134,17 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
         // return GroupCommand object directly
         return content;
     }
-    NSAssert([content isKindOfClass:[NSDictionary class]],
-             @"group command should be a dictionary: %@", content);
-    if (![self isEqual:[DIMGroupCommand class]]) {
-        // subclass
-        NSAssert([self isSubclassOfClass:[DIMGroupCommand class]],
-                 @"cmd class error");
-        return [[self alloc] initWithDictionary:content];
+    NSAssert([content isKindOfClass:[NSDictionary class]], @"group command error: %@", content);
+    if ([self isEqual:[DIMGroupCommand class]]) {
+        // create instance by subclass with group command name
+        NSString *command = [content objectForKey:@"command"];
+        Class clazz = [group_command_classes() objectForKey:command];
+        if (clazz) {
+            return [clazz getInstance:content];
+        }
     }
-    // create instance by subclass with group command
-    NSString *command = [content objectForKey:@"command"];
-    Class clazz = [group_command_classes() objectForKey:command];
-    if (clazz) {
-        return [clazz getInstance:content];
-    } else {
-        return [[self alloc] initWithDictionary:content];
-    }
+    // custom group command
+    return [[self alloc] initWithDictionary:content];
 }
 
 @end

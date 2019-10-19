@@ -121,7 +121,7 @@
     }
     NSAssert([object isKindOfClass:[DIMStation class]], @"error: %@", object);
     DIMStation *server = (DIMStation *)object;
-    if (!NSStringEquals(server.host, _host)) {
+    if (![server.host isEqualToString:_host]) {
         return NO;
     }
     if (server.port != _port) {
