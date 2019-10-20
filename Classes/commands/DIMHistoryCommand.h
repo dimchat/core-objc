@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMGroupCommand_Expel      @"expel"
 #define DIMGroupCommand_Join       @"join"
 #define DIMGroupCommand_Quit       @"quit"
+#define DIMGroupCommand_Query      @"query"
+#define DIMGroupCommand_Reset      @"reset"
 // group: administrator/assistant
 #define DIMGroupCommand_Hire       @"hire"
 #define DIMGroupCommand_Fire       @"fire"

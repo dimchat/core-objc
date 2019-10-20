@@ -39,4 +39,12 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMSystemCommand_Meta      @"meta"
 #define DIMSystemCommand_Profile   @"profile"
 
+@interface DIMCommand (Runtime)
+
++ (void)registerClass:(nullable Class)cmdClass forCommand:(NSString *)cmd;
+
++ (nullable Class)classForCommand:(NSString *)cmd;
+
+@end
+
 NS_ASSUME_NONNULL_END

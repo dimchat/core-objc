@@ -19,6 +19,7 @@
 
 #import "DIMCommand.h"
 #import "DIMHistoryCommand.h"
+#import "DIMGroupCommand.h"
 
 #import "DIMBarrack.h"
 #import "DIMKeyCache.h"
@@ -27,43 +28,45 @@
 
 #import "DIMTransceiver.h"
 
-@interface DIMContent (Plugins)
-
-+ (void)loadContentClasses;
-
-@end
-
-@implementation DIMContent (Plugins)
-
-+ (void)loadContentClasses {
+static inline void loadContentClasses(void) {
     
     // Text
-    [self registerClass:[DIMTextContent class] forType:DKDContentType_Text];
+    [DIMContent registerClass:[DIMTextContent class] forType:DKDContentType_Text];
     
     // File
-    [self registerClass:[DIMFileContent class] forType:DKDContentType_File];
+    [DIMContent registerClass:[DIMFileContent class] forType:DKDContentType_File];
     // Image
-    [self registerClass:[DIMImageContent class] forType:DKDContentType_Image];
+    [DIMContent registerClass:[DIMImageContent class] forType:DKDContentType_Image];
     // Audio
-    [self registerClass:[DIMAudioContent class] forType:DKDContentType_Audio];
+    [DIMContent registerClass:[DIMAudioContent class] forType:DKDContentType_Audio];
     // Video
-    [self registerClass:[DIMVideoContent class] forType:DKDContentType_Video];
+    [DIMContent registerClass:[DIMVideoContent class] forType:DKDContentType_Video];
     
     // Web Page
-    [self registerClass:[DIMWebpageContent class] forType:DKDContentType_Page];
-    
-    // Top-Secret
-    [self registerClass:[DIMForwardContent class] forType:DKDContentType_Forward];
+    [DIMContent registerClass:[DIMWebpageContent class] forType:DKDContentType_Page];
     
     // Command
-    [self registerClass:[DIMCommand class] forType:DKDContentType_Command];
+    [DIMContent registerClass:[DIMCommand class] forType:DKDContentType_Command];
     // (Group) History Command
-    [self registerClass:[DIMHistoryCommand class] forType:DKDContentType_History];
+    [DIMContent registerClass:[DIMHistoryCommand class] forType:DKDContentType_History];
 }
 
-@end
-
-#pragma mark -
+static inline void loadGroupCommandClasses(void) {
+    
+    // invite
+    [DIMCommand registerClass:[DIMInviteCommand class] forCommand:DIMGroupCommand_Invite];
+    // expel
+    [DIMCommand registerClass:[DIMExpelCommand class] forCommand:DIMGroupCommand_Expel];
+    // join
+    [DIMCommand registerClass:[DIMJoinCommand class] forCommand:DIMGroupCommand_Join];
+    // quit
+    [DIMCommand registerClass:[DIMQuitCommand class] forCommand:DIMGroupCommand_Quit];
+    
+    // reset
+    [DIMCommand registerClass:[DIMResetGroupCommand class] forCommand:DIMGroupCommand_Reset];
+    // query
+    [DIMCommand registerClass:[DIMQueryGroupCommand class] forCommand:DIMGroupCommand_Query];
+}
 
 static inline BOOL isBroadcast(DIMMessage *msg,
                                id<DIMSocialNetworkDataSource> barrack) {
@@ -85,7 +88,9 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         _delegate = nil;
         
         // register all content classes
-        [DIMContent loadContentClasses];
+        loadContentClasses();
+        // register group command classes
+        loadGroupCommandClasses();
     }
     return self;
 }

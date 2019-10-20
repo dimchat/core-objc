@@ -9,7 +9,6 @@
 #import "NSObject+Singleton.h"
 
 #import "DIMHandshakeCommand.h"
-#import "DIMReceiptCommand.h"
 #import "DIMMetaCommand.h"
 #import "DIMProfileCommand.h"
 
@@ -66,8 +65,6 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
         classes = [[NSMutableDictionary alloc] init];
         // handshake
         [classes setObject:[DIMHandshakeCommand class] forKey:DIMSystemCommand_Handshake];
-        // receipt
-        [classes setObject:[DIMReceiptCommand class] forKey:DIMSystemCommand_Receipt];
         // meta
         [classes setObject:[DIMMetaCommand class] forKey:DIMSystemCommand_Meta];
         // profile
@@ -80,12 +77,16 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
 
 + (void)registerClass:(nullable Class)cmdClass forCommand:(NSString *)cmd {
     NSAssert(![cmdClass isEqual:self], @"only subclass");
-    NSAssert([cmdClass isSubclassOfClass:self], @"class error: %@", cmdClass);
     if (cmdClass) {
+        NSAssert([cmdClass isSubclassOfClass:self], @"error: %@", cmdClass);
         [command_classes() setObject:cmdClass forKey:cmd];
     } else {
         [command_classes() removeObjectForKey:cmd];
     }
+}
+
++ (nullable Class)classForCommand:(NSString *)cmd {
+    return [command_classes() objectForKey:cmd];
 }
 
 + (nullable instancetype)getInstance:(id)content {
@@ -100,9 +101,8 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
     if ([self isEqual:[DIMCommand class]]) {
         // create instance by subclass with command name
         NSString *command = [content objectForKey:@"command"];
-        Class clazz = [command_classes() objectForKey:command];
+        Class clazz = [self classForCommand:command];
         if (clazz) {
-            NSAssert([clazz isSubclassOfClass:[DIMCommand class]], @"command class error: %@", clazz);
             return [clazz getInstance:content];
         }
     }

@@ -94,37 +94,7 @@
 
 @end
 
-static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
-    static NSMutableDictionary<NSString *, Class> *classes = nil;
-    SingletonDispatchOnce(^{
-        classes = [[NSMutableDictionary alloc] init];
-        // invite
-        [classes setObject:[DIMInviteCommand class] forKey:DIMGroupCommand_Invite];
-        // expel
-        [classes setObject:[DIMExpelCommand class] forKey:DIMGroupCommand_Expel];
-        // join
-        [classes setObject:[DIMJoinCommand class] forKey:DIMGroupCommand_Join];
-        // quit
-        [classes setObject:[DIMQuitCommand class] forKey:DIMGroupCommand_Quit];
-        // reset
-        [classes setObject:[DIMResetGroupCommand class] forKey:@"reset"];
-        // query
-        [classes setObject:[DIMQueryGroupCommand class] forKey:@"query"];
-    });
-    return classes;
-}
-
 @implementation DIMGroupCommand (Runtime)
-
-+ (void)registerClass:(nullable Class)cmdClass forCommand:(NSString *)cmd {
-    NSAssert(![cmdClass isEqual:self], @"only subclass");
-    NSAssert([cmdClass isSubclassOfClass:self], @"class error: %@", cmdClass);
-    if (cmdClass) {
-        [group_command_classes() setObject:cmdClass forKey:cmd];
-    } else {
-        [group_command_classes() removeObjectForKey:cmd];
-    }
-}
 
 + (nullable instancetype)getInstance:(id)content {
     if (!content) {
@@ -138,8 +108,9 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
     if ([self isEqual:[DIMGroupCommand class]]) {
         // create instance by subclass with group command name
         NSString *command = [content objectForKey:@"command"];
-        Class clazz = [group_command_classes() objectForKey:command];
+        Class clazz = [self classForCommand:command];
         if (clazz) {
+            NSAssert([clazz isSubclassOfClass:[DIMGroupCommand class]], @"group command class error: %@", clazz);
             return [clazz getInstance:content];
         }
     }
@@ -216,7 +187,7 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 - (instancetype)initWithGroup:(DIMID *)groupID
                       members:(NSArray<DIMID *> *)list {
     
-    return [super initWithCommand:@"reset" group:groupID members:list];
+    return [super initWithCommand:DIMGroupCommand_Reset group:groupID members:list];
 }
 
 @end
@@ -225,7 +196,7 @@ static NSMutableDictionary<NSString *, Class> *group_command_classes(void) {
 
 - (instancetype)initWithGroup:(DIMID *)groupID {
     
-    return [super initWithCommand:@"query" group:groupID];
+    return [super initWithCommand:DIMGroupCommand_Query group:groupID];
 }
 
 @end

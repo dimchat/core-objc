@@ -29,7 +29,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 
 // extends
 #import <DIMCore/MKMProfile+Extension.h>
-#import <DIMCore/DKDInstantMessage+Extension.h>
 
 // Group
 #import <DIMCore/DIMPolylogue.h>
@@ -61,7 +60,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 // Commands
 #import <DIMCore/DIMCommand.h>
 #import <DIMCore/DIMHandshakeCommand.h>
-#import <DIMCore/DIMReceiptCommand.h>
 #import <DIMCore/DIMMetaCommand.h>
 #import <DIMCore/DIMProfileCommand.h>
 #import <DIMCore/DIMHistoryCommand.h>
