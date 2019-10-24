@@ -70,11 +70,18 @@ static inline void loadGroupCommandClasses(void) {
 
 static inline BOOL isBroadcast(DIMMessage *msg,
                                id<DIMSocialNetworkDataSource> barrack) {
-    DIMID *receiver = [barrack IDWithString:msg.envelope.group];
-    if (!receiver) {
-        receiver = [barrack IDWithString:msg.envelope.receiver];
+    NSString *receiver;
+    if ([msg isKindOfClass:[DIMInstantMessage class]]) {
+        DIMInstantMessage *iMsg = (DIMInstantMessage *)msg;
+        receiver = iMsg.content.group;
+    } else {
+        receiver = msg.envelope.group;
     }
-    return [receiver isBroadcast];
+    if (!receiver) {
+        receiver = msg.envelope.receiver;
+    }
+    DIMID *ID = [barrack IDWithString:receiver];
+    return [ID isBroadcast];
 }
 
 @implementation DIMTransceiver
