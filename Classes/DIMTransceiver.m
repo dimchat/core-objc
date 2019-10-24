@@ -70,7 +70,7 @@ static inline void loadGroupCommandClasses(void) {
 
 static inline BOOL isBroadcast(DIMMessage *msg,
                                id<DIMSocialNetworkDataSource> barrack) {
-    DIMID *receiver = [barrack IDWithString:[msg group]];
+    DIMID *receiver = [barrack IDWithString:msg.envelope.group];
     if (!receiver) {
         receiver = [barrack IDWithString:msg.envelope.receiver];
     }
@@ -192,7 +192,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMUser *contact = [_barrack userWithID:ID];
-    NSAssert(contact, @"failed to encrypt key for receiver: %@", receiver);
+    //NSAssert(contact, @"failed to encrypt key for receiver: %@", receiver);
     return [contact encrypt:data];
 }
 
@@ -358,7 +358,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
-    DIMID *group = [_barrack IDWithString:iMsg.group];
+    DIMID *group = [_barrack IDWithString:iMsg.content.group];
 
     // 1. get symmetric key
     DIMSymmetricKey *password = nil;
