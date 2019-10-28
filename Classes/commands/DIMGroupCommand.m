@@ -96,6 +96,11 @@
 
 @implementation DIMGroupCommand (Runtime)
 
++ (nullable Class)classForGroupCommand:(NSString *)cmd {
+    // NOTICE: here combine all group commands into common command pool
+    return [super classForCommand:cmd];
+}
+
 + (nullable instancetype)getInstance:(id)content {
     if (!content) {
         return nil;
@@ -108,9 +113,8 @@
     if ([self isEqual:[DIMGroupCommand class]]) {
         // create instance by subclass with group command name
         NSString *command = [content objectForKey:@"command"];
-        Class clazz = [self classForCommand:command];
+        Class clazz = [self classForGroupCommand:command];
         if (clazz) {
-            NSAssert([clazz isSubclassOfClass:[DIMGroupCommand class]], @"group command class error: %@", clazz);
             return [clazz getInstance:content];
         }
     }

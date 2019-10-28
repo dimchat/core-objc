@@ -65,6 +65,11 @@
 
 @implementation DIMHistoryCommand (Runtime)
 
++ (nullable Class)classForHistoryCommand:(NSString *)cmd {
+    // NOTICE: here combine all history commands into common command pool
+    return [super classForCommand:cmd];
+}
+
 + (nullable instancetype)getInstance:(id)content {
     if (!content) {
         return nil;
@@ -80,6 +85,12 @@
         if (group) {
             // group history command
             return [DIMGroupCommand getInstance:content];
+        }
+        // create instance by subclass with command name
+        NSString *command = [content objectForKey:@"command"];
+        Class clazz = [self classForHistoryCommand:command];
+        if (clazz) {
+            return [clazz getInstance:content];
         }
     }
     // custom history command
