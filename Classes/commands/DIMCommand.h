@@ -30,14 +30,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark System Command
 
 // network
-#define DIMSystemCommand_Handshake @"handshake"
+#define DIMCommand_Handshake @"handshake"
 
 // message
-#define DIMSystemCommand_Receipt   @"receipt"
+#define DIMCommand_Receipt   @"receipt"
 
 // facebook
-#define DIMSystemCommand_Meta      @"meta"
-#define DIMSystemCommand_Profile   @"profile"
+#define DIMCommand_Meta      @"meta"
+#define DIMCommand_Profile   @"profile"
 
 @interface DIMCommand (Runtime)
 

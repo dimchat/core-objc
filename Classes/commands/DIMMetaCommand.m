@@ -23,7 +23,7 @@
 
 - (instancetype)initWithID:(DIMID *)ID
                       meta:(nullable DIMMeta *)meta {
-    if (self = [self initWithCommand:DIMSystemCommand_Meta]) {
+    if (self = [self initWithCommand:DIMCommand_Meta]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];

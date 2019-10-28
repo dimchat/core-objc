@@ -33,7 +33,7 @@
 - (instancetype)initWithID:(DIMID *)ID
                       meta:(nullable DIMMeta *)meta
                    profile:(nullable DIMProfile *)profile {
-    if (self = [self initWithCommand:DIMSystemCommand_Profile]) {
+    if (self = [self initWithCommand:DIMCommand_Profile]) {
         // ID
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];

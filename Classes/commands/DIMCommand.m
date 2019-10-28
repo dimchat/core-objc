@@ -64,11 +64,11 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
     SingletonDispatchOnce(^{
         classes = [[NSMutableDictionary alloc] init];
         // handshake
-        [classes setObject:[DIMHandshakeCommand class] forKey:DIMSystemCommand_Handshake];
+        [classes setObject:[DIMHandshakeCommand class] forKey:DIMCommand_Handshake];
         // meta
-        [classes setObject:[DIMMetaCommand class] forKey:DIMSystemCommand_Meta];
+        [classes setObject:[DIMMetaCommand class] forKey:DIMCommand_Meta];
         // profile
-        [classes setObject:[DIMProfileCommand class] forKey:DIMSystemCommand_Profile];
+        [classes setObject:[DIMProfileCommand class] forKey:DIMCommand_Profile];
     });
     return classes;
 }

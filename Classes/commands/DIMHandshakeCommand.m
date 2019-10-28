@@ -21,7 +21,7 @@
 
 - (instancetype)initWithMessage:(NSString *)message
                      sessionKey:(nullable NSString *)session {
-    if (self = [self initWithCommand:DIMSystemCommand_Handshake]) {
+    if (self = [self initWithCommand:DIMCommand_Handshake]) {
         // message
         if (message) {
             [_storeDictionary setObject:message forKey:@"message"];
