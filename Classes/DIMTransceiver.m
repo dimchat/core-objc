@@ -1,3 +1,32 @@
+// license: https://mit-license.org
+//
+//  DIMP : Decentralized Instant Messaging Protocol
+//
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//
+// =============================================================================
+// The MIT License (MIT)
+//
+// Copyright (c) 2019 Albert Moky
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// =============================================================================
 //
 //  DIMTransceiver.m
 //  DIMCore
@@ -235,7 +264,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (key) {
         // decrypt key data with the receiver/group member's private key
         DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
-        DIMLocalUser *user = [_barrack userWithID:ID];
+        DIMUser *user = [_barrack userWithID:ID];
         NSAssert(user, @"failed to decrypt key for receiver: %@, %@", receiver, ID);
         NSData *plaintext = [user decrypt:key];
         NSAssert(plaintext.length > 0, @"failed to decrypt key in msg: %@", sMsg);
@@ -307,7 +336,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                     signData:(NSData *)data
                    forSender:(NSString *)sender {
     DIMID *ID = [_barrack IDWithString:sender];
-    DIMLocalUser *user = [_barrack userWithID:ID];
+    DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to sign with sender: %@", sender);
     return [user sign:data];
 }
