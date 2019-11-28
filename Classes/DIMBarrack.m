@@ -224,12 +224,12 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(DIMID *)user {
+- (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryption:(DIMID *)user {
     NSAssert(false, @"override me!");
     return nil;
 }
 
-- (nullable DIMPrivateKey *)privateKeyForSignatureOfUser:(DIMID *)user {
+- (nullable DIMPrivateKey *)privateKeyForSignature:(DIMID *)user {
     NSAssert(false, @"override me!");
     return nil;
 }
