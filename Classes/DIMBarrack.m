@@ -1,3 +1,32 @@
+// license: https://mit-license.org
+//
+//  DIMP : Decentralized Instant Messaging Protocol
+//
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//
+// =============================================================================
+// The MIT License (MIT)
+//
+// Copyright (c) 2019 Albert Moky
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// =============================================================================
 //
 //  DIMBarrack.m
 //  DIMCore
@@ -62,10 +91,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    if (![meta matchID:ID]) {
-        NSAssert(false, @"meta not match ID: %@, %@", ID, meta);
-        return NO;
-    }
+    NSAssert([meta matchID:ID], @"meta not match ID: %@, %@", ID, meta);
     [_metaTable setObject:meta forKey:ID];
     return YES;
 }
@@ -94,6 +120,33 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return YES;
 }
 
+- (DIMID *)createID:(NSString *)string {
+    NSAssert(string, @"ID error");
+    return MKMIDFromString(string);
+}
+
+- (DIMUser *)createUser:(DIMID *)ID {
+    NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
+    if ([ID isBroadcast]) {
+        // create user 'anyone@anywhere'
+        return [[DIMUser alloc] initWithID:ID];
+    }
+    NSAssert([self metaForID:ID], @"failed to get meta for user: %@", ID);
+    // TODO: check user type
+    return [[DIMUser alloc] initWithID:ID];
+}
+
+- (DIMGroup *)createGroup:(DIMID *)ID {
+    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
+    if ([ID isBroadcast]) {
+        // create group 'everyone@everywhere'
+        return [[DIMGroup alloc] initWithID:ID];
+    }
+    NSAssert([self metaForID:ID], @"failed to get meta for group: %@", ID);
+    // TODO: check group type
+    return [[DIMGroup alloc] initWithID:ID];
+}
+
 #pragma mark - DIMSocialNetworkDataSource
 
 - (nullable DIMID *)IDWithString:(NSString *)string {
@@ -102,13 +155,13 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     } else if ([string isKindOfClass:[DIMID class]]) {
         return (DIMID *)string;
     }
-    // get from ID cache
+    // 1. get from ID cache
     DIMID *ID = [_idTable objectForKey:string];
     if (ID) {
         return ID;
     }
-    // create and cache it
-    ID = MKMIDFromString(string);
+    // 2. create and cache it
+    ID = [self createID:string];
     if (ID && [self cacheID:ID]) {
         return ID;
     }
@@ -117,25 +170,33 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
-    NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
+    // 1. get from user cache
     DIMUser *user = [_userTable objectForKey:ID];
-    if (!user && [ID isBroadcast]) {
-        // anyone
-        user = [[DIMUser alloc] initWithID:ID];
-        [self cacheUser:user];
+    if (user) {
+        return user;
     }
-    return user;
+    // 2. create user and cache it
+    user = [self createUser:ID];
+    if (user && [self cacheUser:user]) {
+        return user;
+    }
+    NSAssert(false, @"failed to create user: %@", ID);
+    return nil;
 }
 
 - (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
-    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
+    // 1. get from group cache
     DIMGroup *group = [_groupTable objectForKey:ID];
-    if (!group && [ID isBroadcast]) {
-        // everyone
-        group = [[DIMGroup alloc] initWithID:ID];
-        [self cacheGroup:group];
+    if (group) {
+        return group;
     }
-    return group;
+    // 2. create group and cache it
+    group = [self createGroup:ID];
+    if (group && [self cacheGroup:group]) {
+        return group;
+    }
+    NSAssert(false, @"failed to create group: %@", ID);
+    return nil;
 }
 
 #pragma mark - MKMEntityDataSource
@@ -146,24 +207,36 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable __kindof DIMProfile *)profileForID:(DIMID *)ID {
-    NSAssert([ID isValid], @"ID not valid: %@", ID);
+    NSAssert(false, @"override me!");
     return nil;
 }
 
 #pragma mark - MKMUserDataSource
 
-- (nullable DIMPrivateKey *)privateKeyForSignatureOfUser:(DIMID *)user {
+- (nullable NSArray<DIMID *> *)contactsOfUser:(DIMID *)user {
+    NSAssert(false, @"override me!");
+    return nil;
+}
+
+- (nullable id<MKMEncryptKey>)publicKeyForEncryption:(nonnull DIMID *)user {
     NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    // NOTICE: return nothing to use profile.key or meta.key
     return nil;
 }
 
 - (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryptionOfUser:(DIMID *)user {
-    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    NSAssert(false, @"override me!");
     return nil;
 }
 
-- (nullable NSArray<DIMID *> *)contactsOfUser:(DIMID *)user {
+- (nullable DIMPrivateKey *)privateKeyForSignatureOfUser:(DIMID *)user {
+    NSAssert(false, @"override me!");
+    return nil;
+}
+
+- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(nonnull DIMID *)user {
     NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    // NOTICE: return nothing to use meta.key
     return nil;
 }
 

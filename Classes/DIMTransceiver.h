@@ -1,3 +1,32 @@
+// license: https://mit-license.org
+//
+//  DIMP : Decentralized Instant Messaging Protocol
+//
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//
+// =============================================================================
+// The MIT License (MIT)
+//
+// Copyright (c) 2019 Albert Moky
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// =============================================================================
 //
 //  DIMTransceiver.h
 //  DIMCore
@@ -10,53 +39,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Handler to call after sending package complete
- *  executed by application
- */
-typedef void (^DIMTransceiverCompletionHandler)(NSError * _Nullable error);
-
-@protocol DIMTransceiverDelegate <NSObject>
-
-/**
- *  Send out a data package onto network
- *
- *  @param data - package`
- *  @param handler - completion handler
- *  @return NO on data/delegate error
- */
-- (BOOL)sendPackage:(NSData *)data completionHandler:(nullable DIMTransceiverCompletionHandler)handler;
-
-/**
- *  Upload encrypted data to CDN
- *
- *  @param CT - encrypted file data
- *  @param iMsg - instant message
- *  @return download URL
- */
-- (nullable NSURL *)uploadEncryptedFileData:(NSData *)CT forMessage:(DIMInstantMessage *)iMsg;
-
-/**
- *  Download encrypted data from CDN
- *
- *  @param url - download URL
- *  @param iMsg - instant message
- *  @return encrypted file data
- */
-- (nullable NSData *)downloadEncryptedFileData:(NSURL *)url forMessage:(DIMInstantMessage *)iMsg;
-
-@end
-
-#pragma mark -
-
 @protocol DIMSocialNetworkDataSource;
 @protocol DIMCipherKeyDataSource;
-
-/**
- *  Callback for sending message
- *  set by application and executed by DIM Core
- */
-typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Nullable error);
 
 @interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
                                       DIMSecureMessageDelegate,
@@ -64,14 +48,14 @@ typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Null
                                           
     __weak id<DIMSocialNetworkDataSource> _barrack;
     __weak id<DIMCipherKeyDataSource> _keyCache;
-
-    __weak id<DIMTransceiverDelegate> _delegate;
 }
 
 @property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
 @property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
 
-@property (weak, nonatomic) id<DIMTransceiverDelegate> delegate;
+@end
+
+@interface DIMTransceiver (Serialization)
 
 /**
  *  De/serialize message content
@@ -88,6 +72,12 @@ typedef void (^DIMTransceiverCallback)(DIMReliableMessage *rMsg, NSError * _Null
                 serializeKey:(DIMSymmetricKey *)password;
 - (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
                        deserializeKey:(NSData *)data;
+
+/**
+ *  De/serialize message
+ */
+- (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg;
+- (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data;
 
 @end
 

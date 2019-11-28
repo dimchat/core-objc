@@ -15,8 +15,6 @@
 		E91F2B1223014B2600BE05D0 /* DIMContact.m in Sources */ = {isa = PBXBuildFile; fileRef = E91F2B0A23014B2600BE05D0 /* DIMContact.m */; };
 		E91F2B1523014BF600BE05D0 /* DIMMember.h in Headers */ = {isa = PBXBuildFile; fileRef = E91F2B1323014BF600BE05D0 /* DIMMember.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E91F2B1623014BF600BE05D0 /* DIMMember.m in Sources */ = {isa = PBXBuildFile; fileRef = E91F2B1423014BF600BE05D0 /* DIMMember.m */; };
-		E93D437222A6B79700422EDF /* MKMProfile+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E93D437022A6B79700422EDF /* MKMProfile+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E93D437322A6B79700422EDF /* MKMProfile+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E93D437122A6B79700422EDF /* MKMProfile+Extension.m */; };
 		E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */; };
 		E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */; };
 		E94D2B3B22B7BC9C00FF4AD5 /* DIMTextContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B1F22B7B39900FF4AD5 /* DIMTextContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -72,6 +70,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E919AF93238FD4F1004F7FF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5276C0582361C8C600AEC8E4;
+			remoteInfo = "DaoKeDao-Mac";
+		};
+		E919AF97238FD4F1004F7FF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E9BBBD21223A479800E6ACDA /* MingKeMing.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5276BF932361C5F600AEC8E4;
+			remoteInfo = "MingKeMing-Mac";
+		};
 		E9BBBD27223A479800E6ACDA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E9BBBD21223A479800E6ACDA /* MingKeMing.xcodeproj */;
@@ -132,8 +144,6 @@
 		E91F2B0A23014B2600BE05D0 /* DIMContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMContact.m; sourceTree = "<group>"; };
 		E91F2B1323014BF600BE05D0 /* DIMMember.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMember.h; sourceTree = "<group>"; };
 		E91F2B1423014BF600BE05D0 /* DIMMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMember.m; sourceTree = "<group>"; };
-		E93D437022A6B79700422EDF /* MKMProfile+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKMProfile+Extension.h"; sourceTree = "<group>"; };
-		E93D437122A6B79700422EDF /* MKMProfile+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MKMProfile+Extension.m"; sourceTree = "<group>"; };
 		E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Extension.m"; sourceTree = "<group>"; };
 		E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Extension.h"; sourceTree = "<group>"; };
 		E94D2B1C22B7B39900FF4AD5 /* DIMFileContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFileContent.h; sourceTree = "<group>"; };
@@ -259,6 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				E9BBBD28223A479800E6ACDA /* MingKeMing.framework */,
+				E919AF98238FD4F1004F7FF9 /* MingKeMing-Mac.framework */,
 				E9BBBD2A223A479800E6ACDA /* MingKeMingTests.xctest */,
 			);
 			name = Products;
@@ -269,8 +280,6 @@
 			children = (
 				E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */,
 				E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */,
-				E93D437022A6B79700422EDF /* MKMProfile+Extension.h */,
-				E93D437122A6B79700422EDF /* MKMProfile+Extension.m */,
 			);
 			path = extends;
 			sourceTree = "<group>";
@@ -393,6 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */,
+				E919AF94238FD4F1004F7FF9 /* DaoKeDao-Mac.framework */,
 				E9F3AB9B21D077D3009690F6 /* DaoKeDaoTests.xctest */,
 			);
 			name = Products;
@@ -405,7 +415,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93D437222A6B79700422EDF /* MKMProfile+Extension.h in Headers */,
 				E91F2B1523014BF600BE05D0 /* DIMMember.h in Headers */,
 				E96D1498231F9A2F00B5EA59 /* DIMRobot.h in Headers */,
 				E91F2B1123014B2600BE05D0 /* DIMContact.h in Headers */,
@@ -526,6 +535,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		E919AF94238FD4F1004F7FF9 /* DaoKeDao-Mac.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = "DaoKeDao-Mac.framework";
+			remoteRef = E919AF93238FD4F1004F7FF9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E919AF98238FD4F1004F7FF9 /* MingKeMing-Mac.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = "MingKeMing-Mac.framework";
+			remoteRef = E919AF97238FD4F1004F7FF9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		E9BBBD28223A479800E6ACDA /* MingKeMing.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -593,7 +616,6 @@
 				E9F3AA7C21CBD03C009690F6 /* DIMCAValidity.m in Sources */,
 				E9BBBD7A223AB02600E6ACDA /* DIMBarrack.m in Sources */,
 				E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */,
-				E93D437322A6B79700422EDF /* MKMProfile+Extension.m in Sources */,
 				E94D2B4A22B7CC6400FF4AD5 /* DIMWebpageContent.m in Sources */,
 				E95A80CC22060142007EA611 /* DIMProfileCommand.m in Sources */,
 				E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */,
