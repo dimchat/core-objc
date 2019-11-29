@@ -1,3 +1,32 @@
+// license: https://mit-license.org
+//
+//  DIMP : Decentralized Instant Messaging Protocol
+//
+//                               Written in 2019 by Moky <albert.moky@gmail.com>
+//
+// =============================================================================
+// The MIT License (MIT)
+//
+// Copyright (c) 2019 Albert Moky
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// =============================================================================
 //
 //  DIMMetaCommand.m
 //  DIMCore
@@ -10,7 +39,7 @@
 
 @interface DIMMetaCommand ()
 
-@property (strong, nonatomic) DIMID *ID;
+@property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic, nullable) DIMMeta *meta;
 
 @end
@@ -58,9 +87,9 @@
     return cmd;
 }
 
-- (DIMID *)ID {
+- (NSString *)ID {
     if (!_ID) {
-        _ID = MKMIDFromString([_storeDictionary objectForKey:@"ID"]);
+        _ID = [_storeDictionary objectForKey:@"ID"];
     }
     return _ID;
 }
@@ -71,11 +100,6 @@
     }
     NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
     DIMMeta *m = MKMMetaFromDictionary(dict);
-    // check whether match ID
-    if (![m matchID:self.ID]) {
-        NSAssert(m == nil, @"meta not match ID: %@, %@", self.ID, m);
-        return nil;
-    }
     if (m != dict) {
         // replace the meta object
         NSAssert([m isKindOfClass:[DIMMeta class]], @"meta error: %@", dict);
