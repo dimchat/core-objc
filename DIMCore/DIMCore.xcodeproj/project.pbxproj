@@ -17,18 +17,18 @@
 		E91F2B1623014BF600BE05D0 /* DIMMember.m in Sources */ = {isa = PBXBuildFile; fileRef = E91F2B1423014BF600BE05D0 /* DIMMember.m */; };
 		E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */; };
 		E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */; };
-		E94D2B3B22B7BC9C00FF4AD5 /* DIMTextContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B1F22B7B39900FF4AD5 /* DIMTextContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B3D22B7BC9C00FF4AD5 /* DIMFileContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B1C22B7B39900FF4AD5 /* DIMFileContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B3F22B7BC9C00FF4AD5 /* DIMImageContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B2222B7B39900FF4AD5 /* DIMImageContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B4122B7BC9C00FF4AD5 /* DIMAudioContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B2D22B7B39900FF4AD5 /* DIMAudioContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B4322B7BC9C00FF4AD5 /* DIMVideoContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B1D22B7B39900FF4AD5 /* DIMVideoContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B4522B7BC9C00FF4AD5 /* DIMWebpageContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94D2B1E22B7B39900FF4AD5 /* DIMWebpageContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E94D2B4A22B7CC6400FF4AD5 /* DIMWebpageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2622B7B39900FF4AD5 /* DIMWebpageContent.m */; };
-		E94D2B4B22B7CC6900FF4AD5 /* DIMVideoContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2722B7B39900FF4AD5 /* DIMVideoContent.m */; };
-		E94D2B4C22B7CC8700FF4AD5 /* DIMAudioContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2122B7B39900FF4AD5 /* DIMAudioContent.m */; };
-		E94D2B4D22B7CC8C00FF4AD5 /* DIMImageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2C22B7B39900FF4AD5 /* DIMImageContent.m */; };
-		E94D2B4E22B7CC9000FF4AD5 /* DIMFileContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2822B7B39900FF4AD5 /* DIMFileContent.m */; };
-		E94D2B4F22B7CC9300FF4AD5 /* DIMTextContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94D2B2B22B7B39900FF4AD5 /* DIMTextContent.m */; };
+		E9596518239107C800DAA870 /* DIMVideoContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E959650C239107C800DAA870 /* DIMVideoContent.m */; };
+		E9596519239107C800DAA870 /* DIMFileContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E959650D239107C800DAA870 /* DIMFileContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E959651A239107C800DAA870 /* DIMTextContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E959650E239107C800DAA870 /* DIMTextContent.m */; };
+		E959651B239107C800DAA870 /* DIMImageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E959650F239107C800DAA870 /* DIMImageContent.m */; };
+		E959651C239107C800DAA870 /* DIMAudioContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9596510239107C800DAA870 /* DIMAudioContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E959651D239107C800DAA870 /* DIMWebpageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9596511239107C800DAA870 /* DIMWebpageContent.m */; };
+		E959651E239107C800DAA870 /* DIMVideoContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9596512239107C800DAA870 /* DIMVideoContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E959651F239107C800DAA870 /* DIMAudioContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9596513239107C800DAA870 /* DIMAudioContent.m */; };
+		E9596520239107C800DAA870 /* DIMTextContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9596514239107C800DAA870 /* DIMTextContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9596521239107C800DAA870 /* DIMImageContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9596515239107C800DAA870 /* DIMImageContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9596522239107C800DAA870 /* DIMFileContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9596516239107C800DAA870 /* DIMFileContent.m */; };
+		E9596523239107C800DAA870 /* DIMWebpageContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9596517239107C800DAA870 /* DIMWebpageContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E95A80C62205FCD4007EA611 /* DIMGroupCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E95A80C42205FCD4007EA611 /* DIMGroupCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */; };
 		E95A80CB22060142007EA611 /* DIMProfileCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E95A80C922060142007EA611 /* DIMProfileCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -146,18 +146,18 @@
 		E91F2B1423014BF600BE05D0 /* DIMMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMember.m; sourceTree = "<group>"; };
 		E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Extension.m"; sourceTree = "<group>"; };
 		E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Extension.h"; sourceTree = "<group>"; };
-		E94D2B1C22B7B39900FF4AD5 /* DIMFileContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFileContent.h; sourceTree = "<group>"; };
-		E94D2B1D22B7B39900FF4AD5 /* DIMVideoContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMVideoContent.h; sourceTree = "<group>"; };
-		E94D2B1E22B7B39900FF4AD5 /* DIMWebpageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMWebpageContent.h; sourceTree = "<group>"; };
-		E94D2B1F22B7B39900FF4AD5 /* DIMTextContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTextContent.h; sourceTree = "<group>"; };
-		E94D2B2122B7B39900FF4AD5 /* DIMAudioContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMAudioContent.m; sourceTree = "<group>"; };
-		E94D2B2222B7B39900FF4AD5 /* DIMImageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMImageContent.h; sourceTree = "<group>"; };
-		E94D2B2622B7B39900FF4AD5 /* DIMWebpageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMWebpageContent.m; sourceTree = "<group>"; };
-		E94D2B2722B7B39900FF4AD5 /* DIMVideoContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMVideoContent.m; sourceTree = "<group>"; };
-		E94D2B2822B7B39900FF4AD5 /* DIMFileContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMFileContent.m; sourceTree = "<group>"; };
-		E94D2B2B22B7B39900FF4AD5 /* DIMTextContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTextContent.m; sourceTree = "<group>"; };
-		E94D2B2C22B7B39900FF4AD5 /* DIMImageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMImageContent.m; sourceTree = "<group>"; };
-		E94D2B2D22B7B39900FF4AD5 /* DIMAudioContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMAudioContent.h; sourceTree = "<group>"; };
+		E959650C239107C800DAA870 /* DIMVideoContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMVideoContent.m; sourceTree = "<group>"; };
+		E959650D239107C800DAA870 /* DIMFileContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFileContent.h; sourceTree = "<group>"; };
+		E959650E239107C800DAA870 /* DIMTextContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTextContent.m; sourceTree = "<group>"; };
+		E959650F239107C800DAA870 /* DIMImageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMImageContent.m; sourceTree = "<group>"; };
+		E9596510239107C800DAA870 /* DIMAudioContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMAudioContent.h; sourceTree = "<group>"; };
+		E9596511239107C800DAA870 /* DIMWebpageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMWebpageContent.m; sourceTree = "<group>"; };
+		E9596512239107C800DAA870 /* DIMVideoContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMVideoContent.h; sourceTree = "<group>"; };
+		E9596513239107C800DAA870 /* DIMAudioContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMAudioContent.m; sourceTree = "<group>"; };
+		E9596514239107C800DAA870 /* DIMTextContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTextContent.h; sourceTree = "<group>"; };
+		E9596515239107C800DAA870 /* DIMImageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMImageContent.h; sourceTree = "<group>"; };
+		E9596516239107C800DAA870 /* DIMFileContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMFileContent.m; sourceTree = "<group>"; };
+		E9596517239107C800DAA870 /* DIMWebpageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMWebpageContent.h; sourceTree = "<group>"; };
 		E95A80C42205FCD4007EA611 /* DIMGroupCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMGroupCommand.h; sourceTree = "<group>"; };
 		E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMGroupCommand.m; sourceTree = "<group>"; };
 		E95A80C922060142007EA611 /* DIMProfileCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMProfileCommand.h; sourceTree = "<group>"; };
@@ -246,23 +246,23 @@
 			path = user;
 			sourceTree = "<group>";
 		};
-		E94D2B1722B7B39900FF4AD5 /* content */ = {
+		E959650B239107C800DAA870 /* contents */ = {
 			isa = PBXGroup;
 			children = (
-				E94D2B1F22B7B39900FF4AD5 /* DIMTextContent.h */,
-				E94D2B2B22B7B39900FF4AD5 /* DIMTextContent.m */,
-				E94D2B1C22B7B39900FF4AD5 /* DIMFileContent.h */,
-				E94D2B2822B7B39900FF4AD5 /* DIMFileContent.m */,
-				E94D2B2222B7B39900FF4AD5 /* DIMImageContent.h */,
-				E94D2B2C22B7B39900FF4AD5 /* DIMImageContent.m */,
-				E94D2B2D22B7B39900FF4AD5 /* DIMAudioContent.h */,
-				E94D2B2122B7B39900FF4AD5 /* DIMAudioContent.m */,
-				E94D2B1D22B7B39900FF4AD5 /* DIMVideoContent.h */,
-				E94D2B2722B7B39900FF4AD5 /* DIMVideoContent.m */,
-				E94D2B1E22B7B39900FF4AD5 /* DIMWebpageContent.h */,
-				E94D2B2622B7B39900FF4AD5 /* DIMWebpageContent.m */,
+				E9596514239107C800DAA870 /* DIMTextContent.h */,
+				E959650E239107C800DAA870 /* DIMTextContent.m */,
+				E959650D239107C800DAA870 /* DIMFileContent.h */,
+				E9596516239107C800DAA870 /* DIMFileContent.m */,
+				E9596515239107C800DAA870 /* DIMImageContent.h */,
+				E959650F239107C800DAA870 /* DIMImageContent.m */,
+				E9596510239107C800DAA870 /* DIMAudioContent.h */,
+				E9596513239107C800DAA870 /* DIMAudioContent.m */,
+				E9596512239107C800DAA870 /* DIMVideoContent.h */,
+				E959650C239107C800DAA870 /* DIMVideoContent.m */,
+				E9596511239107C800DAA870 /* DIMWebpageContent.m */,
+				E9596517239107C800DAA870 /* DIMWebpageContent.h */,
 			);
-			path = content;
+			path = contents;
 			sourceTree = "<group>";
 		};
 		E9BBBD22223A479800E6ACDA /* Products */ = {
@@ -347,8 +347,8 @@
 			children = (
 				E9BBBE50223FB0BA00E6ACDA /* extends */,
 				E9F3AA5C21CBD03C009690F6 /* network */,
+				E959650B239107C800DAA870 /* contents */,
 				E9CF980921FF53470092DD8B /* commands */,
-				E94D2B1722B7B39900FF4AD5 /* content */,
 				E91F2AFF23014B2600BE05D0 /* group */,
 				E91F2B0823014B2600BE05D0 /* user */,
 				E9BBBD42223AA13500E6ACDA /* DIMKeyCache.h */,
@@ -415,19 +415,18 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E959651C239107C800DAA870 /* DIMAudioContent.h in Headers */,
+				E9596519239107C800DAA870 /* DIMFileContent.h in Headers */,
+				E9596523239107C800DAA870 /* DIMWebpageContent.h in Headers */,
+				E959651E239107C800DAA870 /* DIMVideoContent.h in Headers */,
+				E9596520239107C800DAA870 /* DIMTextContent.h in Headers */,
+				E9596521239107C800DAA870 /* DIMImageContent.h in Headers */,
 				E91F2B1523014BF600BE05D0 /* DIMMember.h in Headers */,
 				E96D1498231F9A2F00B5EA59 /* DIMRobot.h in Headers */,
 				E91F2B1123014B2600BE05D0 /* DIMContact.h in Headers */,
 				E91F2B1023014B2600BE05D0 /* DIMPolylogue.h in Headers */,
 				E91F2B0F23014B2600BE05D0 /* DIMChatroom.h in Headers */,
 				E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */,
-				E94D2B3B22B7BC9C00FF4AD5 /* DIMTextContent.h in Headers */,
-				E94D2B3D22B7BC9C00FF4AD5 /* DIMFileContent.h in Headers */,
-				E94D2B3F22B7BC9C00FF4AD5 /* DIMImageContent.h in Headers */,
-				E94D2B4122B7BC9C00FF4AD5 /* DIMAudioContent.h in Headers */,
-				E94D2B4322B7BC9C00FF4AD5 /* DIMVideoContent.h in Headers */,
-				E94D2B4522B7BC9C00FF4AD5 /* DIMWebpageContent.h in Headers */,
-				E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */,
 				E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */,
 				E9F3AA7721CBD03C009690F6 /* DIMCASubject.h in Headers */,
 				E9F3AA7521CBD03C009690F6 /* DIMCAValidity.h in Headers */,
@@ -444,6 +443,7 @@
 				E9BBBD48223AA13500E6ACDA /* DIMKeyCache.h in Headers */,
 				E9BBBD49223AA13500E6ACDA /* DIMTransceiver.h in Headers */,
 				E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */,
+				E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,32 +601,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E94D2B4B22B7CC6900FF4AD5 /* DIMVideoContent.m in Sources */,
-				E94D2B4E22B7CC9000FF4AD5 /* DIMFileContent.m in Sources */,
 				E91F2B0D23014B2600BE05D0 /* DIMChatroom.m in Sources */,
-				E94D2B4D22B7CC8C00FF4AD5 /* DIMImageContent.m in Sources */,
+				E9596522239107C800DAA870 /* DIMFileContent.m in Sources */,
 				E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */,
 				E9F3AA7E21CBD03C009690F6 /* DIMStation.m in Sources */,
 				E9CF981621FF567B0092DD8B /* DIMHandshakeCommand.m in Sources */,
 				E9F3AA7321CBD03C009690F6 /* DIMServiceProvider.m in Sources */,
 				E9F3AA7921CBD03C009690F6 /* DIMCAData.m in Sources */,
 				E9F3AA7B21CBD03C009690F6 /* DIMCertificateAuthority.m in Sources */,
+				E959651D239107C800DAA870 /* DIMWebpageContent.m in Sources */,
 				E91F2B0C23014B2600BE05D0 /* DIMPolylogue.m in Sources */,
 				E91F2B1223014B2600BE05D0 /* DIMContact.m in Sources */,
 				E9F3AA7C21CBD03C009690F6 /* DIMCAValidity.m in Sources */,
 				E9BBBD7A223AB02600E6ACDA /* DIMBarrack.m in Sources */,
 				E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */,
-				E94D2B4A22B7CC6400FF4AD5 /* DIMWebpageContent.m in Sources */,
+				E959651B239107C800DAA870 /* DIMImageContent.m in Sources */,
 				E95A80CC22060142007EA611 /* DIMProfileCommand.m in Sources */,
 				E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */,
-				E94D2B4C22B7CC8700FF4AD5 /* DIMAudioContent.m in Sources */,
 				E9BBBD4A223AA13500E6ACDA /* DIMTransceiver.m in Sources */,
 				E91F2B1623014BF600BE05D0 /* DIMMember.m in Sources */,
-				E94D2B4F22B7CC9300FF4AD5 /* DIMTextContent.m in Sources */,
 				E9F3AA7A21CBD03C009690F6 /* DIMCASubject.m in Sources */,
 				E9BBBD47223AA13500E6ACDA /* DIMKeyCache.m in Sources */,
 				E96D1499231F9A2F00B5EA59 /* DIMRobot.m in Sources */,
+				E959651F239107C800DAA870 /* DIMAudioContent.m in Sources */,
+				E959651A239107C800DAA870 /* DIMTextContent.m in Sources */,
 				E9CF981A21FF5BA40092DD8B /* DIMMetaCommand.m in Sources */,
+				E9596518239107C800DAA870 /* DIMVideoContent.m in Sources */,
 				E9FC8E2622B92EE80013FCD3 /* DIMHistoryCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -784,6 +784,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JUVC7SZJE7;
@@ -813,6 +814,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = JUVC7SZJE7;
