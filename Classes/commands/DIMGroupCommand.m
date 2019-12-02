@@ -101,7 +101,7 @@
 
 + (nullable Class)classForGroupCommand:(NSString *)cmd {
     // NOTICE: here combine all group commands into common command pool
-    return [super classForCommand:cmd];
+    return [self classForCommand:cmd];
 }
 
 + (nullable instancetype)getInstance:(id)content {
@@ -131,40 +131,24 @@
 
 @implementation DIMInviteCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(DIMID *)memberID {
-    
-    return [super initWithCommand:DIMGroupCommand_Invite
-                            group:groupID
-                           member:memberID];
+- (instancetype)initWithGroup:(DIMID *)groupID member:(DIMID *)memberID {
+    return [self initWithCommand:DIMGroupCommand_Invite group:groupID member:memberID];
 }
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                      members:(NSArray<DIMID *> *)list {
-    
-    return [super initWithCommand:DIMGroupCommand_Invite
-                            group:groupID
-                          members:list];
+- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+    return [self initWithCommand:DIMGroupCommand_Invite group:groupID members:list];
 }
 
 @end
 
 @implementation DIMExpelCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                       member:(DIMID *)memberID {
-    
-    return [super initWithCommand:DIMGroupCommand_Expel
-                            group:groupID
-                           member:memberID];
+- (instancetype)initWithGroup:(DIMID *)groupID member:(DIMID *)memberID {
+    return [self initWithCommand:DIMGroupCommand_Expel group:groupID member:memberID];
 }
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                      members:(NSArray<DIMID *> *)list {
-    
-    return [super initWithCommand:DIMGroupCommand_Expel
-                            group:groupID
-                          members:list];
+- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+    return [self initWithCommand:DIMGroupCommand_Expel group:groupID members:list];
 }
 
 @end
@@ -172,8 +156,7 @@
 @implementation DIMJoinCommand
 
 - (instancetype)initWithGroup:(DIMID *)groupID {
-    
-    return [super initWithCommand:DIMGroupCommand_Join group:groupID];
+    return [self initWithCommand:DIMGroupCommand_Join group:groupID];
 }
 
 @end
@@ -181,8 +164,7 @@
 @implementation DIMQuitCommand
 
 - (instancetype)initWithGroup:(DIMID *)groupID {
-    
-    return [super initWithCommand:DIMGroupCommand_Quit group:groupID];
+    return [self initWithCommand:DIMGroupCommand_Quit group:groupID];
 }
 
 @end
@@ -191,10 +173,8 @@
 
 @implementation DIMResetGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID
-                      members:(NSArray<DIMID *> *)list {
-    
-    return [super initWithCommand:DIMGroupCommand_Reset group:groupID members:list];
+- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+    return [self initWithCommand:DIMGroupCommand_Reset group:groupID members:list];
 }
 
 @end
@@ -202,8 +182,7 @@
 @implementation DIMQueryGroupCommand
 
 - (instancetype)initWithGroup:(DIMID *)groupID {
-    
-    return [super initWithCommand:DIMGroupCommand_Query group:groupID];
+    return [self initWithCommand:DIMGroupCommand_Query group:groupID];
 }
 
 @end

@@ -259,8 +259,8 @@
 				E9596513239107C800DAA870 /* DIMAudioContent.m */,
 				E9596512239107C800DAA870 /* DIMVideoContent.h */,
 				E959650C239107C800DAA870 /* DIMVideoContent.m */,
-				E9596511239107C800DAA870 /* DIMWebpageContent.m */,
 				E9596517239107C800DAA870 /* DIMWebpageContent.h */,
+				E9596511239107C800DAA870 /* DIMWebpageContent.m */,
 			);
 			path = contents;
 			sourceTree = "<group>";

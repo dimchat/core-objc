@@ -51,6 +51,23 @@
 
 @implementation DIMProfileCommand
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _profile = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _profile = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithID:(DIMID *)ID {
     return [self initWithID:ID meta:nil profile:nil];
 }
@@ -77,15 +94,6 @@
             [_storeDictionary setObject:profile forKey:@"profile"];
         }
         _profile = profile;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _profile = nil;
     }
     return self;
 }

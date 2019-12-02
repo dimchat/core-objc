@@ -48,6 +48,22 @@
 
 @implementation DIMFileContent
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        _attachment = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _attachment = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithFileData:(NSData *)data
                         filename:(nullable NSString *)name {
     NSAssert(data.length > 0, @"file data cannot be empty");

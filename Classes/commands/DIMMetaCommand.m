@@ -46,6 +46,25 @@
 
 @implementation DIMMetaCommand
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _ID = nil;
+        _meta = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _ID = nil;
+        _meta = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithID:(DIMID *)ID {
     return [self initWithID:ID meta:nil];
 }
@@ -64,16 +83,6 @@
             [_storeDictionary setObject:meta forKey:@"meta"];
         }
         _meta = meta;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _ID = nil;
-        _meta = nil;
     }
     return self;
 }
