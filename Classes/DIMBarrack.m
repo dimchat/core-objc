@@ -180,7 +180,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if (user && [self cacheUser:user]) {
         return user;
     }
-    NSAssert(false, @"failed to create user: %@", ID);
+    //NSAssert(false, @"failed to create user: %@", ID);
     return nil;
 }
 
@@ -195,7 +195,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if (group && [self cacheGroup:group]) {
         return group;
     }
-    NSAssert(false, @"failed to create group: %@", ID);
+    //NSAssert(false, @"failed to create group: %@", ID);
     return nil;
 }
 
