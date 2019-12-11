@@ -56,25 +56,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 
 #import <DIMCore/dimMacros.h>
 
-// Group
-#import <DIMCore/DIMPolylogue.h>
-#import <DIMCore/DIMChatroom.h>
-
-// User
-#import <DIMCore/DIMMember.h>
-#import <DIMCore/DIMContact.h>
-#import <DIMCore/DIMRobot.h>
-
-// CA
-#import <DIMCore/DIMCASubject.h>
-#import <DIMCore/DIMCAValidity.h>
-#import <DIMCore/DIMCAData.h>
-#import <DIMCore/DIMCertificateAuthority.h>
-
-// Network
-#import <DIMCore/DIMServiceProvider.h>
-#import <DIMCore/DIMStation.h>
-
 // Content
 #import <DIMCore/DIMTextContent.h>
 #import <DIMCore/DIMFileContent.h>
