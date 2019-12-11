@@ -41,6 +41,11 @@
 #import <MingKeMing/MingKeMing.h>
 
 // Cryptography
+#define DIMEncryptKey                   MKMEncryptKey
+#define DIMDecryptKey                   MKMDecryptKey
+#define DIMSignKey                      MKMSignKey
+#define DIMVerifyKey                    MKMVerifyKey
+
 #define DIMSymmetricKey                 MKMSymmetricKey
 #define DIMPublicKey                    MKMPublicKey
 #define DIMPrivateKey                   MKMPrivateKey
