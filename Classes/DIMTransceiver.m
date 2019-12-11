@@ -50,6 +50,10 @@
 #import "DIMHistoryCommand.h"
 #import "DIMGroupCommand.h"
 
+#import "DIMHandshakeCommand.h"
+#import "DIMMetaCommand.h"
+#import "DIMProfileCommand.h"
+
 #import "DIMBarrack.h"
 #import "DIMKeyCache.h"
 
@@ -58,43 +62,68 @@
 #import "DIMTransceiver.h"
 
 static inline void loadContentClasses(void) {
-    
     // Text
-    [DIMContent registerClass:[DIMTextContent class] forType:DKDContentType_Text];
+    [DIMContent registerClass:[DIMTextContent class]
+                      forType:DKDContentType_Text];
     
     // File
-    [DIMContent registerClass:[DIMFileContent class] forType:DKDContentType_File];
+    [DIMContent registerClass:[DIMFileContent class]
+                      forType:DKDContentType_File];
     // Image
-    [DIMContent registerClass:[DIMImageContent class] forType:DKDContentType_Image];
+    [DIMContent registerClass:[DIMImageContent class]
+                      forType:DKDContentType_Image];
     // Audio
-    [DIMContent registerClass:[DIMAudioContent class] forType:DKDContentType_Audio];
+    [DIMContent registerClass:[DIMAudioContent class]
+                      forType:DKDContentType_Audio];
     // Video
-    [DIMContent registerClass:[DIMVideoContent class] forType:DKDContentType_Video];
+    [DIMContent registerClass:[DIMVideoContent class]
+                      forType:DKDContentType_Video];
     
     // Web Page
-    [DIMContent registerClass:[DIMWebpageContent class] forType:DKDContentType_Page];
+    [DIMContent registerClass:[DIMWebpageContent class]
+                      forType:DKDContentType_Page];
     
     // Command
-    [DIMContent registerClass:[DIMCommand class] forType:DKDContentType_Command];
-    // (Group) History Command
-    [DIMContent registerClass:[DIMHistoryCommand class] forType:DKDContentType_History];
+    [DIMContent registerClass:[DIMCommand class]
+                      forType:DKDContentType_Command];
+    // History Command
+    [DIMContent registerClass:[DIMHistoryCommand class]
+                      forType:DKDContentType_History];
+}
+
+static inline void loadCommandClasses(void) {
+    // handshake
+    [DIMCommand registerClass:[DIMHandshakeCommand class]
+                   forCommand:DIMCommand_Handshake];
+    
+    // meta
+    [DIMCommand registerClass:[DIMMetaCommand class]
+                   forCommand:DIMCommand_Meta];
+    // profile
+    [DIMCommand registerClass:[DIMProfileCommand class]
+                   forCommand:DIMCommand_Profile];
 }
 
 static inline void loadGroupCommandClasses(void) {
-    
     // invite
-    [DIMCommand registerClass:[DIMInviteCommand class] forCommand:DIMGroupCommand_Invite];
+    [DIMGroupCommand registerClass:[DIMInviteCommand class]
+                        forCommand:DIMGroupCommand_Invite];
     // expel
-    [DIMCommand registerClass:[DIMExpelCommand class] forCommand:DIMGroupCommand_Expel];
+    [DIMGroupCommand registerClass:[DIMExpelCommand class]
+                        forCommand:DIMGroupCommand_Expel];
     // join
-    [DIMCommand registerClass:[DIMJoinCommand class] forCommand:DIMGroupCommand_Join];
+    [DIMGroupCommand registerClass:[DIMJoinCommand class]
+                        forCommand:DIMGroupCommand_Join];
     // quit
-    [DIMCommand registerClass:[DIMQuitCommand class] forCommand:DIMGroupCommand_Quit];
+    [DIMGroupCommand registerClass:[DIMQuitCommand class]
+                        forCommand:DIMGroupCommand_Quit];
     
     // reset
-    [DIMCommand registerClass:[DIMResetGroupCommand class] forCommand:DIMGroupCommand_Reset];
+    [DIMGroupCommand registerClass:[DIMResetGroupCommand class]
+                        forCommand:DIMGroupCommand_Reset];
     // query
-    [DIMCommand registerClass:[DIMQueryGroupCommand class] forCommand:DIMGroupCommand_Query];
+    [DIMGroupCommand registerClass:[DIMQueryGroupCommand class]
+                        forCommand:DIMGroupCommand_Query];
 }
 
 static inline BOOL isBroadcast(DIMMessage *msg,
@@ -122,8 +151,10 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         _barrack = nil;
         _keyCache = nil;
         
-        // register all content classes
+        // register content classes
         loadContentClasses();
+        // register commands
+        loadCommandClasses();
         // register group command classes
         loadGroupCommandClasses();
     }

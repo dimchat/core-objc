@@ -37,10 +37,6 @@
 
 #import "NSObject+Singleton.h"
 
-#import "DIMHandshakeCommand.h"
-#import "DIMMetaCommand.h"
-#import "DIMProfileCommand.h"
-
 #import "DIMCommand.h"
 
 @interface DIMCommand ()
@@ -101,12 +97,7 @@ static NSMutableDictionary<NSString *, Class> *command_classes(void) {
     static NSMutableDictionary<NSString *, Class> *classes = nil;
     SingletonDispatchOnce(^{
         classes = [[NSMutableDictionary alloc] init];
-        // handshake
-        [classes setObject:[DIMHandshakeCommand class] forKey:DIMCommand_Handshake];
-        // meta
-        [classes setObject:[DIMMetaCommand class] forKey:DIMCommand_Meta];
-        // profile
-        [classes setObject:[DIMProfileCommand class] forKey:DIMCommand_Profile];
+        //...
     });
     return classes;
 }
