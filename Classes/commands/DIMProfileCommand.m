@@ -72,6 +72,14 @@
     return [self initWithID:ID meta:nil profile:nil];
 }
 
+- (instancetype)initWithID:(MKMID *)ID signature:(NSString *)signature {
+    if (self = [self initWithID:ID meta:nil profile:nil]) {
+        // query with current profile signature
+        [self setSignature:signature];
+    }
+    return self;
+}
+
 - (instancetype)initWithID:(DIMID *)ID profile:(DIMProfile *)profile {
     return [self initWithID:ID meta:nil profile:profile];
 }
@@ -150,6 +158,18 @@
     }
     _profile = p;
     return _profile;
+}
+
+- (nullable NSString *)signature {
+    return [_storeDictionary objectForKey:@"signature"];
+}
+
+- (void)setSignature:(NSString *)signature {
+    if (signature.length == 0) {
+        [_storeDictionary removeObjectForKey:@"signature"];
+    } else {
+        [_storeDictionary setObject:signature forKey:@"signature"];
+    }
 }
 
 @end

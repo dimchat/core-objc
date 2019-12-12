@@ -43,6 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic, nullable) DIMProfile *profile;
 
+// current signature string for querying profile,
+// if this matched, the station will respond 304 (Not Modified)
+@property (strong, nonatomic, nullable) NSString *signature;
+
 /*
  *  Command message: {
  *      type : 0x88,
@@ -61,8 +65,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithID:(DIMID *)ID
                    profile:(DIMProfile *)profile;
 
-// query command
+// query profile
 - (instancetype)initWithID:(DIMID *)ID;
+
+// query profile for updating with current signature
+- (instancetype)initWithID:(MKMID *)ID signature:(NSString *)signature;
 
 @end
 
