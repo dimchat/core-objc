@@ -24,7 +24,6 @@ Facebook.h/m
 #define DIMProfileForID(ID)      [[DIMFacebook sharedInstance] profileForID:(ID)]
 
 #define DIMIDWithString(ID)      [[DIMFacebook sharedInstance] IDWithString:(ID)]
-#define DIMAccountWithID(ID)     [[DIMFacebook sharedInstance] accountWithID:(ID)]
 #define DIMUserWithID(ID)        [[DIMFacebook sharedInstance] userWithID:(ID)]
 #define DIMGroupWithID(ID)       [[DIMFacebook sharedInstance] groupWithID:(ID)]
 
@@ -67,7 +66,7 @@ SingletonImplementations(DIMFacebook, sharedInstance)
 }
 
 - (BOOL)saveMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    if (![self cacheMeta:meta forID:ID]) {
+    if (![meta matchID:ID]) {
         NSAssert(false, @"meta not match ID: %@ -> %@", ID, meta);
         return NO;
     }
@@ -87,9 +86,6 @@ SingletonImplementations(DIMFacebook, sharedInstance)
 - (BOOL)verifyProfile:(DIMProfile *)profile {
     if (!profile) {
         return NO;
-    } else if ([profile isValid]) {
-        // already verified
-        return YES;
     }
     DIMID *ID = profile.ID;
     NSAssert([ID isValid], @"Invalid ID: %@", ID);
@@ -106,59 +102,63 @@ SingletonImplementations(DIMFacebook, sharedInstance)
     return [profile verify:meta.key];
 }
 
-#pragma mark - DIMSocialNetworkDataSource
+#pragma mark DIMBarrack
 
-- (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
-    DIMUser *user = [super userWithID:ID];
-    if (user) {
-        return user;
+- (nullable DIMID *)createID:(NSString *)string {
+    // try ANS record
+    DIMID *ID = [self ansGet:string];
+    if (ID) {
+        return ID;
     }
-    // check meta and private key
-    DIMMeta *meta = DIMMetaForID(ID);
-    if (!meta) {
-        NSLog(@"meta key not found: %@", ID);
-        return nil;
-    }
-    if (MKMNetwork_IsPerson(ID.type)) {
-        DIMPrivateKey *key = [self privateKeyForSignatureOfUser:ID];
-        if (!key) {
-            user = [[DIMContact alloc] initWithID:ID];
-        } else {
-            user = [[DIMLocalUser alloc] initWithID:ID];
-        }
-    } else if (MKMNetwork_IsStation(ID.type)) {
-        // FIXME: make sure the station not been erased from the memory cache
-        user = [[DIMServer alloc] initWithID:ID];
-    } else {
-        // TODO: implements other types
-        NSAssert(false, @"user type not support: %@", ID);
-    }
-    [self cacheUser:user];
-    return user;
+    // create by Barrack
+    return [super createID:string];
 }
 
-- (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
-    DIMGroup *group = [super groupWithID:ID];
-    if (group) {
-        return group;
+- (nullable DIMUser *)createUser:(DIMID *)ID {
+    if ([ID isBroadcast]) {
+        // create user 'anyone@anywhere'
+        return [[DIMUser alloc] initWithID:ID];
     }
-    // check meta
-    DIMMeta *meta = DIMMetaForID(ID);
-    if (!meta) {
-        NSLog(@"meta not found: %@", ID);
+    if (![self metaForID:ID]) {
+        //NSAssert(false, @"failed to get meta for user: %@", ID);
         return nil;
     }
-    // create it with type
-    if (ID.type == MKMNetwork_Polylogue) {
-        group = [[DIMPolylogue alloc] initWithID:ID];
-    } else if (ID.type == MKMNetwork_Chatroom) {
-        group = [[DIMChatroom alloc] initWithID:ID];
-    } else {
-        // TODO: implements other types
-        NSAssert(false, @"group type not support: %@", ID);
+    MKMNetworkType type = ID.type;
+    if (MKMNetwork_IsPerson(type)) {
+        return [[DIMUser alloc] initWithID:ID];
     }
-    [self cacheGroup:group];
-    return group;
+    if (MKMNetwork_IsRobot(type)) {
+        return [[DIMRobot alloc] initWithID:ID];
+    }
+    if (MKMNetwork_IsStation(type)) {
+        return [[DIMStation alloc] initWithID:ID];
+    }
+    NSAssert(false, @"Unsupported user type: %d", type);
+    return nil;
+}
+
+- (nullable DIMGroup *)createGroup:(DIMID *)ID {
+    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
+    if ([ID isBroadcast]) {
+        // create group 'everyone@everywhere'
+        return [[DIMGroup alloc] initWithID:ID];
+    }
+    if (![self metaForID:ID]) {
+        //NSAssert(false, @"failed to get meta for group: %@", ID);
+        return nil;
+    }
+    MKMNetworkType type = ID.type;
+    if (type == MKMNetwork_Polylogue) {
+        return [[DIMPolylogue alloc] initWithID:ID];
+    }
+    if (type == MKMNetwork_Chatroom) {
+        return [[DIMChatroom alloc] initWithID:ID];
+    }
+    if (MKMNetwork_IsProvider(type)) {
+        return [[DIMServiceProvider alloc] initWithID:ID];
+    }
+    NSAssert(false, @"Unsupported group type: %d", type);
+    return nil;
 }
 
 @end
@@ -195,9 +195,27 @@ SingletonImplementations(DIMKeyStore, sharedInstance)
 Messanger.h/m
 
 ```objective-c
-@interface DIMMessanger : DIMTransceiver
+@interface DIMMessanger : DIMTransceiver <DIMConnectionDelegate>
+
+@property (weak, nonatomic) id<DIMMessengerDelegate> delegate;
 
 + (instancetype)sharedInstance;
+
+@end
+
+@interface DIMMessenger (Send)
+
+/**
+ *  Send instant message (encrypt and sign) onto DIM network
+ *
+ *  @param iMsg - instant message
+ *  @param callback - callback function
+ *  @param split - if it's a group message, split it before sending out
+ *  @return NO on data/delegate error
+ */
+- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
+                  callback:(nullable DIMMessengerCallback)callback
+               dispersedly:(BOOL)split;
 
 @end
 ```
@@ -209,14 +227,167 @@ SingletonImplementations(DIMMessanger, sharedInstance)
 
 - (instancetype)init {
     if (self = [super init]) {
-        // register all content classes
-        [DIMContent loadContentClasses];
-        
         // delegates
         _barrack = [DIMFacebook sharedInstance];
         _keyCache = [DIMKeyStore sharedInstance];
     }
     return self;
+}
+
+#pragma mark DKDInstantMessageDelegate
+
+- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+              encryptContent:(DIMContent *)content
+                     withKey:(NSDictionary *)password {
+    DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
+    NSAssert(key == password, @"irregular symmetric key: %@", password);
+    // check attachment for File/Image/Audio/Video message content
+    if ([content isKindOfClass:[DIMFileContent class]]) {
+        DIMFileContent *file = (DIMFileContent *)content;
+        NSAssert(file.fileData != nil, @"content.fileData should not be empty");
+        NSAssert(file.URL == nil, @"content.URL exists, already uploaded?");
+        // encrypt and upload file data onto CDN and save the URL in message content
+        NSData *CT = [key encrypt:file.fileData];
+        NSURL *url = [_delegate uploadEncryptedFileData:CT forMessage:iMsg];
+        if (url) {
+            // replace 'data' with 'URL'
+            file.URL = url;
+            file.fileData = nil;
+        }
+        //[iMsg setObject:file forKey:@"content"];
+    }
+    return [super message:iMsg encryptContent:content withKey:key];
+}
+
+#pragma mark DKDSecureMessageDelegate
+
+- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
+                  decryptContent:(NSData *)data
+                         withKey:(NSDictionary *)password {
+    DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
+    NSAssert(key == password, @"irregular symmetric key: %@", password);
+    DIMContent *content = [super message:sMsg decryptContent:data withKey:key];
+    if (!content) {
+        return nil;
+    }
+    // check attachment for File/Image/Audio/Video message content
+    if ([content isKindOfClass:[DIMFileContent class]]) {
+        DIMFileContent *file = (DIMFileContent *)content;
+        NSAssert(file.URL != nil, @"content.URL should not be empty");
+        NSAssert(file.fileData == nil, @"content.fileData already download");
+        DIMInstantMessage *iMsg;
+        iMsg = [[DIMInstantMessage alloc] initWithContent:content
+                                                 envelope:sMsg.envelope];
+        // download from CDN
+        NSData *fileData = [_delegate downloadEncryptedFileData:file.URL
+                                                     forMessage:iMsg];
+        if (fileData) {
+            // decrypt file data
+            file.fileData = [key decrypt:fileData];
+            file.URL = nil;
+        } else {
+            // save the symmetric key for decrypte file data later
+            file.password = key;
+        }
+        //content = file;
+    }
+    return content;
+}
+
+#pragma mark DIMConnectionDelegate
+
+- (nullable NSData *)onReceivePackage:(NSData *)data {
+    DIMReliableMessage *rMsg = [self deserializeMessage:data];
+    DIMContent *res = [self processMessage:rMsg];
+    if (!res) {
+        // nothing to response
+        return nil;
+    }
+    DIMUser *user = [self currentUser];
+    NSAssert(user, @"failed to get current user");
+    DIMID *receiver = [_facebook IDWithString:rMsg.envelope.sender];
+    DIMInstantMessage *iMsg;
+    iMsg = [[DIMInstantMessage alloc] initWithContent:res
+                                               sender:user.ID
+                                             receiver:receiver
+                                                 time:nil];
+    DIMSecureMessage *sMsg = [self encryptMessage:iMsg];
+    NSAssert(sMsg, @"failed to encrypt message: %@", iMsg);
+    DIMReliableMessage *nMsg = [self signMessage:sMsg];
+    NSAssert(nMsg, @"failed to sign message: %@", sMsg);
+    return [self serializeMessage:nMsg];
+}
+
+- (nullable DIMContent *)processMessage:(DIMReliableMessage *)rMsg {
+    // TODO: try to verify/decrypt message and process it
+    return nil;
+}
+
+@end
+
+@implementation DIMMessenger (Send)
+
+- (BOOL)sendInstantMessage:(DIMInstantMessage *)iMsg
+                  callback:(nullable DIMMessengerCallback)callback
+               dispersedly:(BOOL)split {
+    // Send message (secured + certified) to target station
+    DIMSecureMessage *sMsg = [self encryptMessage:iMsg];
+    DIMReliableMessage *rMsg = [self signMessage:sMsg];
+    if (!rMsg) {
+        NSAssert(false, @"failed to encrypt and sign message: %@", iMsg);
+        iMsg.content.state = DIMMessageState_Error;
+        iMsg.content.error = @"Encryption failed.";
+        return NO;
+    }
+    
+    DIMID *receiver = [self.facebook IDWithString:iMsg.envelope.receiver];
+    BOOL OK = YES;
+    if (split && MKMNetwork_IsGroup(receiver.type)) {
+        NSAssert([receiver isEqual:iMsg.content.group], @"error: %@", iMsg);
+        // split for each members
+        NSArray<DIMID *> *members = [self.facebook membersOfGroup:receiver];
+        NSAssert([members count] > 0, @"group members empty: %@", receiver);
+        NSArray *messages = [rMsg splitForMembers:members];
+        if ([members count] == 0) {
+            NSLog(@"failed to split msg, send it to group: %@", receiver);
+            OK = [self sendReliableMessage:rMsg callback:callback];
+        } else {
+            for (DIMReliableMessage *item in messages) {
+                if (![self sendReliableMessage:item callback:callback]) {
+                    OK = NO;
+                }
+            }
+        }
+    } else {
+        OK = [self sendReliableMessage:rMsg callback:callback];
+    }
+    
+    // sending status
+    if (OK) {
+        iMsg.content.state = DIMMessageState_Sending;
+    } else {
+        NSLog(@"cannot send message now, put in waiting queue: %@", iMsg);
+        iMsg.content.state = DIMMessageState_Waiting;
+    }
+    if (![self saveMessage:iMsg]) {
+        return NO;
+    }
+    return OK;
+}
+
+- (BOOL)sendReliableMessage:(DIMReliableMessage *)rMsg
+                   callback:(nullable DIMMessengerCallback)callback {
+    NSData *data = [self serializeMessage:rMsg];
+    if (data) {
+        NSAssert(_delegate, @"transceiver delegate not set");
+        return [_delegate sendPackage:data
+                    completionHandler:^(NSError * _Nullable error) {
+                        !callback ?: callback(rMsg, error);
+                    }];
+    } else {
+        NSAssert(false, @"message data error: %@", rMsg);
+        return NO;
+    }
 }
 
 @end
@@ -252,26 +423,46 @@ Send.m
 
 ```c
 static inline DIMReliableMessage *pack(DIMContent *content, DIMID *sender, DIMID *receiver) {
+    // 1. create InstantMessage
     DIMInstantMessasge *iMsg = DKDInstantMessageCreate(content, sender, receiver, nil);
-    return [messanger encryptAndSignMessage:iMsg];
+    
+    // 2. encrypt 'content' to 'data' for receiver
+    DIMSecureMessage *sMsg = [messenger encryptMessage:iMsg];
+    
+    // 3. sign 'data' by sender
+    DIMReliableMessage *rMsg = [messenger signMessage:sMsg];
+    
+    // OK
+    return rMsg;
 }
 
 static inline void send(DIMContent *content, DIMID *sender, DIMID *receiver) {
-    DIMInstantMessasge *iMsg = DKDInstantMessageCreate(content, sender, receiver, nil);
-    // callback
-    DIMTransceiverCallback callback;
-    callback = ^(DKDReliableMessage *rMsg, NSError *error) {
+    // 1. pack message
+    DIMReliableMessage *rMsg = pack(content, sender, receiver);
+    
+    // 2. callback handler
+    DIMMessengerCallback callback;
+    callback = ^(DIMReliableMessage *rMsg, NSError *error) {
+        NSString *name = nil;
         if (error) {
             NSLog(@"send message error: %@", error);
-            //iMsg.state = DIMMessageState_Error;
-            //iMsg.error = [error localizedDescription];
+            name = kNotificationName_SendMessageFailed;
+            content.state = DIMMessageState_Error;
+            content.error = [error localizedDescription];
         } else {
-            NSLog(@"sent message: %@ -> %@", iMsg, rMsg);
-            //iMsg.state = DIMMessageState_Accepted;
+            NSLog(@"sent message: %@ -> %@", content, rMsg);
+            name = kNotificationName_MessageSent;
+            content.state = DIMMessageState_Accepted;
         }
+        
+        NSDictionary *info = @{@"content": content};
+        [NSNotificationCenter postNotificationName:name
+                                            object:self
+                                          userInfo:info];
     };
-    // send out
-    [messanger sendInstantMessage:iMsg callback:callback dispersedly:YES];
+    
+    // 3. encode and send out
+    return [messenger sendReliableMessage:rMsg callback:callback];
 }
 
 void test() {
@@ -286,13 +477,32 @@ void test() {
 Receive.m
 
 ```objective-c
+static inline DIMContent *unpack(DIMReliableMessage *rMsg) {
+    // 1. verify 'data' with 'signature'
+    DIMSecureMessage *sMsg = [messenger verifyMessage:rMsg];
+    
+    // 2. check group message
+    DIMID *receiver = [barrack IDWithString:sMsg.envelope.receiver];
+    if (MKMNetwork_IsGroup(receiver.type)) {
+        // TODO: split it
+    }
+    
+    // 3. decrypt 'data' to 'content'
+    DIMInstantMessage *iMsg = [messenger decryptMessage:sMsg];
+    
+    // OK
+    return iMsg.content;
+}
+
 #pragma mark DIMStationDelegate
 
 - (void)station:(DIMStation *)server didReceivePackage:(NSData *)data {
-    // decode to reliable message
-    NSDictionary *dict = [data jsonDictionary];
-    DIMReliableMessage *rMsg = DKDReliableMessageFromDictionary(dict);
-    DIMInstantMessage *iMsg = [messanger verifyAndDecryptMessage:rMsg];
+    // 1. decode message package
+    DIMReliableMessage *rMsg = [self deserializeMessage:data];
+    
+    // 2. verify and decrypt message
+    DIMContent *content = unpack(rMsg);
+    
     // TODO: process message content
 }
 ```

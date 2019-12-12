@@ -120,12 +120,12 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return YES;
 }
 
-- (DIMID *)createID:(NSString *)string {
+- (nullable DIMID *)createID:(NSString *)string {
     NSAssert(string, @"ID error");
     return MKMIDFromString(string);
 }
 
-- (DIMUser *)createUser:(DIMID *)ID {
+- (nullable DIMUser *)createUser:(DIMID *)ID {
     NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
     if ([ID isBroadcast]) {
         // create user 'anyone@anywhere'
@@ -136,7 +136,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return [[DIMUser alloc] initWithID:ID];
 }
 
-- (DIMGroup *)createGroup:(DIMID *)ID {
+- (nullable DIMGroup *)createGroup:(DIMID *)ID {
     NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
     if ([ID isBroadcast]) {
         // create group 'everyone@everywhere'
@@ -147,7 +147,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return [[DIMGroup alloc] initWithID:ID];
 }
 
-#pragma mark - DIMSocialNetworkDataSource
+#pragma mark - DIMEntityDelegate
 
 - (nullable DIMID *)IDWithString:(NSString *)string {
     if (!string) {

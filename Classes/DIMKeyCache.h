@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMCipherKeyDataSource <NSObject>
+@protocol DIMCipherKeyDelegate <NSObject>
 
 /**
  *  Get cipher key for encrypt message from 'sender' to 'receiver'
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Cache for Cipher Key with direction: <from, to>
  */
-@interface DIMKeyCache : NSObject <DIMCipherKeyDataSource>
+@interface DIMKeyCache : NSObject <DIMCipherKeyDelegate>
 
 /**
  *  Trigger for saving cipher key map

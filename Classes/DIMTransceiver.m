@@ -35,6 +35,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "NSObject+Singleton.h"
 #import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
 #import "NSString+Crypto.h"
@@ -127,7 +128,7 @@ static inline void loadGroupCommandClasses(void) {
 }
 
 static inline BOOL isBroadcast(DIMMessage *msg,
-                               id<DIMSocialNetworkDataSource> barrack) {
+                               id<DIMEntityDelegate> barrack) {
     NSString *receiver;
     if ([msg isKindOfClass:[DIMInstantMessage class]]) {
         DIMInstantMessage *iMsg = (DIMInstantMessage *)msg;
@@ -151,12 +152,15 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         _barrack = nil;
         _keyCache = nil;
         
-        // register content classes
-        loadContentClasses();
-        // register commands
-        loadCommandClasses();
-        // register group command classes
-        loadGroupCommandClasses();
+        // register all command/contant classes
+        SingletonDispatchOnce(^{
+            // register content classes
+            loadContentClasses();
+            // register commands
+            loadCommandClasses();
+            // register group command classes
+            loadGroupCommandClasses();
+        });
     }
     return self;
 }

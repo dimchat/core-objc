@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMSocialNetworkDataSource <DIMEntityDataSource>
+@protocol DIMEntityDelegate <NSObject>
 
 /**
  *  Create ID with string
@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
  */
-@interface DIMBarrack : NSObject <DIMSocialNetworkDataSource,
+@interface DIMBarrack : NSObject <DIMEntityDelegate,
                                   DIMUserDataSource,
                                   DIMGroupDataSource>
 
@@ -82,9 +82,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)cacheUser:(DIMUser *)user;
 - (BOOL)cacheGroup:(DIMGroup *)group;
 
-- (DIMID *)createID:(NSString *)string;
-- (DIMUser *)createUser:(DIMID *)ID;
-- (DIMGroup *)createGroup:(DIMID *)ID;
+- (nullable DIMID *)createID:(NSString *)string;
+- (nullable DIMUser *)createUser:(DIMID *)ID;
+- (nullable DIMGroup *)createGroup:(DIMID *)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',

@@ -39,15 +39,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMSocialNetworkDataSource;
-@protocol DIMCipherKeyDataSource;
+@protocol DIMEntityDelegate;
+@protocol DIMCipherKeyDelegate;
 
 @interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
                                       DIMSecureMessageDelegate,
                                       DIMReliableMessageDelegate>
 
-@property (weak, nonatomic) id<DIMSocialNetworkDataSource> barrack;
-@property (weak, nonatomic) id<DIMCipherKeyDataSource> keyCache;
+@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
 
 @end
 
