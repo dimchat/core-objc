@@ -39,7 +39,6 @@
 
 @interface DIMMetaCommand ()
 
-@property (strong, nonatomic) NSString *ID;
 @property (strong, nonatomic, nullable) DIMMeta *meta;
 
 @end
@@ -50,7 +49,6 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _ID = nil;
         _meta = nil;
     }
     return self;
@@ -59,7 +57,6 @@
 /* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
-        _ID = nil;
         _meta = nil;
     }
     return self;
@@ -76,7 +73,6 @@
         if (ID) {
             [_storeDictionary setObject:ID forKey:@"ID"];
         }
-        _ID = ID;
         
         // meta
         if (meta) {
@@ -90,31 +86,20 @@
 - (id)copyWithZone:(NSZone *)zone {
     DIMMetaCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
-        cmd.ID = _ID;
         cmd.meta = _meta;
     }
     return cmd;
 }
 
 - (NSString *)ID {
-    if (!_ID) {
-        _ID = [_storeDictionary objectForKey:@"ID"];
-    }
-    return _ID;
+    return [_storeDictionary objectForKey:@"ID"];
 }
 
 - (nullable DIMMeta *)meta {
-    if (_meta) {
-        return _meta;
+    if (!_meta) {
+        NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
+        _meta = MKMMetaFromDictionary(dict);
     }
-    NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
-    DIMMeta *m = MKMMetaFromDictionary(dict);
-    if (m != dict) {
-        // replace the meta object
-        NSAssert([m isKindOfClass:[DIMMeta class]], @"meta error: %@", dict);
-        [_storeDictionary setObject:m forKey:@"meta"];
-    }
-    _meta = m;
     return _meta;
 }
 

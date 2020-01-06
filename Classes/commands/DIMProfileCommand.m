@@ -74,8 +74,9 @@
 
 - (instancetype)initWithID:(MKMID *)ID signature:(NSString *)signature {
     if (self = [self initWithID:ID meta:nil profile:nil]) {
-        // query with current profile signature
-        [self setSignature:signature];
+        if (signature) {
+            [_storeDictionary setObject:signature forKey:@"signature"];
+        }
     }
     return self;
 }
@@ -115,61 +116,41 @@
 }
 
 - (nullable DIMProfile *)profile {
-    if (_profile) {
-        return _profile;
+    if (!_profile) {
+        NSObject *data = [_storeDictionary objectForKey:@"profile"];
+        if ([data isKindOfClass:[NSString class]]) {
+            // compatible with v1.0
+            //    "ID"        : "{ID}",
+            //    "profile"   : "{JsON}",
+            //    "signature" : "{BASE64}"
+            NSString *ID = self.ID;
+            NSString *signature = [_storeDictionary objectForKey:@"signature"];
+            if (!ID || !signature) {
+                NSAssert(false, @"profile ID & signature should not be empty: %@", _storeDictionary);
+                return nil;
+            }
+            NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
+            [mDict setObject:ID forKey:@"ID"];
+            [mDict setObject:data forKey:@"data"];
+            [mDict setObject:signature forKey:@"signature"];
+            data = mDict;
+        } else {
+            // (v1.1)
+            //    "ID"      : "{ID}",
+            //    "profile" : {
+            //        "ID"        : "{ID}",
+            //        "data"      : "{JsON}",
+            //        "signature" : "{BASE64}"
+            //    }
+            NSAssert(!data || [data isKindOfClass:[NSDictionary class]], @"profile data error: %@", data);
+        }
+        _profile = MKMProfileFromDictionary(data);
     }
-    DIMProfile *p = nil;
-    NSObject *data = [_storeDictionary objectForKey:@"profile"];
-    if ([data isKindOfClass:[NSDictionary class]]) {
-        // (v1.1)
-        //  'ID'      : '{ID}',
-        //  'profile' : {
-        //      "ID"        : "{ID}",
-        //      "data"      : "{JsON}",
-        //      "signature" : "{BASE64}"
-        //  }
-        p = MKMProfileFromDictionary(data);
-        if (![p.ID isEqual:self.ID]) {
-            NSAssert(false, @"profile error: %@", self);
-            return nil;
-        }
-        
-        if (p != data) {
-            // replace the profile object
-            NSAssert([p isKindOfClass:[DIMProfile class]], @"profile error: %@", data);
-            [_storeDictionary setObject:p forKey:@"profile"];
-        }
-    } else if ([data isKindOfClass:[NSString class]]) {
-        NSString *ID = self.ID;
-        NSString *signature = [_storeDictionary objectForKey:@"signature"];
-        if (!ID || [signature length] == 0) {
-            NSAssert(false, @"profile ID/signature error: %@", self);
-            return nil;
-        }
-        // (v1.0)
-        //  'ID'        : '{ID}',
-        //  'profile'   : '{JsON}',
-        //  'signature' : '{BASE64}'
-        NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
-        [mDict setObject:ID forKey:@"ID"];
-        [mDict setObject:data forKey:@"data"];
-        [mDict setObject:signature forKey:@"signature"];
-        p = MKMProfileFromDictionary(mDict);
-    }
-    _profile = p;
     return _profile;
 }
 
 - (nullable NSString *)signature {
     return [_storeDictionary objectForKey:@"signature"];
-}
-
-- (void)setSignature:(NSString *)signature {
-    if (signature.length == 0) {
-        [_storeDictionary removeObjectForKey:@"signature"];
-    } else {
-        [_storeDictionary setObject:signature forKey:@"signature"];
-    }
 }
 
 @end

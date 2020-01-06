@@ -121,7 +121,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable DIMID *)createID:(NSString *)string {
-    NSAssert(string, @"ID error");
+    NSAssert(string, @"ID string should not be empty");
     return MKMIDFromString(string);
 }
 

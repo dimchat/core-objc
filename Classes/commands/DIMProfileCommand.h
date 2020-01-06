@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // current signature string for querying profile,
 // if this matched, the station will respond 304 (Not Modified)
-@property (strong, nonatomic, nullable) NSString *signature;
+@property (readonly, strong, nonatomic, nullable) NSString *signature;
 
 /*
  *  Command message: {

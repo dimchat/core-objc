@@ -171,7 +171,6 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 - (nullable DIMSymmetricKey *)_cipherKeyFrom:(DIMID *)sender
                                           to:(DIMID *)receiver {
-    NSAssert(MKMNetwork_IsUser(sender.type), @"sender error: %@", sender);
     KeyTable *keyTable = [_keyMap objectForKey:sender];
     return [keyTable objectForKey:receiver];
 }
@@ -179,11 +178,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 - (void)_cacheCipherKey:(DIMSymmetricKey *)key
                    from:(DIMID *)sender
                      to:(DIMID *)receiver {
-    NSAssert(MKMNetwork_IsUser(sender.type), @"sender error: %@", sender);
-    if (!key) {
-        NSAssert(false, @"cipher key cannot be empty");
-        return ;
-    }
+    NSAssert(key, @"cipher key cannot be empty");
     KeyTable *keyTable = [_keyMap objectForKey:sender];
     if (!keyTable) {
         keyTable = [[KeyTable alloc] init];

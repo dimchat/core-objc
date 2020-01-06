@@ -170,9 +170,8 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
               encryptContent:(DIMContent *)content
                      withKey:(NSDictionary *)password {
-    
     DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
-    NSAssert(key == password, @"irregular symmetric key: %@", password);
+    NSAssert(key && key == password, @"irregular symmetric key: %@", password);
     // encrypt it with password
     NSData *data = [self message:iMsg serializeContent:content];
     return [key encrypt:data];
@@ -203,16 +202,13 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMUser *contact = [_barrack userWithID:ID];
-    NSAssert(contact, @"failed to encrypt key for receiver: %@", receiver);
+    NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
     return [contact encrypt:data];
 }
 
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                      encodeKey:(NSData *)data {
-    if (isBroadcast(iMsg, _barrack)) {
-        NSAssert(false, @"broadcast message has no key");
-        return nil;
-    }
+    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
     return [data base64Encode];
 }
 
@@ -220,10 +216,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                    decodeKey:(NSObject *)dataString {
-    if (isBroadcast(sMsg, _barrack)) {
-        NSAssert(false, @"broadcast message has no key");
-        return nil;
-    }
+    NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
     return [(NSString *)dataString base64Decode];
 }
 
@@ -231,7 +224,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                         decryptKey:(nullable NSData *)key
                               from:(NSString *)sender
                                 to:(NSString *)receiver {
-    NSAssert(!isBroadcast(sMsg, _barrack) || !key, @"broadcast message has no key");
+    NSAssert(!isBroadcast(sMsg, _barrack) || !key, @"broadcast message has no key: %@", sMsg);
     DIMID *from = [_barrack IDWithString:sender];
     DIMID *to = [_barrack IDWithString:receiver];
     
@@ -240,7 +233,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         // decrypt key data with the receiver/group member's private key
         DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
         DIMUser *user = [_barrack userWithID:ID];
-        NSAssert(user, @"failed to create user: %@, %@", receiver, ID);
+        NSAssert(user, @"failed to get decrypt keys: %@", ID);
         NSData *plaintext = [user decrypt:key];
         if (plaintext.length == 0) {
             NSAssert(false, @"failed to decrypt key: %@", sMsg);
@@ -279,7 +272,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     // decrypt message.data
     NSData *plaintext = [key decrypt:data];
     if (plaintext.length == 0) {
-        NSAssert(false, @"failed to decrypt data: %@, key: %@", data, password);
+        //NSAssert(false, @"failed to decrypt data: %@, key: %@", data, password);
         return nil;
     }
     DIMContent *content = [self message:sMsg deserializeContent:plaintext];
@@ -295,7 +288,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
                    forSender:(NSString *)sender {
     DIMID *ID = [_barrack IDWithString:sender];
     DIMUser *user = [_barrack userWithID:ID];
-    NSAssert(user, @"failed to sign with sender: %@", sender);
+    NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
 
@@ -317,7 +310,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
       forSender:(NSString *)sender {
     DIMID *ID = [_barrack IDWithString:sender];
     DIMUser *user = [_barrack userWithID:ID];
-    NSAssert(user, @"failed to verify with sender: %@", sender);
+    NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }
 
@@ -329,17 +322,14 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
             serializeContent:(DIMContent *)content {
+    NSAssert(content == iMsg.content, @"message content not match: %@", content);
     NSString *json = [content jsonString];
     return [json data];
 }
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                 serializeKey:(DIMSymmetricKey *)password {
-    if (isBroadcast(iMsg, _barrack)) {
-        // broadcast message has no key
-        NSAssert(false, @"should not call this");
-        return nil;
-    }
+    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
     NSString *json = [password jsonString];
     return [json data];
 }
@@ -367,6 +357,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 
 - (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
                        deserializeKey:(NSData *)data {
+    NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
     NSDictionary *dict = [data jsonDictionary];
     // TODO: translate short keys
     //       'A' -> 'algorithm'
@@ -444,7 +435,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
     } else {
         // personal message (or split group message)
-        NSAssert(MKMNetwork_IsUser(receiver.type), @"error ID: %@", receiver);
+        NSAssert(MKMNetwork_IsUser(receiver.type), @"receiver ID error: %@", receiver);
         sMsg = [iMsg encryptWithKey:password];
     }
     
@@ -456,7 +447,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
     }
-    NSAssert(sMsg.data, @"data cannot be empty");
+    NSAssert(sMsg.data, @"message data cannot be empty");
     // sign 'data' by sender
     return [sMsg sign];
 }
@@ -471,7 +462,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (rMsg.delegate == nil) {
         rMsg.delegate = self;
     }
-    NSAssert(rMsg.signature, @"signature cannot be empty");
+    NSAssert(rMsg.signature, @"message signature cannot be empty");
     // verify 'data' with 'signature'
     return [rMsg verify];
 }
@@ -486,7 +477,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
     }
-    NSAssert(sMsg.data, @"data cannot be empty");
+    NSAssert(sMsg.data, @"message data cannot be empty");
     // decrypt 'data' to 'content'
     return [sMsg decrypt];
     
