@@ -241,14 +241,8 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         }
         // deserialize it to symmetric key
         PW = [self message:sMsg deserializeKey:plaintext];
-        NSAssert(PW, @"key data error: %@", plaintext);
-        // cache the new key in key store
-        [_keyCache cacheCipherKey:PW from:from to:to];
-        //NSLog(@"got key from %@ to %@", sender, receiver);
-    } else {
-        // if key data is empty, get it from key store
-        PW = [_keyCache cipherKeyFrom:from to:to];
     }
+    PW = [_keyCache reuseCipherKey:PW from:from to:to];
     NSAssert(PW, @"failed to get password from %@ to %@", sender, receiver);
     return PW;
 }
@@ -385,25 +379,15 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 @implementation DIMTransceiver (Transform)
 
 - (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
-    // 1. get old key from store
-    DIMSymmetricKey *reusedKey;
-    reusedKey = [_keyCache cipherKeyFrom:sender to:receiver];
-    // 2. get new key from delegate
-    DIMSymmetricKey *newKey;
-    newKey = [_keyCache reuseCipherKey:reusedKey from:sender to:receiver];
-    if (!newKey) {
-        if (!reusedKey) {
-            // 3. create a new key
-            newKey = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
-        } else {
-            newKey = reusedKey;
-        }
+    // get old key from store
+    DIMSymmetricKey *key = [_keyCache cipherKeyFrom:sender to:receiver];
+    if (!key) {
+        // create new key and cache it
+        key = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
+        NSAssert(key, @"failed to generate AES key");
+        [_keyCache cacheCipherKey:key from:sender to:receiver];
     }
-    // 4. update new key into the key store
-    if (![newKey isEqual:reusedKey]) {
-        [_keyCache cacheCipherKey:newKey from:sender to:receiver];
-    }
-    return newKey;
+    return key;
 }
 
 - (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg {

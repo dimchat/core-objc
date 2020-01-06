@@ -110,7 +110,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
         _keyMap = [[KeyMap alloc] init];
         
         // load keys from local storage
-        [self updateKeys];
+        [self reload];
         
         _dirty = NO;
     }
@@ -118,7 +118,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 }
 
 - (void)flush {
-    if (!_dirty || !_keyMap) {
+    if (!_dirty) {
         // nothing changed
         return ;
     }
@@ -138,7 +138,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     return nil;
 }
 
-- (BOOL)updateKeys {
+- (BOOL)reload {
     NSDictionary *keys = [self loadKeys];
     if (!keys) {
         return NO;
@@ -187,13 +187,14 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     [keyTable setObject:key forKey:receiver];
 }
 
-#pragma mark - DIMTransceiverDataSource
+#pragma mark - DIMCipherKeyDelegate
 
 - (nullable DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
                                          to:(DIMID *)receiver {
     if ([receiver isBroadcast]) {
         return [_PlainKey sharedInstance];
     }
+    // get key from cache
     return [self _cipherKeyFrom:sender to:receiver];
 }
 
@@ -205,14 +206,20 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
         return;
     }
     [self _cacheCipherKey:key from:sender to:receiver];
-    _dirty = key != nil;
+    _dirty = YES;
 }
 
 - (nullable DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
                                         from:(DIMID *)sender
                                           to:(DIMID *)receiver {
-    // TODO: check whether renew the old key
-    return key;
+    if (key) {
+        // cache the key for reuse
+        [self cacheCipherKey:key from:sender to:receiver];
+        return key;
+    } else {
+        // reuse key from cache
+        return [self cipherKeyFrom:sender to:receiver];
+    }
 }
 
 @end

@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
                     to:(DIMID *)receiver;
 
 /**
- *  Update/create cipher key for encrypt message content
+ *  Get/cache cipher key for decrypt message fron 'sender' to 'receiver'
  *
  * @param key - old key to be reused (nullable)
  * @param sender - user ID
@@ -114,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Trigger for load and update cipher key map
  */
-- (BOOL)updateKeys;
+- (BOOL)reload;
 
 @end
 
