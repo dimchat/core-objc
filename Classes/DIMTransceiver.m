@@ -395,17 +395,24 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
-    DIMID *group = [_barrack IDWithString:iMsg.content.group];
+    
+    // NOTICE: while sending group message, don't split it before encrypting.
+    //         this means you could set group ID into message content, but
+    //         keep the "receiver" to be the group ID;
+    //         after encrypted (and signed), you could split the message
+    //         with group members before sending out, or just send it directly
+    //         to the group assistant to let it split messages for you!
+    //    BUT,
+    //         if you don't want to share the symmetric key with other members,
+    //         you could split it (set group ID into message content and
+    //         set contact ID to the "receiver") before encrypting, this usually
+    //         for sending group command to robot assistant,
+    //         which cannot shared the symmetric key (msg key) with other members.
 
     // 1. get symmetric key
-    DIMSymmetricKey *password = nil;
-    if (group) {
-        // group message
-        password = [self _passwordFrom:sender to:group];
-    } else {
-        password = [self _passwordFrom:sender to:receiver];
-    }
-    
+    DIMSymmetricKey *password = [self _passwordFrom:sender to:receiver];
+
+    // check message delegate
     if (iMsg.delegate == nil) {
         iMsg.delegate = self;
     }
@@ -428,6 +435,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
 }
 
 - (nullable DIMReliableMessage *)signMessage:(DIMSecureMessage *)sMsg {
+    // check message delegate
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
     }
@@ -443,6 +451,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     //        (do in by application)
     //
     
+    // check message delegate
     if (rMsg.delegate == nil) {
         rMsg.delegate = self;
     }
@@ -458,6 +467,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     //          if the receiver is a group ID, split it first
     //
     
+    // check message delegate
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
     }

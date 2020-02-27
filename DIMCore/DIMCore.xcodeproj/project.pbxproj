@@ -724,7 +724,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4N8627W97S;
+				DEVELOPMENT_TEAM = JUVC7SZJE7;
 				HEADER_SEARCH_PATHS = "../../mkm-objc/Classes/**";
 				INFOPLIST_FILE = DIMCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -742,7 +742,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4N8627W97S;
+				DEVELOPMENT_TEAM = JUVC7SZJE7;
 				HEADER_SEARCH_PATHS = "../../mkm-objc/Classes/**";
 				INFOPLIST_FILE = DIMCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
