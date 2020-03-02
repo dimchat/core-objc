@@ -55,7 +55,7 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(UInt8)type {
     if (self = [super initWithType:type]) {
         _meta = nil;
     }

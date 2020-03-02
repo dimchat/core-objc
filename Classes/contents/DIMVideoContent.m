@@ -41,7 +41,7 @@
 
 @interface DIMContent (Hacking)
 
-@property (nonatomic) DKDContentType type;
+@property (nonatomic) UInt8 type;
 
 @end
 
