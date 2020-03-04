@@ -103,7 +103,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)cacheUser:(DIMUser *)user {
-    NSAssert(MKMNetwork_IsUser(user.ID.type), @"user ID error: %@", user.ID);
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
@@ -112,7 +111,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (BOOL)cacheGroup:(DIMGroup *)group {
-    NSAssert(MKMNetwork_IsGroup(group.ID.type), @"group ID error: %@", group.ID);
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
@@ -126,7 +124,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable DIMUser *)createUser:(DIMID *)ID {
-    NSAssert(MKMNetwork_IsUser(ID.type), @"user ID error: %@", ID);
+    NSAssert([ID isUser], @"user ID error: %@", ID);
     if ([ID isBroadcast]) {
         // create user 'anyone@anywhere'
         return [[DIMUser alloc] initWithID:ID];
@@ -137,7 +135,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable DIMGroup *)createGroup:(DIMID *)ID {
-    NSAssert(MKMNetwork_IsGroup(ID.type), @"group ID error: %@", ID);
+    NSAssert([ID isGroup], @"group ID error: %@", ID);
     if ([ID isBroadcast]) {
         // create group 'everyone@everywhere'
         return [[DIMGroup alloc] initWithID:ID];
@@ -219,7 +217,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable id<MKMEncryptKey>)publicKeyForEncryption:(nonnull DIMID *)user {
-    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    NSAssert([user isUser], @"user ID error: %@", user);
     // NOTICE: return nothing to use profile.key or meta.key
     return nil;
 }
@@ -235,7 +233,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(nonnull DIMID *)user {
-    NSAssert(MKMNetwork_IsUser(user.type), @"user ID error: %@", user);
+    NSAssert([user isUser], @"user ID error: %@", user);
     // NOTICE: return nothing to use meta.key
     return nil;
 }
@@ -243,7 +241,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 #pragma mark - MKMGroupDataSource
 
 - (nullable DIMID *)founderOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check for broadcast
     if ([group isBroadcast]) {
         NSString *founder;
@@ -264,7 +262,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable DIMID *)ownerOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check for broadcast
     if ([group isBroadcast]) {
         NSString *owner;
@@ -285,7 +283,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable NSArray<DIMID *> *)membersOfGroup:(DIMID *)group {
-    NSAssert(MKMNetwork_IsGroup(group.type), @"group ID error: %@", group);
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check for broadcast
     if ([group isBroadcast]) {
         NSString *member;

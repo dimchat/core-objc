@@ -420,13 +420,13 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     
     // 2. encrypt 'content' to 'data' for receiver/group members
     DIMSecureMessage *sMsg = nil;
-    if (MKMNetwork_IsGroup(receiver.type)) {
+    if ([receiver isGroup]) {
         // group message
         DIMGroup *grp = [_barrack groupWithID:receiver];
         sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
     } else {
         // personal message (or split group message)
-        NSAssert(MKMNetwork_IsUser(receiver.type), @"receiver ID error: %@", receiver);
+        NSAssert([receiver isUser], @"receiver ID error: %@", receiver);
         sMsg = [iMsg encryptWithKey:password];
     }
     
