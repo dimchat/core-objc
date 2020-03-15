@@ -241,8 +241,10 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         }
         // deserialize it to symmetric key
         PW = [self message:sMsg deserializeKey:plaintext];
+    } else {
+        // get key from cache
+        PW = [_keyCache cipherKeyFrom:from to:to];
     }
-    PW = [_keyCache reuseCipherKey:PW from:from to:to];
     NSAssert(PW, @"failed to get password from %@ to %@", sender, receiver);
     return PW;
 }
@@ -271,6 +273,20 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     }
     DIMContent *content = [self message:sMsg deserializeContent:plaintext];
     NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", sMsg);
+    
+    // check and cache key for reuse
+    DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
+    DIMID *group = [self.barrack IDWithString:content.group];
+    if (!group || [content isKindOfClass:[DIMCommand class]]) {
+        DIMID *receiver = [self.barrack IDWithString:sMsg.envelope.receiver];
+        // personal message or (group) command
+        // cache key with direction (sender -> receiver)
+        [_keyCache cacheCipherKey:key from:sender to:receiver];
+    } else {
+        // group message (excludes group command)
+        // cache the key with direction (sender -> group)
+        [_keyCache cacheCipherKey:key from:sender to:group];
+    }
     
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         after deserialize content, this job should be do in subclass
@@ -395,6 +411,7 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
+    DIMID *group = [_barrack IDWithString:iMsg.content.group];
     
     // NOTICE: while sending group message, don't split it before encrypting.
     //         this means you could set group ID into message content, but
@@ -410,7 +427,14 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     //         which cannot shared the symmetric key (msg key) with other members.
 
     // 1. get symmetric key
-    DIMSymmetricKey *password = [self _passwordFrom:sender to:receiver];
+    DIMSymmetricKey *password;
+    if (!group || [iMsg.content isKindOfClass:[DIMCommand class]]) {
+        // personal message or (group) command
+        password = [self _passwordFrom:sender to:receiver];
+    } else {
+        // group message (excludes group command)
+        password = [self _passwordFrom:sender to:group];
+    }
 
     // check message delegate
     if (iMsg.delegate == nil) {

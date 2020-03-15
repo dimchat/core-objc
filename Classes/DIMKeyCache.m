@@ -180,7 +180,31 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
                      to:(DIMID *)receiver {
     NSAssert(key, @"cipher key cannot be empty");
     KeyTable *keyTable = [_keyMap objectForKey:sender];
-    if (!keyTable) {
+    if (keyTable) {
+        DIMSymmetricKey *old = [keyTable objectForKey:receiver];
+        if (old) {
+            // check whether same key exists
+            BOOL equals = YES;
+            id v1, v2;
+            for (NSString *k in key) {
+                v1 = [key objectForKey:k];
+                v2 = [old objectForKey:k];
+                if (!v1) {
+                    if (!v2) {
+                        continue;
+                    }
+                } else if ([v1 isEqual:v2]) {
+                    continue;
+                }
+                equals = NO;
+                break;
+            }
+            if (equals) {
+                // no need to update
+                return;
+            }
+        }
+    } else {
         keyTable = [[KeyTable alloc] init];
         [_keyMap setObject:keyTable forKey:sender];
     }
@@ -189,6 +213,7 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
 
 #pragma mark - DIMCipherKeyDelegate
 
+// TODO: override to check whether key expired for sending message
 - (nullable DIMSymmetricKey *)cipherKeyFrom:(DIMID *)sender
                                          to:(DIMID *)receiver {
     if ([receiver isBroadcast]) {
@@ -207,19 +232,6 @@ typedef NSMutableDictionary<DIMID *, KeyTable *> KeyMap;
     }
     [self _cacheCipherKey:key from:sender to:receiver];
     _dirty = YES;
-}
-
-- (nullable DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
-                                        from:(DIMID *)sender
-                                          to:(DIMID *)receiver {
-    if (key) {
-        // cache the key for reuse
-        [self cacheCipherKey:key from:sender to:receiver];
-        return key;
-    } else {
-        // reuse key from cache
-        return [self cipherKeyFrom:sender to:receiver];
-    }
 }
 
 @end

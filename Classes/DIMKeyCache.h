@@ -62,18 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
                   from:(DIMID *)sender
                     to:(DIMID *)receiver;
 
-/**
- *  Get/cache cipher key for decrypt message fron 'sender' to 'receiver'
- *
- * @param key - old key to be reused (nullable)
- * @param sender - user ID
- * @param receiver - contact/group ID
- * @return new key
- */
-- (nullable DIMSymmetricKey *)reuseCipherKey:(nullable DIMSymmetricKey *)key
-                                        from:(DIMID *)sender
-                                          to:(DIMID *)receiver;
-
 @end
 
 /**
