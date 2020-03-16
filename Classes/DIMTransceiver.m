@@ -143,6 +143,25 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     return [ID isBroadcast];
 }
 
+static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barrack) {
+    NSString *group = content.group;
+    if (!group) {
+        return nil;
+    }
+    DIMID *ID = [barrack IDWithString:group];
+    if ([ID isBroadcast]) {
+        // broadcast message is always overt
+        return ID;
+    }
+    if ([content isKindOfClass:[DIMCommand class]]) {
+        // group command should be sent to each member directly, so
+        // don't expose group ID
+        return nil;
+    }
+    return ID;
+}
+
+
 @implementation DIMTransceiver
 
 - (instancetype)init {
@@ -276,16 +295,16 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     
     // check and cache key for reuse
     DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
-    DIMID *group = [self.barrack IDWithString:content.group];
-    if (!group || [content isKindOfClass:[DIMCommand class]]) {
+    DIMID *group = overt_group(content, self.barrack);
+    if (group) {
+        // group message (excludes group command)
+        // cache the key with direction (sender -> group)
+        [_keyCache cacheCipherKey:key from:sender to:group];
+    } else {
         DIMID *receiver = [self.barrack IDWithString:sMsg.envelope.receiver];
         // personal message or (group) command
         // cache key with direction (sender -> receiver)
         [_keyCache cacheCipherKey:key from:sender to:receiver];
-    } else {
-        // group message (excludes group command)
-        // cache the key with direction (sender -> group)
-        [_keyCache cacheCipherKey:key from:sender to:group];
     }
     
     // NOTICE: check attachment for File/Image/Audio/Video message content
@@ -411,7 +430,6 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
-    DIMID *group = [_barrack IDWithString:iMsg.content.group];
     
     // NOTICE: while sending group message, don't split it before encrypting.
     //         this means you could set group ID into message content, but
@@ -423,17 +441,18 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     //         if you don't want to share the symmetric key with other members,
     //         you could split it (set group ID into message content and
     //         set contact ID to the "receiver") before encrypting, this usually
-    //         for sending group command to robot assistant,
-    //         which cannot shared the symmetric key (msg key) with other members.
+    //         for sending group command to assistant robot, which should not
+    //         shared the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
+    DIMID *group = overt_group(iMsg.content, self.barrack);
     DIMSymmetricKey *password;
-    if (!group || [iMsg.content isKindOfClass:[DIMCommand class]]) {
-        // personal message or (group) command
-        password = [self _passwordFrom:sender to:receiver];
-    } else {
+    if (group) {
         // group message (excludes group command)
         password = [self _passwordFrom:sender to:group];
+    } else {
+        // personal message or (group) command
+        password = [self _passwordFrom:sender to:receiver];
     }
 
     // check message delegate
@@ -454,6 +473,19 @@ static inline BOOL isBroadcast(DIMMessage *msg,
         sMsg = [iMsg encryptWithKey:password];
     }
     
+    // overt group ID
+    if (group && ![receiver isEqual:group]) {
+        // NOTICE: this help the receiver knows the group ID
+        //         when the group message separated to multi-messages,
+        //         if don't want the others know you are the group members,
+        //         remove it.
+        sMsg.envelope.group = group;
+    }
+    
+    // NOTICE: copy content type to envelope
+    //         this help the intermediate nodes to recognize message type
+    sMsg.envelope.type = iMsg.content.type;
+
     // OK
     return sMsg;
 }
