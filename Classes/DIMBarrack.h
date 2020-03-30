@@ -77,7 +77,6 @@ NS_ASSUME_NONNULL_BEGIN
                                   DIMUserDataSource,
                                   DIMGroupDataSource>
 
-- (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID;
 - (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheUser:(DIMUser *)user;
 - (BOOL)cacheGroup:(DIMGroup *)group;

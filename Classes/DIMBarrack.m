@@ -38,14 +38,12 @@
 #import "DIMBarrack.h"
 
 typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
-typedef NSMutableDictionary<DIMID *, DIMMeta *> MetaTableM;
 typedef NSMutableDictionary<DIMID *, DIMUser *> UserTableM;
 typedef NSMutableDictionary<DIMID *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
     IDTableM *_idTable;
-    MetaTableM *_metaTable;
     UserTableM *_userTable;
     GroupTableM *_groupTable;
 }
@@ -74,7 +72,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (instancetype)init {
     if (self = [super init]) {
         _idTable = [[IDTableM alloc] init];
-        _metaTable = [[MetaTableM alloc] init];
         _userTable = [[UserTableM alloc] init];
         _groupTable = [[GroupTableM alloc] init];
     }
@@ -84,16 +81,9 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (NSInteger)reduceMemory {
     NSInteger finger = 0;
     finger = thanos(_idTable, finger);
-    finger = thanos(_metaTable, finger);
     finger = thanos(_userTable, finger);
     finger = thanos(_groupTable, finger);
     return finger >> 1;
-}
-
-- (BOOL)cacheMeta:(DIMMeta *)meta forID:(DIMID *)ID {
-    NSAssert([meta matchID:ID], @"meta not match ID: %@, %@", ID, meta);
-    [_metaTable setObject:meta forKey:ID];
-    return YES;
 }
 
 - (BOOL)cacheID:(DIMID *)ID {
@@ -188,8 +178,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 #pragma mark - MKMEntityDataSource
 
 - (nullable DIMMeta *)metaForID:(DIMID *)ID {
-    NSAssert([ID isValid], @"ID not valid: %@", ID);
-    return [_metaTable objectForKey:ID];
+    NSAssert(false, @"override me!");
+    return nil;
 }
 
 - (nullable __kindof DIMProfile *)profileForID:(DIMID *)ID {
