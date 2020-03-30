@@ -119,30 +119,18 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable DIMID *)createID:(NSString *)string {
-    NSAssert(string, @"ID string should not be empty");
-    return MKMIDFromString(string);
+    NSAssert(false, @"implement me!");
+    return nil;
 }
 
 - (nullable DIMUser *)createUser:(DIMID *)ID {
-    NSAssert([ID isUser], @"user ID error: %@", ID);
-    if ([ID isBroadcast]) {
-        // create user 'anyone@anywhere'
-        return [[DIMUser alloc] initWithID:ID];
-    }
-    NSAssert([self metaForID:ID], @"failed to get meta for user: %@", ID);
-    // TODO: check user type
-    return [[DIMUser alloc] initWithID:ID];
+    NSAssert(false, @"implement me!");
+    return nil;
 }
 
 - (nullable DIMGroup *)createGroup:(DIMID *)ID {
-    NSAssert([ID isGroup], @"group ID error: %@", ID);
-    if ([ID isBroadcast]) {
-        // create group 'everyone@everywhere'
-        return [[DIMGroup alloc] initWithID:ID];
-    }
-    NSAssert([self metaForID:ID], @"failed to get meta for group: %@", ID);
-    // TODO: check group type
-    return [[DIMGroup alloc] initWithID:ID];
+    NSAssert(false, @"implement me!");
+    return nil;
 }
 
 #pragma mark - DIMEntityDelegate
@@ -216,10 +204,56 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable id<MKMEncryptKey>)publicKeyForEncryption:(nonnull DIMID *)user {
+- (nullable id<DIMEncryptKey>)publicKeyForEncryption:(nonnull DIMID *)user {
     NSAssert([user isUser], @"user ID error: %@", user);
-    // NOTICE: return nothing to use profile.key or meta.key
-    return nil;
+    id<DIMEncryptKey> key = nil;
+    // get profile.key
+    DIMProfile *profile = [self profileForID:user];
+    if (profile) {
+        key = [profile key];
+        if (key) {
+            // if profile.key exists,
+            //     use it for encryption
+            return key;
+        }
+    }
+    // get meta.key
+    DIMMeta *meta = [self metaForID:user];
+    if (meta) {
+        id<DIMPublicKey> metaKey = [meta key];
+        if ([meta conformsToProtocol:@protocol(DIMEncryptKey)]) {
+            // if profile.key not exists and meta.key is encrypt key,
+            //     use it for encryption
+            key = (id<DIMEncryptKey>) metaKey;
+        }
+    }
+    return key;
+}
+
+- (nullable NSArray<id<DIMVerifyKey>> *)publicKeysForVerification:(nonnull DIMID *)user {
+    NSAssert([user isUser], @"user ID error: %@", user);
+    NSMutableArray<id<DIMVerifyKey>> *keys = [[NSMutableArray alloc] init];
+    // get profile.key
+    DIMProfile *profile = [self profileForID:user];
+    if (profile) {
+        id<DIMEncryptKey> profileKey = [profile key];
+        if ([profileKey conformsToProtocol:@protocol(DIMVerifyKey)]) {
+            // the sender may use communication key to sign message.data,
+            // so try to verify it with profile.key here
+            [keys addObject:(id<DIMVerifyKey>)profileKey];
+        }
+    }
+    // get meta.key
+    DIMMeta *meta = [self metaForID:user];
+    if (meta) {
+        id<DIMPublicKey> metaKey = [meta key];
+        if (metaKey) {
+            // the sender may use identity key to sign message.data,
+            // try to verify it with meta.key
+            [keys addObject:metaKey];
+        }
+    }
+    return keys;
 }
 
 - (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryption:(DIMID *)user {
@@ -229,12 +263,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable DIMPrivateKey *)privateKeyForSignature:(DIMID *)user {
     NSAssert(false, @"override me!");
-    return nil;
-}
-
-- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(nonnull DIMID *)user {
-    NSAssert([user isUser], @"user ID error: %@", user);
-    // NOTICE: return nothing to use meta.key
     return nil;
 }
 

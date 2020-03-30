@@ -291,7 +291,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
         return nil;
     }
     DIMContent *content = [self message:sMsg deserializeContent:plaintext];
-    NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", sMsg);
+    NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", [plaintext UTF8String]);
     
     // check and cache key for reuse
     DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
@@ -442,7 +442,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     //         you could split it (set group ID into message content and
     //         set contact ID to the "receiver") before encrypting, this usually
     //         for sending group command to assistant robot, which should not
-    //         shared the symmetric key (group msg key) with other members.
+    //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
     DIMID *group = overt_group(iMsg.content, self.barrack);
