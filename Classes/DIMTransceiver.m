@@ -293,18 +293,20 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     DIMContent *content = [self message:sMsg deserializeContent:plaintext];
     NSAssert([content isKindOfClass:[DIMContent class]], @"error: %@", [plaintext UTF8String]);
     
-    // check and cache key for reuse
-    DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
-    DIMID *group = overt_group(content, self.barrack);
-    if (group) {
-        // group message (excludes group command)
-        // cache the key with direction (sender -> group)
-        [_keyCache cacheCipherKey:key from:sender to:group];
-    } else {
-        DIMID *receiver = [self.barrack IDWithString:sMsg.envelope.receiver];
-        // personal message or (group) command
-        // cache key with direction (sender -> receiver)
-        [_keyCache cacheCipherKey:key from:sender to:receiver];
+    if (!isBroadcast(sMsg, _barrack)) {
+        // check and cache key for reuse
+        DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
+        DIMID *group = overt_group(content, self.barrack);
+        if (group) {
+            // group message (excludes group command)
+            // cache the key with direction (sender -> group)
+            [_keyCache cacheCipherKey:key from:sender to:group];
+        } else {
+            DIMID *receiver = [self.barrack IDWithString:sMsg.envelope.receiver];
+            // personal message or (group) command
+            // cache key with direction (sender -> receiver)
+            [_keyCache cacheCipherKey:key from:sender to:receiver];
+        }
     }
     
     // NOTICE: check attachment for File/Image/Audio/Video message content
