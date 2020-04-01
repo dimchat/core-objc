@@ -53,25 +53,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMTransceiver (Serialization)
 
-/**
- *  De/serialize message content
- */
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
-            serializeContent:(DIMContent *)content;
-- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
-              deserializeContent:(NSData *)data;
-
-/**
- *  De/serialize symmetric key
- */
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
-                serializeKey:(DIMSymmetricKey *)password;
-- (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
-                       deserializeKey:(NSData *)data;
-
-/**
- *  De/serialize message
- */
 - (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg;
 - (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data;
 
