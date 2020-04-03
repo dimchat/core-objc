@@ -217,7 +217,10 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                 serializeKey:(DIMSymmetricKey *)password {
-    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
+    if (isBroadcast(iMsg, _barrack)) {
+        // broadcast message has no key
+        return nil;
+    }
     NSString *json = [password jsonString];
     return [json data];
 }
@@ -225,10 +228,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                   encryptKey:(NSData *)data
                  forReceiver:(NSString *)receiver {
-    if (isBroadcast(iMsg, _barrack)) {
-        // broadcast message has no key
-        return nil;
-    }
+    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMUser *contact = [_barrack userWithID:ID];
