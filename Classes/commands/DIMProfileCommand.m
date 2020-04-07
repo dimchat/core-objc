@@ -35,8 +35,6 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "NSData+Crypto.h"
-
 #import "DIMBarrack.h"
 
 #import "DIMProfileCommand.h"
