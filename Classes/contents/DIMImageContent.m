@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSString+Crypto.h"
-
 #import "DIMImageContent.h"
 
 @interface DIMContent (Hacking)

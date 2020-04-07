@@ -106,7 +106,7 @@
     
     // update filename with MD5 string
     if (fileData.length > 0) {
-        NSString *filename = [[fileData md5] hexEncode];
+        NSString *filename = MKMHexEncode([fileData md5]);
         NSString *ext = [[self.filename pathExtension] lowercaseString];
         if (ext.length > 0) {
             filename = [NSString stringWithFormat:@"%@.%@", filename, ext];

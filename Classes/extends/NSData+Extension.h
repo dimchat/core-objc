@@ -39,12 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSData (Hex)
-
-- (NSString *)hexEncode;
-
-@end
-
 @interface NSData (MD5)
 
 - (NSData *)md5;

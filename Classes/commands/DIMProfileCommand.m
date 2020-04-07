@@ -37,7 +37,6 @@
 
 #import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
-#import "NSString+Crypto.h"
 
 #import "DIMBarrack.h"
 

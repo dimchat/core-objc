@@ -38,7 +38,6 @@
 #import "NSObject+Singleton.h"
 #import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
-#import "NSString+Crypto.h"
 
 #import "DIMTextContent.h"
 #import "DIMFileContent.h"

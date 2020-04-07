@@ -36,7 +36,6 @@
 //
 
 #import "NSData+Crypto.h"
-#import "NSString+Crypto.h"
 
 #import "DIMWebpageContent.h"
 

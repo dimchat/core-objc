@@ -39,23 +39,6 @@
 
 #import "NSData+Extension.h"
 
-@implementation NSData (Hex)
-
-- (NSString *)hexEncode {
-    NSMutableString *output = nil;
-    
-    const unsigned char *bytes = (const unsigned char *)[self bytes];
-    NSUInteger len = [self length];
-    output = [[NSMutableString alloc] initWithCapacity:(len*2)];
-    for (int i = 0; i < len; ++i) {
-        [output appendFormat:@"%02x", (unsigned char)bytes[i]];
-    }
-    
-    return output;
-}
-
-@end
-
 @implementation NSData (MD5)
 
 - (NSData *)md5 {
