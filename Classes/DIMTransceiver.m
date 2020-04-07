@@ -212,7 +212,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
         // so no need to encode to Base64 here
         return [data UTF8String];
     }
-    return [data base64Encode];
+    return MKMBase64Encode(data);
 }
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
@@ -239,7 +239,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                      encodeKey:(NSData *)data {
     NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
-    return [data base64Encode];
+    return MKMBase64Encode(data);
 }
 
 #pragma mark DKDSecureMessageDelegate
@@ -247,7 +247,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                    decodeKey:(NSObject *)dataString {
     NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
-    return [(NSString *)dataString base64Decode];
+    return MKMBase64Decode((NSString *)dataString);
 }
 
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
@@ -299,7 +299,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
         // so return the string data directly
         return [(NSString *)dataString data];
     }
-    return [(NSString *)dataString base64Decode];
+    return MKMBase64Decode((NSString *)dataString);
 }
 
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
@@ -310,7 +310,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     // decrypt message.data
     NSData *plaintext = [key decrypt:data];
     if (plaintext.length == 0) {
-        NSAssert(false, @"failed to decrypt data: %@, key: %@", data, password);
+        NSAssert(false, @"failed to decrypt data: %@, key: %@, env: %@", data, password, sMsg.envelope);
         return nil;
     }
     return plaintext;
@@ -360,14 +360,14 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSObject *)message:(DIMSecureMessage *)sMsg
                encodeSignature:(NSData *)signature {
-    return [signature base64Encode];
+    return MKMBase64Encode(signature);
 }
 
 #pragma mark DKDReliableMessageDelegate
 
 - (nullable NSData *)message:(DIMReliableMessage *)rMsg
              decodeSignature:(NSObject *)signatureString {
-    return [(NSString *)signatureString base64Decode];
+    return MKMBase64Decode((NSString *)signatureString);
 }
 
 - (BOOL)message:(DIMReliableMessage *)rMsg

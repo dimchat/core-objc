@@ -65,7 +65,7 @@
         
         // icon
         if (icon) {
-            NSString *str = [icon base64Encode];
+            NSString *str = MKMBase64Encode(icon);
             [_storeDictionary setObject:str forKey:@"icon"];
         }
     }
@@ -87,7 +87,7 @@
 
 - (NSData *)icon {
     NSString *str = [_storeDictionary objectForKey:@"icon"];
-    return [str base64Decode];
+    return MKMBase64Decode(str);
 }
 
 @end

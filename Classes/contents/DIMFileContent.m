@@ -115,7 +115,7 @@
         [_storeDictionary setObject:filename forKey:@"filename"];
         
         // file data
-        [_storeDictionary setObject:[fileData base64Encode] forKey:@"data"];
+        [_storeDictionary setObject:MKMBase64Encode(fileData) forKey:@"data"];
     } else {
         [_storeDictionary removeObjectForKey:@"data"];
     }
