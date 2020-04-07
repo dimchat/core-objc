@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSData+Extension.h"
-
 #import "DIMFileContent.h"
 
 @interface DIMFileContent () {
@@ -106,7 +104,7 @@
     
     // update filename with MD5 string
     if (fileData.length > 0) {
-        NSString *filename = MKMHexEncode([fileData md5]);
+        NSString *filename = MKMHexEncode(MKMMD5Digest(fileData));
         NSString *ext = [[self.filename pathExtension] lowercaseString];
         if (ext.length > 0) {
             filename = [NSString stringWithFormat:@"%@.%@", filename, ext];

@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */; };
-		E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */; };
 		E9596518239107C800DAA870 /* DIMVideoContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E959650C239107C800DAA870 /* DIMVideoContent.m */; };
 		E9596519239107C800DAA870 /* DIMFileContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E959650D239107C800DAA870 /* DIMFileContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E959651A239107C800DAA870 /* DIMTextContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E959650E239107C800DAA870 /* DIMTextContent.m */; };
@@ -114,8 +112,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Extension.m"; sourceTree = "<group>"; };
-		E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Extension.h"; sourceTree = "<group>"; };
 		E959650C239107C800DAA870 /* DIMVideoContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMVideoContent.m; sourceTree = "<group>"; };
 		E959650D239107C800DAA870 /* DIMFileContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFileContent.h; sourceTree = "<group>"; };
 		E959650E239107C800DAA870 /* DIMTextContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTextContent.m; sourceTree = "<group>"; };
@@ -207,15 +203,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E9BBBE50223FB0BA00E6ACDA /* extends */ = {
-			isa = PBXGroup;
-			children = (
-				E94C8DEB22DDC1EF0017F998 /* NSData+Extension.h */,
-				E94C8DEA22DDC1EF0017F998 /* NSData+Extension.m */,
-			);
-			path = extends;
-			sourceTree = "<group>";
-		};
 		E9CF980921FF53470092DD8B /* commands */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,7 +264,6 @@
 		E9F3AA5821CBD03C009690F6 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				E9BBBE50223FB0BA00E6ACDA /* extends */,
 				E959650B239107C800DAA870 /* contents */,
 				E9CF980921FF53470092DD8B /* commands */,
 				E9BBBD42223AA13500E6ACDA /* DIMKeyCache.h */,
@@ -334,7 +320,6 @@
 				E9BBBD48223AA13500E6ACDA /* DIMKeyCache.h in Headers */,
 				E9BBBD49223AA13500E6ACDA /* DIMTransceiver.h in Headers */,
 				E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */,
-				E94C8DEF22DDC1EF0017F998 /* NSData+Extension.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +478,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9596522239107C800DAA870 /* DIMFileContent.m in Sources */,
-				E94C8DEE22DDC1EF0017F998 /* NSData+Extension.m in Sources */,
 				E9CF981621FF567B0092DD8B /* DIMHandshakeCommand.m in Sources */,
 				E959651D239107C800DAA870 /* DIMWebpageContent.m in Sources */,
 				E9BBBD7A223AB02600E6ACDA /* DIMBarrack.m in Sources */,
