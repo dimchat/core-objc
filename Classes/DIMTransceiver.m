@@ -36,7 +36,6 @@
 //
 
 #import "NSObject+Singleton.h"
-#import "NSObject+JsON.h"
 #import "NSData+Crypto.h"
 
 #import "DIMTextContent.h"
@@ -208,7 +207,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     if (isBroadcast(iMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so no need to encode to Base64 here
-        return [data UTF8String];
+        return MKMUTF8Decode(data);
     }
     return MKMBase64Encode(data);
 }
@@ -294,7 +293,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     if (isBroadcast(sMsg, _barrack)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
-        return [(NSString *)dataString data];
+        return MKMUTF8Encode(dataString);
     }
     return MKMBase64Decode((NSString *)dataString);
 }

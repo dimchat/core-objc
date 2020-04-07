@@ -36,7 +36,6 @@
 //
 
 #import "NSObject+Singleton.h"
-#import "NSObject+JsON.h"
 
 #import "DIMKeyCache.h"
 
