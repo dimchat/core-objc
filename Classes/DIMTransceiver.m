@@ -192,8 +192,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     //         before serialize content, this job should be do in subclass
     
     NSAssert(content == iMsg.content, @"message content not match: %@", content);
-    NSString *json = [content jsonString];
-    return [json data];
+    return MKMJSONEncode(content);
 }
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
@@ -220,8 +219,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
         // broadcast message has no key
         return nil;
     }
-    NSString *json = [password jsonString];
-    return [json data];
+    return MKMJSONEncode(password);
 }
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
@@ -275,7 +273,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
                                    to:(NSString *)receiver {
     if (data) {
         NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
-        NSDictionary *dict = [data jsonDictionary];
+        NSDictionary *dict = MKMJSONDecode(data);
         // TODO: translate short keys
         //       'A' -> 'algorithm'
         //       'D' -> 'data'
@@ -318,7 +316,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 - (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
               deserializeContent:(NSData *)data
                          withKey:(NSDictionary *)password {
-    NSDictionary *dict = [data jsonDictionary];
+    NSDictionary *dict = MKMJSONDecode(data);
     // TODO: translate short keys
     //       'T' -> 'type'
     //       'N' -> 'sn'
