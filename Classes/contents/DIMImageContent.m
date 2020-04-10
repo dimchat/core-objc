@@ -66,6 +66,11 @@
 
 - (nullable NSData *)thumbnail {
     NSString *small = [_storeDictionary objectForKey:@"thumbnail"];
+    
+    if(small == nil){
+        return nil;
+    }
+    
     return MKMBase64Decode(small);
 }
 
