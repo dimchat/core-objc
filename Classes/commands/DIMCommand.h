@@ -58,11 +58,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark System Command
 
-// network
-#define DIMCommand_Handshake @"handshake"
-
 // message
 #define DIMCommand_Receipt   @"receipt"
+// network
+#define DIMCommand_Handshake @"handshake"
+#define DIMCommand_Login     @"login"
 
 // facebook
 #define DIMCommand_Meta      @"meta"

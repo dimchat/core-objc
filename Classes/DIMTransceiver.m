@@ -48,7 +48,6 @@
 #import "DIMHistoryCommand.h"
 #import "DIMGroupCommand.h"
 
-#import "DIMHandshakeCommand.h"
 #import "DIMMetaCommand.h"
 #import "DIMProfileCommand.h"
 
@@ -90,10 +89,6 @@ static inline void loadContentClasses(void) {
 }
 
 static inline void loadCommandClasses(void) {
-    // handshake
-    [DIMCommand registerClass:[DIMHandshakeCommand class]
-                   forCommand:DIMCommand_Handshake];
-    
     // meta
     [DIMCommand registerClass:[DIMMetaCommand class]
                    forCommand:DIMCommand_Meta];
