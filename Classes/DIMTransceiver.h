@@ -51,6 +51,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface DIMTransceiver (Serialization)
+
+- (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg;
+- (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data;
+
+@end
+
 @interface DIMTransceiver (Transform)
 
 - (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg;

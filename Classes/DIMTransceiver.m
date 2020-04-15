@@ -372,7 +372,32 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 @end
 
-#pragma mark - Transform
+#pragma mark -
+
+@implementation DIMTransceiver (Serialization)
+
+- (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg {
+    return MKMJSONEncode(rMsg);
+}
+
+- (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data {
+    NSDictionary *dict = MKMJSONDecode(data);
+    // TODO: translate short keys
+    //       'S' -> 'sender'
+    //       'R' -> 'receiver'
+    //       'W' -> 'time'
+    //       'T' -> 'type'
+    //       'G' -> 'group'
+    //       ------------------
+    //       'D' -> 'data'
+    //       'V' -> 'signature'
+    //       'K' -> 'key'
+    //       ------------------
+    //       'M' -> 'meta'
+    return DKDReliableMessageFromDictionary(dict);
+}
+
+@end
 
 @implementation DIMTransceiver (Transform)
 
