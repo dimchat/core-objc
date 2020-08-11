@@ -7,7 +7,7 @@
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2018 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -72,15 +72,13 @@
 // Types
 #define DIMDictionary                   DKDDictionary
 
-#define DIMEnvelope                     DKDEnvelope
-#define DIMContent                      DKDContent
-#define DIMForwardContent               DKDForwardContent
+#define DIMEnvelope                     DKDEnvelope<DIMID *>
 
 // Message
-#define DIMMessage                      DKDMessage
-#define DIMInstantMessage               DKDInstantMessage
-#define DIMSecureMessage                DKDSecureMessage
-#define DIMReliableMessage              DKDReliableMessage
+#define DIMMessage                      DKDMessage<DIMID *>
+#define DIMInstantMessage               DKDInstantMessage<DIMID *>
+#define DIMSecureMessage                DKDSecureMessage<DIMID *>
+#define DIMReliableMessage              DKDReliableMessage<DIMID *>
 
 #define DIMMessageDelegate              DKDMessageDelegate
 #define DIMInstantMessageDelegate       DKDInstantMessageDelegate

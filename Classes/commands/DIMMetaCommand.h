@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMMetaCommand : DIMCommand
 
-@property (readonly, strong, nonatomic) NSString *ID;
+@property (readonly, strong, nonatomic) DIMID *ID;
 @property (readonly, strong, nonatomic, nullable) DIMMeta *meta;
 
 /*

@@ -7,7 +7,7 @@
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2018 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@
 
 #import "NSObject+Singleton.h"
 
+#import "DIMForwardContent.h"
 #import "DIMTextContent.h"
 #import "DIMFileContent.h"
 #import "DIMImageContent.h"
@@ -59,6 +60,9 @@
 #import "DIMTransceiver.h"
 
 static inline void loadContentClasses(void) {
+    // Top-Secret
+    [DIMContent registerClass:[DIMForwardContent class]
+                      forType:DKDContentType_Forward];
     // Text
     [DIMContent registerClass:[DIMTextContent class]
                       forType:DKDContentType_Text];
@@ -119,9 +123,11 @@ static inline void loadGroupCommandClasses(void) {
                         forCommand:DIMGroupCommand_Query];
 }
 
-static inline BOOL isBroadcast(DIMMessage *msg,
-                               id<DIMEntityDelegate> barrack) {
-    NSString *receiver;
+static inline BOOL isBroadcast(DIMMessage *msg, DIMTransceiver *tranceiver) {
+    if (!msg.delegate) {
+        msg.delegate = tranceiver;
+    }
+    DIMID *receiver;
     if ([msg isKindOfClass:[DIMInstantMessage class]]) {
         DIMInstantMessage *iMsg = (DIMInstantMessage *)msg;
         receiver = iMsg.content.group;
@@ -131,26 +137,24 @@ static inline BOOL isBroadcast(DIMMessage *msg,
     if (!receiver) {
         receiver = msg.envelope.receiver;
     }
-    DIMID *ID = [barrack IDWithString:receiver];
-    return [ID isBroadcast];
+    return [receiver isBroadcast];
 }
 
-static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barrack) {
-    NSString *group = content.group;
+static inline DIMID *overt_group(DIMContent *content) {
+    DIMID *group = content.group;
     if (!group) {
         return nil;
     }
-    DIMID *ID = [barrack IDWithString:group];
-    if ([ID isBroadcast]) {
+    if ([group isBroadcast]) {
         // broadcast message is always overt
-        return ID;
+        return group;
     }
     if ([content isKindOfClass:[DIMCommand class]]) {
         // group command should be sent to each member directly, so
         // don't expose group ID
         return nil;
     }
-    return ID;
+    return group;
 }
 
 
@@ -176,7 +180,17 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     return self;
 }
 
+#pragma mark DKDMessageDelegate
+
+- (nullable id)parseID:(id)string {
+    return [_barrack IDWithString:string];
+}
+
 #pragma mark DKDInstantMessageDelegate
+
+- (nullable DKDContent *)parseContent:(id)content {
+    return DIMContentFromDictionary(content);
+}
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
             serializeContent:(DIMContent *)content
@@ -198,7 +212,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                     encodeData:(NSData *)data {
-    if (isBroadcast(iMsg, _barrack)) {
+    if (isBroadcast(iMsg, self)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so no need to encode to Base64 here
         return MKMUTF8Decode(data);
@@ -208,7 +222,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                 serializeKey:(DIMSymmetricKey *)password {
-    if (isBroadcast(iMsg, _barrack)) {
+    if (isBroadcast(iMsg, self)) {
         // broadcast message has no key
         return nil;
     }
@@ -218,7 +232,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 - (nullable NSData *)message:(DIMInstantMessage *)iMsg
                   encryptKey:(NSData *)data
                  forReceiver:(NSString *)receiver {
-    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
+    NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
     DIMID *ID = [_barrack IDWithString:receiver];
     DIMUser *contact = [_barrack userWithID:ID];
@@ -228,7 +242,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSObject *)message:(DIMInstantMessage *)iMsg
                      encodeKey:(NSData *)data {
-    NSAssert(!isBroadcast(iMsg, _barrack), @"broadcast message has no key: %@", iMsg);
+    NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     return MKMBase64Encode(data);
 }
 
@@ -236,7 +250,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                    decodeKey:(NSObject *)dataString {
-    NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
+    NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     return MKMBase64Decode((NSString *)dataString);
 }
 
@@ -247,9 +261,9 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     if (!key) {
         return nil;
     }
-    NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
+    NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
-    DIMID *ID = [_barrack IDWithString:sMsg.envelope.receiver];
+    DIMID *ID = sMsg.envelope.receiver;
     DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     NSData *plaintext = [user decrypt:key];
@@ -265,7 +279,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
                                  from:(NSString *)sender
                                    to:(NSString *)receiver {
     if (data) {
-        NSAssert(!isBroadcast(sMsg, _barrack), @"broadcast message has no key: %@", sMsg);
+        NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
         NSDictionary *dict = MKMJSONDecode(data);
         // TODO: translate short keys
         //       'A' -> 'algorithm'
@@ -284,7 +298,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 
 - (nullable NSData *)message:(DIMSecureMessage *)sMsg
                   decodeData:(NSObject *)dataString {
-    if (isBroadcast(sMsg, _barrack)) {
+    if (isBroadcast(sMsg, self)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
         return MKMUTF8Encode(dataString);
@@ -314,20 +328,20 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     //       'T' -> 'type'
     //       'N' -> 'sn'
     //       'G' -> 'group'
-    DIMContent *content = DKDContentFromDictionary(dict);
+    DIMContent *content = DIMContentFromDictionary(dict);
     
-    if (!isBroadcast(sMsg, _barrack)) {
+    if (!isBroadcast(sMsg, self)) {
         DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
         NSAssert(key == password, @"irregular symmetric key: %@", password);
         // check and cache key for reuse
-        DIMID *sender = [self.barrack IDWithString:sMsg.envelope.sender];
-        DIMID *group = overt_group(content, self.barrack);
+        DIMID *sender = sMsg.envelope.sender;
+        DIMID *group = overt_group(content);
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
             [_keyCache cacheCipherKey:key from:sender to:group];
         } else {
-            DIMID *receiver = [self.barrack IDWithString:sMsg.envelope.receiver];
+            DIMID *receiver = sMsg.envelope.receiver;
             // personal message or (group) command
             // cache key with direction (sender -> receiver)
             [_keyCache cacheCipherKey:key from:sender to:receiver];
@@ -414,8 +428,12 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
 }
 
 - (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg {
-    DIMID *sender = [_barrack IDWithString:iMsg.envelope.sender];
-    DIMID *receiver = [_barrack IDWithString:iMsg.envelope.receiver];
+    // check message delegate
+    if (!iMsg.delegate) {
+        iMsg.delegate = self;
+    }
+    DIMID *sender = iMsg.envelope.sender;
+    DIMID *receiver = iMsg.envelope.receiver;
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
     
@@ -433,7 +451,7 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
     //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
-    DIMID *group = overt_group(iMsg.content, self.barrack);
+    DIMID *group = overt_group(iMsg.content);
     DIMSymmetricKey *password;
     if (group) {
         // group message (excludes group command)
@@ -443,10 +461,6 @@ static inline DIMID *overt_group(DIMContent *content, id<DIMEntityDelegate> barr
         password = [self _passwordFrom:sender to:receiver];
     }
 
-    // check message delegate
-    if (iMsg.delegate == nil) {
-        iMsg.delegate = self;
-    }
     NSAssert(iMsg.content, @"content cannot be empty");
     
     // 2. encrypt 'content' to 'data' for receiver/group members

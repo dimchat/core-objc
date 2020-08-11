@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//                               Written in 2020 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2018 Albert Moky
+// Copyright (c) 2020 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,45 +28,28 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMVideoContent.m
+//  DIMContent.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/11/27.
-//  Copyright © 2018 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2020/8/11.
+//  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMVideoContent.h"
+#import "dimMacros.h"
 
-@interface DIMContent (Hacking)
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic) UInt8 type;
+@interface DIMContent : DKDContent<MKMID *>
 
-@end
++ (void)registerClass:(nullable Class)contentClass forType:(UInt8)type;
 
-@implementation DIMVideoContent
-
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:nil]) {
-        // type
-        self.type = DKDContentType_Video;
-        
-        // TODO: snapshot
-    }
-    return self;
-}
-
-- (NSData *)videoData {
-    return [self fileData];
-}
-
-- (void)setVideoData:(NSData *)videoData {
-    self.fileData = videoData;
-}
-
-- (nullable NSData *)snapshot {
-    NSString *ss = [_storeDictionary objectForKey:@"snapshot"];
-    return MKMBase64Decode(ss);
-}
++ (nullable instancetype)getInstance:(id)content;
 
 @end
+
+// convert Dictionary to Content
+#define DIMContentFromDictionary(content)                                      \
+            [DIMContent getInstance:(content)]                                 \
+                                   /* EOF 'DIMContentFromDictionary(content)' */
+
+NS_ASSUME_NONNULL_END

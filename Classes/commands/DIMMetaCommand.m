@@ -91,8 +91,9 @@
     return cmd;
 }
 
-- (NSString *)ID {
-    return [_storeDictionary objectForKey:@"ID"];
+- (DIMID *)ID {
+    id string = [_storeDictionary objectForKey:@"ID"];
+    return [self.delegate parseID:string];
 }
 
 - (nullable DIMMeta *)meta {

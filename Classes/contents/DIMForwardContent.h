@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  DIMP : Decentralized Instant Messaging Protocol
+//  Dao-Ke-Dao: Universal Message Module
 //
 //                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
@@ -28,45 +28,32 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMVideoContent.m
-//  DIMCore
+//  DKDForwardContent.h
+//  DaoKeDao
 //
-//  Created by Albert Moky on 2018/11/27.
+//  Created by Albert Moky on 2018/10/23.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMVideoContent.h"
+#import "DIMContent.h"
 
-@interface DIMContent (Hacking)
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic) UInt8 type;
+@interface DIMForwardContent : DIMContent
 
-@end
+// Top-Secret message forwarded by a proxy (Service Provider)
+@property (readonly, nonatomic) DIMReliableMessage *forwardMessage;
 
-@implementation DIMVideoContent
-
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:nil]) {
-        // type
-        self.type = DKDContentType_Video;
-        
-        // TODO: snapshot
-    }
-    return self;
-}
-
-- (NSData *)videoData {
-    return [self fileData];
-}
-
-- (void)setVideoData:(NSData *)videoData {
-    self.fileData = videoData;
-}
-
-- (nullable NSData *)snapshot {
-    NSString *ss = [_storeDictionary objectForKey:@"snapshot"];
-    return MKMBase64Decode(ss);
-}
+/*
+ *  Top-Secret message: {
+ *      type : 0xFF,
+ *      sn   : 456,
+ *
+ *      forward : {...}  // reliable (secure + certified) message
+ *  }
+ */
+- (instancetype)initWithForwardMessage:(DIMReliableMessage *)rMsg;
 
 @end
+
+NS_ASSUME_NONNULL_END
