@@ -73,6 +73,7 @@
 #define DIMDictionary                   DKDDictionary
 
 #define DIMEnvelope                     DKDEnvelope<DIMID *>
+#define DIMContent                      DKDContent<DIMID *>
 
 // Message
 #define DIMMessage                      DKDMessage<DIMID *>

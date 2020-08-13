@@ -47,7 +47,7 @@ static NSMutableDictionary<NSNumber *, Class> *content_classes(void) {
     return classes;
 }
 
-@implementation DIMContent
+@implementation DKDContent (Runtime)
 
 + (void)registerClass:(nullable Class)clazz forType:(UInt8)type {
     NSAssert(![clazz isEqual:self], @"only subclass");

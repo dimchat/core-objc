@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMContent : DKDContent<MKMID *>
+@interface DKDContent (Runtime)
 
 + (void)registerClass:(nullable Class)contentClass forType:(UInt8)type;
 

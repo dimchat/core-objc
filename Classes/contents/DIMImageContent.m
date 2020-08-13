@@ -37,7 +37,7 @@
 
 #import "DIMImageContent.h"
 
-@interface DIMContent (Hacking)
+@interface DKDContent (Hacking)
 
 @property (nonatomic) UInt8 type;
 
