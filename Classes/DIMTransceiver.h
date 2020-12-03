@@ -39,12 +39,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDelegate;
-@protocol DIMCipherKeyDelegate;
+@protocol DIMCipherKeyDelegate <NSObject>
 
-@interface DIMTransceiver : NSObject <DIMInstantMessageDelegate,
-                                      DIMSecureMessageDelegate,
-                                      DIMReliableMessageDelegate>
+/**
+ *  Get cipher key for encrypt message from 'sender' to 'receiver'
+ *
+ * @param sender - user or contact ID
+ * @param receiver - contact or user/group ID
+ * @return cipher key
+ */
+- (nullable __kindof id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
+                                                    to:(id<MKMID>)receiver;
+
+/**
+ *  Cache cipher key for reusing, with the direction (from 'sender' to 'receiver')
+ *
+ * @param key - cipher key
+ * @param sender - user or contact ID
+ * @param receiver - contact or user/group ID
+ */
+- (void)cacheCipherKey:(id<MKMSymmetricKey>)key
+                  from:(id<MKMID>)sender
+                    to:(id<MKMID>)receiver;
+
+@end
+
+@protocol DIMEntityDelegate;
+
+@interface DIMTransceiver : NSObject <DIMMessageDelegate>
 
 @property (weak, nonatomic) id<DIMEntityDelegate> barrack;
 @property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
@@ -53,20 +75,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMTransceiver (Serialization)
 
-- (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg;
-- (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data;
+- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
+- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
 
 @end
 
 @interface DIMTransceiver (Transform)
 
-- (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg;
+- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
 
-- (nullable DIMReliableMessage *)signMessage:(DIMSecureMessage *)sMsg;
+- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
 
-- (nullable DIMSecureMessage *)verifyMessage:(DIMReliableMessage *)rMsg;
+- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
 
-- (nullable DIMInstantMessage *)decryptMessage:(DIMSecureMessage *)sMsg;
+- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
 
 @end
 

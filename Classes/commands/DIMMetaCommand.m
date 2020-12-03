@@ -39,7 +39,7 @@
 
 @interface DIMMetaCommand ()
 
-@property (strong, nonatomic, nullable) DIMMeta *meta;
+@property (strong, nonatomic, nullable) id<MKMMeta> meta;
 
 @end
 
@@ -55,28 +55,28 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(UInt8)type {
+- (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
         _meta = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID {
+- (instancetype)initWithID:(id<MKMID>)ID {
     return [self initWithID:ID meta:nil];
 }
 
-- (instancetype)initWithID:(DIMID *)ID
-                      meta:(nullable DIMMeta *)meta {
+- (instancetype)initWithID:(id<MKMID>)ID
+                      meta:(nullable id<MKMMeta>)meta {
     if (self = [self initWithCommand:DIMCommand_Meta]) {
         // ID
         if (ID) {
-            [_storeDictionary setObject:ID forKey:@"ID"];
+            [self setObject:ID forKey:@"ID"];
         }
         
         // meta
         if (meta) {
-            [_storeDictionary setObject:meta forKey:@"meta"];
+            [self setObject:meta forKey:@"meta"];
         }
         _meta = meta;
     }
@@ -91,14 +91,14 @@
     return cmd;
 }
 
-- (DIMID *)ID {
-    id string = [_storeDictionary objectForKey:@"ID"];
-    return [self.delegate parseID:string];
+- (id<MKMID>)ID {
+    id string = [self objectForKey:@"ID"];
+    return MKMIDFromString(string);
 }
 
-- (nullable DIMMeta *)meta {
+- (nullable id<MKMMeta>)meta {
     if (!_meta) {
-        NSDictionary *dict = [_storeDictionary objectForKey:@"meta"];
+        NSDictionary *dict = [self objectForKey:@"meta"];
         _meta = MKMMetaFromDictionary(dict);
     }
     return _meta;

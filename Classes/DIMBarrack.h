@@ -42,20 +42,12 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMEntityDelegate <NSObject>
 
 /**
- *  Create ID with string
- *
- * @param string - ID string
- * @return ID
- */
-- (nullable DIMID *)IDWithString:(NSString *)string;
-
-/**
  *  Create user with ID
  *
  * @param ID - user ID
  * @return user
  */
-- (nullable __kindof DIMUser *)userWithID:(DIMID *)ID;
+- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
 
 /**
  *  Create group with ID
@@ -63,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID;
+- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
 
 @end
 
@@ -77,13 +69,11 @@ NS_ASSUME_NONNULL_BEGIN
                                   DIMUserDataSource,
                                   DIMGroupDataSource>
 
-- (BOOL)cacheID:(DIMID *)ID;
 - (BOOL)cacheUser:(DIMUser *)user;
 - (BOOL)cacheGroup:(DIMGroup *)group;
 
-- (nullable DIMID *)createID:(NSString *)string;
-- (nullable DIMUser *)createUser:(DIMID *)ID;
-- (nullable DIMGroup *)createGroup:(DIMID *)ID;
+- (nullable DIMUser *)createUser:(id<MKMID>)ID;
+- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',

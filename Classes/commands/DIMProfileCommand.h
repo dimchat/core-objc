@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMProfileCommand : DIMMetaCommand
 
-@property (readonly, strong, nonatomic, nullable) DIMProfile *profile;
+@property (readonly, strong, nonatomic, nullable) id<MKMDocument> profile;
 
 // current signature string for querying profile,
 // if this matched, the station will respond 304 (Not Modified)
@@ -58,18 +58,18 @@ NS_ASSUME_NONNULL_BEGIN
  *      profile   : {...}      // when profile is empty, means query for ID
  *  }
  */
-- (instancetype)initWithID:(DIMID *)ID
-                      meta:(nullable DIMMeta *)meta
-                   profile:(nullable DIMProfile *)profile;
+- (instancetype)initWithID:(id<MKMID>)ID
+                      meta:(nullable id<MKMMeta>)meta
+                   profile:(nullable id<MKMDocument>)profile;
 
-- (instancetype)initWithID:(DIMID *)ID
-                   profile:(DIMProfile *)profile;
+- (instancetype)initWithID:(id<MKMID>)ID
+                   profile:(id<MKMDocument>)profile;
 
 // query profile
-- (instancetype)initWithID:(DIMID *)ID;
+- (instancetype)initWithID:(id<MKMID>)ID;
 
 // query profile for updating with current signature
-- (instancetype)initWithID:(MKMID *)ID signature:(NSString *)signature;
+- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature;
 
 @end
 

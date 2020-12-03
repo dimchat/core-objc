@@ -35,7 +35,7 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
+#import "DIMGroupCommand.h"
 
 #import "DIMCommand.h"
 
@@ -57,7 +57,7 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(UInt8)type {
+- (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
         _command = nil;
     }
@@ -69,7 +69,7 @@
     if (self = [self initWithType:DKDContentType_Command]) {
         // command
         if (cmd) {
-            [_storeDictionary setObject:cmd forKey:@"command"];
+            [self setObject:cmd forKey:@"command"];
         }
         _command = cmd;
     }
@@ -86,57 +86,38 @@
 
 - (NSString *)command {
     if (!_command) {
-        _command = [_storeDictionary objectForKey:@"command"];
+        _command = [self objectForKey:@"command"];
     }
     return _command;
 }
 
 @end
 
-static NSMutableDictionary<NSString *, Class> *command_classes(void) {
-    static NSMutableDictionary<NSString *, Class> *classes = nil;
-    SingletonDispatchOnce(^{
-        classes = [[NSMutableDictionary alloc] init];
-        //...
-    });
-    return classes;
+#pragma mark - Creation
+
+@implementation DIMCommand (Creation)
+
+static NSMutableDictionary *s_command_parsers = nil;
+
++ (void)registerParser:(DKDContentParser)parser forCommand:(NSString *)name {
+    if (!s_command_parsers) {
+        s_command_parsers = [[NSMutableDictionary alloc] init];
+    }
+    [s_command_parsers setObject:parser forKey:name];
 }
 
-@implementation DIMCommand (Runtime)
-
-+ (void)registerClass:(nullable Class)cmdClass forCommand:(NSString *)cmd {
-    NSAssert(![cmdClass isEqual:self], @"only subclass");
-    if (cmdClass) {
-        NSAssert([cmdClass isSubclassOfClass:self], @"error: %@", cmdClass);
-        [command_classes() setObject:cmdClass forKey:cmd];
-    } else {
-        [command_classes() removeObjectForKey:cmd];
++ (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd {
+    NSString *command = [cmd objectForKey:@"command"];
+    DKDContentParser callback = [s_command_parsers objectForKey:command];
+    if (callback) {
+        return (DIMCommand *)callback(cmd);
     }
-}
-
-+ (nullable Class)classForCommand:(NSString *)cmd {
-    return [command_classes() objectForKey:cmd];
-}
-
-+ (nullable instancetype)getInstance:(id)content {
-    if (!content) {
-        return nil;
+    // Group Commands
+    id group = [cmd objectForKey:@"group"];
+    if (group) {
+        return [DIMGroupCommand parse:cmd];
     }
-    if ([content isKindOfClass:[DIMCommand class]]) {
-        // return Command object directly
-        return content;
-    }
-    NSAssert([content isKindOfClass:[NSDictionary class]], @"command error: %@", content);
-    if ([self isEqual:[DIMCommand class]]) {
-        // create instance by subclass with command name
-        NSString *command = [content objectForKey:@"command"];
-        Class clazz = [self classForCommand:command];
-        if (clazz) {
-            return [clazz getInstance:content];
-        }
-    }
-    // custom command
-    return [[self alloc] initWithDictionary:content];
+    return [[DIMCommand alloc] initWithDictionary:cmd];
 }
 
 @end

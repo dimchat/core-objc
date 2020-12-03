@@ -35,33 +35,22 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "NSDate+Timestamp.h"
-
 #import "DIMGroupCommand.h"
 
 #import "DIMHistoryCommand.h"
-
-@interface DIMHistoryCommand ()
-
-@property (strong, nonatomic) NSDate *time;
-
-@end
 
 @implementation DIMHistoryCommand
 
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _time = nil;
     }
     return self;
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(UInt8)type {
+- (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
-        _time = nil;
     }
     return self;
 }
@@ -71,67 +60,25 @@
     if (self = [self initWithType:DKDContentType_History]) {
         // command
         if (cmd) {
-            [_storeDictionary setObject:cmd forKey:@"command"];
+            [self setObject:cmd forKey:@"command"];
         }
-        // time
-        _time = [[NSDate alloc] init];
-        NSNumber *timestemp = NSNumberFromDate(_time);
-        [_storeDictionary setObject:timestemp forKey:@"time"];
     }
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-    DIMHistoryCommand *cmd = [super copyWithZone:zone];
-    if (cmd) {
-        cmd.time = _time;
-    }
-    return cmd;
-}
-
-- (NSDate *)time {
-    if (!_time) {
-        NSNumber *timestamp = [_storeDictionary objectForKey:@"time"];
-        NSAssert(timestamp != nil, @"time error: %@", _storeDictionary);
-        _time = NSDateFromNumber(timestamp);
-    }
-    return _time;
-}
-
 @end
 
-@implementation DIMHistoryCommand (Runtime)
+#pragma mark - Creation
 
-+ (nullable Class)classForHistoryCommand:(NSString *)cmd {
-    // NOTICE: here combine all history commands into common command pool
-    return [self classForCommand:cmd];
-}
+@implementation DIMHistoryCommand (Creation)
 
-+ (nullable instancetype)getInstance:(id)content {
-    if (!content) {
-        return nil;
++ (nullable __kindof DIMHistoryCommand *)parse:(NSDictionary *)cmd {
+    // Group Commands
+    id group = [cmd objectForKey:@"group"];
+    if (group) {
+        return [DIMGroupCommand parse:cmd];
     }
-    if ([content isKindOfClass:[DIMHistoryCommand class]]) {
-        // return HistoryCommand object directly
-        return content;
-    }
-    NSAssert([content isKindOfClass:[NSDictionary class]], @"history error: %@", content);
-    if ([self isEqual:[DIMHistoryCommand class]]) {
-        // check group
-        NSString *group = [content objectForKey:@"group"];
-        if (group) {
-            // group history command
-            return [DIMGroupCommand getInstance:content];
-        }
-        // create instance by subclass with command name
-        NSString *command = [content objectForKey:@"command"];
-        Class clazz = [self classForHistoryCommand:command];
-        if (clazz) {
-            return [clazz getInstance:content];
-        }
-    }
-    // custom history command
-    return [[self alloc] initWithDictionary:content];
+    return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
 }
 
 @end

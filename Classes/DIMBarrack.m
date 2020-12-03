@@ -37,13 +37,11 @@
 
 #import "DIMBarrack.h"
 
-typedef NSMutableDictionary<NSString *, DIMID *> IDTableM;
-typedef NSMutableDictionary<DIMID *, DIMUser *> UserTableM;
-typedef NSMutableDictionary<DIMID *, DIMGroup *> GroupTableM;
+typedef NSMutableDictionary<NSString *, DIMUser *> UserTableM;
+typedef NSMutableDictionary<NSString *, DIMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
-    IDTableM *_idTable;
     UserTableM *_userTable;
     GroupTableM *_groupTable;
 }
@@ -71,7 +69,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (instancetype)init {
     if (self = [super init]) {
-        _idTable = [[IDTableM alloc] init];
         _userTable = [[UserTableM alloc] init];
         _groupTable = [[GroupTableM alloc] init];
     }
@@ -80,23 +77,16 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (NSInteger)reduceMemory {
     NSInteger finger = 0;
-    finger = thanos(_idTable, finger);
     finger = thanos(_userTable, finger);
     finger = thanos(_groupTable, finger);
     return finger >> 1;
-}
-
-- (BOOL)cacheID:(DIMID *)ID {
-    NSAssert([ID isValid], @"ID not valid: %@", ID);
-    [_idTable setObject:ID forKey:ID];
-    return YES;
 }
 
 - (BOOL)cacheUser:(DIMUser *)user {
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
-    [_userTable setObject:user forKey:user.ID];
+    [_userTable setObject:user forKey:user.ID.string];
     return YES;
 }
 
@@ -104,50 +94,25 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
-    [_groupTable setObject:group forKey:group.ID];
+    [_groupTable setObject:group forKey:group.ID.string];
     return YES;
 }
 
-- (nullable DIMID *)createID:(NSString *)string {
+- (nullable DIMUser *)createUser:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-- (nullable DIMUser *)createUser:(DIMID *)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-- (nullable DIMGroup *)createGroup:(DIMID *)ID {
+- (nullable DIMGroup *)createGroup:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
 #pragma mark - DIMEntityDelegate
 
-- (nullable DIMID *)IDWithString:(NSString *)string {
-    if (!string) {
-        return nil;
-    } else if ([string isKindOfClass:[DIMID class]]) {
-        return (DIMID *)string;
-    }
-    // 1. get from ID cache
-    DIMID *ID = [_idTable objectForKey:string];
-    if (ID) {
-        return ID;
-    }
-    // 2. create and cache it
-    ID = [self createID:string];
-    if (ID && [self cacheID:ID]) {
-        return ID;
-    }
-    NSAssert(false, @"failed to create ID: %@", string);
-    return nil;
-}
-
-- (nullable __kindof DIMUser *)userWithID:(DIMID *)ID {
+- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
-    DIMUser *user = [_userTable objectForKey:ID];
+    DIMUser *user = [_userTable objectForKey:ID.string];
     if (user) {
         return user;
     }
@@ -160,9 +125,9 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable __kindof DIMGroup *)groupWithID:(DIMID *)ID {
+- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID {
     // 1. get from group cache
-    DIMGroup *group = [_groupTable objectForKey:ID];
+    DIMGroup *group = [_groupTable objectForKey:ID.string];
     if (group) {
         return group;
     }
@@ -177,54 +142,28 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 #pragma mark - MKMEntityDataSource
 
-- (nullable DIMMeta *)metaForID:(DIMID *)ID {
+- (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID {
     NSAssert(false, @"override me!");
     return nil;
 }
 
-- (nullable __kindof DIMProfile *)profileForID:(DIMID *)ID {
+- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
+                                          withType:(nullable NSString *)type {
     NSAssert(false, @"override me!");
     return nil;
 }
 
 #pragma mark - MKMUserDataSource
 
-- (nullable NSArray<DIMID *> *)contactsOfUser:(DIMID *)user {
+- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
     NSAssert(false, @"override me!");
     return nil;
 }
 
-- (nullable id<DIMEncryptKey>)publicKeyForEncryption:(nonnull DIMID *)user {
-    NSAssert([user isUser], @"user ID error: %@", user);
-    id<DIMEncryptKey> key = nil;
-    // get profile.key
-    DIMProfile *profile = [self profileForID:user];
-    if (profile) {
-        key = [profile key];
-        if (key) {
-            // if profile.key exists,
-            //     use it for encryption
-            return key;
-        }
-    }
-    // get meta.key
-    DIMMeta *meta = [self metaForID:user];
-    if (meta) {
-        id<DIMPublicKey> metaKey = [meta key];
-        if ([meta conformsToProtocol:@protocol(DIMEncryptKey)]) {
-            // if profile.key not exists and meta.key is encrypt key,
-            //     use it for encryption
-            key = (id<DIMEncryptKey>) metaKey;
-        }
-    }
-    return key;
-}
-
-- (nullable NSArray<id<DIMVerifyKey>> *)publicKeysForVerification:(nonnull DIMID *)user {
-    NSAssert([user isUser], @"user ID error: %@", user);
+- (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
     NSMutableArray<id<DIMVerifyKey>> *keys = [[NSMutableArray alloc] init];
     // get profile.key
-    DIMProfile *profile = [self profileForID:user];
+    id<MKMVisa> profile = [self documentForID:user withType:MKMDocument_Visa];
     if (profile) {
         id<DIMEncryptKey> profileKey = [profile key];
         if ([profileKey conformsToProtocol:@protocol(DIMVerifyKey)]) {
@@ -234,9 +173,9 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         }
     }
     // get meta.key
-    DIMMeta *meta = [self metaForID:user];
+    id<MKMMeta> meta = [self metaForID:user];
     if (meta) {
-        id<DIMPublicKey> metaKey = [meta key];
+        id<MKMVerifyKey> metaKey = [meta key];
         if (metaKey) {
             // the sender may use identity key to sign message.data,
             // try to verify it with meta.key
@@ -246,22 +185,26 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return keys;
 }
 
-- (nullable NSArray<DIMPrivateKey *> *)privateKeysForDecryption:(DIMID *)user {
+- (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
     NSAssert(false, @"override me!");
     return nil;
 }
 
-- (nullable DIMPrivateKey *)privateKeyForSignature:(DIMID *)user {
+- (id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user {
+    NSAssert(false, @"override me!");
+    return nil;
+}
+
+- (id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user {
     NSAssert(false, @"override me!");
     return nil;
 }
 
 #pragma mark - MKMGroupDataSource
 
-- (nullable DIMID *)founderOfGroup:(DIMID *)group {
-    NSAssert([group isGroup], @"group ID error: %@", group);
+- (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     // check for broadcast
-    if ([group isBroadcast]) {
+    if ([MKMID isBroadcast:group]) {
         NSString *founder;
         NSString *name = [group name];
         NSUInteger len = [name length];
@@ -274,15 +217,14 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             //          'anyone@anywhere', or 'xxx.founder@anywhere'
             founder = [name stringByAppendingString:@".founder@anywhere"];
         }
-        return [self IDWithString:founder];
+        return MKMIDFromString(founder);
     }
     return nil;
 }
 
-- (nullable DIMID *)ownerOfGroup:(DIMID *)group {
-    NSAssert([group isGroup], @"group ID error: %@", group);
+- (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group {
     // check for broadcast
-    if ([group isBroadcast]) {
+    if ([MKMID isBroadcast:group]) {
         NSString *owner;
         NSString *name = [group name];
         NSUInteger len = [name length];
@@ -295,15 +237,14 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             //          'anyone@anywhere', or 'xxx.owner@anywhere'
             owner = [name stringByAppendingString:@".owner@anywhere"];
         }
-        return [self IDWithString:owner];
+        return MKMIDFromString(owner);
     }
     return nil;
 }
 
-- (nullable NSArray<DIMID *> *)membersOfGroup:(DIMID *)group {
-    NSAssert([group isGroup], @"group ID error: %@", group);
+- (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
     // check for broadcast
-    if ([group isBroadcast]) {
+    if ([MKMID isBroadcast:group]) {
         NSString *member;
         NSString *name = [group name];
         NSUInteger len = [name length];
@@ -316,8 +257,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             //          'anyone@anywhere', or 'xxx.member@anywhere'
             member = [name stringByAppendingString:@".member@anywhere"];
         }
-        DIMID *ID = [self IDWithString:member];
-        DIMID *owner = [self ownerOfGroup:group];
+        id<MKMID>ID = MKMIDFromString(member);
+        id<MKMID>owner = [self ownerOfGroup:group];
         if ([ID isEqual:owner]) {
             return [[NSArray alloc] initWithObjects:owner, nil];
         } else {

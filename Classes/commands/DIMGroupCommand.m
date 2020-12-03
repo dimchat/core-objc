@@ -35,94 +35,62 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
-
 #import "DIMGroupCommand.h"
 
 @implementation DIMGroupCommand
 
 - (instancetype)initWithCommand:(NSString *)cmd
-                          group:(DIMID *)groupID {
+                          group:(id<MKMID>)groupID {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [_storeDictionary setObject:groupID forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
     }
     return self;
 }
 
 - (instancetype)initWithCommand:(NSString *)cmd
-                          group:(DIMID *)groupID
-                         member:(DIMID *)memberID {
+                          group:(id<MKMID>)groupID
+                         member:(id<MKMID>)memberID {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [_storeDictionary setObject:groupID forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
         // Member ID
         if (memberID) {
-            [_storeDictionary setObject:memberID forKey:@"member"];
+            [self setObject:memberID forKey:@"member"];
         }
     }
     return self;
 }
 
 - (instancetype)initWithCommand:(NSString *)cmd
-                          group:(DIMID *)groupID
-                        members:(NSArray<DIMID *> *)list {
+                          group:(id<MKMID>)groupID
+                        members:(NSArray<id<MKMID>> *)list {
     
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [_storeDictionary setObject:groupID forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
         // Members
         if (list.count > 0) {
-            [_storeDictionary setObject:list forKey:@"members"];
+            [self setObject:list forKey:@"members"];
         }
     }
     return self;
 }
 
 - (nullable NSString *)member {
-    return [_storeDictionary objectForKey:@"member"];
+    return [self objectForKey:@"member"];
 }
 
 - (NSArray<NSString *> *)members {
-    return [_storeDictionary objectForKey:@"members"];
-}
-
-@end
-
-@implementation DIMGroupCommand (Runtime)
-
-+ (nullable Class)classForGroupCommand:(NSString *)cmd {
-    // NOTICE: here combine all group commands into common command pool
-    return [self classForCommand:cmd];
-}
-
-+ (nullable instancetype)getInstance:(id)content {
-    if (!content) {
-        return nil;
-    }
-    if ([content isKindOfClass:[DIMGroupCommand class]]) {
-        // return GroupCommand object directly
-        return content;
-    }
-    NSAssert([content isKindOfClass:[NSDictionary class]], @"group command error: %@", content);
-    if ([self isEqual:[DIMGroupCommand class]]) {
-        // create instance by subclass with group command name
-        NSString *command = [content objectForKey:@"command"];
-        Class clazz = [self classForGroupCommand:command];
-        if (clazz) {
-            return [clazz getInstance:content];
-        }
-    }
-    // custom group command
-    return [[self alloc] initWithDictionary:content];
+    return [self objectForKey:@"members"];
 }
 
 @end
@@ -131,11 +99,11 @@
 
 @implementation DIMInviteCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID member:(DIMID *)memberID {
+- (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
     return [self initWithCommand:DIMGroupCommand_Invite group:groupID member:memberID];
 }
 
-- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
     return [self initWithCommand:DIMGroupCommand_Invite group:groupID members:list];
 }
 
@@ -143,11 +111,11 @@
 
 @implementation DIMExpelCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID member:(DIMID *)memberID {
+- (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
     return [self initWithCommand:DIMGroupCommand_Expel group:groupID member:memberID];
 }
 
-- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
     return [self initWithCommand:DIMGroupCommand_Expel group:groupID members:list];
 }
 
@@ -155,7 +123,7 @@
 
 @implementation DIMJoinCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID {
+- (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommand:DIMGroupCommand_Join group:groupID];
 }
 
@@ -163,7 +131,7 @@
 
 @implementation DIMQuitCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID {
+- (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommand:DIMGroupCommand_Quit group:groupID];
 }
 
@@ -173,7 +141,7 @@
 
 @implementation DIMResetGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID members:(NSArray<DIMID *> *)list {
+- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
     return [self initWithCommand:DIMGroupCommand_Reset group:groupID members:list];
 }
 
@@ -181,8 +149,38 @@
 
 @implementation DIMQueryGroupCommand
 
-- (instancetype)initWithGroup:(DIMID *)groupID {
+- (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommand:DIMGroupCommand_Query group:groupID];
+}
+
+@end
+
+#pragma mark - Creation
+
+@implementation DIMGroupCommand (Creation)
+
++ (nullable __kindof DIMGroupCommand *)parse:(NSDictionary *)cmd {
+    // check command names
+    NSString *command = [cmd objectForKey:@"command"];
+    if ([command isEqualToString:DIMGroupCommand_Invite]) {
+        return [[DIMInviteCommand alloc] initWithDictionary:cmd];
+    }
+    if ([command isEqualToString:DIMGroupCommand_Expel]) {
+        return [[DIMExpelCommand alloc] initWithDictionary:cmd];
+    }
+    if ([command isEqualToString:DIMGroupCommand_Join]) {
+        return [[DIMJoinCommand alloc] initWithDictionary:cmd];
+    }
+    if ([command isEqualToString:DIMGroupCommand_Quit]) {
+        return [[DIMQuitCommand alloc] initWithDictionary:cmd];
+    }
+    if ([command isEqualToString:DIMGroupCommand_Query]) {
+        return [[DIMQueryGroupCommand alloc] initWithDictionary:cmd];
+    }
+    if ([command isEqualToString:DIMGroupCommand_Reset]) {
+        return [[DIMResetGroupCommand alloc] initWithDictionary:cmd];
+    }
+    return [[DIMGroupCommand alloc] initWithDictionary:cmd];
 }
 
 @end

@@ -35,14 +35,14 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMContent.h"
+#import "dimMacros.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMForwardContent : DIMContent
+@interface DIMForwardContent : DKDContent
 
 // Top-Secret message forwarded by a proxy (Service Provider)
-@property (readonly, nonatomic) DIMReliableMessage *forwardMessage;
+@property (readonly, nonatomic) id<DKDReliableMessage> forwardMessage;
 
 /*
  *  Top-Secret message: {
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      forward : {...}  // reliable (secure + certified) message
  *  }
  */
-- (instancetype)initWithForwardMessage:(DIMReliableMessage *)rMsg;
+- (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

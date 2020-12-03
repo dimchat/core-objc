@@ -35,11 +35,11 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMContent.h"
+#import "dimMacros.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMFileContent : DIMContent
+@interface DIMFileContent : DKDContent
 
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong, nonatomic, nullable) NSString *filename;
 
 // for decrypt file data after download from CDN
-@property (strong, nonatomic, nullable) NSDictionary *password;
+@property (strong, nonatomic, nullable) id<MKMSymmetricKey> password;
 
 /*
  *  File message: {

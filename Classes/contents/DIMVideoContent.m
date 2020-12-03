@@ -65,7 +65,7 @@
 }
 
 - (nullable NSData *)snapshot {
-    NSString *ss = [_storeDictionary objectForKey:@"snapshot"];
+    NSString *ss = [self objectForKey:@"snapshot"];
     return MKMBase64Decode(ss);
 }
 

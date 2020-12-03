@@ -39,7 +39,7 @@
 
 @interface DKDContent (Hacking)
 
-@property (nonatomic) UInt8 type;
+@property (nonatomic) DKDContentType type;
 
 @end
 
@@ -65,7 +65,7 @@
 }
 
 - (nullable NSData *)thumbnail {
-    NSString *small = [_storeDictionary objectForKey:@"thumbnail"];
+    NSString *small = [self objectForKey:@"thumbnail"];
     
     if(small == nil){
         return nil;

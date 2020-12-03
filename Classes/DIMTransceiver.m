@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "NSObject+Singleton.h"
-
 #import "DIMForwardContent.h"
 #import "DIMTextContent.h"
 #import "DIMFileContent.h"
@@ -53,7 +51,6 @@
 #import "DIMProfileCommand.h"
 
 #import "DIMBarrack.h"
-#import "DIMKeyCache.h"
 
 #import "DIMFileContent.h"
 
@@ -61,75 +58,59 @@
 
 static inline void loadContentClasses(void) {
     // Top-Secret
-    [DIMContent registerClass:[DIMForwardContent class]
-                      forType:DKDContentType_Forward];
+    DKDContentParserRegister(DKDContentType_Forward, DIMForwardContent);
+    
     // Text
-    [DIMContent registerClass:[DIMTextContent class]
-                      forType:DKDContentType_Text];
+    DKDContentParserRegister(DKDContentType_Text, DIMTextContent);
     
     // File
-    [DIMContent registerClass:[DIMFileContent class]
-                      forType:DKDContentType_File];
+    DKDContentParserRegister(DKDContentType_File, DIMFileContent);
     // Image
-    [DIMContent registerClass:[DIMImageContent class]
-                      forType:DKDContentType_Image];
+    DKDContentParserRegister(DKDContentType_Image, DIMImageContent);
     // Audio
-    [DIMContent registerClass:[DIMAudioContent class]
-                      forType:DKDContentType_Audio];
+    DKDContentParserRegister(DKDContentType_Audio, DIMAudioContent);
     // Video
-    [DIMContent registerClass:[DIMVideoContent class]
-                      forType:DKDContentType_Video];
+    DKDContentParserRegister(DKDContentType_Video, DIMVideoContent);
     
     // Web Page
-    [DIMContent registerClass:[DIMWebpageContent class]
-                      forType:DKDContentType_Page];
+    DKDContentParserRegister(DKDContentType_Page, DIMWebpageContent);
     
     // Command
-    [DIMContent registerClass:[DIMCommand class]
-                      forType:DKDContentType_Command];
+    DKDContentParserRegisterCall(DKDContentType_Command, DIMCommand);
     // History Command
-    [DIMContent registerClass:[DIMHistoryCommand class]
-                      forType:DKDContentType_History];
+    DKDContentParserRegisterCall(DKDContentType_History, DIMHistoryCommand);
 }
 
 static inline void loadCommandClasses(void) {
     // meta
-    [DIMCommand registerClass:[DIMMetaCommand class]
-                   forCommand:DIMCommand_Meta];
+    DIMCommandParserRegister(DIMCommand_Meta, DIMMetaCommand);
     // profile
-    [DIMCommand registerClass:[DIMProfileCommand class]
-                   forCommand:DIMCommand_Profile];
+    DIMCommandParserRegister(DIMCommand_Profile, DIMProfileCommand);
 }
 
 static inline void loadGroupCommandClasses(void) {
     // invite
-    [DIMGroupCommand registerClass:[DIMInviteCommand class]
-                        forCommand:DIMGroupCommand_Invite];
+    DIMCommandParserRegister(DIMGroupCommand_Invite, DIMInviteCommand);
     // expel
-    [DIMGroupCommand registerClass:[DIMExpelCommand class]
-                        forCommand:DIMGroupCommand_Expel];
+    DIMCommandParserRegister(DIMGroupCommand_Expel, DIMExpelCommand);
     // join
-    [DIMGroupCommand registerClass:[DIMJoinCommand class]
-                        forCommand:DIMGroupCommand_Join];
+    DIMCommandParserRegister(DIMGroupCommand_Join, DIMJoinCommand);
     // quit
-    [DIMGroupCommand registerClass:[DIMQuitCommand class]
-                        forCommand:DIMGroupCommand_Quit];
+    DIMCommandParserRegister(DIMGroupCommand_Quit, DIMQuitCommand);
     
     // reset
-    [DIMGroupCommand registerClass:[DIMResetGroupCommand class]
-                        forCommand:DIMGroupCommand_Reset];
+    DIMCommandParserRegister(DIMGroupCommand_Reset, DIMResetGroupCommand);
     // query
-    [DIMGroupCommand registerClass:[DIMQueryGroupCommand class]
-                        forCommand:DIMGroupCommand_Query];
+    DIMCommandParserRegister(DIMGroupCommand_Query, DIMQueryGroupCommand);
 }
 
-static inline BOOL isBroadcast(DIMMessage *msg, DIMTransceiver *tranceiver) {
+static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     if (!msg.delegate) {
         msg.delegate = tranceiver;
     }
-    DIMID *receiver;
+    id<MKMID>receiver;
     if ([msg isKindOfClass:[DIMInstantMessage class]]) {
-        DIMInstantMessage *iMsg = (DIMInstantMessage *)msg;
+        id<DKDInstantMessage>iMsg = (id<DKDInstantMessage>)msg;
         receiver = iMsg.content.group;
     } else {
         receiver = msg.envelope.group;
@@ -137,15 +118,15 @@ static inline BOOL isBroadcast(DIMMessage *msg, DIMTransceiver *tranceiver) {
     if (!receiver) {
         receiver = msg.envelope.receiver;
     }
-    return [receiver isBroadcast];
+    return [MKMID isBroadcast:receiver];
 }
 
-static inline DIMID *overt_group(DIMContent *content) {
-    DIMID *group = content.group;
+static inline id<MKMID>overt_group(id<DKDContent> content) {
+    id<MKMID>group = content.group;
     if (!group) {
         return nil;
     }
-    if ([group isBroadcast]) {
+    if ([MKMID isBroadcast:group]) {
         // broadcast message is always overt
         return group;
     }
@@ -168,33 +149,23 @@ static inline DIMID *overt_group(DIMContent *content) {
         _keyCache = nil;
         
         // register all command/contant classes
-        SingletonDispatchOnce(^{
+        //SingletonDispatchOnce(^{
             // register content classes
             loadContentClasses();
             // register commands
             loadCommandClasses();
             // register group command classes
             loadGroupCommandClasses();
-        });
+        //});
     }
     return self;
 }
 
-#pragma mark DKDMessageDelegate
-
-- (nullable id)parseID:(id)string {
-    return [_barrack IDWithString:string];
-}
-
 #pragma mark DKDInstantMessageDelegate
 
-- (nullable DKDContent *)parseContent:(id)content {
-    return DIMContentFromDictionary(content);
-}
-
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
-            serializeContent:(DIMContent *)content
-                     withKey:(NSDictionary *)password {
+- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
+            serializeContent:(id<DKDContent>)content
+                     withKey:(id<MKMSymmetricKey>)password {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
     
@@ -202,15 +173,13 @@ static inline DIMID *overt_group(DIMContent *content) {
     return MKMJSONEncode(content);
 }
 
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
               encryptContent:(NSData *)data
-                     withKey:(NSDictionary *)password {
-    DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
-    NSAssert(key && key == password, @"irregular symmetric key: %@", password);
-    return [key encrypt:data];
+                     withKey:(id<MKMSymmetricKey>)password {
+    return [password encrypt:data];
 }
 
-- (nullable NSObject *)message:(DIMInstantMessage *)iMsg
+- (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
                     encodeData:(NSData *)data {
     if (isBroadcast(iMsg, self)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
@@ -220,8 +189,8 @@ static inline DIMID *overt_group(DIMContent *content) {
     return MKMBase64Encode(data);
 }
 
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
-                serializeKey:(DIMSymmetricKey *)password {
+- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
+                serializeKey:(id<MKMSymmetricKey>)password {
     if (isBroadcast(iMsg, self)) {
         // broadcast message has no key
         return nil;
@@ -229,18 +198,17 @@ static inline DIMID *overt_group(DIMContent *content) {
     return MKMJSONEncode(password);
 }
 
-- (nullable NSData *)message:(DIMInstantMessage *)iMsg
+- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
                   encryptKey:(NSData *)data
-                 forReceiver:(NSString *)receiver {
+                 forReceiver:(id<MKMID>)receiver {
     NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
-    DIMID *ID = [_barrack IDWithString:receiver];
-    DIMUser *contact = [_barrack userWithID:ID];
+    DIMUser *contact = [_barrack userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
     return [contact encrypt:data];
 }
 
-- (nullable NSObject *)message:(DIMInstantMessage *)iMsg
+- (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
                      encodeKey:(NSData *)data {
     NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     return MKMBase64Encode(data);
@@ -248,22 +216,22 @@ static inline DIMID *overt_group(DIMContent *content) {
 
 #pragma mark DKDSecureMessageDelegate
 
-- (nullable NSData *)message:(DIMSecureMessage *)sMsg
+- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                    decodeKey:(NSObject *)dataString {
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     return MKMBase64Decode((NSString *)dataString);
 }
 
-- (nullable NSData *)message:(DIMSecureMessage *)sMsg
+- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                   decryptKey:(nullable NSData *)key
-                        from:(NSString *)sender
-                          to:(NSString *)receiver {
+                        from:(id<MKMID>)sender
+                          to:(id<MKMID>)receiver {
     if (!key) {
         return nil;
     }
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
-    DIMID *ID = sMsg.envelope.receiver;
+    id<MKMID>ID = sMsg.envelope.receiver;
     DIMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     NSData *plaintext = [user decrypt:key];
@@ -274,10 +242,10 @@ static inline DIMID *overt_group(DIMContent *content) {
     return plaintext;
 }
 
-- (nullable DIMSymmetricKey *)message:(DIMSecureMessage *)sMsg
+- (nullable id<MKMSymmetricKey>)message:(id<DKDSecureMessage>)sMsg
                        deserializeKey:(NSData *)data
-                                 from:(NSString *)sender
-                                   to:(NSString *)receiver {
+                                 from:(id<MKMID>)sender
+                                   to:(id<MKMID>)receiver {
     if (data) {
         NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
         NSDictionary *dict = MKMJSONDecode(data);
@@ -290,29 +258,26 @@ static inline DIMID *overt_group(DIMContent *content) {
         return MKMSymmetricKeyFromDictionary(dict);
     } else {
         // get key from cache
-        DIMID *from = [_barrack IDWithString:sender];
-        DIMID *to = [_barrack IDWithString:receiver];
-        return [_keyCache cipherKeyFrom:from to:to];
+        return [_keyCache cipherKeyFrom:sender to:receiver];
     }
 }
 
-- (nullable NSData *)message:(DIMSecureMessage *)sMsg
+- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                   decodeData:(NSObject *)dataString {
     if (isBroadcast(sMsg, self)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
-        return MKMUTF8Encode(dataString);
+        NSString *string = (NSString *)dataString;
+        return MKMUTF8Encode(string);
     }
     return MKMBase64Decode((NSString *)dataString);
 }
 
-- (nullable NSData *)message:(DIMSecureMessage *)sMsg
+- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
               decryptContent:(NSData *)data
-                     withKey:(NSDictionary *)password {
-    DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
-    NSAssert(key == password, @"irregular symmetric key: %@", password);
+                     withKey:(id<MKMSymmetricKey>)password {
     // decrypt message.data
-    NSData *plaintext = [key decrypt:data];
+    NSData *plaintext = [password decrypt:data];
     if (plaintext.length == 0) {
         NSAssert(false, @"failed to decrypt data: %@, key: %@, env: %@", data, password, sMsg.envelope);
         return nil;
@@ -320,31 +285,29 @@ static inline DIMID *overt_group(DIMContent *content) {
     return plaintext;
 }
 
-- (nullable DIMContent *)message:(DIMSecureMessage *)sMsg
-              deserializeContent:(NSData *)data
-                         withKey:(NSDictionary *)password {
+- (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg
+                deserializeContent:(NSData *)data
+                           withKey:(id<MKMSymmetricKey>)password {
     NSDictionary *dict = MKMJSONDecode(data);
     // TODO: translate short keys
     //       'T' -> 'type'
     //       'N' -> 'sn'
     //       'G' -> 'group'
-    DIMContent *content = DIMContentFromDictionary(dict);
+    id<DKDContent> content = DKDContentFromDictionary(dict);
     
     if (!isBroadcast(sMsg, self)) {
-        DIMSymmetricKey *key = MKMSymmetricKeyFromDictionary(password);
-        NSAssert(key == password, @"irregular symmetric key: %@", password);
         // check and cache key for reuse
-        DIMID *sender = sMsg.envelope.sender;
-        DIMID *group = overt_group(content);
+        id<MKMID>sender = sMsg.envelope.sender;
+        id<MKMID>group = overt_group(content);
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
-            [_keyCache cacheCipherKey:key from:sender to:group];
+            [_keyCache cacheCipherKey:password from:sender to:group];
         } else {
-            DIMID *receiver = sMsg.envelope.receiver;
+            id<MKMID>receiver = sMsg.envelope.receiver;
             // personal message or (group) command
             // cache key with direction (sender -> receiver)
-            [_keyCache cacheCipherKey:key from:sender to:receiver];
+            [_keyCache cacheCipherKey:password from:sender to:receiver];
         }
     }
 
@@ -353,33 +316,31 @@ static inline DIMID *overt_group(DIMContent *content) {
     return content;
 }
 
-- (nullable NSData *)message:(DIMSecureMessage *)sMsg
+- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                     signData:(NSData *)data
-                   forSender:(NSString *)sender {
-    DIMID *ID = [_barrack IDWithString:sender];
-    DIMUser *user = [_barrack userWithID:ID];
+                   forSender:(id<MKMID>)sender {
+    DIMUser *user = [_barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
 
-- (nullable NSObject *)message:(DIMSecureMessage *)sMsg
+- (nullable NSObject *)message:(id<DKDSecureMessage>)sMsg
                encodeSignature:(NSData *)signature {
     return MKMBase64Encode(signature);
 }
 
 #pragma mark DKDReliableMessageDelegate
 
-- (nullable NSData *)message:(DIMReliableMessage *)rMsg
+- (nullable NSData *)message:(id<DKDReliableMessage>)rMsg
              decodeSignature:(NSObject *)signatureString {
     return MKMBase64Decode((NSString *)signatureString);
 }
 
-- (BOOL)message:(DIMReliableMessage *)rMsg
+- (BOOL)message:(id<DKDReliableMessage>)rMsg
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
-      forSender:(NSString *)sender {
-    DIMID *ID = [_barrack IDWithString:sender];
-    DIMUser *user = [_barrack userWithID:ID];
+      forSender:(id<MKMID>)sender {
+    DIMUser *user = [_barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }
@@ -390,11 +351,11 @@ static inline DIMID *overt_group(DIMContent *content) {
 
 @implementation DIMTransceiver (Serialization)
 
-- (nullable NSData *)serializeMessage:(DIMReliableMessage *)rMsg {
+- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg {
     return MKMJSONEncode(rMsg);
 }
 
-- (nullable DIMReliableMessage *)deserializeMessage:(NSData *)data {
+- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data {
     NSDictionary *dict = MKMJSONDecode(data);
     // TODO: translate short keys
     //       'S' -> 'sender'
@@ -415,9 +376,9 @@ static inline DIMID *overt_group(DIMContent *content) {
 
 @implementation DIMTransceiver (Transform)
 
-- (DIMSymmetricKey *)_passwordFrom:(DIMID *)sender to:(DIMID *)receiver {
+- (id<MKMSymmetricKey>)_passwordFrom:(id<MKMID>)sender to:(id<MKMID>)receiver {
     // get old key from store
-    DIMSymmetricKey *key = [_keyCache cipherKeyFrom:sender to:receiver];
+    id<MKMSymmetricKey>key = [_keyCache cipherKeyFrom:sender to:receiver];
     if (!key) {
         // create new key and cache it
         key = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
@@ -427,13 +388,13 @@ static inline DIMID *overt_group(DIMContent *content) {
     return key;
 }
 
-- (nullable DIMSecureMessage *)encryptMessage:(DIMInstantMessage *)iMsg {
+- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
     // check message delegate
     if (!iMsg.delegate) {
         iMsg.delegate = self;
     }
-    DIMID *sender = iMsg.envelope.sender;
-    DIMID *receiver = iMsg.envelope.receiver;
+    id<MKMID>sender = iMsg.envelope.sender;
+    id<MKMID>receiver = iMsg.envelope.receiver;
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
     
@@ -451,8 +412,8 @@ static inline DIMID *overt_group(DIMContent *content) {
     //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
-    DIMID *group = overt_group(iMsg.content);
-    DIMSymmetricKey *password;
+    id<MKMID>group = overt_group(iMsg.content);
+    id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)
         password = [self _passwordFrom:sender to:group];
@@ -464,14 +425,13 @@ static inline DIMID *overt_group(DIMContent *content) {
     NSAssert(iMsg.content, @"content cannot be empty");
     
     // 2. encrypt 'content' to 'data' for receiver/group members
-    DIMSecureMessage *sMsg = nil;
-    if ([receiver isGroup]) {
+    id<DKDSecureMessage>sMsg = nil;
+    if ([MKMID isGroup:receiver]) {
         // group message
         DIMGroup *grp = [_barrack groupWithID:receiver];
         sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
     } else {
         // personal message (or split group message)
-        NSAssert([receiver isUser], @"receiver ID error: %@", receiver);
         sMsg = [iMsg encryptWithKey:password];
     }
     
@@ -492,7 +452,7 @@ static inline DIMID *overt_group(DIMContent *content) {
     return sMsg;
 }
 
-- (nullable DIMReliableMessage *)signMessage:(DIMSecureMessage *)sMsg {
+- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
     // check message delegate
     if (sMsg.delegate == nil) {
         sMsg.delegate = self;
@@ -502,7 +462,7 @@ static inline DIMID *overt_group(DIMContent *content) {
     return [sMsg sign];
 }
 
-- (nullable DIMSecureMessage *)verifyMessage:(DIMReliableMessage *)rMsg {
+- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
     //
     //  TODO: check [Meta Protocol]
     //        make sure the sender's meta exists
@@ -518,7 +478,7 @@ static inline DIMID *overt_group(DIMContent *content) {
     return [rMsg verify];
 }
 
-- (nullable DIMInstantMessage *)decryptMessage:(DIMSecureMessage *)sMsg {
+- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
     //
     //  NOTICE: make sure the receiver is YOU!
     //          which means the receiver's private key exists;

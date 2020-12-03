@@ -44,14 +44,14 @@
     if (self = [self initWithType:DKDContentType_Text]) {
         // text
         if (text) {
-            [_storeDictionary setObject:text forKey:@"text"];
+            [self setObject:text forKey:@"text"];
         }
     }
     return self;
 }
 
 - (NSString *)text {
-    return [_storeDictionary objectForKey:@"text"];
+    return [self objectForKey:@"text"];
 }
 
 @end

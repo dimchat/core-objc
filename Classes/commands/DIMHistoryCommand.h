@@ -41,8 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMHistoryCommand : DIMCommand
 
-@property (readonly, strong, nonatomic) NSDate *time;
-
 /*
  *  History command: {
  *      type : 0x89,
@@ -79,5 +77,13 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMGroupCommand_Hire       @"hire"
 #define DIMGroupCommand_Fire       @"fire"
 #define DIMGroupCommand_Resign     @"resign"
+
+#pragma mark - Creation
+
+@interface DIMHistoryCommand (Creation)
+
++ (nullable __kindof DIMHistoryCommand *)parse:(NSDictionary *)cmd;
+
+@end
 
 NS_ASSUME_NONNULL_END

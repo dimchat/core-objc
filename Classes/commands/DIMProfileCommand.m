@@ -41,7 +41,7 @@
 
 @interface DIMProfileCommand ()
 
-@property (strong, nonatomic, nullable) DIMProfile *profile;
+@property (strong, nonatomic, nullable) id<MKMDocument> profile;
 
 @end
 
@@ -57,46 +57,46 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(UInt8)type {
+- (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
         _profile = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID {
+- (instancetype)initWithID:(id<MKMID>)ID {
     return [self initWithID:ID meta:nil profile:nil];
 }
 
-- (instancetype)initWithID:(MKMID *)ID signature:(NSString *)signature {
+- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature {
     if (self = [self initWithID:ID meta:nil profile:nil]) {
         if (signature) {
-            [_storeDictionary setObject:signature forKey:@"signature"];
+            [self setObject:signature forKey:@"signature"];
         }
     }
     return self;
 }
 
-- (instancetype)initWithID:(DIMID *)ID profile:(DIMProfile *)profile {
+- (instancetype)initWithID:(id<MKMID>)ID profile:(id<MKMDocument>)profile {
     return [self initWithID:ID meta:nil profile:profile];
 }
 
-- (instancetype)initWithID:(DIMID *)ID
-                      meta:(nullable DIMMeta *)meta
-                   profile:(nullable DIMProfile *)profile {
+- (instancetype)initWithID:(id<MKMID>)ID
+                      meta:(nullable id<MKMMeta>)meta
+                   profile:(nullable id<MKMDocument>)profile {
     if (self = [self initWithCommand:DIMCommand_Profile]) {
         // ID
         if (ID) {
-            [_storeDictionary setObject:ID forKey:@"ID"];
+            [self setObject:ID forKey:@"ID"];
         }
         // meta
         if (meta) {
-            [_storeDictionary setObject:meta forKey:@"meta"];
+            [self setObject:meta forKey:@"meta"];
         }
         
         // profile
         if (profile) {
-            [_storeDictionary setObject:profile forKey:@"profile"];
+            [self setObject:profile forKey:@"profile"];
         }
         _profile = profile;
     }
@@ -111,18 +111,18 @@
     return cmd;
 }
 
-- (nullable DIMProfile *)profile {
+- (nullable id<MKMDocument>)profile {
     if (!_profile) {
-        NSObject *data = [_storeDictionary objectForKey:@"profile"];
+        NSObject *data = [self objectForKey:@"profile"];
         if ([data isKindOfClass:[NSString class]]) {
             // compatible with v1.0
             //    "ID"        : "{ID}",
             //    "profile"   : "{JsON}",
             //    "signature" : "{BASE64}"
-            NSString *ID = self.ID;
-            NSString *signature = [_storeDictionary objectForKey:@"signature"];
+            id<MKMID> ID = self.ID;
+            NSString *signature = [self objectForKey:@"signature"];
             if (!ID || !signature) {
-                NSAssert(false, @"profile ID & signature should not be empty: %@", _storeDictionary);
+                NSAssert(false, @"profile ID & signature should not be empty: %@", self);
                 return nil;
             }
             NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
@@ -140,13 +140,15 @@
             //    }
             NSAssert(!data || [data isKindOfClass:[NSDictionary class]], @"profile data error: %@", data);
         }
-        _profile = MKMProfileFromDictionary(data);
+        if ([data isKindOfClass:[NSDictionary class]]) {
+            _profile = MKMDocumentFromDictionary((NSDictionary *)data);
+        }
     }
     return _profile;
 }
 
 - (nullable NSString *)signature {
-    return [_storeDictionary objectForKey:@"signature"];
+    return [self objectForKey:@"signature"];
 }
 
 @end

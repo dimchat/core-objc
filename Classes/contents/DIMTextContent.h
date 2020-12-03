@@ -35,11 +35,11 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMContent.h"
+#import "dimMacros.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMTextContent : DIMContent
+@interface DIMTextContent : DKDContent
 
 @property (readonly, strong, nonatomic) NSString *text;
 

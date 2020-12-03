@@ -55,7 +55,7 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(UInt8)type {
+- (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
         _attachment = nil;
     }
@@ -69,7 +69,7 @@
         
         // filename
         if (name) {
-            [_storeDictionary setObject:name forKey:@"filename"];
+            [self setObject:name forKey:@"filename"];
         }
         
         // file data
@@ -79,7 +79,7 @@
 }
 
 - (nullable NSURL *)URL {
-    NSString *string = [_storeDictionary objectForKey:@"URL"];
+    NSString *string = [self objectForKey:@"URL"];
     if (string) {
         return [NSURL URLWithString:string];
     }
@@ -89,9 +89,9 @@
 - (void)setURL:(NSURL *)URL {
     NSString *string = [URL absoluteString];
     if (string) {
-        [_storeDictionary setObject:string forKey:@"URL"];
+        [self setObject:string forKey:@"URL"];
     } else {
-        [_storeDictionary removeObjectForKey:@"URL"];
+        [self removeObjectForKey:@"URL"];
     }
 }
 
@@ -110,29 +110,30 @@
             filename = [NSString stringWithFormat:@"%@.%@", filename, ext];
         }
         //NSAssert([self.filename isEqualToString:filename], @"filename error");
-        [_storeDictionary setObject:filename forKey:@"filename"];
+        [self setObject:filename forKey:@"filename"];
         
         // file data
-        [_storeDictionary setObject:MKMBase64Encode(fileData) forKey:@"data"];
+        [self setObject:MKMBase64Encode(fileData) forKey:@"data"];
     } else {
-        [_storeDictionary removeObjectForKey:@"data"];
+        [self removeObjectForKey:@"data"];
     }
 }
 
 - (nullable NSString *)filename {
-    return [_storeDictionary objectForKey:@"filename"];
+    return [self objectForKey:@"filename"];
 }
 
-- (void)setPassword:(NSDictionary *)password {
+- (void)setPassword:(id<MKMSymmetricKey>)password {
     if (password) {
-        [_storeDictionary setObject:password forKey:@"password"];
+        [self setObject:password forKey:@"password"];
     } else {
-        [_storeDictionary removeObjectForKey:@"password"];
+        [self removeObjectForKey:@"password"];
     }
 }
 
-- (nullable NSDictionary *)password {
-    return [_storeDictionary objectForKey:@"password"];
+- (nullable id<MKMSymmetricKey>)password {
+    id pwd = [self objectForKey:@"password"];
+    return MKMSymmetricKeyFromDictionary(pwd);
 }
 
 @end

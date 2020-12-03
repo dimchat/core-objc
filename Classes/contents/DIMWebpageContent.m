@@ -47,43 +47,43 @@
     if (self = [self initWithType:DKDContentType_Page]) {
         // url
         if (url) {
-            [_storeDictionary setObject:[url absoluteString] forKey:@"URL"];
+            [self setObject:[url absoluteString] forKey:@"URL"];
         }
         
         // title
         if (title) {
-            [_storeDictionary setObject:title forKey:@"title"];
+            [self setObject:title forKey:@"title"];
         }
         
         // desc
         if (desc) {
-            [_storeDictionary setObject:desc forKey:@"desc"];
+            [self setObject:desc forKey:@"desc"];
         }
         
         // icon
         if (icon) {
             NSString *str = MKMBase64Encode(icon);
-            [_storeDictionary setObject:str forKey:@"icon"];
+            [self setObject:str forKey:@"icon"];
         }
     }
     return self;
 }
 
 - (NSURL *)URL {
-    NSString *string = [_storeDictionary objectForKey:@"URL"];
+    NSString *string = [self objectForKey:@"URL"];
     return [NSURL URLWithString:string];
 }
 
 - (NSString *)title {
-    return [_storeDictionary objectForKey:@"title"];
+    return [self objectForKey:@"title"];
 }
 
 - (NSString *)desc {
-    return [_storeDictionary objectForKey:@"desc"];
+    return [self objectForKey:@"desc"];
 }
 
 - (NSData *)icon {
-    NSString *str = [_storeDictionary objectForKey:@"icon"];
+    NSString *str = [self objectForKey:@"icon"];
     return MKMBase64Decode(str);
 }
 

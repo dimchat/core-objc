@@ -72,14 +72,14 @@
 // Types
 #define DIMDictionary                   DKDDictionary
 
-#define DIMEnvelope                     DKDEnvelope<DIMID *>
-#define DIMContent                      DKDContent<DIMID *>
+#define DIMEnvelope                     DKDEnvelope
+#define DIMContent                      DKDContent
 
 // Message
-#define DIMMessage                      DKDMessage<DIMID *>
-#define DIMInstantMessage               DKDInstantMessage<DIMID *>
-#define DIMSecureMessage                DKDSecureMessage<DIMID *>
-#define DIMReliableMessage              DKDReliableMessage<DIMID *>
+#define DIMMessage                      DKDMessage
+#define DIMInstantMessage               DKDInstantMessage
+#define DIMSecureMessage                DKDSecureMessage
+#define DIMReliableMessage              DKDReliableMessage
 
 #define DIMMessageDelegate              DKDMessageDelegate
 #define DIMInstantMessageDelegate       DKDInstantMessageDelegate

@@ -39,18 +39,18 @@
 
 @interface DIMForwardContent ()
 
-@property (nonatomic) DIMReliableMessage *forwardMessage;
+@property (nonatomic) id<DKDReliableMessage> forwardMessage;
 
 @end
 
 @implementation DIMForwardContent
 
-- (instancetype)initWithForwardMessage:(DIMReliableMessage *)rMsg {
+- (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(rMsg, @"forward message cannot be empty");
     if (self = [self initWithType:DKDContentType_Forward]) {
         // top-secret message
         if (rMsg) {
-            [_storeDictionary setObject:rMsg forKey:@"forward"];
+            [self setObject:rMsg forKey:@"forward"];
         }
     }
     return self;
@@ -73,17 +73,10 @@
     return content;
 }
 
-- (DIMReliableMessage *)forwardMessage {
+- (id<DKDReliableMessage>)forwardMessage {
     if (!_forwardMessage) {
-        NSDictionary *forward = [_storeDictionary objectForKey:@"forward"];
+        NSDictionary *forward = [self objectForKey:@"forward"];
         _forwardMessage = DKDReliableMessageFromDictionary(forward);
-        
-        if (_forwardMessage != forward) {
-            // replace the message object
-            NSAssert([_forwardMessage isKindOfClass:[DKDReliableMessage class]],
-                     @"forward message error: %@", forward);
-            [_storeDictionary setObject:_forwardMessage forKey:@"forward"];
-        }
     }
     NSAssert(_forwardMessage, @"forward message not found: %@", self);
     return _forwardMessage;
