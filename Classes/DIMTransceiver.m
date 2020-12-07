@@ -109,7 +109,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
         msg.delegate = tranceiver;
     }
     id<MKMID>receiver;
-    if ([msg isKindOfClass:[DIMInstantMessage class]]) {
+    if ([msg conformsToProtocol:@protocol(DKDInstantMessage)]) {
         id<DKDInstantMessage>iMsg = (id<DKDInstantMessage>)msg;
         receiver = iMsg.content.group;
     } else {
@@ -161,6 +161,25 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     return self;
 }
 
+#pragma mark DKDMessageDelegate
+
+- (id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
+    id<MKMID> group = content.group;
+    if (!group) {
+        return nil;
+    }
+    if ([MKMID isBroadcast:group]) {
+        // broadcast message is always overt
+        return group;
+    }
+    if ([content isKindOfClass:[DIMCommand class]]) {
+        // group command should be sent to each member directly, so
+        // don't expose group ID
+        return nil;
+    }
+    return group;
+}
+
 #pragma mark DKDInstantMessageDelegate
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -203,7 +222,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
                  forReceiver:(id<MKMID>)receiver {
     NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
-    DIMUser *contact = [_barrack userWithID:receiver];
+    MKMUser *contact = [_barrack userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
     return [contact encrypt:data];
 }
@@ -232,7 +251,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
     id<MKMID>ID = sMsg.envelope.receiver;
-    DIMUser *user = [_barrack userWithID:ID];
+    MKMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     NSData *plaintext = [user decrypt:key];
     if (plaintext.length == 0) {
@@ -319,7 +338,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                     signData:(NSData *)data
                    forSender:(id<MKMID>)sender {
-    DIMUser *user = [_barrack userWithID:sender];
+    MKMUser *user = [_barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
@@ -340,7 +359,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
       forSender:(id<MKMID>)sender {
-    DIMUser *user = [_barrack userWithID:sender];
+    MKMUser *user = [_barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }
@@ -428,7 +447,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     id<DKDSecureMessage>sMsg = nil;
     if ([MKMID isGroup:receiver]) {
         // group message
-        DIMGroup *grp = [_barrack groupWithID:receiver];
+        MKMGroup *grp = [_barrack groupWithID:receiver];
         sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
     } else {
         // personal message (or split group message)

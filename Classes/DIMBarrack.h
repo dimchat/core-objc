@@ -35,7 +35,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user
  */
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
+- (nullable __kindof MKMUser *)userWithID:(id<MKMID>)ID;
 
 /**
  *  Create group with ID
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
+- (nullable __kindof MKMGroup *)groupWithID:(id<MKMID>)ID;
 
 @end
 
@@ -66,14 +66,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      2nd, if they were updated, we can refresh them immediately here
  */
 @interface DIMBarrack : NSObject <DIMEntityDelegate,
-                                  DIMUserDataSource,
-                                  DIMGroupDataSource>
+                                  MKMUserDataSource,
+                                  MKMGroupDataSource>
 
-- (BOOL)cacheUser:(DIMUser *)user;
-- (BOOL)cacheGroup:(DIMGroup *)group;
+- (BOOL)cacheUser:(MKMUser *)user;
+- (BOOL)cacheGroup:(MKMGroup *)group;
 
-- (nullable DIMUser *)createUser:(id<MKMID>)ID;
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
+- (nullable MKMUser *)createUser:(id<MKMID>)ID;
+- (nullable MKMGroup *)createGroup:(id<MKMID>)ID;
 
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',

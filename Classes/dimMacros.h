@@ -41,49 +41,45 @@
 #import <MingKeMing/MingKeMing.h>
 
 // Cryptography
-#define DIMEncryptKey                   MKMEncryptKey
-#define DIMDecryptKey                   MKMDecryptKey
-#define DIMSignKey                      MKMSignKey
-#define DIMVerifyKey                    MKMVerifyKey
+#define DIMEncryptKey                   id<MKMEncryptKey>
+#define DIMDecryptKey                   id<MKMDecryptKey>
+#define DIMSignKey                      id<MKMSignKey>
+#define DIMVerifyKey                    id<MKMVerifyKey>
 
-#define DIMSymmetricKey                 MKMSymmetricKey
-#define DIMPublicKey                    MKMPublicKey
-#define DIMPrivateKey                   MKMPrivateKey
+#define DIMSymmetricKey                 id<MKMSymmetricKey>
+#define DIMPublicKey                    id<MKMPublicKey>
+#define DIMPrivateKey                   id<MKMPrivateKey>
 
 // Entity
-#define DIMID                           MKMID
-#define DIMAddress                      MKMAddress
-#define DIMMeta                         MKMMeta
-#define DIMProfile                      MKMProfile
-#define DIMEntity                       MKMEntity
-#define DIMEntityDataSource             MKMEntityDataSource
+#define DIMID                           id<MKMID>
+#define DIMAddress                      id<MKMAddress>
+#define DIMMeta                         id<MKMMeta>
+#define DIMDocument                     id<MKMDocument>
+#define DIMEntity                       MKMEntity *
+#define DIMEntityDataSource             id<MKMEntityDataSource>
 
 // User
-#define DIMUser                         MKMUser
-#define DIMUserDataSource               MKMUserDataSource
+#define DIMUser                         MKMUser *
+#define DIMUserDataSource               id<MKMUserDataSource>
 
 // Group
-#define DIMGroup                        MKMGroup
-#define DIMGroupDataSource              MKMGroupDataSource
-
+#define DIMGroup                        MKMGroup *
+#define DIMGroupDataSource              id<MKMGroupDataSource>
 
 #import <DaoKeDao/DaoKeDao.h>
 
-// Types
-#define DIMDictionary                   DKDDictionary
-
-#define DIMEnvelope                     DKDEnvelope
-#define DIMContent                      DKDContent
+#define DIMEnvelope                     id<DKDEnvelope>
+#define DIMContent                      id<DKDContent>
 
 // Message
-#define DIMMessage                      DKDMessage
-#define DIMInstantMessage               DKDInstantMessage
-#define DIMSecureMessage                DKDSecureMessage
-#define DIMReliableMessage              DKDReliableMessage
+#define DIMMessage                      id<DKDMessage>
+#define DIMInstantMessage               id<DKDInstantMessage>
+#define DIMSecureMessage                id<DKDSecureMessage>
+#define DIMReliableMessage              id<DKDReliableMessage>
 
-#define DIMMessageDelegate              DKDMessageDelegate
-#define DIMInstantMessageDelegate       DKDInstantMessageDelegate
-#define DIMSecureMessageDelegate        DKDSecureMessageDelegate
-#define DIMReliableMessageDelegate      DKDReliableMessageDelegate
+#define DIMMessageDelegate              id<DKDMessageDelegate>
+#define DIMInstantMessageDelegate       id<DKDInstantMessageDelegate>
+#define DIMSecureMessageDelegate        id<DKDSecureMessageDelegate>
+#define DIMReliableMessageDelegate      id<DKDReliableMessageDelegate>
 
 #endif /* dimMacros_h */

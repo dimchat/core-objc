@@ -35,7 +35,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "dimMacros.h"
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMEntityDelegate;
 
-@interface DIMTransceiver : NSObject <DIMMessageDelegate>
+@interface DIMTransceiver : NSObject <DKDMessageDelegate>
 
 @property (weak, nonatomic) id<DIMEntityDelegate> barrack;
 @property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
