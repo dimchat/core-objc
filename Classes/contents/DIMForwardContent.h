@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  Dao-Ke-Dao: Universal Message Module
+//  DIMP : Decentralized Instant Messaging Protocol
 //
 //                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
@@ -35,7 +35,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import "DIMContent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

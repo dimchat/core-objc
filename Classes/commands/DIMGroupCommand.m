@@ -160,8 +160,13 @@
 @implementation DIMGroupCommand (Creation)
 
 + (nullable __kindof DIMGroupCommand *)parse:(NSDictionary *)cmd {
-    // check command names
+    // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
+    DIMCommandParser *parser = [self parserForCommand:command];
+    if (parser) {
+        return [parser parse:cmd];
+    }
+    // Group Commands
     if ([command isEqualToString:DIMGroupCommand_Invite]) {
         return [[DIMInviteCommand alloc] initWithDictionary:cmd];
     }

@@ -48,7 +48,7 @@
 #import "DIMGroupCommand.h"
 
 #import "DIMMetaCommand.h"
-#import "DIMProfileCommand.h"
+#import "DIMDocumentCommand.h"
 
 #import "DIMBarrack.h"
 
@@ -57,51 +57,40 @@
 #import "DIMTransceiver.h"
 
 static inline void loadContentClasses(void) {
+    DIMContentParser *parser = [[DIMContentParser alloc] init];
+    
     // Top-Secret
-    DKDContentParserRegister(DKDContentType_Forward, DIMForwardContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Forward];
     
     // Text
-    DKDContentParserRegister(DKDContentType_Text, DIMTextContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Text];
     
     // File
-    DKDContentParserRegister(DKDContentType_File, DIMFileContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_File];
     // Image
-    DKDContentParserRegister(DKDContentType_Image, DIMImageContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Image];
     // Audio
-    DKDContentParserRegister(DKDContentType_Audio, DIMAudioContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Audio];
     // Video
-    DKDContentParserRegister(DKDContentType_Video, DIMVideoContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Video];
     
     // Web Page
-    DKDContentParserRegister(DKDContentType_Page, DIMWebpageContent);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Page];
     
     // Command
-    DKDContentParserRegisterCall(DKDContentType_Command, DIMCommand);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_Command];
     // History Command
-    DKDContentParserRegisterCall(DKDContentType_History, DIMHistoryCommand);
+    [DKDContentFactory registerParser:parser forType:DKDContentType_History];
 }
 
 static inline void loadCommandClasses(void) {
-    // meta
-    DIMCommandParserRegister(DIMCommand_Meta, DIMMetaCommand);
-    // profile
-    DIMCommandParserRegister(DIMCommand_Profile, DIMProfileCommand);
-}
-
-static inline void loadGroupCommandClasses(void) {
-    // invite
-    DIMCommandParserRegister(DIMGroupCommand_Invite, DIMInviteCommand);
-    // expel
-    DIMCommandParserRegister(DIMGroupCommand_Expel, DIMExpelCommand);
-    // join
-    DIMCommandParserRegister(DIMGroupCommand_Join, DIMJoinCommand);
-    // quit
-    DIMCommandParserRegister(DIMGroupCommand_Quit, DIMQuitCommand);
+    DIMCommandParser *parser = [[DIMCommandParser alloc] init];
     
-    // reset
-    DIMCommandParserRegister(DIMGroupCommand_Reset, DIMResetGroupCommand);
-    // query
-    DIMCommandParserRegister(DIMGroupCommand_Query, DIMQueryGroupCommand);
+    // meta
+    [DIMCommand registerParser:parser forCommand:DIMCommand_Meta];
+    // document
+    [DIMCommand registerParser:parser forCommand:DIMCommand_Document];
+    [DIMCommand registerParser:parser forCommand:DIMCommand_Profile];
 }
 
 static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
@@ -118,26 +107,8 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     if (!receiver) {
         receiver = msg.envelope.receiver;
     }
-    return [MKMID isBroadcast:receiver];
+    return MKMIDIsBroadcast(receiver);
 }
-
-static inline id<MKMID>overt_group(id<DKDContent> content) {
-    id<MKMID>group = content.group;
-    if (!group) {
-        return nil;
-    }
-    if ([MKMID isBroadcast:group]) {
-        // broadcast message is always overt
-        return group;
-    }
-    if ([content isKindOfClass:[DIMCommand class]]) {
-        // group command should be sent to each member directly, so
-        // don't expose group ID
-        return nil;
-    }
-    return group;
-}
-
 
 @implementation DIMTransceiver
 
@@ -154,8 +125,6 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
             loadContentClasses();
             // register commands
             loadCommandClasses();
-            // register group command classes
-            loadGroupCommandClasses();
         //});
     }
     return self;
@@ -168,7 +137,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     if (!group) {
         return nil;
     }
-    if ([MKMID isBroadcast:group]) {
+    if (MKMIDIsBroadcast(group)) {
         // broadcast message is always overt
         return group;
     }
@@ -317,7 +286,7 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     if (!isBroadcast(sMsg, self)) {
         // check and cache key for reuse
         id<MKMID>sender = sMsg.envelope.sender;
-        id<MKMID>group = overt_group(content);
+        id<MKMID>group = [self overtGroupForContent:content];
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
@@ -362,158 +331,6 @@ static inline id<MKMID>overt_group(id<DKDContent> content) {
     MKMUser *user = [_barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
-}
-
-@end
-
-#pragma mark -
-
-@implementation DIMTransceiver (Serialization)
-
-- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg {
-    return MKMJSONEncode(rMsg);
-}
-
-- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data {
-    NSDictionary *dict = MKMJSONDecode(data);
-    // TODO: translate short keys
-    //       'S' -> 'sender'
-    //       'R' -> 'receiver'
-    //       'W' -> 'time'
-    //       'T' -> 'type'
-    //       'G' -> 'group'
-    //       ------------------
-    //       'D' -> 'data'
-    //       'V' -> 'signature'
-    //       'K' -> 'key'
-    //       ------------------
-    //       'M' -> 'meta'
-    return DKDReliableMessageFromDictionary(dict);
-}
-
-@end
-
-@implementation DIMTransceiver (Transform)
-
-- (id<MKMSymmetricKey>)_passwordFrom:(id<MKMID>)sender to:(id<MKMID>)receiver {
-    // get old key from store
-    id<MKMSymmetricKey>key = [_keyCache cipherKeyFrom:sender to:receiver];
-    if (!key) {
-        // create new key and cache it
-        key = MKMSymmetricKeyWithAlgorithm(SCAlgorithmAES);
-        NSAssert(key, @"failed to generate AES key");
-        [_keyCache cacheCipherKey:key from:sender to:receiver];
-    }
-    return key;
-}
-
-- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
-    // check message delegate
-    if (!iMsg.delegate) {
-        iMsg.delegate = self;
-    }
-    id<MKMID>sender = iMsg.envelope.sender;
-    id<MKMID>receiver = iMsg.envelope.receiver;
-    // if 'group' exists and the 'receiver' is a group ID,
-    // they must be equal
-    
-    // NOTICE: while sending group message, don't split it before encrypting.
-    //         this means you could set group ID into message content, but
-    //         keep the "receiver" to be the group ID;
-    //         after encrypted (and signed), you could split the message
-    //         with group members before sending out, or just send it directly
-    //         to the group assistant to let it split messages for you!
-    //    BUT,
-    //         if you don't want to share the symmetric key with other members,
-    //         you could split it (set group ID into message content and
-    //         set contact ID to the "receiver") before encrypting, this usually
-    //         for sending group command to assistant robot, which should not
-    //         share the symmetric key (group msg key) with other members.
-
-    // 1. get symmetric key
-    id<MKMID>group = overt_group(iMsg.content);
-    id<MKMSymmetricKey> password;
-    if (group) {
-        // group message (excludes group command)
-        password = [self _passwordFrom:sender to:group];
-    } else {
-        // personal message or (group) command
-        password = [self _passwordFrom:sender to:receiver];
-    }
-
-    NSAssert(iMsg.content, @"content cannot be empty");
-    
-    // 2. encrypt 'content' to 'data' for receiver/group members
-    id<DKDSecureMessage>sMsg = nil;
-    if ([MKMID isGroup:receiver]) {
-        // group message
-        MKMGroup *grp = [_barrack groupWithID:receiver];
-        sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
-    } else {
-        // personal message (or split group message)
-        sMsg = [iMsg encryptWithKey:password];
-    }
-    
-    // overt group ID
-    if (group && ![receiver isEqual:group]) {
-        // NOTICE: this help the receiver knows the group ID
-        //         when the group message separated to multi-messages,
-        //         if don't want the others know you are the group members,
-        //         remove it.
-        sMsg.envelope.group = group;
-    }
-    
-    // NOTICE: copy content type to envelope
-    //         this help the intermediate nodes to recognize message type
-    sMsg.envelope.type = iMsg.content.type;
-
-    // OK
-    return sMsg;
-}
-
-- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
-    // check message delegate
-    if (sMsg.delegate == nil) {
-        sMsg.delegate = self;
-    }
-    NSAssert(sMsg.data, @"message data cannot be empty");
-    // sign 'data' by sender
-    return [sMsg sign];
-}
-
-- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
-    //
-    //  TODO: check [Meta Protocol]
-    //        make sure the sender's meta exists
-    //        (do in by application)
-    //
-    
-    // check message delegate
-    if (rMsg.delegate == nil) {
-        rMsg.delegate = self;
-    }
-    NSAssert(rMsg.signature, @"message signature cannot be empty");
-    // verify 'data' with 'signature'
-    return [rMsg verify];
-}
-
-- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
-    //
-    //  NOTICE: make sure the receiver is YOU!
-    //          which means the receiver's private key exists;
-    //          if the receiver is a group ID, split it first
-    //
-    
-    // check message delegate
-    if (sMsg.delegate == nil) {
-        sMsg.delegate = self;
-    }
-    NSAssert(sMsg.data, @"message data cannot be empty");
-    // decrypt 'data' to 'content'
-    return [sMsg decrypt];
-    
-    // TODO: check: top-secret message
-    //       (do it by application)
 }
 
 @end

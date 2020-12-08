@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2019 by Moky <albert.moky@gmail.com>
+//                               Written in 2020 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2020 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,48 +28,18 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMProfileCommand.h
+//  DIMContent.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2019/2/3.
-//  Copyright © 2019 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2020/12/8.
+//  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMMetaCommand.h"
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMProfileCommand : DIMMetaCommand
-
-@property (readonly, strong, nonatomic, nullable) id<MKMDocument> profile;
-
-// current signature string for querying profile,
-// if this matched, the station will respond 304 (Not Modified)
-@property (readonly, strong, nonatomic, nullable) NSString *signature;
-
-/*
- *  Command message: {
- *      type : 0x88,
- *      sn   : 123,
- *
- *      command   : "profile", // command name
- *      ID        : "{ID}",    // entity ID
- *      meta      : {...},     // only for handshaking with new friend
- *      profile   : {...}      // when profile is empty, means query for ID
- *  }
- */
-- (instancetype)initWithID:(id<MKMID>)ID
-                      meta:(nullable id<MKMMeta>)meta
-                   profile:(nullable id<MKMDocument>)profile;
-
-- (instancetype)initWithID:(id<MKMID>)ID
-                   profile:(id<MKMDocument>)profile;
-
-// query profile
-- (instancetype)initWithID:(id<MKMID>)ID;
-
-// query profile for updating with current signature
-- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature;
+@interface DIMContentParser : NSObject <DKDContentParser>
 
 @end
 

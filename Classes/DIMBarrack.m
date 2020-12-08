@@ -82,20 +82,18 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return finger >> 1;
 }
 
-- (BOOL)cacheUser:(MKMUser *)user {
+- (void)cacheUser:(MKMUser *)user {
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
     [_userTable setObject:user forKey:user.ID.string];
-    return YES;
 }
 
-- (BOOL)cacheGroup:(MKMGroup *)group {
+- (void)cacheGroup:(MKMGroup *)group {
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
     [_groupTable setObject:group forKey:group.ID.string];
-    return YES;
 }
 
 - (nullable MKMUser *)createUser:(id<MKMID>)ID {
@@ -113,31 +111,27 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 - (nullable __kindof MKMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
     MKMUser *user = [_userTable objectForKey:ID.string];
-    if (user) {
-        return user;
+    if (!user) {
+        // 2. create user and cache it
+        user = [self createUser:ID];
+        if (user) {
+            [self cacheUser:user];
+        }
     }
-    // 2. create user and cache it
-    user = [self createUser:ID];
-    if (user && [self cacheUser:user]) {
-        return user;
-    }
-    //NSAssert(false, @"failed to create user: %@", ID);
-    return nil;
+    return user;
 }
 
 - (nullable __kindof MKMGroup *)groupWithID:(id<MKMID>)ID {
     // 1. get from group cache
     MKMGroup *group = [_groupTable objectForKey:ID.string];
-    if (group) {
-        return group;
+    if (!group) {
+        // 2. create group and cache it
+        group = [self createGroup:ID];
+        if (group) {
+            [self cacheGroup:group];
+        }
     }
-    // 2. create group and cache it
-    group = [self createGroup:ID];
-    if (group && [self cacheGroup:group]) {
-        return group;
-    }
-    //NSAssert(false, @"failed to create group: %@", ID);
-    return nil;
+    return group;
 }
 
 #pragma mark - MKMEntityDataSource
@@ -161,28 +155,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
-    NSMutableArray<id<MKMVerifyKey>> *keys = [[NSMutableArray alloc] init];
-    // get profile.key
-    id<MKMVisa> profile = [self documentForID:user withType:MKMDocument_Visa];
-    if (profile) {
-        id<MKMEncryptKey> profileKey = [profile key];
-        if ([profileKey conformsToProtocol:@protocol(MKMVerifyKey)]) {
-            // the sender may use communication key to sign message.data,
-            // so try to verify it with profile.key here
-            [keys addObject:(id<MKMVerifyKey>)profileKey];
-        }
-    }
-    // get meta.key
-    id<MKMMeta> meta = [self metaForID:user];
-    if (meta) {
-        id<MKMVerifyKey> metaKey = [meta key];
-        if (metaKey) {
-            // the sender may use identity key to sign message.data,
-            // try to verify it with meta.key
-            [keys addObject:metaKey];
-        }
-    }
-    return keys;
+    // return nil to use [visa.key, meta.key]
+    return nil;
 }
 
 - (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user {
@@ -203,14 +177,17 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 #pragma mark - MKMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
+    NSAssert(false, @"override me!");
     return nil;
 }
 
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group {
+    NSAssert(false, @"override me!");
     return nil;
 }
 
 - (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
+    NSAssert(false, @"override me!");
     return nil;
 }
 

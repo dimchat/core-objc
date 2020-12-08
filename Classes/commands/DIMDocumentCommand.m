@@ -28,7 +28,7 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMProfileCommand.m
+//  DIMDocumentCommand.m
 //  DIMCore
 //
 //  Created by Albert Moky on 2019/2/3.
@@ -37,15 +37,15 @@
 
 #import "DIMBarrack.h"
 
-#import "DIMProfileCommand.h"
+#import "DIMDocumentCommand.h"
 
-@interface DIMProfileCommand ()
+@interface DIMDocumentCommand ()
 
 @property (strong, nonatomic, nullable) id<MKMDocument> profile;
 
 @end
 
-@implementation DIMProfileCommand
+@implementation DIMDocumentCommand
 
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
@@ -104,14 +104,14 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    DIMProfileCommand *cmd = [super copyWithZone:zone];
+    DIMDocumentCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.profile = _profile;
     }
     return cmd;
 }
 
-- (nullable id<MKMDocument>)profile {
+- (nullable id<MKMDocument>)document {
     if (!_profile) {
         NSObject *data = [self objectForKey:@"profile"];
         if ([data isKindOfClass:[NSString class]]) {
@@ -131,6 +131,9 @@
             [mDict setObject:signature forKey:@"signature"];
             data = mDict;
         } else {
+            if (!data) {
+                data = [self objectForKey:@"document"];
+            }
             // (v1.1)
             //    "ID"      : "{ID}",
             //    "profile" : {

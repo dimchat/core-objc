@@ -73,23 +73,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMTransceiver (Serialization)
-
-- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
-- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
-
-@end
-
-@interface DIMTransceiver (Transform)
-
-- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
-
-- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
-
-- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
-
-- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
-
-@end
-
 NS_ASSUME_NONNULL_END

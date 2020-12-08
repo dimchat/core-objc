@@ -35,6 +35,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "DIMMetaCommand.h"
+#import "DIMDocumentCommand.h"
 #import "DIMGroupCommand.h"
 
 #import "DIMCommand.h"
@@ -95,22 +97,44 @@
 
 #pragma mark - Creation
 
+@implementation DIMCommandParser
+
+- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)content {
+    NSString *command = [content objectForKey:@"command"];
+    if ([command isEqualToString:DIMCommand_Meta]) {
+        return [[DIMMetaCommand alloc] initWithDictionary:content];
+    }
+    if ([command isEqualToString:DIMCommand_Profile] ||
+        [command isEqualToString:DIMCommand_Document]) {
+        return [[DIMDocumentCommand alloc] initWithDictionary:content];
+    }
+    // default command
+    return [[DIMCommand alloc] initWithDictionary:content];
+}
+
+@end
+
 @implementation DIMCommand (Creation)
 
 static NSMutableDictionary *s_command_parsers = nil;
 
-+ (void)registerParser:(DKDContentParser)parser forCommand:(NSString *)name {
++ (void)registerParser:(DIMCommandParser *)parser forCommand:(NSString *)name {
     if (!s_command_parsers) {
         s_command_parsers = [[NSMutableDictionary alloc] init];
     }
     [s_command_parsers setObject:parser forKey:name];
 }
 
++ (id<DKDContentParser>)parserForCommand:(NSString *)name {
+    return [s_command_parsers objectForKey:name];
+}
+
 + (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd {
+    // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
-    DKDContentParser callback = [s_command_parsers objectForKey:command];
-    if (callback) {
-        return (DIMCommand *)callback(cmd);
+    DIMCommandParser *parser = [self parserForCommand:command];
+    if (parser) {
+        return [parser parse:cmd];
     }
     // Group Commands
     id group = [cmd objectForKey:@"group"];

@@ -28,63 +28,49 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMHistoryCommand.m
+//  DIMDocumentCommand.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2019/1/28.
+//  Created by Albert Moky on 2019/2/3.
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMGroupCommand.h"
+#import "DIMMetaCommand.h"
 
-#import "DIMHistoryCommand.h"
+NS_ASSUME_NONNULL_BEGIN
 
-@implementation DIMHistoryCommand
+@interface DIMDocumentCommand : DIMMetaCommand
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-    }
-    return self;
-}
+@property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
 
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-    }
-    return self;
-}
+// current signature string for querying profile,
+// if this matched, the station will respond 304 (Not Modified)
+@property (readonly, strong, nonatomic, nullable) NSString *signature;
 
-- (instancetype)initWithHistoryCommand:(NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [self initWithType:DKDContentType_History]) {
-        // command
-        if (cmd) {
-            [self setObject:cmd forKey:@"command"];
-        }
-    }
-    return self;
-}
+/*
+ *  Command message: {
+ *      type : 0x88,
+ *      sn   : 123,
+ *
+ *      command   : "profile", // command name
+ *      ID        : "{ID}",    // entity ID
+ *      meta      : {...},     // only for handshaking with new friend
+ *      profile   : {...}      // when profile is empty, means query for ID
+ *  }
+ */
+- (instancetype)initWithID:(id<MKMID>)ID
+                      meta:(nullable id<MKMMeta>)meta
+                   profile:(nullable id<MKMDocument>)profile;
 
-@end
+- (instancetype)initWithID:(id<MKMID>)ID
+                   profile:(id<MKMDocument>)profile;
 
-#pragma mark - Creation
+// query profile
+- (instancetype)initWithID:(id<MKMID>)ID;
 
-@implementation DIMHistoryCommand (Creation)
-
-+ (nullable __kindof DIMHistoryCommand *)parse:(NSDictionary *)cmd {
-    // Registered Commands
-    NSString *command = [cmd objectForKey:@"command"];
-    DIMCommandParser *parser = [self parserForCommand:command];
-    if (parser) {
-        return [parser parse:cmd];
-    }
-    // Group Commands
-    id group = [cmd objectForKey:@"group"];
-    if (group) {
-        return [DIMGroupCommand parse:cmd];
-    }
-    return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
-}
+// query profile for updating with current signature
+- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature;
 
 @end
+
+NS_ASSUME_NONNULL_END

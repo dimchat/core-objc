@@ -69,8 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
                                   MKMUserDataSource,
                                   MKMGroupDataSource>
 
-- (BOOL)cacheUser:(MKMUser *)user;
-- (BOOL)cacheGroup:(MKMGroup *)group;
+- (void)cacheUser:(MKMUser *)user;
+- (void)cacheGroup:(MKMGroup *)group;
 
 - (nullable MKMUser *)createUser:(id<MKMID>)ID;
 - (nullable MKMGroup *)createGroup:(id<MKMID>)ID;

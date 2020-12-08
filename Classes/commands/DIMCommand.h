@@ -35,7 +35,7 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import "DIMContent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -67,30 +67,18 @@ NS_ASSUME_NONNULL_BEGIN
 // facebook
 #define DIMCommand_Meta      @"meta"
 #define DIMCommand_Profile   @"profile"
+#define DIMCommand_Document  @"document"
 
 #pragma mark - Creation
 
-#define DKDContentParserRegisterCall(type, clazz)                              \
-            DKDContentParserRegisterBlock((type),                              \
-                ^id<DKDContent>(NSDictionary *dict) {                          \
-                    return [clazz parse:dict];                                 \
-                })                                                             \
-                          /* EOF 'DKDContentParserRegisterCall(type, parser)' */
+@interface DIMCommandParser : NSObject <DKDContentParser>
 
-#define DIMCommandParserRegisterBlock(name, block)                             \
-            [DIMCommand registerParser:(block) forCommand:(name)]              \
-                         /* EOF 'DKDCommandParserRegisterBlock(type, parser)' */
-
-#define DIMCommandParserRegister(name, clazz)                                  \
-            DIMCommandParserRegisterBlock((name),                              \
-                ^id<DKDContent>(NSDictionary *dict) {                          \
-                    return [[clazz alloc] initWithDictionary:dict];            \
-                })                                                             \
-                              /* EOF 'DKDCommandParserRegister(type, parser)' */
+@end
 
 @interface DIMCommand (Creation)
 
-+ (void)registerParser:(DKDContentParser)parser forCommand:(NSString *)name;
++ (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name;
++ (id<DKDContentParser>)parserForCommand:(NSString *)name;
 
 + (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd;
 
