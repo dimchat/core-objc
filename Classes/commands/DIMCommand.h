@@ -71,10 +71,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMCommandParser : NSObject <DKDContentParser>
-
-@end
-
 @interface DIMCommand (Creation)
 
 + (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name;
@@ -83,5 +79,23 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd;
 
 @end
+
+#define DIMCommandParserRegister(name, parser)                                 \
+            [DIMCommand registerParser:(parser) forCommand:(name)]             \
+                              /* EOF 'DIMCommandParserRegister(name, parser)' */
+
+#define DIMCommandParserWithBlock(block)                                       \
+            [[DIMContentParser alloc] initWithBlock:(block)]                   \
+                                    /* EOF 'DIMCommandParserWithBlock(block)' */
+
+#define DIMCommandParserRegisterBlock(name, block)                             \
+            DIMCommandParserRegister((name), DIMCommandParserWithBlock(block)) \
+                          /* EOF 'DIMCommandParserRegisterBlock(name, block)' */
+
+#define DIMCommandParserRegisterClass(name, clazz)                             \
+            DIMCommandParserRegisterBlock((name), ^(NSDictionary *cmd) {       \
+                return [[clazz alloc] initWithDictionary:cmd];                 \
+            })                                                                 \
+                          /* EOF 'DIMCommandParserRegisterClass(name, clazz)' */
 
 NS_ASSUME_NONNULL_END

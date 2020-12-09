@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
 
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                                message:(id<DKDReliableMessage>)rMsg;
+                              withMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

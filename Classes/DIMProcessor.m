@@ -35,6 +35,8 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
+#import "DIMContent.h"
+
 #import "DIMProcessor.h"
 
 @implementation DIMProcessor
@@ -42,6 +44,11 @@
 - (instancetype)initWithTransceiver:(id<DKDMessageDelegate>)delegate {
     if (self = [super init]) {
         self.delegate = delegate;
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            [DIMContentParser registerCoreParsers];
+        });
     }
     return self;
 }
@@ -70,8 +77,8 @@
     if (!iMsg.delegate) {
         iMsg.delegate = self.delegate;
     }
-    id<MKMID>sender = iMsg.envelope.sender;
-    id<MKMID>receiver = iMsg.envelope.receiver;
+    id<MKMID>sender = iMsg.sender;
+    id<MKMID>receiver = iMsg.receiver;
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
     
@@ -140,32 +147,32 @@
 }
 
 - (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
-    //
-    //  TODO: check [Meta Protocol]
-    //        make sure the sender's meta exists
-    //        (do in by application)
-    //
-    
     // check message delegate
     if (rMsg.delegate == nil) {
         rMsg.delegate = self.delegate;;
     }
+    //
+    //  TODO: check [Visa Protocol]
+    //        make sure the sender's meta(visa) exists
+    //        (do in by application)
+    //
+    
     NSAssert(rMsg.signature, @"message signature cannot be empty");
     // verify 'data' with 'signature'
     return [rMsg verify];
 }
 
 - (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
+    // check message delegate
+    if (sMsg.delegate == nil) {
+        sMsg.delegate = self.delegate;
+    }
     //
     //  NOTICE: make sure the receiver is YOU!
     //          which means the receiver's private key exists;
     //          if the receiver is a group ID, split it first
     //
     
-    // check message delegate
-    if (sMsg.delegate == nil) {
-        sMsg.delegate = self.delegate;
-    }
     NSAssert(sMsg.data, @"message data cannot be empty");
     // decrypt 'data' to 'content'
     return [sMsg decrypt];
@@ -228,7 +235,7 @@
         return nil;
     }
     // 2. process message
-    sMsg = [self processSecure:sMsg message:rMsg];
+    sMsg = [self processSecure:sMsg withMessage:rMsg];
     if (!sMsg) {
         // nothing to respond
         return nil;
@@ -237,7 +244,7 @@
     return [self signMessage:sMsg];
 }
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg message:(id<DKDReliableMessage>)rMsg {
+- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg withMessage:(id<DKDReliableMessage>)rMsg {
     // 1. decrypt message
     id<DKDInstantMessage> iMsg = [self decryptMessage:sMsg];
     if (!iMsg) {
@@ -246,7 +253,7 @@
         return nil;
     }
     // 2. process message
-    iMsg = [self processInstant:iMsg message:rMsg];
+    iMsg = [self processInstant:iMsg withMessage:rMsg];
     if (!iMsg) {
         // nothing to respond
         return nil;
@@ -255,15 +262,15 @@
     return [self encryptMessage:iMsg];
 }
 
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg message:(id<DKDReliableMessage>)rMsg {
+- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg withMessage:(id<DKDReliableMessage>)rMsg {
     // check message delegate
     if (!iMsg.delegate) {
         iMsg.delegate = self.delegate;
     }
-    id<DKDContent> content = iMsg.content;
     
     // process content from sender
-    id<DKDContent>res = [self processContent:content message:rMsg];
+    id<DKDContent> content = iMsg.content;
+    id<DKDContent>res = [self processContent:content withMessage:rMsg];
     if (!res) {
         // nothing to respond
         return nil;
@@ -283,7 +290,7 @@
 // TODO: override to check group
 // TODO: override to filter the response
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                                message:(id<DKDReliableMessage>)rMsg {
+                              withMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(false, @"implements me!");
     return nil;
 }

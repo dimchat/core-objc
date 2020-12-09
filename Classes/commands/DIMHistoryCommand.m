@@ -75,7 +75,7 @@
 + (nullable __kindof DIMHistoryCommand *)parse:(NSDictionary *)cmd {
     // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
-    DIMCommandParser *parser = [self parserForCommand:command];
+    id<DKDContentParser> parser = [self parserForCommand:command];
     if (parser) {
         return [parser parse:cmd];
     }

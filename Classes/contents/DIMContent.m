@@ -42,55 +42,85 @@
 #import "DIMAudioContent.h"
 #import "DIMVideoContent.h"
 #import "DIMWebpageContent.h"
+#import "DIMCommand.h"
+#import "DIMMetaCommand.h"
+#import "DIMDocumentCommand.h"
+#import "DIMHistoryCommand.h"
 
 #import "DIMContent.h"
 
+@interface DIMContentParser () {
+    
+    DIMContentParserBlock _block;
+}
+
+@end
+
 @implementation DIMContentParser
 
-- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)content {
-    NSNumber *number = [content objectForKey:@"type"];
-    DKDContentType type = [number unsignedCharValue];
-    switch (type) {
-        case DKDContentType_Forward: {
-            return [[DIMForwardContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_Text: {
-            return [[DIMTextContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_File: {
-            return [[DIMFileContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_Image: {
-            return [[DIMImageContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_Audio: {
-            return [[DIMAudioContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_Video: {
-            return [[DIMVideoContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        case DKDContentType_Page: {
-            return [[DIMWebpageContent alloc] initWithDictionary:content];
-        }
-            break;
-            
-        default:
-            break;
+- (instancetype)initWithBlock:(DIMContentParserBlock)block {
+    if (self = [super init]) {
+        _block = block;
     }
-    // default content
-    return [[DKDContent alloc] initWithDictionary:content];
+    return self;
+}
+
+- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)content {
+    return _block(content);
+}
+
+@end
+
+#pragma mark - Register Parsers
+
+static inline void load_content_parsers() {
+    // Top-Secret
+    DIMContentParserRegisterClass(DKDContentType_Forward, DIMForwardContent);
+    // Text
+    DIMContentParserRegisterClass(DKDContentType_Text, DIMTextContent);
+    
+    // File
+    DIMContentParserRegisterClass(DKDContentType_File, DIMFileContent);
+    // Image
+    DIMContentParserRegisterClass(DKDContentType_Image, DIMImageContent);
+    // Audio
+    DIMContentParserRegisterClass(DKDContentType_Audio, DIMAudioContent);
+    // Video
+    DIMContentParserRegisterClass(DKDContentType_Video, DIMVideoContent);
+    
+    // Web Page
+    DIMContentParserRegisterClass(DKDContentType_Page, DIMWebpageContent);
+    
+    // Command
+    id<DKDContentParser> cmdParser = DIMContentParserWithBlock(^(NSDictionary *cmd) {
+        return [DIMCommand parse:cmd];
+    });
+    DIMContentParserRegister(DKDContentType_Command, cmdParser);
+    
+    // History Command
+    id<DKDContentParser> hisParser = DIMContentParserWithBlock(^(NSDictionary *cmd) {
+        return [DIMHistoryCommand parse:cmd];
+    });
+    DIMContentParserRegister(DKDContentType_History, hisParser);
+}
+
+static inline void load_command_parsers() {
+    // Meta Command
+    DIMCommandParserRegisterClass(DIMCommand_Meta, DIMMetaCommand);
+    
+    // Document Command
+    id<DKDContentParser> docParser = DIMCommandParserWithBlock(^(NSDictionary *cmd) {
+        return [[DIMDocumentCommand alloc] initWithDictionary:cmd];
+    });
+    DIMCommandParserRegister(DIMCommand_Profile, docParser);
+    DIMCommandParserRegister(DIMCommand_Document, docParser);
+}
+
+@implementation DIMContentParser (Register)
+
++ (void)registerCoreParsers {
+    load_content_parsers();
+    load_command_parsers();
 }
 
 @end

@@ -39,7 +39,35 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
+
 @interface DIMContentParser : NSObject <DKDContentParser>
+
+- (instancetype)initWithBlock:(DIMContentParserBlock)block;
+
+@end
+
+#define DIMContentParserRegister(type, parser)                                 \
+            [DKDContentFactory registerParser:(parser) forType:(type)]         \
+                              /* EOF 'DIMContentParserRegister(type, parser)' */
+
+#define DIMContentParserWithBlock(block)                                       \
+            [[DIMContentParser alloc] initWithBlock:(block)]                   \
+                                    /* EOF 'DIMContentParserWithBlock(block)' */
+
+#define DIMContentParserRegisterBlock(type, block)                             \
+            DIMContentParserRegister((type), DIMContentParserWithBlock(block)) \
+                          /* EOF 'DIMContentParserRegisterBlock(type, block)' */
+
+#define DIMContentParserRegisterClass(type, clazz)                             \
+            DIMContentParserRegisterBlock((type), ^(NSDictionary *content) {   \
+                return [[clazz alloc] initWithDictionary:content];             \
+            })                                                                 \
+                          /* EOF 'DIMContentParserRegisterClass(type, clazz)' */
+
+@interface DIMContentParser (Register)
+
++ (void)registerCoreParsers;
 
 @end
 

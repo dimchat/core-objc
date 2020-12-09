@@ -56,56 +56,14 @@
 
 #import "DIMTransceiver.h"
 
-static inline void loadContentClasses(void) {
-    DIMContentParser *parser = [[DIMContentParser alloc] init];
-    
-    // Top-Secret
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Forward];
-    
-    // Text
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Text];
-    
-    // File
-    [DKDContentFactory registerParser:parser forType:DKDContentType_File];
-    // Image
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Image];
-    // Audio
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Audio];
-    // Video
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Video];
-    
-    // Web Page
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Page];
-    
-    // Command
-    [DKDContentFactory registerParser:parser forType:DKDContentType_Command];
-    // History Command
-    [DKDContentFactory registerParser:parser forType:DKDContentType_History];
-}
-
-static inline void loadCommandClasses(void) {
-    DIMCommandParser *parser = [[DIMCommandParser alloc] init];
-    
-    // meta
-    [DIMCommand registerParser:parser forCommand:DIMCommand_Meta];
-    // document
-    [DIMCommand registerParser:parser forCommand:DIMCommand_Document];
-    [DIMCommand registerParser:parser forCommand:DIMCommand_Profile];
-}
-
 static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
+    // check message delegate
     if (!msg.delegate) {
         msg.delegate = tranceiver;
     }
-    id<MKMID>receiver;
-    if ([msg conformsToProtocol:@protocol(DKDInstantMessage)]) {
-        id<DKDInstantMessage>iMsg = (id<DKDInstantMessage>)msg;
-        receiver = iMsg.content.group;
-    } else {
-        receiver = msg.envelope.group;
-    }
+    id<MKMID>receiver = msg.group;
     if (!receiver) {
-        receiver = msg.envelope.receiver;
+        receiver = msg.receiver;
     }
     return MKMIDIsBroadcast(receiver);
 }
@@ -118,14 +76,6 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
         // delegates
         _barrack = nil;
         _keyCache = nil;
-        
-        // register all command/contant classes
-        //SingletonDispatchOnce(^{
-            // register content classes
-            loadContentClasses();
-            // register commands
-            loadCommandClasses();
-        //});
     }
     return self;
 }
@@ -211,29 +161,23 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 }
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
-                  decryptKey:(nullable NSData *)key
+                  decryptKey:(NSData *)key
                         from:(id<MKMID>)sender
                           to:(id<MKMID>)receiver {
-    if (!key) {
-        return nil;
-    }
+    // NOTICE: the receiver will be group ID in a group message here
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
-    id<MKMID>ID = sMsg.envelope.receiver;
+    id<MKMID>ID = sMsg.receiver;
     MKMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
-    NSData *plaintext = [user decrypt:key];
-    if (plaintext.length == 0) {
-        NSAssert(false, @"failed to decrypt key: %@", sMsg);
-        return nil;
-    }
-    return plaintext;
+    return [user decrypt:key];
 }
 
 - (nullable id<MKMSymmetricKey>)message:(id<DKDSecureMessage>)sMsg
-                       deserializeKey:(NSData *)data
+                       deserializeKey:(nullable NSData *)data
                                  from:(id<MKMID>)sender
                                    to:(id<MKMID>)receiver {
+    // NOTICE: the receiver will be group ID in a group message here
     if (data) {
         NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
         NSDictionary *dict = MKMJSONDecode(data);
@@ -264,13 +208,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
               decryptContent:(NSData *)data
                      withKey:(id<MKMSymmetricKey>)password {
-    // decrypt message.data
-    NSData *plaintext = [password decrypt:data];
-    if (plaintext.length == 0) {
-        NSAssert(false, @"failed to decrypt data: %@, key: %@, env: %@", data, password, sMsg.envelope);
-        return nil;
-    }
-    return plaintext;
+    return [password decrypt:data];
 }
 
 - (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg
@@ -285,14 +223,14 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     
     if (!isBroadcast(sMsg, self)) {
         // check and cache key for reuse
-        id<MKMID>sender = sMsg.envelope.sender;
+        id<MKMID>sender = sMsg.sender;
         id<MKMID>group = [self overtGroupForContent:content];
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
             [_keyCache cacheCipherKey:password from:sender to:group];
         } else {
-            id<MKMID>receiver = sMsg.envelope.receiver;
+            id<MKMID>receiver = sMsg.receiver;
             // personal message or (group) command
             // cache key with direction (sender -> receiver)
             [_keyCache cacheCipherKey:password from:sender to:receiver];

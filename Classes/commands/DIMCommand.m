@@ -97,28 +97,11 @@
 
 #pragma mark - Creation
 
-@implementation DIMCommandParser
-
-- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)content {
-    NSString *command = [content objectForKey:@"command"];
-    if ([command isEqualToString:DIMCommand_Meta]) {
-        return [[DIMMetaCommand alloc] initWithDictionary:content];
-    }
-    if ([command isEqualToString:DIMCommand_Profile] ||
-        [command isEqualToString:DIMCommand_Document]) {
-        return [[DIMDocumentCommand alloc] initWithDictionary:content];
-    }
-    // default command
-    return [[DIMCommand alloc] initWithDictionary:content];
-}
-
-@end
-
 @implementation DIMCommand (Creation)
 
 static NSMutableDictionary *s_command_parsers = nil;
 
-+ (void)registerParser:(DIMCommandParser *)parser forCommand:(NSString *)name {
++ (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name {
     if (!s_command_parsers) {
         s_command_parsers = [[NSMutableDictionary alloc] init];
     }
@@ -132,7 +115,7 @@ static NSMutableDictionary *s_command_parsers = nil;
 + (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd {
     // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
-    DIMCommandParser *parser = [self parserForCommand:command];
+    id<DKDContentParser> parser = [self parserForCommand:command];
     if (parser) {
         return [parser parse:cmd];
     }

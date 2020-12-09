@@ -177,17 +177,17 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 #pragma mark - MKMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
-    NSAssert(false, @"override me!");
+    //NSAssert(false, @"override me!");
     return nil;
 }
 
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group {
-    NSAssert(false, @"override me!");
+    //NSAssert(false, @"override me!");
     return nil;
 }
 
 - (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
-    NSAssert(false, @"override me!");
+    //NSAssert(false, @"override me!");
     return nil;
 }
 
