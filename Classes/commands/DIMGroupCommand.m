@@ -85,12 +85,16 @@
     return self;
 }
 
-- (nullable NSString *)member {
-    return [self objectForKey:@"member"];
+- (nullable id<MKMID>)member {
+    return MKMIDFromString([self objectForKey:@"member"]);
 }
 
-- (NSArray<NSString *> *)members {
-    return [self objectForKey:@"members"];
+- (nullable NSArray<id<MKMID>> *)members {
+    NSArray *array = [self objectForKey:@"members"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return [MKMID convert:array];
 }
 
 @end
@@ -157,33 +161,14 @@
 
 #pragma mark - Creation
 
-@implementation DIMGroupCommand (Creation)
+@implementation DIMGroupCommandParser
 
-+ (nullable __kindof DIMGroupCommand *)parse:(NSDictionary *)cmd {
+- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)cmd {
     // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
     id<DKDContentParser> parser = [self parserForCommand:command];
     if (parser) {
         return [parser parse:cmd];
-    }
-    // Group Commands
-    if ([command isEqualToString:DIMGroupCommand_Invite]) {
-        return [[DIMInviteCommand alloc] initWithDictionary:cmd];
-    }
-    if ([command isEqualToString:DIMGroupCommand_Expel]) {
-        return [[DIMExpelCommand alloc] initWithDictionary:cmd];
-    }
-    if ([command isEqualToString:DIMGroupCommand_Join]) {
-        return [[DIMJoinCommand alloc] initWithDictionary:cmd];
-    }
-    if ([command isEqualToString:DIMGroupCommand_Quit]) {
-        return [[DIMQuitCommand alloc] initWithDictionary:cmd];
-    }
-    if ([command isEqualToString:DIMGroupCommand_Query]) {
-        return [[DIMQueryGroupCommand alloc] initWithDictionary:cmd];
-    }
-    if ([command isEqualToString:DIMGroupCommand_Reset]) {
-        return [[DIMResetGroupCommand alloc] initWithDictionary:cmd];
     }
     return [[DIMGroupCommand alloc] initWithDictionary:cmd];
 }

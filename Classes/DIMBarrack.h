@@ -42,6 +42,21 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMEntityDelegate <NSObject>
 
 /**
+ *  Get all local users (for decrypting received message)
+ *
+ * @return users with private key
+ */
+@property (readonly, strong, nonatomic, nullable) NSArray<MKMUser *> *localUsers;
+
+/**
+ *  Select local user for receiver
+ *
+ * @param receiver - user/group ID
+ * @return local user
+ */
+- (nullable MKMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
+
+/**
  *  Create user with ID
  *
  * @param ID - user ID
@@ -82,6 +97,20 @@ NS_ASSUME_NONNULL_BEGIN
  * @return number of survivors
  */
 - (NSInteger)reduceMemory;
+
+@end
+
+@interface DIMBarrack (Relationship)
+
+- (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member;
+- (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member;
+
+- (BOOL)group:(id<MKMID>)group containsMember:(id<MKMID>)member;
+
+#pragma mark Assistant
+
+- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
+- (BOOL)group:(id<MKMID>)group containsAssistant:(id<MKMID>)assistant;
 
 @end
 

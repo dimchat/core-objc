@@ -97,7 +97,7 @@
 
 #pragma mark - Creation
 
-@implementation DIMCommand (Creation)
+@implementation DIMCommandParser
 
 static NSMutableDictionary *s_command_parsers = nil;
 
@@ -108,21 +108,26 @@ static NSMutableDictionary *s_command_parsers = nil;
     [s_command_parsers setObject:parser forKey:name];
 }
 
-+ (id<DKDContentParser>)parserForCommand:(NSString *)name {
+- (id<DKDContentParser>)parserForCommand:(NSString *)name {
     return [s_command_parsers objectForKey:name];
 }
 
-+ (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd {
+- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)cmd {
+    if (self.block) {
+        return [super parse:cmd];
+    }
     // Registered Commands
     NSString *command = [cmd objectForKey:@"command"];
     id<DKDContentParser> parser = [self parserForCommand:command];
+    if (!parser) {
+        // Check for group commands
+        id group = [cmd objectForKey:@"group"];
+        if (group) {
+            parser = [self parserForCommand:@"group"];
+        }
+    }
     if (parser) {
         return [parser parse:cmd];
-    }
-    // Group Commands
-    id group = [cmd objectForKey:@"group"];
-    if (group) {
-        return [DIMGroupCommand parse:cmd];
     }
     return [[DIMCommand alloc] initWithDictionary:cmd];
 }

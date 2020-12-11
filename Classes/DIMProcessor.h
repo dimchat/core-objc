@@ -39,15 +39,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol DIMEntityDelegate;
+@protocol DIMCipherKeyDelegate;
+
 @interface DIMProcessor : NSObject
 
-@property (weak, nonatomic) id<DKDMessageDelegate> delegate;
+@property (readonly, weak, nonatomic) id<DKDMessageDelegate> transceiver;
+@property (readonly, weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (readonly, weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
 
-- (instancetype)initWithTransceiver:(id<DKDMessageDelegate>)delegate;
-
-- (MKMUser *)selectLocalUser:(id<MKMID>)receiver;
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
-- (id<MKMSymmetricKey>)symmetricKeyFrom:(id<MKMID>)sender to:(id<MKMID>)receiver;
+- (instancetype)initWithMessageDelegate:(id<DKDMessageDelegate>)transceiver
+                         entityDelegate:(id<DIMEntityDelegate>)barrack
+                      cipherKeyDelegate:(id<DIMCipherKeyDelegate>)keyCache;
 
 @end
 
@@ -78,12 +81,21 @@ NS_ASSUME_NONNULL_BEGIN
  * @param data - package from network connection
  * @return response to sender
  */
-- (nullable NSData *)processPackage:(NSData *)data;
+- (nullable NSData *)processData:(NSData *)data;
 
 // TODO: override to check broadcast message before calling it
-// TODO: override to deliver to the receiver when catch exception "receiver error ..."
+// TODO: override to deliver to the receiver when catch exception "ReceiverError"
 - (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
 
+- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
+                                   withMessage:(id<DKDReliableMessage>)rMsg;
+
+// TODO: override to save the received instant message
+- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg;
+
+// TODO: override to check group
+// TODO: override to filter the response
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
                               withMessage:(id<DKDReliableMessage>)rMsg;
 

@@ -39,7 +39,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMFileContent : DKDContent
+/*
+*  File message: {
+*      type : 0x10,
+*      sn   : 123,
+*
+*      URL      : "http://", // upload to CDN
+*      data     : "...",     // if (!URL) base64_encode(fileContent)
+*      filename : "..."
+*  }
+*/
+@protocol DIMFileContent <DKDContent>
 
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
@@ -50,16 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
 // for decrypt file data after download from CDN
 @property (strong, nonatomic, nullable) id<MKMSymmetricKey> password;
 
-/*
- *  File message: {
- *      type : 0x10,
- *      sn   : 123,
- *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(fileContent)
- *      filename : "..."
- *  }
- */
+@end
+
+@interface DIMFileContent : DKDContent <DIMFileContent>
+
 - (instancetype)initWithFileData:(NSData *)data
                         filename:(nullable NSString *)name;
 

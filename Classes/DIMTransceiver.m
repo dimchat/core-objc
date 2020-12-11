@@ -190,7 +190,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
         return MKMSymmetricKeyFromDictionary(dict);
     } else {
         // get key from cache
-        return [_keyCache cipherKeyFrom:sender to:receiver];
+        return [_keyCache cipherKeyFrom:sender to:receiver generate:NO];
     }
 }
 

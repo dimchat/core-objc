@@ -39,10 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMTextContent : DKDContent
-
-@property (readonly, strong, nonatomic) NSString *text;
-
 /*
  *  Text message: {
  *      type : 0x01,
@@ -51,6 +47,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      text : "..."
  *  }
  */
+@protocol DIMTextContent <DKDContent>
+
+@property (readonly, strong, nonatomic) NSString *text;
+
+@end
+
+@interface DIMTextContent : DKDContent <DIMTextContent>
+
 - (instancetype)initWithText:(NSString *)text;
 
 @end

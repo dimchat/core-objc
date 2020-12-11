@@ -39,19 +39,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMForwardContent : DKDContent
+/*
+*  Top-Secret message: {
+*      type : 0xFF,
+*      sn   : 456,
+*
+*      forward : {...}  // reliable (secure + certified) message
+*  }
+*/
+@protocol DIMForwardContent <DKDContent>
 
 // Top-Secret message forwarded by a proxy (Service Provider)
 @property (readonly, nonatomic) id<DKDReliableMessage> forwardMessage;
 
-/*
- *  Top-Secret message: {
- *      type : 0xFF,
- *      sn   : 456,
- *
- *      forward : {...}  // reliable (secure + certified) message
- *  }
- */
+@end
+
+@interface DIMForwardContent : DKDContent <DIMForwardContent>
+
 - (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg;
 
 @end

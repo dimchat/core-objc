@@ -39,24 +39,28 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMWebpageContent : DKDContent
+/*
+*  Web Page message: {
+*      type : 0x20,
+*      sn   : 123,
+*
+*      URL   : "https://github.com/moky/dimp", // Page URL
+*      icon  : "...",                          // base64_encode(icon)
+*      title : "...",
+*      desc  : "..."
+*  }
+*/
+@protocol DIMWebpageContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSURL *URL;
 @property (readonly, strong, nonatomic, nullable) NSString *title;
 @property (readonly, strong, nonatomic, nullable) NSString *desc;
 @property (readonly, strong, nonatomic, nullable) NSData *icon;
 
-/*
- *  Web Page message: {
- *      type : 0x20,
- *      sn   : 123,
- *
- *      URL   : "https://github.com/moky/dimp", // Page URL
- *      icon  : "...",                          // base64_encode(icon)
- *      title : "...",
- *      desc  : "..."
- *  }
- */
+@end
+
+@interface DIMWebpageContent : DKDContent <DIMWebpageContent>
+
 - (instancetype)initWithURL:(NSURL *)url
                       title:(nullable NSString *)title
                 description:(nullable NSString *)desc

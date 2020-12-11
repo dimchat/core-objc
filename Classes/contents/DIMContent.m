@@ -46,6 +46,7 @@
 #import "DIMMetaCommand.h"
 #import "DIMDocumentCommand.h"
 #import "DIMHistoryCommand.h"
+#import "DIMGroupCommand.h"
 
 #import "DIMContent.h"
 
@@ -58,6 +59,13 @@
 
 @implementation DIMContentParser
 
+- (instancetype)init {
+    if (self = [super init]) {
+        _block = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithBlock:(DIMContentParserBlock)block {
     if (self = [super init]) {
         _block = block;
@@ -66,6 +74,7 @@
 }
 
 - (nullable __kindof id<DKDContent>)parse:(NSDictionary *)content {
+    NSAssert(_block != nil, @"block not found");
     return _block(content);
 }
 
@@ -92,15 +101,11 @@ static inline void load_content_parsers() {
     DIMContentParserRegisterClass(DKDContentType_Page, DIMWebpageContent);
     
     // Command
-    id<DKDContentParser> cmdParser = DIMContentParserWithBlock(^(NSDictionary *cmd) {
-        return [DIMCommand parse:cmd];
-    });
+    id<DKDContentParser> cmdParser = [[DIMCommandParser alloc] init];
     DIMContentParserRegister(DKDContentType_Command, cmdParser);
     
     // History Command
-    id<DKDContentParser> hisParser = DIMContentParserWithBlock(^(NSDictionary *cmd) {
-        return [DIMHistoryCommand parse:cmd];
-    });
+    id<DKDContentParser> hisParser = [[DIMHistoryCommandParser alloc] init];
     DIMContentParserRegister(DKDContentType_History, hisParser);
 }
 
@@ -109,17 +114,30 @@ static inline void load_command_parsers() {
     DIMCommandParserRegisterClass(DIMCommand_Meta, DIMMetaCommand);
     
     // Document Command
-    id<DKDContentParser> docParser = DIMCommandParserWithBlock(^(NSDictionary *cmd) {
-        return [[DIMDocumentCommand alloc] initWithDictionary:cmd];
-    });
+    id<DKDContentParser> docParser = DIMCommandParserWithClass(DIMDocumentCommand);
     DIMCommandParserRegister(DIMCommand_Profile, docParser);
     DIMCommandParserRegister(DIMCommand_Document, docParser);
+    
+    // Group Commands
+    DIMCommandParserRegisterClass(DIMGroupCommand_Invite, DIMInviteCommand);
+    DIMCommandParserRegisterClass(DIMGroupCommand_Expel, DIMExpelCommand);
+    DIMCommandParserRegisterClass(DIMGroupCommand_Join, DIMJoinCommand);
+    DIMCommandParserRegisterClass(DIMGroupCommand_Quit, DIMQuitCommand);
+    DIMCommandParserRegisterClass(DIMGroupCommand_Query, DIMQueryGroupCommand);
+    DIMCommandParserRegisterClass(DIMGroupCommand_Reset, DIMResetGroupCommand);
 }
 
 @implementation DIMContentParser (Register)
 
 + (void)registerCoreParsers {
+    //
+    //  Register core content parsers
+    //
     load_content_parsers();
+    
+    //
+    //  Register core command parsers
+    //
     load_command_parsers();
 }
 

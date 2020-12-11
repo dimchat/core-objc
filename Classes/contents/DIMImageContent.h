@@ -39,22 +39,26 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMImageContent : DIMFileContent
+/*
+*  Image message: {
+*      type : 0x12,
+*      sn   : 123,
+*
+*      URL       : "http://", // upload to CDN
+*      data      : "...",     // if (!URL) base64_encode(image)
+*      thumbnail : "...",     // base64_encode(smallImage)
+*      filename  : "..."
+*  }
+*/
+@protocol DIMImageContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *imageData;
 @property (readonly, strong, nonatomic, nullable) NSData *thumbnail;
 
-/*
- *  Image message: {
- *      type : 0x12,
- *      sn   : 123,
- *
- *      URL       : "http://", // upload to CDN
- *      data      : "...",     // if (!URL) base64_encode(image)
- *      thumbnail : "...",     // base64_encode(smallImage)
- *      filename  : "..."
- *  }
- */
+@end
+
+@interface DIMImageContent : DIMFileContent <DIMImageContent>
+
 - (instancetype)initWithImageData:(NSData *)data
                          filename:(nullable NSString *)name;
 

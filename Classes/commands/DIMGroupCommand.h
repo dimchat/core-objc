@@ -39,13 +39,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMGroupCommand : DIMHistoryCommand
+@protocol DIMGroupCommand <DIMHistoryCommand>
 
 // Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) id<MKMID>group;
 
-@property (readonly, strong, nonatomic, nullable) NSString *member;
-@property (readonly, strong, nonatomic, nullable) NSArray<NSString *> *members;
+@property (readonly, strong, nonatomic, nullable) id<MKMID> member;
+@property (readonly, strong, nonatomic, nullable) NSArray<id<MKMID>> *members;
+
+@end
+
+@interface DIMGroupCommand : DIMHistoryCommand <DIMGroupCommand>
 
 /*
  *  Group history command: {
@@ -140,9 +144,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMGroupCommand (Creation)
-
-+ (nullable __kindof DIMGroupCommand *)parse:(NSDictionary *)cmd;
+@interface DIMGroupCommandParser : DIMHistoryCommandParser
 
 @end
 

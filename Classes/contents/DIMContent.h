@@ -43,26 +43,32 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
 
 @interface DIMContentParser : NSObject <DKDContentParser>
 
+@property (readonly, nonatomic, nullable) DIMContentParserBlock block;
+
 - (instancetype)initWithBlock:(DIMContentParserBlock)block;
 
 @end
 
-#define DIMContentParserRegister(type, parser)                                 \
-            [DKDContentFactory registerParser:(parser) forType:(type)]         \
-                              /* EOF 'DIMContentParserRegister(type, parser)' */
-
 #define DIMContentParserWithBlock(block)                                       \
             [[DIMContentParser alloc] initWithBlock:(block)]                   \
                                     /* EOF 'DIMContentParserWithBlock(block)' */
+
+#define DIMContentParserWithClass(clazz)                                       \
+            DIMContentParserWithBlock(^(NSDictionary *cmd) {                   \
+                return [[clazz alloc] initWithDictionary:cmd];                 \
+            })                                                                 \
+                                    /* EOF 'DIMContentParserWithClass(clazz)' */
+
+#define DIMContentParserRegister(type, parser)                                 \
+            [DKDContentFactory registerParser:(parser) forType:(type)]         \
+                              /* EOF 'DIMContentParserRegister(type, parser)' */
 
 #define DIMContentParserRegisterBlock(type, block)                             \
             DIMContentParserRegister((type), DIMContentParserWithBlock(block)) \
                           /* EOF 'DIMContentParserRegisterBlock(type, block)' */
 
 #define DIMContentParserRegisterClass(type, clazz)                             \
-            DIMContentParserRegisterBlock((type), ^(NSDictionary *content) {   \
-                return [[clazz alloc] initWithDictionary:content];             \
-            })                                                                 \
+            DIMContentParserRegister((type), DIMContentParserWithClass(clazz)) \
                           /* EOF 'DIMContentParserRegisterClass(type, clazz)' */
 
 @interface DIMContentParser (Register)

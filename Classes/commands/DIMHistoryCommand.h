@@ -39,18 +39,22 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMHistoryCommand : DIMCommand
-
 /*
- *  History command: {
- *      type : 0x89,
- *      sn   : 123,
- *
- *      command : "...", // command name
- *      time    : 0,     // timestamp
- *      extra   : info   // command parameters
- *  }
- */
+*  History command: {
+*      type : 0x89,
+*      sn   : 123,
+*
+*      command : "...", // command name
+*      time    : 0,     // timestamp
+*      extra   : info   // command parameters
+*  }
+*/
+@protocol DIMHistoryCommand <DIMCommand>
+
+@end
+
+@interface DIMHistoryCommand : DIMCommand <DIMHistoryCommand>
+
 - (instancetype)initWithHistoryCommand:(NSString *)cmd;
 
 @end
@@ -80,9 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMHistoryCommand (Creation)
-
-+ (nullable __kindof DIMHistoryCommand *)parse:(NSDictionary *)cmd;
+@interface DIMHistoryCommandParser : DIMCommandParser
 
 @end
 

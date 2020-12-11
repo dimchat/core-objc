@@ -39,22 +39,26 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMVideoContent : DIMFileContent
+/*
+*  Video message: {
+*      type : 0x16,
+*      sn   : 123,
+*
+*      URL      : "http://", // upload to CDN
+*      data     : "...",     // if (!URL) base64_encode(video)
+*      snapshot : "...",     // base64_encode(smallImage)
+*      filename : "..."
+*  }
+*/
+@protocol DIMVideoContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *videoData;
 @property (readonly, strong, nonatomic, nullable) NSData *snapshot;
 
-/*
- *  Video message: {
- *      type : 0x16,
- *      sn   : 123,
- *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(video)
- *      snapshot : "...",     // base64_encode(smallImage)
- *      filename : "..."
- *  }
- */
+@end
+
+@interface DIMVideoContent : DIMFileContent <DIMVideoContent>
+
 - (instancetype)initWithVideoData:(NSData *)data
                          filename:(nullable NSString *)name;
 

@@ -39,7 +39,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMDocumentCommand : DIMMetaCommand
+/*
+*  Command message: {
+*      type : 0x88,
+*      sn   : 123,
+*
+*      command   : "profile", // command name
+*      ID        : "{ID}",    // entity ID
+*      meta      : {...},     // only for handshaking with new friend
+*      profile   : {...}      // when profile is empty, means query for ID
+*  }
+*/
+@protocol DIMDocumentCommand <DIMMetaCommand>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
 
@@ -47,17 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
 // if this matched, the station will respond 304 (Not Modified)
 @property (readonly, strong, nonatomic, nullable) NSString *signature;
 
-/*
- *  Command message: {
- *      type : 0x88,
- *      sn   : 123,
- *
- *      command   : "profile", // command name
- *      ID        : "{ID}",    // entity ID
- *      meta      : {...},     // only for handshaking with new friend
- *      profile   : {...}      // when profile is empty, means query for ID
- *  }
- */
+@end
+
+@interface DIMDocumentCommand : DIMMetaCommand <DIMDocumentCommand>
+
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
                    profile:(nullable id<MKMDocument>)profile;

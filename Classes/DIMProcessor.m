@@ -36,36 +36,30 @@
 //
 
 #import "DIMContent.h"
+#import "DIMBarrack.h"
+#import "DIMTransceiver.h"
 
 #import "DIMProcessor.h"
 
+@interface DIMProcessor ()
+
+@property (weak, nonatomic) id<DKDMessageDelegate> transceiver;
+@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
+
+@end
+
 @implementation DIMProcessor
 
-- (instancetype)initWithTransceiver:(id<DKDMessageDelegate>)delegate {
+- (instancetype)initWithMessageDelegate:(id<DKDMessageDelegate>)transceiver
+                         entityDelegate:(id<DIMEntityDelegate>)barrack
+                      cipherKeyDelegate:(id<DIMCipherKeyDelegate>)keyCache {
     if (self = [super init]) {
-        self.delegate = delegate;
-        
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [DIMContentParser registerCoreParsers];
-        });
+        self.transceiver = transceiver;
+        self.barrack = barrack;
+        self.keyCache = keyCache;
     }
     return self;
-}
-
-- (MKMUser *)selectLocalUser:(id<MKMID>)receiver {
-    NSAssert(false, @"override me!");
-    return nil;
-}
-
-- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
-    NSAssert(false, @"override me!");
-    return nil;
-}
-
-- (id<MKMSymmetricKey>)symmetricKeyFrom:(id<MKMID>)sender to:(id<MKMID>)receiver {
-    NSAssert(false, @"override me!");
-    return nil;
 }
 
 @end
@@ -75,7 +69,7 @@
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
     // check message delegate
     if (!iMsg.delegate) {
-        iMsg.delegate = self.delegate;
+        iMsg.delegate = self.transceiver;
     }
     id<MKMID>sender = iMsg.sender;
     id<MKMID>receiver = iMsg.receiver;
@@ -96,14 +90,16 @@
     //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
-    id<MKMID>group = [self.delegate overtGroupForContent:iMsg.content];
+    id<MKMID>group = [self.transceiver overtGroupForContent:iMsg.content];
     id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)
-        password = [self symmetricKeyFrom:sender to:group];
+        password = [self.keyCache cipherKeyFrom:sender to:group generate:YES];
+        NSAssert(password, @"failed to get msg key: %@ -> %@", sender, group);
     } else {
         // personal message or (group) command
-        password = [self symmetricKeyFrom:sender to:receiver];
+        password = [self.keyCache cipherKeyFrom:sender to:receiver generate:YES];
+        NSAssert(password, @"failed to get msg key: %@ -> %@", sender, receiver);
     }
 
     NSAssert(iMsg.content, @"content cannot be empty");
@@ -112,8 +108,8 @@
     id<DKDSecureMessage>sMsg = nil;
     if (MKMIDIsGroup(receiver)) {
         // group message
-        NSArray<id<MKMID>> *members = [self membersOfGroup:receiver];
-        sMsg = [iMsg encryptWithKey:password forMembers:members];
+        MKMGroup *grp = [self.barrack groupWithID:receiver];
+        sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
     } else {
         // personal message (or split group message)
         sMsg = [iMsg encryptWithKey:password];
@@ -139,7 +135,7 @@
 - (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
     // check message delegate
     if (sMsg.delegate == nil) {
-        sMsg.delegate = self.delegate;;
+        sMsg.delegate = self.transceiver;;
     }
     NSAssert(sMsg.data, @"message data cannot be empty");
     // sign 'data' by sender
@@ -149,7 +145,7 @@
 - (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
     // check message delegate
     if (rMsg.delegate == nil) {
-        rMsg.delegate = self.delegate;;
+        rMsg.delegate = self.transceiver;;
     }
     //
     //  TODO: check [Visa Protocol]
@@ -165,7 +161,7 @@
 - (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
     // check message delegate
     if (sMsg.delegate == nil) {
-        sMsg.delegate = self.delegate;
+        sMsg.delegate = self.transceiver;
     }
     //
     //  NOTICE: make sure the receiver is YOU!
@@ -210,7 +206,7 @@
 
 @implementation DIMProcessor (Processing)
 
-- (nullable NSData *)processPackage:(NSData *)data {
+- (nullable NSData *)processData:(NSData *)data {
     // 1. deserialize message
     id<DKDReliableMessage>rMsg = [self deserializeMessage:data];
     if (!rMsg) {
@@ -244,7 +240,8 @@
     return [self signMessage:sMsg];
 }
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg withMessage:(id<DKDReliableMessage>)rMsg {
+- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
+                                   withMessage:(id<DKDReliableMessage>)rMsg {
     // 1. decrypt message
     id<DKDInstantMessage> iMsg = [self decryptMessage:sMsg];
     if (!iMsg) {
@@ -262,10 +259,11 @@
     return [self encryptMessage:iMsg];
 }
 
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg withMessage:(id<DKDReliableMessage>)rMsg {
+- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg {
     // check message delegate
     if (!iMsg.delegate) {
-        iMsg.delegate = self.delegate;
+        iMsg.delegate = self.transceiver;
     }
     
     // process content from sender
@@ -279,7 +277,7 @@
     // check receiver
     id<MKMID> sender = iMsg.sender;
     id<MKMID>receiver = iMsg.receiver;
-    MKMUser *user = [self selectLocalUser:receiver];
+    MKMUser *user = [self.barrack selectLocalUserWithID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     
     // pack message
@@ -287,8 +285,6 @@
     return DKDInstantMessageCreate(env, res);
 }
 
-// TODO: override to check group
-// TODO: override to filter the response
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
                               withMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(false, @"implements me!");

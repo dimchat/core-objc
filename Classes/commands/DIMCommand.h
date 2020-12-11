@@ -39,19 +39,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMCommand : DKDContent
+/*
+*  Command message: {
+*      type : 0x88,
+*      sn   : 123,
+*
+*      command : "...", // command name
+*      extra   : info   // command parameters
+*  }
+*/
+@protocol DIMCommand <DKDContent>
 
 @property (readonly, strong, nonatomic) NSString *command;
 
-/*
- *  Command message: {
- *      type : 0x88,
- *      sn   : 123,
- *
- *      command : "...", // command name
- *      extra   : info   // command parameters
- *  }
- */
+@end
+
+@interface DIMCommand : DKDContent <DIMCommand>
+
 - (instancetype)initWithCommand:(NSString *)cmd;
 
 @end
@@ -71,31 +75,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMCommand (Creation)
+@interface DIMCommandParser : DIMContentParser
 
 + (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name;
-+ (id<DKDContentParser>)parserForCommand:(NSString *)name;
 
-+ (nullable __kindof DIMCommand *)parse:(NSDictionary *)cmd;
+- (id<DKDContentParser>)parserForCommand:(NSString *)name;
 
 @end
 
-#define DIMCommandParserRegister(name, parser)                                 \
-            [DIMCommand registerParser:(parser) forCommand:(name)]             \
-                              /* EOF 'DIMCommandParserRegister(name, parser)' */
-
 #define DIMCommandParserWithBlock(block)                                       \
-            [[DIMContentParser alloc] initWithBlock:(block)]                   \
+            [[DIMCommandParser alloc] initWithBlock:(block)]                   \
                                     /* EOF 'DIMCommandParserWithBlock(block)' */
+
+#define DIMCommandParserWithClass(clazz)                                       \
+            DIMCommandParserWithBlock(^(NSDictionary *cmd) {                   \
+                return [[clazz alloc] initWithDictionary:cmd];                 \
+            })                                                                 \
+                                    /* EOF 'DIMCommandParserWithClass(clazz)' */
+
+#define DIMCommandParserRegister(name, parser)                                 \
+            [DIMCommandParser registerParser:(parser) forCommand:(name)]       \
+                              /* EOF 'DIMCommandParserRegister(name, parser)' */
 
 #define DIMCommandParserRegisterBlock(name, block)                             \
             DIMCommandParserRegister((name), DIMCommandParserWithBlock(block)) \
                           /* EOF 'DIMCommandParserRegisterBlock(name, block)' */
 
 #define DIMCommandParserRegisterClass(name, clazz)                             \
-            DIMCommandParserRegisterBlock((name), ^(NSDictionary *cmd) {       \
-                return [[clazz alloc] initWithDictionary:cmd];                 \
-            })                                                                 \
+            DIMCommandParserRegister((name), DIMCommandParserWithClass(clazz)) \
                           /* EOF 'DIMCommandParserRegisterClass(name, clazz)' */
 
 NS_ASSUME_NONNULL_END
