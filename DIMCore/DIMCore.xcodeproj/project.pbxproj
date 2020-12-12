@@ -40,7 +40,6 @@
 		E9F3AA4621CBD02C009690F6 /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */; };
 		E9F3AA4B21CBD02C009690F6 /* DIMCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */; };
 		E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA5B21CBD03C009690F6 /* DIMCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA9B21CC00B6009690F6 /* dimMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AB9E21D07803009690F6 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
 		E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC8E2622B92EE80013FCD3 /* DIMHistoryCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */; };
@@ -121,7 +120,6 @@
 		E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCoreTests.m; sourceTree = "<group>"; };
 		E9F3AA4C21CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9F3AA5B21CBD03C009690F6 /* DIMCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCore.h; sourceTree = "<group>"; };
-		E9F3AA9B21CC00B6009690F6 /* dimMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dimMacros.h; sourceTree = "<group>"; };
 		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
 		E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
 		E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 				E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */,
 				E97A21A0257F92CF00313C5F /* DIMProcessor.h */,
 				E97A21A1257F92CF00313C5F /* DIMProcessor.m */,
-				E9F3AA9B21CC00B6009690F6 /* dimMacros.h */,
 				E9F3AA5B21CBD03C009690F6 /* DIMCore.h */,
 			);
 			name = Classes;
@@ -274,7 +271,6 @@
 				E9596520239107C800DAA870 /* DIMTextContent.h in Headers */,
 				E9596521239107C800DAA870 /* DIMImageContent.h in Headers */,
 				E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */,
-				E9F3AA9C21CC0157009690F6 /* dimMacros.h in Headers */,
 				E9BBBD79223AB02600E6ACDA /* DIMBarrack.h in Headers */,
 				E9CF981121FF548F0092DD8B /* DIMCommand.h in Headers */,
 				E97A21A2257F92CF00313C5F /* DIMProcessor.h in Headers */,

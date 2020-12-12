@@ -54,8 +54,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #if !defined(__DIM_CORE__)
 #define __DIM_CORE__ 1
 
-#import <DIMCore/dimMacros.h>
-
 // Content
 #import <DIMCore/DIMForwardContent.h>
 #import <DIMCore/DIMTextContent.h>
