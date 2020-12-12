@@ -37,8 +37,8 @@
 
 #import "DIMBarrack.h"
 
-typedef NSMutableDictionary<NSString *, MKMUser *> UserTableM;
-typedef NSMutableDictionary<NSString *, MKMGroup *> GroupTableM;
+typedef NSMutableDictionary<id<MKMID>, MKMUser *> UserTableM;
+typedef NSMutableDictionary<id<MKMID>, MKMGroup *> GroupTableM;
 
 @interface DIMBarrack () {
     
@@ -86,14 +86,14 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
-    [_userTable setObject:user forKey:user.ID.string];
+    [_userTable setObject:user forKey:user.ID];
 }
 
 - (void)cacheGroup:(MKMGroup *)group {
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
-    [_groupTable setObject:group forKey:group.ID.string];
+    [_groupTable setObject:group forKey:group.ID];
 }
 
 - (nullable MKMUser *)createUser:(id<MKMID>)ID {
@@ -146,7 +146,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable __kindof MKMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
-    MKMUser *user = [_userTable objectForKey:ID.string];
+    MKMUser *user = [_userTable objectForKey:ID];
     if (!user) {
         // 2. create user and cache it
         user = [self createUser:ID];
@@ -159,7 +159,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (nullable __kindof MKMGroup *)groupWithID:(id<MKMID>)ID {
     // 1. get from group cache
-    MKMGroup *group = [_groupTable objectForKey:ID.string];
+    MKMGroup *group = [_groupTable objectForKey:ID];
     if (!group) {
         // 2. create group and cache it
         group = [self createGroup:ID];
@@ -178,7 +178,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 - (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
-                                          withType:(nullable NSString *)type {
+                                              type:(nullable NSString *)type {
     NSAssert(false, @"implement me!");
     return nil;
 }
@@ -190,7 +190,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
+- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
     // return nil to use [visa.key, meta.key]
     return nil;
 }

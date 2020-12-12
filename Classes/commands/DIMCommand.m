@@ -78,7 +78,7 @@
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(nullable NSZone *)zone {
     DIMCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.command = _command;

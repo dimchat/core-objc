@@ -83,7 +83,7 @@
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(nullable NSZone *)zone {
     DIMMetaCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
         cmd.meta = _meta;

@@ -65,7 +65,7 @@
     return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
+- (id)copyWithZone:(nullable NSZone *)zone {
     DIMForwardContent *content = [super copyWithZone:zone];
     if (content) {
         content.forwardMessage = _forwardMessage;
