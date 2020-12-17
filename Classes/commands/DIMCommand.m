@@ -86,9 +86,13 @@
     return cmd;
 }
 
++ (NSString *)command:(NSDictionary *)cmd {
+    return [cmd objectForKey:@"command"];
+}
+
 - (NSString *)command {
     if (!_command) {
-        _command = [self objectForKey:@"command"];
+        _command = [DIMCommand command:self.dictionary];
     }
     return _command;
 }
@@ -97,39 +101,73 @@
 
 #pragma mark - Creation
 
-@implementation DIMCommandParser
+@interface DIMCommandFactory ()
 
-static NSMutableDictionary *s_command_parsers = nil;
+@property (nonatomic, nullable) DIMCommandParserBlock block;
 
-+ (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name {
-    if (!s_command_parsers) {
-        s_command_parsers = [[NSMutableDictionary alloc] init];
+@end
+
+@implementation DIMCommandFactory
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.block = NULL;
     }
-    [s_command_parsers setObject:parser forKey:name];
+    return self;
 }
 
-- (id<DKDContentParser>)parserForCommand:(NSString *)name {
-    return [s_command_parsers objectForKey:name];
+- (instancetype)initWithBlock:(DIMCommandParserBlock)block {
+    if (self = [super init]) {
+        self.block = block;
+    }
+    return self;
 }
 
-- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)cmd {
-    if (self.block) {
-        return [super parse:cmd];
+- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd {
+    if (self.block == NULL) {
+        return [[DIMCommand alloc] initWithDictionary:cmd];
     }
-    // Registered Commands
-    NSString *command = [cmd objectForKey:@"command"];
-    id<DKDContentParser> parser = [self parserForCommand:command];
-    if (!parser) {
-        // Check for group commands
-        id group = [cmd objectForKey:@"group"];
-        if (group) {
-            parser = [self parserForCommand:@"group"];
+    return self.block(cmd);
+}
+
+- (nullable __kindof id<DKDContent>)parseContent:(NSDictionary *)content {
+    // get factory by command name
+    NSString *command = [DIMCommand command:content];
+    id<DIMCommandFactory> factory = [DIMCommand factoryForCommand:command];
+    if (!factory) {
+        // check for group commands
+        if ([DKDContent group:content]) {
+            factory = [DIMCommand factoryForCommand:@"group"];
+        }
+        if (!factory) {
+            factory = self;
         }
     }
-    if (parser) {
-        return [parser parse:cmd];
-    }
-    return [[DIMCommand alloc] initWithDictionary:cmd];
+    return [factory parseCommand:content];
+}
+
+@end
+
+@implementation DIMCommand (Creation)
+
+static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil;
+
+static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *factories(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (!s_factories) {
+            s_factories = [[NSMutableDictionary alloc] init];
+        }
+    });
+    return s_factories;
+}
+
++ (void)setFactory:(id<DIMCommandFactory>)factory forCommand:(NSString *)name {
+    [factories() setObject:factory forKey:name];
+}
+
++ (id<DIMCommandFactory>)factoryForCommand:(NSString *)name {
+    return [factories() objectForKey:name];
 }
 
 @end

@@ -161,16 +161,23 @@
 
 #pragma mark - Creation
 
-@implementation DIMGroupCommandParser
+@implementation DIMGroupCommandFactory
 
-- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)cmd {
-    // Registered Commands
-    NSString *command = [cmd objectForKey:@"command"];
-    id<DKDContentParser> parser = [self parserForCommand:command];
-    if (parser) {
-        return [parser parse:cmd];
+- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd {
+    if (self.block == NULL) {
+        return [[DIMGroupCommand alloc] initWithDictionary:cmd];
     }
-    return [[DIMGroupCommand alloc] initWithDictionary:cmd];
+    return self.block(cmd);
+}
+
+- (nullable __kindof id<DKDContent>)parseContent:(NSDictionary *)content {
+    // get factory by command name
+    NSString *command = [DIMCommand command:content];
+    id<DIMCommandFactory> parser = [DIMCommand factoryForCommand:command];
+    if (!parser) {
+        parser = self;
+    }
+    return [parser parseCommand:content];
 }
 
 @end

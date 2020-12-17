@@ -70,23 +70,13 @@
 
 #pragma mark - Creation
 
-@implementation DIMHistoryCommandParser
+@implementation DIMHistoryCommandFactory
 
-- (nullable __kindof id<DKDContent>)parse:(NSDictionary *)cmd {
-    // Registered Commands
-    NSString *command = [cmd objectForKey:@"command"];
-    id<DKDContentParser> parser = [self parserForCommand:command];
-    if (!parser) {
-        // Check for group commands
-        id group = [cmd objectForKey:@"group"];
-        if (group) {
-            parser = [self parserForCommand:@"group"];
-        }
+- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd {
+    if (self.block == NULL) {
+        return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
     }
-    if (parser) {
-        return [parser parse:cmd];
-    }
-    return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
+    return self.block(cmd);
 }
 
 @end

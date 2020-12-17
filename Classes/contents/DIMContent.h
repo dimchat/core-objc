@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
 
-@interface DIMContentParser : NSObject <DKDContentParser>
+@interface DIMContentFactory : NSObject <DKDContentFactory>
 
 @property (readonly, nonatomic, nullable) DIMContentParserBlock block;
 
@@ -49,31 +49,33 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
 
 @end
 
-#define DIMContentParserWithBlock(block)                                       \
-            [[DIMContentParser alloc] initWithBlock:(block)]                   \
-                                    /* EOF 'DIMContentParserWithBlock(block)' */
+#define DIMContentFactoryWithBlock(block)                                      \
+            [[DIMContentFactory alloc] initWithBlock:(block)]                  \
+                                   /* EOF 'DIMContentFactoryWithBlock(block)' */
 
-#define DIMContentParserWithClass(clazz)                                       \
-            DIMContentParserWithBlock(^(NSDictionary *cmd) {                   \
+#define DIMContentFactoryWithClass(clazz)                                      \
+            DIMContentFactoryWithBlock(^(NSDictionary *cmd) {                  \
                 return [[clazz alloc] initWithDictionary:cmd];                 \
             })                                                                 \
-                                    /* EOF 'DIMContentParserWithClass(clazz)' */
+                                   /* EOF 'DIMContentFactoryWithClass(clazz)' */
 
-#define DIMContentParserRegister(type, parser)                                 \
-            [DKDContentFactory registerParser:(parser) forType:(type)]         \
-                              /* EOF 'DIMContentParserRegister(type, parser)' */
+#define DIMContentFactoryRegister(type, factory)                               \
+            [DKDContent setFactory:(factory) forType:(type)]                   \
+                            /* EOF 'DIMContentFactoryRegister(type, factory)' */
 
-#define DIMContentParserRegisterBlock(type, block)                             \
-            DIMContentParserRegister((type), DIMContentParserWithBlock(block)) \
-                          /* EOF 'DIMContentParserRegisterBlock(type, block)' */
+#define DIMContentFactoryRegisterBlock(type, block)                            \
+            DIMContentFactoryRegister((type),                                  \
+                                      DIMContentFactoryWithBlock(block))       \
+                         /* EOF 'DIMContentFactoryRegisterBlock(type, block)' */
 
-#define DIMContentParserRegisterClass(type, clazz)                             \
-            DIMContentParserRegister((type), DIMContentParserWithClass(clazz)) \
-                          /* EOF 'DIMContentParserRegisterClass(type, clazz)' */
+#define DIMContentFactoryRegisterClass(type, clazz)                            \
+            DIMContentFactoryRegister((type),                                  \
+                                      DIMContentFactoryWithClass(clazz))       \
+                         /* EOF 'DIMContentFactoryRegisterClass(type, clazz)' */
 
-@interface DIMContentParser (Register)
+@interface DIMContentFactory (Register)
 
-+ (void)registerCoreParsers;
++ (void)registerCoreFactories;
 
 @end
 

@@ -84,7 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMHistoryCommandParser : DIMCommandParser
+@interface DIMHistoryCommandFactory : DIMCommandFactory
 
 @end
 

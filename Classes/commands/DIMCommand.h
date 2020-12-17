@@ -58,6 +58,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithCommand:(NSString *)cmd;
 
++ (NSString *)command:(NSDictionary *)cmd;
+
 @end
 
 #pragma mark System Command
@@ -75,34 +77,57 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Creation
 
-@interface DIMCommandParser : DIMContentParser
+@protocol DIMCommandFactory <NSObject>
 
-+ (void)registerParser:(id<DKDContentParser>)parser forCommand:(NSString *)name;
-
-- (id<DKDContentParser>)parserForCommand:(NSString *)name;
+/**
+ *  Parse map object to command
+ *
+ * @param cmd - command info
+ * @return Command
+ */
+- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd;
 
 @end
 
-#define DIMCommandParserWithBlock(block)                                       \
-            [[DIMCommandParser alloc] initWithBlock:(block)]                   \
-                                    /* EOF 'DIMCommandParserWithBlock(block)' */
+typedef DIMCommand *_Nullable(^DIMCommandParserBlock)(NSDictionary *cmd);
 
-#define DIMCommandParserWithClass(clazz)                                       \
-            DIMCommandParserWithBlock(^(NSDictionary *cmd) {                   \
+@interface DIMCommandFactory : NSObject <DKDContentFactory, DIMCommandFactory>
+
+@property (readonly, nonatomic, nullable) DIMCommandParserBlock block;
+
+- (instancetype)initWithBlock:(DIMCommandParserBlock)block;
+
+@end
+
+#define DIMCommandFactoryWithBlock(block)                                      \
+            [[DIMCommandFactory alloc] initWithBlock:(block)]                  \
+                                   /* EOF 'DIMCommandFactoryWithBlock(block)' */
+
+#define DIMCommandFactoryWithClass(clazz)                                      \
+            DIMCommandFactoryWithBlock(^(NSDictionary *cmd) {                  \
                 return [[clazz alloc] initWithDictionary:cmd];                 \
             })                                                                 \
-                                    /* EOF 'DIMCommandParserWithClass(clazz)' */
+                                   /* EOF 'DIMCommandFactoryWithClass(clazz)' */
 
-#define DIMCommandParserRegister(name, parser)                                 \
-            [DIMCommandParser registerParser:(parser) forCommand:(name)]       \
-                              /* EOF 'DIMCommandParserRegister(name, parser)' */
+#define DIMCommandFactoryRegister(name, factory)                               \
+            [DIMCommand setFactory:(factory) forCommand:(name)]                \
+                            /* EOF 'DIMCommandFactoryRegister(name, factory)' */
 
-#define DIMCommandParserRegisterBlock(name, block)                             \
-            DIMCommandParserRegister((name), DIMCommandParserWithBlock(block)) \
-                          /* EOF 'DIMCommandParserRegisterBlock(name, block)' */
+#define DIMCommandFactoryRegisterBlock(name, block)                            \
+            DIMCommandFactoryRegister((name),                                  \
+                                      DIMCommandFactoryWithBlock(block))       \
+                         /* EOF 'DIMCommandFactoryRegisterBlock(name, block)' */
 
-#define DIMCommandParserRegisterClass(name, clazz)                             \
-            DIMCommandParserRegister((name), DIMCommandParserWithClass(clazz)) \
-                          /* EOF 'DIMCommandParserRegisterClass(name, clazz)' */
+#define DIMCommandFactoryRegisterClass(name, clazz)                            \
+            DIMCommandFactoryRegister((name),                                  \
+                                      DIMCommandFactoryWithClass(clazz))       \
+                         /* EOF 'DIMCommandFactoryRegisterClass(name, clazz)' */
+
+@interface DIMCommand (Creation)
+
++ (nullable id<DIMCommandFactory>)factoryForCommand:(NSString *)name;
++ (void)setFactory:(id<DIMCommandFactory>)factory forCommand:(NSString *)name;
+
+@end
 
 NS_ASSUME_NONNULL_END
