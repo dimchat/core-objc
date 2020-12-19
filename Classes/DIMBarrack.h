@@ -84,10 +84,9 @@ NS_ASSUME_NONNULL_BEGIN
                                   MKMUserDataSource,
                                   MKMGroupDataSource>
 
-- (void)cacheUser:(MKMUser *)user;
-- (void)cacheGroup:(MKMGroup *)group;
-
+// override to create user
 - (nullable MKMUser *)createUser:(id<MKMID>)ID;
+// override to create group
 - (nullable MKMGroup *)createGroup:(id<MKMID>)ID;
 
 /**
@@ -100,17 +99,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMBarrack (Relationship)
+@interface DIMBarrack (MemberShip)
 
 - (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member;
 - (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member;
-
-- (BOOL)group:(id<MKMID>)group containsMember:(id<MKMID>)member;
-
-#pragma mark Assistant
-
-- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
-- (BOOL)group:(id<MKMID>)group containsAssistant:(id<MKMID>)assistant;
 
 @end
 
