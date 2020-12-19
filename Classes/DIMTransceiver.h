@@ -68,9 +68,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol DIMEntityDelegate;
 
-@interface DIMTransceiver : NSObject <DKDMessageDelegate>
+@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
+                                      DKDReliableMessageDelegate>
 
+/**
+ *  Delegate for getting entity
+ */
 @property (weak, nonatomic) id<DIMEntityDelegate> barrack;
+
+/**
+ *  Delegate for getting message key
+ */
 @property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
 
 @end

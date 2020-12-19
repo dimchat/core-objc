@@ -35,45 +35,23 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import "DIMPacker.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDelegate;
-@protocol DIMCipherKeyDelegate;
-
+/**
+ *  Message Processor
+ *  ~~~~~~~~~~~~~~~~~
+ */
 @interface DIMProcessor : NSObject
 
-@property (readonly, weak, nonatomic) id<DKDMessageDelegate> transceiver;
 @property (readonly, weak, nonatomic) id<DIMEntityDelegate> barrack;
-@property (readonly, weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
+@property (readonly, weak, nonatomic) id<DKDMessageDelegate> transceiver;
+@property (readonly, weak, nonatomic) DIMPacker *packer;
 
-- (instancetype)initWithMessageDelegate:(id<DKDMessageDelegate>)transceiver
-                         entityDelegate:(id<DIMEntityDelegate>)barrack
-                      cipherKeyDelegate:(id<DIMCipherKeyDelegate>)keyCache;
-
-@end
-
-@interface DIMProcessor (Transform)
-
-- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
-
-- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
-
-- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
-
-- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
-
-@end
-
-@interface DIMProcessor (Serialization)
-
-- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
-- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
-
-@end
-
-@interface DIMProcessor (Processing)
+- (instancetype)initWithEntityDelegate:(id<DIMEntityDelegate>)barrack
+                       messageDelegate:(id<DKDMessageDelegate>)transceiver
+                                packer:(DIMPacker *)messagePacker;
 
 /**
  *  Process received data package
