@@ -152,22 +152,19 @@
 
 static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil;
 
-static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *factories(void) {
++ (void)setFactory:(id<DIMCommandFactory>)factory forCommand:(NSString *)name {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if (!s_factories) {
+        //if (!s_factories) {
             s_factories = [[NSMutableDictionary alloc] init];
-        }
+        //}
     });
-    return s_factories;
-}
-
-+ (void)setFactory:(id<DIMCommandFactory>)factory forCommand:(NSString *)name {
-    [factories() setObject:factory forKey:name];
+    [s_factories setObject:factory forKey:name];
 }
 
 + (id<DIMCommandFactory>)factoryForCommand:(NSString *)name {
-    return [factories() objectForKey:name];
+    NSAssert(s_factories, @"command factories not set yet");
+    return [s_factories objectForKey:name];
 }
 
 @end
