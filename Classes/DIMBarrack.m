@@ -364,7 +364,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         NSMutableArray *mArray = [[NSMutableArray alloc] init];
         [mArray addObject:admin];
         // check and add member
-        id<MKMID>ID = MKMIDFromString(member);
+        id<MKMID> ID = MKMIDFromString(member);
         if (![admin isEqual:ID]) {
             [mArray addObject:ID];
         }

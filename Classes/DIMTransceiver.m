@@ -61,7 +61,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     if (!msg.delegate) {
         msg.delegate = tranceiver;
     }
-    id<MKMID>receiver = msg.group;
+    id<MKMID> receiver = msg.group;
     if (!receiver) {
         receiver = msg.receiver;
     }
@@ -167,7 +167,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     // NOTICE: the receiver will be group ID in a group message here
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
-    id<MKMID>ID = sMsg.receiver;
+    id<MKMID> ID = sMsg.receiver;
     MKMUser *user = [_barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     return [user decrypt:key];
@@ -223,14 +223,14 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     
     if (!isBroadcast(sMsg, self)) {
         // check and cache key for reuse
-        id<MKMID>sender = sMsg.sender;
-        id<MKMID>group = [self overtGroupForContent:content];
+        id<MKMID> sender = sMsg.sender;
+        id<MKMID> group = [self overtGroupForContent:content];
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
             [_keyCache cacheCipherKey:password from:sender to:group];
         } else {
-            id<MKMID>receiver = sMsg.receiver;
+            id<MKMID> receiver = sMsg.receiver;
             // personal message or (group) command
             // cache key with direction (sender -> receiver)
             [_keyCache cacheCipherKey:password from:sender to:receiver];

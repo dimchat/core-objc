@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMGroupCommand <DIMHistoryCommand>
 
 // Group ID for group message already defined in DKDContent
-//@property (strong, nonatomic, nullable) id<MKMID>group;
+//@property (strong, nonatomic, nullable) id<MKMID> group;
 
 @property (readonly, strong, nonatomic, nullable) id<MKMID> member;
 @property (readonly, strong, nonatomic, nullable) NSArray<id<MKMID>> *members;

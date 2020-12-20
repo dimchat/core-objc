@@ -66,8 +66,8 @@
     if (!iMsg.delegate) {
         iMsg.delegate = self.transceiver;
     }
-    id<MKMID>sender = iMsg.sender;
-    id<MKMID>receiver = iMsg.receiver;
+    id<MKMID> sender = iMsg.sender;
+    id<MKMID> receiver = iMsg.receiver;
     // if 'group' exists and the 'receiver' is a group ID,
     // they must be equal
     
@@ -85,7 +85,7 @@
     //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
-    id<MKMID>group = [self.transceiver overtGroupForContent:iMsg.content];
+    id<MKMID> group = [self.transceiver overtGroupForContent:iMsg.content];
     id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)
@@ -100,7 +100,7 @@
     NSAssert(iMsg.content, @"content cannot be empty");
     
     // 2. encrypt 'content' to 'data' for receiver/group members
-    id<DKDSecureMessage>sMsg = nil;
+    id<DKDSecureMessage> sMsg = nil;
     if (MKMIDIsGroup(receiver)) {
         // group message
         MKMGroup *grp = [self.barrack groupWithID:receiver];
