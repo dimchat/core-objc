@@ -57,10 +57,6 @@
 #import "DIMTransceiver.h"
 
 static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
-    // check message delegate
-    if (!msg.delegate) {
-        msg.delegate = tranceiver;
-    }
     id<MKMID> receiver = msg.group;
     if (!receiver) {
         receiver = msg.receiver;

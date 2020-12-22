@@ -117,14 +117,9 @@
 
 - (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
                                      withMessage:(id<DKDReliableMessage>)rMsg {
-    // check message delegate
-    if (!iMsg.delegate) {
-        iMsg.delegate = self.transceiver;
-    }
-    
     // process content from sender
     id<DKDContent> content = iMsg.content;
-    id<DKDContent>res = [self processContent:content withMessage:rMsg];
+    id<DKDContent> res = [self processContent:content withMessage:rMsg];
     if (!res) {
         // nothing to respond
         return nil;

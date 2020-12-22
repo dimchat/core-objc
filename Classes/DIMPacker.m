@@ -104,7 +104,13 @@
     if (MKMIDIsGroup(receiver)) {
         // group message
         MKMGroup *grp = [self.barrack groupWithID:receiver];
-        sMsg = [iMsg encryptWithKey:password forMembers:grp.members];
+        NSArray<id<MKMID>> *members = [grp members];
+        if (members.count == 0) {
+            // group not ready
+            // TODO: suspend this message for waiting group info
+            return nil;
+        }
+        sMsg = [iMsg encryptWithKey:password forMembers:members];
     } else {
         // personal message (or split group message)
         sMsg = [iMsg encryptWithKey:password];
