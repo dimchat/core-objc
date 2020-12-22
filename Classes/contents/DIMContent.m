@@ -87,9 +87,6 @@
 @implementation DIMContentFactory (Register)
 
 + (void)registerCoreFactories {
-    /**
-     *  Register core content parsers
-     */
     
     // Top-Secret
     DIMContentFactoryRegisterClass(DKDContentType_Forward, DIMForwardContent);
@@ -116,28 +113,8 @@
     id<DKDContentFactory> hisParser = [[DIMHistoryCommandFactory alloc] init];
     DIMContentFactoryRegister(DKDContentType_History, hisParser);
     
-    // unknown
-    DIMContentFactoryRegisterClass(0, DKDContent);
-
-    /**
-     *  Register core command parsers
-     */
-    
-    // Meta Command
-    DIMCommandFactoryRegisterClass(DIMCommand_Meta, DIMMetaCommand);
-    
-    // Document Command
-    id<DIMCommandFactory> docParser = DIMCommandFactoryWithClass(DIMDocumentCommand);
-    DIMCommandFactoryRegister(DIMCommand_Profile, docParser);
-    DIMCommandFactoryRegister(DIMCommand_Document, docParser);
-    
-    // Group Commands
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Invite, DIMInviteCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Expel, DIMExpelCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Join, DIMJoinCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Quit, DIMQuitCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Query, DIMQueryGroupCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Reset, DIMResetGroupCommand);
+    // unknown content type
+    DIMContentFactoryRegisterClass(DKDContentType_Unknown, DKDContent);
 }
 
 @end

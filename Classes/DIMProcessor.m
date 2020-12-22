@@ -143,3 +143,12 @@
 }
 
 @end
+
+@implementation DIMProcessor (Register)
+
++ (void)registerCoreFactories {
+    [DIMContentFactory registerCoreFactories];
+    [DIMContentFactory registerCoreFactories];
+}
+
+@end

@@ -130,4 +130,13 @@ typedef DIMCommand *_Nullable(^DIMCommandParserBlock)(NSDictionary *cmd);
 
 @end
 
+@interface DIMCommandFactory (Register)
+
+/**
+ *  Register core command parsers
+ */
++ (void)registerCoreFactories;
+
+@end
+
 NS_ASSUME_NONNULL_END

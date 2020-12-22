@@ -75,6 +75,9 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
 
 @interface DIMContentFactory (Register)
 
+/**
+ *  Register core content parsers
+ */
 + (void)registerCoreFactories;
 
 @end

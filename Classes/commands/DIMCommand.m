@@ -168,3 +168,30 @@ static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil
 }
 
 @end
+
+#pragma mark - Register Parsers
+
+@implementation DIMCommandFactory (Register)
+
++ (void)registerCoreFactories {
+    
+    // Meta Command
+    DIMCommandFactoryRegisterClass(DIMCommand_Meta, DIMMetaCommand);
+    
+    // Document Command
+    id<DIMCommandFactory> docParser = DIMCommandFactoryWithClass(DIMDocumentCommand);
+    DIMCommandFactoryRegister(DIMCommand_Profile, docParser);
+    DIMCommandFactoryRegister(DIMCommand_Document, docParser);
+    
+    // Group Commands
+    id<DIMCommandFactory> grpParser = [[DIMGroupCommandFactory alloc] init];
+    DIMCommandFactoryRegister(@"group", grpParser);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Invite, DIMInviteCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Expel, DIMExpelCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Join, DIMJoinCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Quit, DIMQuitCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Query, DIMQueryGroupCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Reset, DIMResetGroupCommand);
+}
+
+@end

@@ -79,4 +79,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface DIMProcessor (Register)
+
+/**
+ *  Register Core Content/Command Factories
+ */
++ (void)registerCoreFactories;
+
+@end
+
 NS_ASSUME_NONNULL_END
