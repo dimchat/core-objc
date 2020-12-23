@@ -40,14 +40,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Command message: {
-*      type : 0x88,
-*      sn   : 123,
-*
-*      command : "...", // command name
-*      extra   : info   // command parameters
-*  }
-*/
+ *  Command message: {
+ *      type : 0x88,
+ *      sn   : 123,
+ *
+ *      command : "...", // command name
+ *      extra   : info   // command parameters
+ *  }
+ */
 @protocol DIMCommand <DKDContent>
 
 @property (readonly, strong, nonatomic) NSString *command;

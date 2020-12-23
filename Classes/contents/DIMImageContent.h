@@ -40,16 +40,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Image message: {
-*      type : 0x12,
-*      sn   : 123,
-*
-*      URL       : "http://", // upload to CDN
-*      data      : "...",     // if (!URL) base64_encode(image)
-*      thumbnail : "...",     // base64_encode(smallImage)
-*      filename  : "..."
-*  }
-*/
+ *  Image message: {
+ *      type : 0x12,
+ *      sn   : 123,
+ *
+ *      URL       : "http://", // upload to CDN
+ *      data      : "...",     // if (!URL) base64_encode(image)
+ *      thumbnail : "...",     // base64_encode(smallImage)
+ *      filename  : "..."
+ *  }
+ */
 @protocol DIMImageContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *imageData;

@@ -40,15 +40,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Command message: {
-*      type : 0x88,
-*      sn   : 123,
-*
-*      command : "meta", // command name
-*      ID      : "{ID}", // contact's ID
-*      meta    : {...}   // When meta is empty, means query meta for ID
-*  }
-*/
+ *  Command message: {
+ *      type : 0x88,
+ *      sn   : 123,
+ *
+ *      command : "meta", // command name
+ *      ID      : "{ID}", // contact's ID
+ *      meta    : {...}   // When meta is empty, means query meta for ID
+ *  }
+ */
 @protocol DIMMetaCommand <DIMCommand>
 
 @property (readonly, strong, nonatomic) id<MKMID> ID;

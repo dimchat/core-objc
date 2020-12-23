@@ -35,24 +35,9 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMForwardContent.h"
-#import "DIMTextContent.h"
-#import "DIMFileContent.h"
-#import "DIMImageContent.h"
-#import "DIMAudioContent.h"
-#import "DIMVideoContent.h"
-#import "DIMWebpageContent.h"
-
 #import "DIMCommand.h"
-#import "DIMHistoryCommand.h"
-#import "DIMGroupCommand.h"
-
-#import "DIMMetaCommand.h"
-#import "DIMDocumentCommand.h"
 
 #import "DIMBarrack.h"
-
-#import "DIMFileContent.h"
 
 #import "DIMTransceiver.h"
 

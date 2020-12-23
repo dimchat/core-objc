@@ -40,16 +40,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Web Page message: {
-*      type : 0x20,
-*      sn   : 123,
-*
-*      URL   : "https://github.com/moky/dimp", // Page URL
-*      icon  : "...",                          // base64_encode(icon)
-*      title : "...",
-*      desc  : "..."
-*  }
-*/
+ *  Web Page message: {
+ *      type : 0x20,
+ *      sn   : 123,
+ *
+ *      URL   : "https://github.com/moky/dimp", // Page URL
+ *      icon  : "...",                          // base64_encode(icon)
+ *      title : "...",
+ *      desc  : "..."
+ *  }
+ */
 @protocol DIMWebpageContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSURL *URL;

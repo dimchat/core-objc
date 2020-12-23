@@ -40,15 +40,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  File message: {
-*      type : 0x10,
-*      sn   : 123,
-*
-*      URL      : "http://", // upload to CDN
-*      data     : "...",     // if (!URL) base64_encode(fileContent)
-*      filename : "..."
-*  }
-*/
+ *  File message: {
+ *      type : 0x10,
+ *      sn   : 123,
+ *
+ *      URL      : "http://", // upload to CDN
+ *      data     : "...",     // if (!URL) base64_encode(fileContent)
+ *      filename : "..."
+ *  }
+ */
 @protocol DIMFileContent <DKDContent>
 
 // URL for download the file data from CDN

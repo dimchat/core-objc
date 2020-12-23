@@ -40,15 +40,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  History command: {
-*      type : 0x89,
-*      sn   : 123,
-*
-*      command : "...", // command name
-*      time    : 0,     // timestamp
-*      extra   : info   // command parameters
-*  }
-*/
+ *  History command: {
+ *      type : 0x89,
+ *      sn   : 123,
+ *
+ *      command : "...", // command name
+ *      time    : 0,     // timestamp
+ *      extra   : info   // command parameters
+ *  }
+ */
 @protocol DIMHistoryCommand <DIMCommand>
 
 @end

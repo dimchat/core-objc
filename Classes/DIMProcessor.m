@@ -37,7 +37,6 @@
 
 #import "DIMContent.h"
 #import "DIMBarrack.h"
-#import "DIMTransceiver.h"
 
 #import "DIMProcessor.h"
 

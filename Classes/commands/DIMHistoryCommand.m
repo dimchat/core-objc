@@ -35,8 +35,6 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMGroupCommand.h"
-
 #import "DIMHistoryCommand.h"
 
 @implementation DIMHistoryCommand

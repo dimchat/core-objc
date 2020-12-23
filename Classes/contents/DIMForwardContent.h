@@ -40,13 +40,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Top-Secret message: {
-*      type : 0xFF,
-*      sn   : 456,
-*
-*      forward : {...}  // reliable (secure + certified) message
-*  }
-*/
+ *  Top-Secret message: {
+ *      type : 0xFF,
+ *      sn   : 456,
+ *
+ *      forward : {...}  // reliable (secure + certified) message
+ *  }
+ */
 @protocol DIMForwardContent <DKDContent>
 
 // Top-Secret message forwarded by a proxy (Service Provider)

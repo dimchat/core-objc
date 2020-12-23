@@ -37,13 +37,10 @@
 
 #import "DIMBarrack.h"
 
-typedef NSMutableDictionary<id<MKMID>, MKMUser *> UserTableM;
-typedef NSMutableDictionary<id<MKMID>, MKMGroup *> GroupTableM;
-
 @interface DIMBarrack () {
     
-    UserTableM *_userTable;
-    GroupTableM *_groupTable;
+    NSMutableDictionary<id<MKMID>, MKMUser *> *_userTable;
+    NSMutableDictionary<id<MKMID>, MKMGroup *> *_groupTable;
 }
 
 @end
@@ -69,8 +66,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (instancetype)init {
     if (self = [super init]) {
-        _userTable = [[UserTableM alloc] init];
-        _groupTable = [[GroupTableM alloc] init];
+        _userTable = [[NSMutableDictionary alloc] init];
+        _groupTable = [[NSMutableDictionary alloc] init];
     }
     return self;
 }

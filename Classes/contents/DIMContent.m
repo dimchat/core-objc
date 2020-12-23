@@ -42,11 +42,9 @@
 #import "DIMAudioContent.h"
 #import "DIMVideoContent.h"
 #import "DIMWebpageContent.h"
+
 #import "DIMCommand.h"
-#import "DIMMetaCommand.h"
-#import "DIMDocumentCommand.h"
 #import "DIMHistoryCommand.h"
-#import "DIMGroupCommand.h"
 
 #import "DIMContent.h"
 

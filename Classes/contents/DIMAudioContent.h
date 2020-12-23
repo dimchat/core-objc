@@ -40,16 +40,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
-*  Audio message: {
-*      type : 0x14,
-*      sn   : 123,
-*
-*      URL      : "http://", // upload to CDN
-*      data     : "...",     // if (!URL) base64_encode(audio)
-*      text     : "...",     // Automatic Speech Recognition
-*      filename : "..."
-*  }
-*/
+ *  Audio message: {
+ *      type : 0x14,
+ *      sn   : 123,
+ *
+ *      URL      : "http://", // upload to CDN
+ *      data     : "...",     // if (!URL) base64_encode(audio)
+ *      text     : "...",     // Automatic Speech Recognition
+ *      filename : "..."
+ *  }
+ */
 @protocol DIMAudioContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *audioData;

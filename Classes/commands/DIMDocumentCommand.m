@@ -35,8 +35,6 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMBarrack.h"
-
 #import "DIMDocumentCommand.h"
 
 @interface DIMDocumentCommand ()
