@@ -36,6 +36,7 @@
 //
 
 #import "DIMContent.h"
+#import "DIMCommand.h"
 #import "DIMBarrack.h"
 
 #import "DIMProcessor.h"
@@ -147,7 +148,7 @@
 
 + (void)registerCoreFactories {
     [DIMContentFactory registerCoreFactories];
-    [DIMContentFactory registerCoreFactories];
+    [DIMCommandFactory registerCoreFactories];
 }
 
 @end
