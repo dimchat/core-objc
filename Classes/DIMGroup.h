@@ -28,84 +28,65 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMBarrack.h
+//  DIMGroup.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/10/12.
+//  Created by Albert Moky on 2018/9/26.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
-
-#import "DIMUser.h"
-#import "DIMGroup.h"
+#import "DIMEntity.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDelegate <NSObject>
+@interface DIMGroup : DIMEntity
 
-/**
- *  Get all local users (for decrypting received message)
- *
- * @return users with private key
- */
-@property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
+@property (readonly, strong, nonatomic) id<MKMID> founder;
+@property (readonly, strong, nonatomic) id<MKMID> owner;
 
-/**
- *  Select local user for receiver
- *
- * @param receiver - user/group ID
- * @return local user
- */
-- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
+// NOTICE: the owner must be a member
+//         (usually the first one)
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *members;
 
-/**
- *  Create user with ID
- *
- * @param ID - user ID
- * @return user
- */
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
-
-/**
- *  Create group with ID
- *
- * @param ID - group ID
- * @return group
- */
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *assistants;
 
 @end
 
-/**
- *  Entity pool to manage User/Contace/Group/Member instances
- *
- *      1st, get instance here to avoid create same instance,
- *      2nd, if they were updated, we can refresh them immediately here
- */
-@interface DIMBarrack : NSObject <DIMEntityDelegate,
-                                  DIMUserDataSource,
-                                  DIMGroupDataSource>
+#pragma mark - Group Data Source
 
-// override to create user
-- (nullable DIMUser *)createUser:(id<MKMID>)ID;
-// override to create group
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
+@protocol DIMGroupDataSource <DIMEntityDataSource>
 
 /**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
+ *  Get group founder
  *
- * @return number of survivors
+ * @param group - group ID
+ * @return fonder ID
  */
-- (NSInteger)reduceMemory;
+- (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group;
 
-@end
+/**
+ *  Get group owner
+ *
+ * @param group - group ID
+ * @return owner ID
+ */
+- (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group;
 
-@interface DIMBarrack (MemberShip)
+/**
+ *  Get group members list
+ *
+ * @param group - group ID
+ * @return members list (ID)
+ */
+- (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
 
-- (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member;
-- (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member;
+/**
+ *  Get assistants for this group
+ *
+ * @param group - group ID
+ * @return robot ID list
+ */
+- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
 
 @end
 

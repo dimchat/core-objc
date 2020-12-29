@@ -28,56 +28,77 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCore.h
+//  DIMEntity.m
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/10/12.
+//  Created by Albert Moky on 2018/9/26.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DIMEntity.h"
 
-//! Project version number for DIMCore.
-FOUNDATION_EXPORT double DIMCoreVersionNumber;
+@implementation DIMEntity
 
-//! Project version string for DIMCore.
-FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
+- (instancetype)init {
+    NSAssert(false, @"DON'T call me");
+    id<MKMID> ID = nil;
+    return [self initWithID:ID];
+}
 
-// In this header, you should import all the public headers of your framework using statements like #import <DIMCore/PublicHeader.h>
+/* designated initializer */
+- (instancetype)initWithID:(id<MKMID>)ID {
+    if (self = [super init]) {
+        _ID = ID;
+        _dataSource = nil;
+    }
+    
+    return self;
+}
 
-// MKM
-//#import <MingKeMing/MingKeMing.h>
+- (id)copyWithZone:(nullable NSZone *)zone {
+    DIMEntity *entity = [[self class] allocWithZone:zone];
+    entity = [entity initWithID:_ID];
+    if (entity) {
+        entity.dataSource = _dataSource;
+    }
+    return entity;
+}
 
-// DKD
-//#import <DaoKeDao/DaoKeDao.h>
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        // same object
+        return YES;
+    }
+    if ([object isKindOfClass:[DIMEntity class]]) {
+        // check with ID
+        DIMEntity *entity = (DIMEntity *)object;
+        return [entity.ID isEqual:_ID];
+    }
+    // nil or unknown object
+    return NO;
+}
 
-#if !defined(__DIM_CORE__)
-#define __DIM_CORE__ 1
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p | 0x%02X %@>",
+            [self class], self, _ID.type, _ID];
+}
 
-// Content
-#import <DIMCore/DIMForwardContent.h>
-#import <DIMCore/DIMTextContent.h>
-#import <DIMCore/DIMFileContent.h>
-#import <DIMCore/DIMImageContent.h>
-#import <DIMCore/DIMAudioContent.h>
-#import <DIMCore/DIMVideoContent.h>
-#import <DIMCore/DIMWebpageContent.h>
+- (NSString *)debugDescription {
+    return [self description];
+}
 
-// Commands
-#import <DIMCore/DIMCommand.h>
-#import <DIMCore/DIMMetaCommand.h>
-#import <DIMCore/DIMDocumentCommand.h>
-#import <DIMCore/DIMHistoryCommand.h>
-#import <DIMCore/DIMGroupCommand.h>
+- (MKMNetworkType)type {
+    return _ID.type;
+}
 
-//-
-#import <DIMCore/DIMEntity.h>
-#import <DIMCore/DIMUser.h>
-#import <DIMCore/DIMGroup.h>
+- (id<MKMMeta>)meta {
+    NSAssert(_dataSource, @"entity data source not set yet");
+    return [_dataSource metaForID:_ID];
+}
 
-#import <DIMCore/DIMBarrack.h>
-#import <DIMCore/DIMPacker.h>
-#import <DIMCore/DIMProcessor.h>
-#import <DIMCore/DIMTransceiver.h>
+- (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type {
+    NSAssert(_dataSource, @"entity data source not set yet");
+    return [_dataSource documentForID:_ID type:type];
+}
 
-#endif /* ! __DIM_CORE__ */
+@end

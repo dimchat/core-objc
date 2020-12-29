@@ -128,7 +128,7 @@
     // check receiver
     id<MKMID> sender = iMsg.sender;
     id<MKMID> receiver = iMsg.receiver;
-    MKMUser *user = [self.barrack selectLocalUserWithID:receiver];
+    DIMUser *user = [self.barrack selectLocalUserWithID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     
     // pack message

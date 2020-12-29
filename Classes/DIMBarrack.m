@@ -39,8 +39,8 @@
 
 @interface DIMBarrack () {
     
-    NSMutableDictionary<id<MKMID>, MKMUser *> *_userTable;
-    NSMutableDictionary<id<MKMID>, MKMGroup *> *_groupTable;
+    NSMutableDictionary<id<MKMID>, DIMUser *> *_userTable;
+    NSMutableDictionary<id<MKMID>, DIMGroup *> *_groupTable;
 }
 
 @end
@@ -79,39 +79,39 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return finger >> 1;
 }
 
-- (void)cacheUser:(MKMUser *)user {
+- (void)cacheUser:(DIMUser *)user {
     if (user.dataSource == nil) {
         user.dataSource = self;
     }
     [_userTable setObject:user forKey:user.ID];
 }
 
-- (void)cacheGroup:(MKMGroup *)group {
+- (void)cacheGroup:(DIMGroup *)group {
     if (group.dataSource == nil) {
         group.dataSource = self;
     }
     [_groupTable setObject:group forKey:group.ID];
 }
 
-- (nullable MKMUser *)createUser:(id<MKMID>)ID {
+- (nullable DIMUser *)createUser:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-- (nullable MKMGroup *)createGroup:(id<MKMID>)ID {
+- (nullable DIMGroup *)createGroup:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
 #pragma mark - DIMEntityDelegate
 
-- (nullable NSArray<MKMUser *> *)localUsers {
+- (nullable NSArray<DIMUser *> *)localUsers {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-- (nullable MKMUser *)selectLocalUserWithID:(id<MKMID>)receiver {
-    NSArray<MKMUser *> *users = self.localUsers;
+- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver {
+    NSArray<DIMUser *> *users = self.localUsers;
     if ([users count] == 0) {
         NSAssert(false, @"local users should not be empty");
         return nil;
@@ -126,7 +126,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             // TODO: group not ready, waiting for group info
             return nil;
         }
-        for (MKMUser *item in users) {
+        for (DIMUser *item in users) {
             if ([members containsObject:item.ID]) {
                 // DISCUSS: set this item to be current user?
                 return item;
@@ -135,7 +135,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     } else {
         // 1. personal message
         // 2. split group message
-        for (MKMUser *item in users) {
+        for (DIMUser *item in users) {
             if ([receiver isEqual:item.ID]) {
                 // DISCUSS: set this item to be current user?
                 return item;
@@ -146,9 +146,9 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable __kindof MKMUser *)userWithID:(id<MKMID>)ID {
+- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
-    MKMUser *user = [_userTable objectForKey:ID];
+    DIMUser *user = [_userTable objectForKey:ID];
     if (!user) {
         // 2. create user and cache it
         user = [self createUser:ID];
@@ -159,9 +159,9 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return user;
 }
 
-- (nullable __kindof MKMGroup *)groupWithID:(id<MKMID>)ID {
+- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID {
     // 1. get from group cache
-    MKMGroup *group = [_groupTable objectForKey:ID];
+    DIMGroup *group = [_groupTable objectForKey:ID];
     if (!group) {
         // 2. create group and cache it
         group = [self createGroup:ID];
@@ -172,7 +172,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return group;
 }
 
-#pragma mark - MKMEntityDataSource
+#pragma mark - DIMEntityDataSource
 
 - (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
@@ -185,7 +185,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-#pragma mark - MKMUserDataSource
+#pragma mark - DIMUserDataSource
 
 - (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
     NSAssert(false, @"implement me!");
@@ -259,7 +259,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-#pragma mark - MKMGroupDataSource
+#pragma mark - DIMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     // check broadcast group

@@ -28,84 +28,58 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMBarrack.h
+//  DIMEntity.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/10/12.
+//  Created by Albert Moky on 2018/9/26.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
-
-#import "DIMUser.h"
-#import "DIMGroup.h"
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDelegate <NSObject>
+@protocol DIMEntityDataSource;
+
+@interface DIMEntity : NSObject <NSCopying>
+
+@property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
+
+@property (readonly, nonatomic) MKMNetworkType type;    // Network ID
+
+@property (readonly, strong, nonatomic) id<MKMMeta> meta;
+
+@property (weak, nonatomic) __kindof id<DIMEntityDataSource> dataSource;
+
+- (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
 
 /**
- *  Get all local users (for decrypting received message)
- *
- * @return users with private key
+ *  Get entity profile with document type
  */
-@property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
-
-/**
- *  Select local user for receiver
- *
- * @param receiver - user/group ID
- * @return local user
- */
-- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
-
-/**
- *  Create user with ID
- *
- * @param ID - user ID
- * @return user
- */
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
-
-/**
- *  Create group with ID
- *
- * @param ID - group ID
- * @return group
- */
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
+- (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
 
 @end
 
-/**
- *  Entity pool to manage User/Contace/Group/Member instances
- *
- *      1st, get instance here to avoid create same instance,
- *      2nd, if they were updated, we can refresh them immediately here
- */
-@interface DIMBarrack : NSObject <DIMEntityDelegate,
-                                  DIMUserDataSource,
-                                  DIMGroupDataSource>
+#pragma mark - Entity Data Source
 
-// override to create user
-- (nullable DIMUser *)createUser:(id<MKMID>)ID;
-// override to create group
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
+@protocol DIMEntityDataSource <NSObject>
 
 /**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
+ *  Get meta for entity ID
  *
- * @return number of survivors
+ * @param ID - entity ID
+ * @return meta object
  */
-- (NSInteger)reduceMemory;
+- (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID;
 
-@end
-
-@interface DIMBarrack (MemberShip)
-
-- (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member;
-- (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member;
+/**
+ *  Get profile for entity ID
+ *
+ * @param ID - entity ID
+ * @return profile object
+ */
+- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
+                                              type:(nullable NSString *)type;
 
 @end
 

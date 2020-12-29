@@ -103,7 +103,7 @@
     id<DKDSecureMessage> sMsg = nil;
     if (MKMIDIsGroup(receiver)) {
         // group message
-        MKMGroup *grp = [self.barrack groupWithID:receiver];
+        DIMGroup *grp = [self.barrack groupWithID:receiver];
         NSArray<id<MKMID>> *members = [grp members];
         if (members.count == 0) {
             // group not ready

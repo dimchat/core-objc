@@ -28,56 +28,71 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCore.h
+//  DIMGroup.m
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/10/12.
+//  Created by Albert Moky on 2018/9/26.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "DIMGroup.h"
 
-//! Project version number for DIMCore.
-FOUNDATION_EXPORT double DIMCoreVersionNumber;
+@interface DIMGroup () {
+    
+    id<MKMID> _founder;
+}
 
-//! Project version string for DIMCore.
-FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
+@property (strong, nonatomic) id<MKMID> founder;
 
-// In this header, you should import all the public headers of your framework using statements like #import <DIMCore/PublicHeader.h>
+@end
 
-// MKM
-//#import <MingKeMing/MingKeMing.h>
+@implementation DIMGroup
 
-// DKD
-//#import <DaoKeDao/DaoKeDao.h>
+/* designated initializer */
+- (instancetype)initWithID:(id<MKMID>)ID {
+    if (self = [super initWithID:ID]) {
+        _founder = nil;
+    }
+    return self;
+}
 
-#if !defined(__DIM_CORE__)
-#define __DIM_CORE__ 1
+- (id)copyWithZone:(nullable NSZone *)zone {
+    DIMGroup *group = [super copyWithZone:zone];
+    if (group) {
+        group.founder = _founder;
+    }
+    return group;
+}
 
-// Content
-#import <DIMCore/DIMForwardContent.h>
-#import <DIMCore/DIMTextContent.h>
-#import <DIMCore/DIMFileContent.h>
-#import <DIMCore/DIMImageContent.h>
-#import <DIMCore/DIMAudioContent.h>
-#import <DIMCore/DIMVideoContent.h>
-#import <DIMCore/DIMWebpageContent.h>
+- (NSString *)debugDescription {
+    NSString *desc = [super debugDescription];
+    NSDictionary *dict = MKMJSONDecode(MKMUTF8Encode(desc));
+    NSMutableDictionary *info;
+    if ([dict isKindOfClass:[NSMutableDictionary class]]) {
+        info = (NSMutableDictionary *)dict;
+    } else {
+        info = [dict mutableCopy];
+    }
+    [info setObject:@(self.members.count) forKey:@"members"];
+    return MKMUTF8Decode(MKMJSONEncode(info));
+}
 
-// Commands
-#import <DIMCore/DIMCommand.h>
-#import <DIMCore/DIMMetaCommand.h>
-#import <DIMCore/DIMDocumentCommand.h>
-#import <DIMCore/DIMHistoryCommand.h>
-#import <DIMCore/DIMGroupCommand.h>
+- (id<MKMID>)founder {
+    if (!_founder) {
+        NSAssert(self.dataSource, @"group data source not set yet");
+        _founder = [self.dataSource founderOfGroup:self.ID];
+    }
+    return _founder;
+}
 
-//-
-#import <DIMCore/DIMEntity.h>
-#import <DIMCore/DIMUser.h>
-#import <DIMCore/DIMGroup.h>
+- (id<MKMID>)owner {
+    NSAssert(self.dataSource, @"group data source not set yet");
+    return [self.dataSource ownerOfGroup:self.ID];
+}
 
-#import <DIMCore/DIMBarrack.h>
-#import <DIMCore/DIMPacker.h>
-#import <DIMCore/DIMProcessor.h>
-#import <DIMCore/DIMTransceiver.h>
+- (NSArray<id<MKMID>> *)members {
+    NSAssert(self.dataSource, @"group data source not set yet");
+    return [self.dataSource membersOfGroup:self.ID];
+}
 
-#endif /* ! __DIM_CORE__ */
+@end
