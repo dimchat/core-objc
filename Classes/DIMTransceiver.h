@@ -35,7 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import "DIMPacker.h"
+#import "DIMProcessor.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -66,8 +67,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol DIMEntityDelegate;
-
 @interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
                                       DKDReliableMessageDelegate>
 
@@ -80,6 +79,45 @@ NS_ASSUME_NONNULL_BEGIN
  *  Delegate for getting message key
  */
 @property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
+
+/**
+ *  Delegate for parsing message
+ */
+@property (weak, nonatomic) id<DIMPacker> packer;
+
+/**
+ *  Delegate for processing message
+ */
+@property (weak, nonatomic) id<DIMProcessor> processor;
+
+#pragma mark Interfaces for Packing Message
+
+- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
+
+- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
+
+- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
+
+- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
+
+- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
+
+- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
+
+#pragma mark Interfaces for Processing Message
+
+- (nullable NSData *)processData:(NSData *)data;
+
+- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
+
+- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
+                                   withMessage:(id<DKDReliableMessage>)rMsg;
+
+- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg;
+
+- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
+                              withMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

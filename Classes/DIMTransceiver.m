@@ -38,6 +38,8 @@
 #import "DIMCommand.h"
 
 #import "DIMBarrack.h"
+#import "DIMPacker.h"
+#import "DIMProcessor.h"
 
 #import "DIMTransceiver.h"
 
@@ -54,30 +56,64 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 - (instancetype)init {
     if (self = [super init]) {
         
-        // delegates
         _barrack = nil;
         _keyCache = nil;
+        
+        _packer = nil;
+        _processor = nil;
     }
     return self;
 }
 
-#pragma mark DKDMessageDelegate
+#pragma mark Interfaces for Packing Message
 
-- (id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
-    id<MKMID> group = content.group;
-    if (!group) {
-        return nil;
-    }
-    if (MKMIDIsBroadcast(group)) {
-        // broadcast message is always overt
-        return group;
-    }
-    if ([content isKindOfClass:[DIMCommand class]]) {
-        // group command should be sent to each member directly, so
-        // don't expose group ID
-        return nil;
-    }
-    return group;
+- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
+    return [self.packer encryptMessage:iMsg];
+}
+
+- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
+    return [self.packer signMessage:sMsg];
+}
+
+- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.packer serializeMessage:rMsg];
+}
+
+- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data {
+    return [self.packer deserializeMessage:data];
+}
+
+- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.packer verifyMessage:rMsg];
+}
+
+- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
+    return [self.packer decryptMessage:sMsg];
+}
+
+#pragma mark Interfaces for Processing Message
+
+- (nullable NSData *)processData:(NSData *)data {
+    return [self.processor processData:data];
+}
+
+- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.processor processMessage:rMsg];
+}
+
+- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
+                                   withMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.processor processSecure:sMsg withMessage:rMsg];
+}
+
+- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.processor processInstant:iMsg withMessage:rMsg];
+}
+
+- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
+                              withMessage:(id<DKDReliableMessage>)rMsg {
+    return [self.processor processContent:content withMessage:rMsg];
 }
 
 #pragma mark DKDInstantMessageDelegate
@@ -205,7 +241,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     if (!isBroadcast(sMsg, self)) {
         // check and cache key for reuse
         id<MKMID> sender = sMsg.sender;
-        id<MKMID> group = [self overtGroupForContent:content];
+        id<MKMID> group = [self.packer overtGroupForContent:content];
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)

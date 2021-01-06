@@ -35,23 +35,15 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMPacker.h"
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
+/*
  *  Message Processor
  *  ~~~~~~~~~~~~~~~~~
  */
-@interface DIMProcessor : NSObject
-
-@property (readonly, weak, nonatomic) id<DIMEntityDelegate> barrack;
-@property (readonly, weak, nonatomic) id<DKDMessageDelegate> transceiver;
-@property (readonly, weak, nonatomic) DIMPacker *packer;
-
-- (instancetype)initWithEntityDelegate:(id<DIMEntityDelegate>)barrack
-                       messageDelegate:(id<DKDMessageDelegate>)transceiver
-                                packer:(DIMPacker *)messagePacker;
+@protocol DIMProcessor <NSObject>
 
 /**
  *  Process received data package
@@ -76,6 +68,21 @@ NS_ASSUME_NONNULL_BEGIN
 // TODO: override to filter the response
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
                               withMessage:(id<DKDReliableMessage>)rMsg;
+
+@end
+
+@class DIMTransceiver;
+@protocol DIMEntityDelegate;
+@protocol DIMMessagePacker;
+
+@interface DIMProcessor : NSObject <DIMProcessor>
+
+@property (readonly, weak, nonatomic) DIMTransceiver *transceiver;
+@property (readonly, weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (readonly, weak, nonatomic) id<DIMPacker> packer;
+
+- (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver
+NS_DESIGNATED_INITIALIZER;
 
 @end
 

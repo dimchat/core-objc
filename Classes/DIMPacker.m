@@ -35,6 +35,8 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
+#import "DIMCommand.h"
+
 #import "DIMBarrack.h"
 #import "DIMTransceiver.h"
 
@@ -42,23 +44,49 @@
 
 @interface DIMPacker ()
 
-@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
-@property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
-@property (weak, nonatomic) id<DKDMessageDelegate> transceiver;
+@property (weak, nonatomic) DIMTransceiver *transceiver;
 
 @end
 
 @implementation DIMPacker
 
-- (instancetype)initWithEntityDelegate:(id<DIMEntityDelegate>)barrack
-                     cipherKeyDelegate:(id<DIMCipherKeyDelegate>)keyCache
-                       messageDelegate:(id<DKDMessageDelegate>)transceiver {
+- (instancetype)init {
+    NSAssert(false, @"don't call me!");
+    DIMTransceiver *transceiver = nil;
+    return [self initWithTransceiver:transceiver];
+}
+
+/* designated initializer */
+- (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver {
     if (self = [super init]) {
-        self.barrack = barrack;
-        self.keyCache = keyCache;
         self.transceiver = transceiver;
     }
     return self;
+}
+
+- (id<DIMEntityDelegate>)barrack {
+    return [self.transceiver barrack];
+}
+
+- (id<DIMCipherKeyDelegate>)keyCache {
+    return [self.transceiver keyCache];
+}
+
+- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
+    id<MKMID> group = content.group;
+    if (!group) {
+        return nil;
+    }
+    if (MKMIDIsBroadcast(group)) {
+        // broadcast message is always overt
+        return group;
+    }
+    if ([content isKindOfClass:[DIMCommand class]]) {
+        // group command should be sent to each member directly, so
+        // don't expose group ID
+        return nil;
+    }
+    return group;
 }
 
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
@@ -85,7 +113,7 @@
     //         share the symmetric key (group msg key) with other members.
 
     // 1. get symmetric key
-    id<MKMID> group = [self.transceiver overtGroupForContent:iMsg.content];
+    id<MKMID> group = [self overtGroupForContent:iMsg.content];
     id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)

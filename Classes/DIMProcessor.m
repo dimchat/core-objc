@@ -37,29 +37,41 @@
 
 #import "DIMContent.h"
 #import "DIMCommand.h"
+
 #import "DIMBarrack.h"
+#import "DIMPacker.h"
+#import "DIMTransceiver.h"
 
 #import "DIMProcessor.h"
 
 @interface DIMProcessor ()
 
-@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
-@property (weak, nonatomic) id<DKDMessageDelegate> transceiver;
-@property (weak, nonatomic) DIMPacker *packer;
+@property (weak, nonatomic) DIMTransceiver *transceiver;
 
 @end
 
 @implementation DIMProcessor
 
-- (instancetype)initWithEntityDelegate:(id<DIMEntityDelegate>)barrack
-                       messageDelegate:(id<DKDMessageDelegate>)transceiver
-                                packer:(DIMPacker *)messagePacker {
+- (instancetype)init {
+    NSAssert(false, @"don't call me!");
+    DIMTransceiver *transceiver = nil;
+    return [self initWithTransceiver:transceiver];
+}
+
+/* designated initializer */
+- (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver {
     if (self = [super init]) {
-        self.barrack = barrack;
         self.transceiver = transceiver;
-        self.packer = messagePacker;
     }
     return self;
+}
+
+- (id<DIMEntityDelegate>)barrack {
+    return [self.transceiver barrack];
+}
+
+- (id<DIMPacker>)packer {
+    return [self.transceiver packer];
 }
 
 - (nullable NSData *)processData:(NSData *)data {
@@ -70,7 +82,7 @@
         return nil;
     }
     // 2. process message
-    rMsg = [self processMessage:rMsg];
+    rMsg = [self.transceiver processMessage:rMsg];
     if (!rMsg) {
         // nothing to response
         return nil;
@@ -87,7 +99,7 @@
         return nil;
     }
     // 2. process message
-    sMsg = [self processSecure:sMsg withMessage:rMsg];
+    sMsg = [self.transceiver processSecure:sMsg withMessage:rMsg];
     if (!sMsg) {
         // nothing to respond
         return nil;
@@ -106,7 +118,7 @@
         return nil;
     }
     // 2. process message
-    iMsg = [self processInstant:iMsg withMessage:rMsg];
+    iMsg = [self.transceiver processInstant:iMsg withMessage:rMsg];
     if (!iMsg) {
         // nothing to respond
         return nil;
@@ -117,21 +129,21 @@
 
 - (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
                                      withMessage:(id<DKDReliableMessage>)rMsg {
-    // process content from sender
+    // 1. process content
     id<DKDContent> content = iMsg.content;
-    id<DKDContent> res = [self processContent:content withMessage:rMsg];
+    id<DKDContent> res = [self.transceiver processContent:content withMessage:rMsg];
     if (!res) {
         // nothing to respond
         return nil;
     }
     
-    // check receiver
+    // 2. select a local user to build message
     id<MKMID> sender = iMsg.sender;
     id<MKMID> receiver = iMsg.receiver;
     DIMUser *user = [self.barrack selectLocalUserWithID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     
-    // pack message
+    // 3. pack message
     id<DKDEnvelope> env = DKDEnvelopeCreate(user.ID, sender, nil);
     return DKDInstantMessageCreate(env, res);
 }
