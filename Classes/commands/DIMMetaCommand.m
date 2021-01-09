@@ -71,12 +71,12 @@
     if (self = [self initWithCommand:DIMCommand_Meta]) {
         // ID
         if (ID) {
-            [self setObject:ID forKey:@"ID"];
+            [self setObject:[ID string] forKey:@"ID"];
         }
         
         // meta
         if (meta) {
-            [self setObject:meta forKey:@"meta"];
+            [self setObject:[meta dictionary] forKey:@"meta"];
         }
         _meta = meta;
     }

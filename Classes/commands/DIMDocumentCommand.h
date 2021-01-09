@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic, nullable) __kindof id<MKMDocument> document;
 
-// current signature string for querying profile,
+// current signature string for querying document,
 // if this matched, the station will respond 304 (Not Modified)
 @property (readonly, strong, nonatomic, nullable) NSString *signature;
 
@@ -64,15 +64,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
-                   profile:(nullable id<MKMDocument>)profile;
+                  document:(nullable id<MKMDocument>)doc;
 
 - (instancetype)initWithID:(id<MKMID>)ID
-                   profile:(id<MKMDocument>)profile;
+                  document:(id<MKMDocument>)doc;
 
-// query profile
+// query document
 - (instancetype)initWithID:(id<MKMID>)ID;
 
-// query profile for updating with current signature
+// query document for updating with current signature
 - (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature;
 
 @end

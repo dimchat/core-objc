@@ -125,7 +125,7 @@
 
 - (void)setPassword:(id<MKMSymmetricKey>)password {
     if (password) {
-        [self setObject:password forKey:@"password"];
+        [self setObject:[password dictionary] forKey:@"password"];
     } else {
         [self removeObjectForKey:@"password"];
     }

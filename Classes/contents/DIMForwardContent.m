@@ -50,7 +50,7 @@
     if (self = [self initWithType:DKDContentType_Forward]) {
         // top-secret message
         if (rMsg) {
-            [self setObject:rMsg forKey:@"forward"];
+            [self setObject:[rMsg dictionary] forKey:@"forward"];
         }
     }
     return self;

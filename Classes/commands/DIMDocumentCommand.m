@@ -39,7 +39,7 @@
 
 @interface DIMDocumentCommand ()
 
-@property (strong, nonatomic, nullable) id<MKMDocument> profile;
+@property (strong, nonatomic, nullable) id<MKMDocument> document;
 
 @end
 
@@ -49,7 +49,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _profile = nil;
+        _document = nil;
     }
     return self;
 }
@@ -57,17 +57,17 @@
 /* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type {
     if (self = [super initWithType:type]) {
-        _profile = nil;
+        _document = nil;
     }
     return self;
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID meta:nil profile:nil];
+    return [self initWithID:ID meta:nil document:nil];
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature {
-    if (self = [self initWithID:ID meta:nil profile:nil]) {
+    if (self = [self initWithID:ID meta:nil document:nil]) {
         if (signature) {
             [self setObject:signature forKey:@"signature"];
         }
@@ -75,28 +75,28 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID profile:(id<MKMDocument>)profile {
-    return [self initWithID:ID meta:nil profile:profile];
+- (instancetype)initWithID:(id<MKMID>)ID document:(id<MKMDocument>)doc {
+    return [self initWithID:ID meta:nil document:doc];
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
-                   profile:(nullable id<MKMDocument>)profile {
+                  document:(nullable id<MKMDocument>)doc {
     if (self = [self initWithCommand:DIMCommand_Profile]) {
         // ID
         if (ID) {
-            [self setObject:ID forKey:@"ID"];
+            [self setObject:[ID string] forKey:@"ID"];
         }
         // meta
         if (meta) {
-            [self setObject:meta forKey:@"meta"];
+            [self setObject:[meta dictionary] forKey:@"meta"];
         }
         
-        // profile
-        if (profile) {
-            [self setObject:profile forKey:@"profile"];
+        // document
+        if (doc) {
+            [self setObject:[doc dictionary] forKey:@"profile"];
         }
-        _profile = profile;
+        _document = doc;
     }
     return self;
 }
@@ -104,13 +104,13 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMDocumentCommand *cmd = [super copyWithZone:zone];
     if (cmd) {
-        cmd.profile = _profile;
+        cmd.document = _document;
     }
     return cmd;
 }
 
 - (nullable id<MKMDocument>)document {
-    if (!_profile) {
+    if (!_document) {
         NSObject *data = [self objectForKey:@"profile"];
         if ([data isKindOfClass:[NSString class]]) {
             // compatible with v1.0
@@ -124,7 +124,7 @@
                 return nil;
             }
             NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [mDict setObject:ID forKey:@"ID"];
+            [mDict setObject:[ID string] forKey:@"ID"];
             [mDict setObject:data forKey:@"data"];
             [mDict setObject:signature forKey:@"signature"];
             data = mDict;
@@ -142,10 +142,10 @@
             NSAssert(!data || [data isKindOfClass:[NSDictionary class]], @"profile data error: %@", data);
         }
         if ([data isKindOfClass:[NSDictionary class]]) {
-            _profile = MKMDocumentFromDictionary((NSDictionary *)data);
+            _document = MKMDocumentFromDictionary((NSDictionary *)data);
         }
     }
-    return _profile;
+    return _document;
 }
 
 - (nullable NSString *)signature {
