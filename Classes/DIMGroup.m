@@ -77,6 +77,10 @@
     return MKMUTF8Decode(MKMJSONEncode(info));
 }
 
+- (id<MKMBulletin>)bulletin {
+    return [self documentWithType:MKMDocument_Bulletin];
+}
+
 - (id<MKMID>)founder {
     if (!_founder) {
         NSAssert(self.dataSource, @"group data source not set yet");

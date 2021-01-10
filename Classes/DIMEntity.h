@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
 
 /**
- *  Get entity profile with document type
+ *  Get entity document with type
  */
 - (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
 
@@ -73,10 +73,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID;
 
 /**
- *  Get profile for entity ID
+ *  Get document for entity ID
  *
  * @param ID - entity ID
- * @return profile object
+ * @return document instance
  */
 - (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
                                               type:(nullable NSString *)type;

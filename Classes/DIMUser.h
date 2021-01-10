@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature;
 
 /**
- *  Encrypt data, try profile.key first, if not found, use meta.key
+ *  Encrypt data, try visa.key first, if not found, use meta.key
  *
  * @param plaintext - message data
  * @return encrypted data
@@ -85,6 +85,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces for Visa
 
 @interface DIMUser (Visa)
+
+@property (readonly, strong, nonatomic) id<MKMVisa> visa;
 
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
 
@@ -128,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  Get user's public key for encryption
- *  (profile.key or meta.key)
+ *  (visa.key or meta.key)
  *
  * @param user - user ID
  * @return visa.key or meta.key

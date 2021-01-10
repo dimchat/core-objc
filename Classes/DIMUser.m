@@ -53,7 +53,7 @@
 }
 
 - (NSData *)encrypt:(NSData *)plaintext {
-    // NOTICE: meta.key will never changed, so use profile.key to encrypt
+    // NOTICE: meta.key will never changed, so use visa.key to encrypt
     //         is the better way
     id<MKMEncryptKey> key = [self.dataSource publicKeyForEncryption:self.ID];
     NSAssert(key, @"failed to get encrypt key for user: %@", self.ID);
@@ -115,6 +115,10 @@
 @end
 
 @implementation DIMUser (Visa)
+
+- (id<MKMVisa>)visa {
+    return [self documentWithType:MKMDocument_Visa];
+}
 
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {
     if (![self.ID isEqual:visa.ID]) {
