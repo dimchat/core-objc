@@ -77,7 +77,7 @@
     return MKMUTF8Decode(MKMJSONEncode(info));
 }
 
-- (id<MKMBulletin>)bulletin {
+- (__kindof id<MKMBulletin>)bulletin {
     return [self documentWithType:MKMDocument_Bulletin];
 }
 

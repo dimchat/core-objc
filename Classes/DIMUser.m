@@ -116,7 +116,7 @@
 
 @implementation DIMUser (Visa)
 
-- (id<MKMVisa>)visa {
+- (__kindof id<MKMVisa>)visa {
     return [self documentWithType:MKMDocument_Visa];
 }
 

@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMGroup : DIMEntity
 
-@property (readonly, strong, nonatomic) id<MKMBulletin> bulletin;
+@property (readonly, strong, nonatomic) __kindof id<MKMBulletin> bulletin;
 
 @property (readonly, strong, nonatomic) id<MKMID> founder;
 @property (readonly, strong, nonatomic) id<MKMID> owner;

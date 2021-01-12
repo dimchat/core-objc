@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMUser (Visa)
 
-@property (readonly, strong, nonatomic) id<MKMVisa> visa;
+@property (readonly, strong, nonatomic) __kindof id<MKMVisa> visa;
 
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
 
