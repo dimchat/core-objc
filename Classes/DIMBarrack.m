@@ -220,7 +220,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     if ([metaKey conformsToProtocol:@protocol(MKMEncryptKey)]) {
         return metaKey;
     }
-    NSAssert(false, @"failed to get encrypt key for user: %@", user);
+    //NSAssert(false, @"failed to get encrypt key for user: %@", user);
     return nil;
 }
 
