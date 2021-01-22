@@ -35,8 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMPacker.h"
-#import "DIMProcessor.h"
+#import <DIMCore/DIMPacker.h>
+#import <DIMCore/DIMProcessor.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

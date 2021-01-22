@@ -47,7 +47,7 @@
 		E9CF981A21FF5BA40092DD8B /* DIMMetaCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */; };
 		E9D71D4F25BAE48200773ED1 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
 		E9D71D5025BAE48200773ED1 /* DaoKeDao.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E9D71DD525BAE59F00773ED1 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D71DD425BAE59F00773ED1 /* MingKeMing.framework */; };
+		E9D71F1125BB2AE600773ED1 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */; };
 		E9F3AA4621CBD02C009690F6 /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */; };
 		E9F3AA4B21CBD02C009690F6 /* DIMCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */; };
 		E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */ = {isa = PBXBuildFile; fileRef = E9F3AA5B21CBD03C009690F6 /* DIMCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -139,10 +139,7 @@
 		E9CF981021FF548F0092DD8B /* DIMCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
 		E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMMetaCommand.h; sourceTree = "<group>"; };
 		E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMMetaCommand.m; sourceTree = "<group>"; };
-		E9D71C9B25BADF5800773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9D71CDC25BADFA800773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9D71DA325BAE57300773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9D71DD425BAE59F00773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DIMCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F3AA4021CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9F3AA4521CBD02C009690F6 /* DIMCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DIMCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,7 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9D71DD525BAE59F00773ED1 /* MingKeMing.framework in Frameworks */,
+				E9D71F1125BB2AE600773ED1 /* MingKeMing.framework in Frameworks */,
 				E9D71D4F25BAE48200773ED1 /* DaoKeDao.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,10 +278,7 @@
 		E9F3AA9621CBD1E5009690F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9D71DD425BAE59F00773ED1 /* MingKeMing.framework */,
-				E9D71DA325BAE57300773ED1 /* MingKeMing.framework */,
-				E9D71CDC25BADFA800773ED1 /* MingKeMing.framework */,
-				E9D71C9B25BADF5800773ED1 /* MingKeMing.framework */,
+				E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

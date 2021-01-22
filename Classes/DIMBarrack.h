@@ -37,8 +37,8 @@
 
 #import <DaoKeDao/DaoKeDao.h>
 
-#import "DIMUser.h"
-#import "DIMGroup.h"
+#import <DIMCore/DIMUser.h>
+#import <DIMCore/DIMGroup.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
