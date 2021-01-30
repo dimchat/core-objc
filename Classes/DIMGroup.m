@@ -77,8 +77,13 @@
     return MKMUTF8Decode(MKMJSONEncode(info));
 }
 
-- (__kindof id<MKMBulletin>)bulletin {
-    return [self documentWithType:MKMDocument_Bulletin];
+- (nullable __kindof id<MKMBulletin>)bulletin {
+    id<MKMDocument> doc = [self documentWithType:MKMDocument_Bulletin];
+    if ([doc conformsToProtocol:@protocol(MKMBulletin)]) {
+        return (id<MKMBulletin>)doc;
+    }
+    NSAssert(!doc, @"bulletin document error: %@", doc);
+    return nil;
 }
 
 - (id<MKMID>)founder {

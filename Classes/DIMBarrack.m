@@ -355,7 +355,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             member = [name stringByAppendingString:@".member@anywhere"];
             owner = [name stringByAppendingString:@".owner@anywhere"];
         }
-        id<MKMID>admin = MKMIDFromString(owner);
+        id<MKMID> admin = MKMIDFromString(owner);
         NSAssert(admin, @"failed to get owner of broadcast group: %@", group);
         // add owner first
         NSMutableArray *mArray = [[NSMutableArray alloc] init];

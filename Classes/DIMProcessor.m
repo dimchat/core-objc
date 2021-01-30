@@ -76,7 +76,7 @@
 
 - (nullable NSData *)processData:(NSData *)data {
     // 1. deserialize message
-    id<DKDReliableMessage>rMsg = [self.packer deserializeMessage:data];
+    id<DKDReliableMessage> rMsg = [self.packer deserializeMessage:data];
     if (!rMsg) {
         // no message received
         return nil;

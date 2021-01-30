@@ -116,8 +116,13 @@
 
 @implementation DIMUser (Visa)
 
-- (__kindof id<MKMVisa>)visa {
-    return [self documentWithType:MKMDocument_Visa];
+- (nullable __kindof id<MKMVisa>)visa {
+    id<MKMDocument> doc = [self documentWithType:MKMDocument_Visa];
+    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
+        return (id<MKMVisa>)doc;
+    }
+    NSAssert(!doc, @"visa document error: %@", doc);
+    return nil;
 }
 
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {

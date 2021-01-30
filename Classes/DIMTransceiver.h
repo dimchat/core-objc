@@ -92,6 +92,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interfaces for Packing Message
 
+- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
+
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
 
 - (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;

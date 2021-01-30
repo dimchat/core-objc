@@ -67,6 +67,10 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 #pragma mark Interfaces for Packing Message
 
+- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
+    return [self.packer overtGroupForContent:content];
+}
+
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
     return [self.packer encryptMessage:iMsg];
 }
@@ -241,7 +245,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     if (!isBroadcast(sMsg, self)) {
         // check and cache key for reuse
         id<MKMID> sender = sMsg.sender;
-        id<MKMID> group = [self.packer overtGroupForContent:content];
+        id<MKMID> group = [self overtGroupForContent:content];
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
