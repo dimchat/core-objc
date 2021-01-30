@@ -304,7 +304,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
             return item;
         }
     }
-    // TODO: load founder from database
+    
+    // NOTICE: let sub-class to load founder from database
     return nil;
 }
 
@@ -332,7 +333,8 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         // Polylogue's owner is its founder
         return [self founderOfGroup:group];
     }
-    // TODO: load owner from database
+    
+    // NOTICE: let sub-class to load owner from database
     return nil;
 }
 
@@ -368,7 +370,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         return mArray;
     }
     
-    // TODO: load members from database
+    // NOTICE: let sub-class to load members from database
     return nil;
 }
 
@@ -380,7 +382,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
         }
     }
     
-    // TODO: get group bots from SP configuration
+    // NOTICE: let sub-class to get group bots from SP configuration
     return nil;
 }
 

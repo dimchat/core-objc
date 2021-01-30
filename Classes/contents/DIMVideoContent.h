@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMVideoContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *videoData;
-@property (readonly, strong, nonatomic, nullable) NSData *snapshot;
+@property (strong, nonatomic, nullable) NSData *snapshot;
 
 @end
 

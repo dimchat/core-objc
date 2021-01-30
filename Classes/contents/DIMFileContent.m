@@ -49,6 +49,7 @@
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
+        // lazy
         _attachment = nil;
     }
     return self;
@@ -77,6 +78,14 @@
     }
     return self;
 }
+
+//- (id)copyWithZone:(nullable NSZone *)zone {
+//    DIMFileContent *content = [super copyWithZone:zone];
+//    if (content) {
+//        //content.fileData = _attachment;
+//    }
+//    return content;
+//}
 
 - (nullable NSURL *)URL {
     NSString *string = [self objectForKey:@"URL"];

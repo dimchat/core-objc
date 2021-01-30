@@ -198,7 +198,7 @@
         rMsg.delegate = self.transceiver;;
     }
     //
-    //  TODO: check [Visa Protocol]
+    //  NOTICE: check [Visa Protocol] before calling this
     //        make sure the sender's meta(visa) exists
     //        (do in by application)
     //
@@ -223,7 +223,7 @@
     // decrypt 'data' to 'content'
     return [sMsg decrypt];
     
-    // TODO: check: top-secret message
+    // NOTICE: check: top-secret message after called this
     //       (do it by application)
 }
 

@@ -39,19 +39,41 @@
 
 @interface DKDContent (Hacking)
 
-@property (nonatomic) UInt8 type;
+@property (nonatomic) DKDContentType type;
+
+@end
+
+@interface DIMVideoContent () {
+    
+    NSData *_snapshot;
+}
 
 @end
 
 @implementation DIMVideoContent
 
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _snapshot = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _snapshot = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithVideoData:(NSData *)data
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:nil]) {
-        // type
+        // change content type
         self.type = DKDContentType_Video;
-        
-        // TODO: snapshot
     }
     return self;
 }
@@ -61,12 +83,26 @@
 }
 
 - (void)setVideoData:(NSData *)videoData {
-    self.fileData = videoData;
+    [self setFileData:videoData];
 }
 
 - (nullable NSData *)snapshot {
-    NSString *ss = [self objectForKey:@"snapshot"];
-    return MKMBase64Decode(ss);
+    if (!_snapshot) {
+        NSString *ss = [self objectForKey:@"snapshot"];
+        if ([ss length] > 0) {
+            _snapshot = MKMBase64Decode(ss);
+        }
+    }
+    return _snapshot;
+}
+
+- (void)setSnapshot:(NSData *)snapshot {
+    if ([snapshot length] > 0) {
+        [self setObject:MKMBase64Encode(snapshot) forKey:@"snapshot"];
+    } else {
+        [self removeObjectForKey:@"snapshot"];
+    }
+    _snapshot = snapshot;
 }
 
 @end

@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMImageContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *imageData;
-@property (readonly, strong, nonatomic, nullable) NSData *thumbnail;
+@property (strong, nonatomic, nullable) NSData *thumbnail;
 
 @end
 

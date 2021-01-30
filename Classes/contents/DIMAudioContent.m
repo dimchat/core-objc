@@ -39,7 +39,7 @@
 
 @interface DKDContent (Hacking)
 
-@property (nonatomic) UInt8 type;
+@property (nonatomic) DKDContentType type;
 
 @end
 
@@ -48,10 +48,8 @@
 - (instancetype)initWithAudioData:(NSData *)data
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
-        // type
+        // change content type
         self.type = DKDContentType_Audio;
-        
-        // TODO: Automatic Speech Recognition
     }
     return self;
 }

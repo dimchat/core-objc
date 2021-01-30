@@ -53,19 +53,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSData *)processData:(NSData *)data;
 
-// TODO: override to check broadcast message before calling it
-// TODO: override to deliver to the receiver when catch exception "ReceiverError"
+// NOTICE: override to check broadcast message before calling it
+// NOTICE: override to deliver to the receiver when catch exception "ReceiverError"
 - (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
 
 - (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
                                    withMessage:(id<DKDReliableMessage>)rMsg;
 
-// TODO: override to save the received instant message
+// NOTICE: override to save the received instant message
 - (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
                                      withMessage:(id<DKDReliableMessage>)rMsg;
 
-// TODO: override to check group
-// TODO: override to filter the response
+// NOTICE: override to check group
+// NOTICE: override to filter the response
 - (nullable id<DKDContent>)processContent:(id<DKDContent>)content
                               withMessage:(id<DKDReliableMessage>)rMsg;
 

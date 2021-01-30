@@ -43,15 +43,37 @@
 
 @end
 
+@interface DIMImageContent () {
+    
+    NSData *_thumbnail;
+}
+
+@end
+
 @implementation DIMImageContent
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _thumbnail = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _thumbnail = nil;
+    }
+    return self;
+}
 
 - (instancetype)initWithImageData:(NSData *)data
                          filename:(nullable NSString *)name {
     if (self = [self initWithFileData:data filename:name]) {
-        // type
+        // change content type
         self.type = DKDContentType_Image;
-        
-        // TODO: thumbnail
     }
     return self;
 }
@@ -61,17 +83,26 @@
 }
 
 - (void)setImageData:(NSData *)imageData {
-    self.fileData = imageData;
+    [self setFileData:imageData];
 }
 
 - (nullable NSData *)thumbnail {
-    NSString *small = [self objectForKey:@"thumbnail"];
-    
-    if(small == nil){
-        return nil;
+    if (!_thumbnail) {
+        NSString *small = [self objectForKey:@"thumbnail"];
+        if ([small length] > 0) {
+            _thumbnail = MKMBase64Decode(small);
+        }
     }
-    
-    return MKMBase64Decode(small);
+    return _thumbnail;
+}
+
+- (void)setThumbnail:(NSData *)thumbnail {
+    if ([thumbnail length] > 0) {
+        [self setObject:MKMBase64Encode(thumbnail) forKey:@"thumbnail"];
+    } else {
+        [self removeObjectForKey:@"thumbnail"];
+    }
+    _thumbnail = thumbnail;
 }
 
 @end
