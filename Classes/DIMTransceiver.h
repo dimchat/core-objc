@@ -90,7 +90,37 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (weak, nonatomic) id<DIMProcessor> processor;
 
-#pragma mark Interfaces for Packing Message
+@end
+
+#pragma mark -
+
+@interface DIMTransceiver (EntityDelegate)
+
+- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
+
+- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
+
+- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
+
+@end
+
+#pragma mark -
+
+@interface DIMTransceiver (CipherKeyDelegate)
+
+- (nullable __kindof id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
+                                                    to:(id<MKMID>)receiver
+                                              generate:(BOOL)create;
+
+- (void)cacheCipherKey:(id<MKMSymmetricKey>)key
+                  from:(id<MKMID>)sender
+                    to:(id<MKMID>)receiver;
+
+@end
+
+#pragma mark -
+
+@interface DIMTransceiver (Packer)
 
 - (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
 
@@ -106,7 +136,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
 
-#pragma mark Interfaces for Processing Message
+@end
+
+#pragma mark -
+
+@interface DIMTransceiver (Processor)
 
 - (nullable NSData *)processData:(NSData *)data;
 

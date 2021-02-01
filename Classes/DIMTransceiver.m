@@ -65,61 +65,6 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     return self;
 }
 
-#pragma mark Interfaces for Packing Message
-
-- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
-    return [self.packer overtGroupForContent:content];
-}
-
-- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
-    return [self.packer encryptMessage:iMsg];
-}
-
-- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
-    return [self.packer signMessage:sMsg];
-}
-
-- (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.packer serializeMessage:rMsg];
-}
-
-- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data {
-    return [self.packer deserializeMessage:data];
-}
-
-- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.packer verifyMessage:rMsg];
-}
-
-- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
-    return [self.packer decryptMessage:sMsg];
-}
-
-#pragma mark Interfaces for Processing Message
-
-- (nullable NSData *)processData:(NSData *)data {
-    return [self.processor processData:data];
-}
-
-- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.processor processMessage:rMsg];
-}
-
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
-                                   withMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.processor processSecure:sMsg withMessage:rMsg];
-}
-
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
-                                     withMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.processor processInstant:iMsg withMessage:rMsg];
-}
-
-- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                              withMessage:(id<DKDReliableMessage>)rMsg {
-    return [self.processor processContent:content withMessage:rMsg];
-}
-
 #pragma mark DKDInstantMessageDelegate
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -162,7 +107,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
                  forReceiver:(id<MKMID>)receiver {
     NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
-    DIMUser *contact = [self.barrack userWithID:receiver];
+    DIMUser *contact = [self userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
     return [contact encrypt:data];
 }
@@ -189,7 +134,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
     id<MKMID> ID = sMsg.receiver;
-    DIMUser *user = [self.barrack userWithID:ID];
+    DIMUser *user = [self userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     return [user decrypt:key];
 }
@@ -211,7 +156,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
         return MKMSymmetricKeyFromDictionary(dict);
     } else {
         // get key from cache
-        return [self.keyCache cipherKeyFrom:sender to:receiver generate:NO];
+        return [self cipherKeyFrom:sender to:receiver generate:NO];
     }
 }
 
@@ -249,12 +194,12 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
         if (group) {
             // group message (excludes group command)
             // cache the key with direction (sender -> group)
-            [self.keyCache cacheCipherKey:password from:sender to:group];
+            [self cacheCipherKey:password from:sender to:group];
         } else {
             id<MKMID> receiver = sMsg.receiver;
             // personal message or (group) command
             // cache key with direction (sender -> receiver)
-            [self.keyCache cacheCipherKey:password from:sender to:receiver];
+            [self cacheCipherKey:password from:sender to:receiver];
         }
     }
 
@@ -266,7 +211,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                     signData:(NSData *)data
                    forSender:(id<MKMID>)sender {
-    DIMUser *user = [self.barrack userWithID:sender];
+    DIMUser *user = [self userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
@@ -287,7 +232,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
       forSender:(id<MKMID>)sender {
-    DIMUser *user = [self.barrack userWithID:sender];
+    DIMUser *user = [self userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }

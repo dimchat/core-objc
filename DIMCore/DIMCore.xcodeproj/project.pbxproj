@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E9134A3925C8674F0090C273 /* DIMTransceiver+Combination.m in Sources */ = {isa = PBXBuildFile; fileRef = E9134A3825C8674F0090C273 /* DIMTransceiver+Combination.m */; };
 		E94740C324E2929700AED7F2 /* DIMForwardContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E94740C124E2929700AED7F2 /* DIMForwardContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E94740C424E2929700AED7F2 /* DIMForwardContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E94740C224E2929700AED7F2 /* DIMForwardContent.m */; };
 		E953813E258E0BBF0016F2F4 /* DIMPacker.h in Headers */ = {isa = PBXBuildFile; fileRef = E953813C258E0BBF0016F2F4 /* DIMPacker.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -101,6 +102,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E9134A3825C8674F0090C273 /* DIMTransceiver+Combination.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "DIMTransceiver+Combination.m"; sourceTree = "<group>"; };
 		E94740C124E2929700AED7F2 /* DIMForwardContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMForwardContent.h; sourceTree = "<group>"; };
 		E94740C224E2929700AED7F2 /* DIMForwardContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMForwardContent.m; sourceTree = "<group>"; };
 		E953813C258E0BBF0016F2F4 /* DIMPacker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMPacker.h; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */,
 				E9BBBD43223AA13500E6ACDA /* DIMTransceiver.h */,
 				E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */,
+				E9134A3825C8674F0090C273 /* DIMTransceiver+Combination.m */,
 				E953813C258E0BBF0016F2F4 /* DIMPacker.h */,
 				E953813D258E0BBF0016F2F4 /* DIMPacker.m */,
 				E97A21A0257F92CF00313C5F /* DIMProcessor.h */,
@@ -455,6 +458,7 @@
 				E959651B239107C800DAA870 /* DIMImageContent.m in Sources */,
 				E95A80CC22060142007EA611 /* DIMDocumentCommand.m in Sources */,
 				E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */,
+				E9134A3925C8674F0090C273 /* DIMTransceiver+Combination.m in Sources */,
 				E94740C424E2929700AED7F2 /* DIMForwardContent.m in Sources */,
 				E9BBBD4A223AA13500E6ACDA /* DIMTransceiver.m in Sources */,
 				E97E137F259B0D4C0016A68C /* DIMGroup.m in Sources */,

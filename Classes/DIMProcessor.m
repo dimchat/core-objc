@@ -66,17 +66,9 @@
     return self;
 }
 
-- (id<DIMEntityDelegate>)barrack {
-    return [self.transceiver barrack];
-}
-
-- (id<DIMPacker>)packer {
-    return [self.transceiver packer];
-}
-
 - (nullable NSData *)processData:(NSData *)data {
     // 1. deserialize message
-    id<DKDReliableMessage> rMsg = [self.packer deserializeMessage:data];
+    id<DKDReliableMessage> rMsg = [self.transceiver deserializeMessage:data];
     if (!rMsg) {
         // no message received
         return nil;
@@ -88,12 +80,12 @@
         return nil;
     }
     // serialize message
-    return [self.packer serializeMessage:rMsg];
+    return [self.transceiver serializeMessage:rMsg];
 }
 
 - (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg {
     // 1. verify message
-    id<DKDSecureMessage> sMsg = [self.packer verifyMessage:rMsg];
+    id<DKDSecureMessage> sMsg = [self.transceiver verifyMessage:rMsg];
     if (!sMsg) {
         // waiting for sender's meta if not eixsts
         return nil;
@@ -105,13 +97,13 @@
         return nil;
     }
     // 3. sign message
-    return [self.packer signMessage:sMsg];
+    return [self.transceiver signMessage:sMsg];
 }
 
 - (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
                                    withMessage:(id<DKDReliableMessage>)rMsg {
     // 1. decrypt message
-    id<DKDInstantMessage> iMsg = [self.packer decryptMessage:sMsg];
+    id<DKDInstantMessage> iMsg = [self.transceiver decryptMessage:sMsg];
     if (!iMsg) {
         // cannot decrypt this message, not for you?
         // delivering message to other receiver?
@@ -124,7 +116,7 @@
         return nil;
     }
     // 3. encrypt message
-    return [self.packer encryptMessage:iMsg];
+    return [self.transceiver encryptMessage:iMsg];
 }
 
 - (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
@@ -140,7 +132,7 @@
     // 2. select a local user to build message
     id<MKMID> sender = iMsg.sender;
     id<MKMID> receiver = iMsg.receiver;
-    DIMUser *user = [self.barrack selectLocalUserWithID:receiver];
+    DIMUser *user = [self.transceiver selectLocalUserWithID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     
     // 3. pack message

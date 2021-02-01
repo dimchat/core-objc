@@ -45,13 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMEntityDelegate <NSObject>
 
 /**
- *  Get all local users (for decrypting received message)
- *
- * @return users with private key
- */
-@property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
-
-/**
  *  Select local user for receiver
  *
  * @param receiver - user/group ID
@@ -87,6 +80,13 @@ NS_ASSUME_NONNULL_BEGIN
                                   DIMUserDataSource,
                                   DIMGroupDataSource>
 
+/**
+ *  Get all local users (for decrypting received message)
+ *
+ * @return users with private key
+ */
+@property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
+
 // override to create user
 - (nullable DIMUser *)createUser:(id<MKMID>)ID;
 // override to create group
@@ -99,13 +99,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @return number of survivors
  */
 - (NSInteger)reduceMemory;
-
-@end
-
-@interface DIMBarrack (MemberShip)
-
-- (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member;
-- (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member;
 
 @end
 

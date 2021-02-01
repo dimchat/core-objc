@@ -64,14 +64,6 @@
     return self;
 }
 
-- (id<DIMEntityDelegate>)barrack {
-    return [self.transceiver barrack];
-}
-
-- (id<DIMCipherKeyDelegate>)keyCache {
-    return [self.transceiver keyCache];
-}
-
 - (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content {
     id<MKMID> group = content.group;
     if (!group) {
@@ -117,11 +109,11 @@
     id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)
-        password = [self.keyCache cipherKeyFrom:sender to:group generate:YES];
+        password = [self.transceiver cipherKeyFrom:sender to:group generate:YES];
         NSAssert(password, @"failed to get msg key: %@ -> %@", sender, group);
     } else {
         // personal message or (group) command
-        password = [self.keyCache cipherKeyFrom:sender to:receiver generate:YES];
+        password = [self.transceiver cipherKeyFrom:sender to:receiver generate:YES];
         NSAssert(password, @"failed to get msg key: %@ -> %@", sender, receiver);
     }
 
@@ -131,7 +123,7 @@
     id<DKDSecureMessage> sMsg = nil;
     if (MKMIDIsGroup(receiver)) {
         // group message
-        DIMGroup *grp = [self.barrack groupWithID:receiver];
+        DIMGroup *grp = [self.transceiver groupWithID:receiver];
         NSArray<id<MKMID>> *members = [grp members];
         if (members.count == 0) {
             // group not ready

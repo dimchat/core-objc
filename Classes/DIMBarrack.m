@@ -387,24 +387,3 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 }
 
 @end
-
-@implementation DIMBarrack (MemberShip)
-
-- (BOOL)group:(id<MKMID>)group isFounder:(id<MKMID>)member {
-    // check member's public key with group's meta.key
-    id<MKMMeta> gMeta = [self metaForID:group];
-    NSAssert(gMeta, @"failed to get meta for group: %@", group);
-    id<MKMMeta> mMeta = [self metaForID:member];
-    //NSAssert(mMeta, @"failed to get meta for member: %@", member);
-    return [gMeta matchPublicKey:mMeta.key];
-}
-
-- (BOOL)group:(id<MKMID>)group isOwner:(id<MKMID>)member {
-    if (group.type == MKMNetwork_Polylogue) {
-        return [self group:group isFounder:member];
-    }
-    NSAssert(false, @"only Polylogue so far: %@", group);
-    return NO;
-}
-
-@end
