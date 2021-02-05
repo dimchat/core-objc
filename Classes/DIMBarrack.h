@@ -87,11 +87,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
 
-// override to create user
-- (nullable DIMUser *)createUser:(id<MKMID>)ID;
-// override to create group
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
-
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
  * this will remove 50% of cached objects
@@ -99,6 +94,16 @@ NS_ASSUME_NONNULL_BEGIN
  * @return number of survivors
  */
 - (NSInteger)reduceMemory;
+
+// override to create user
+- (nullable DIMUser *)createUser:(id<MKMID>)ID;
+// override to create group
+- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
+
+// broadcast group
+- (nullable id<MKMID>)founderOfBroadcastGroup:(id<MKMID>)group;
+- (nullable id<MKMID>)ownerOfBroadcastGroup:(id<MKMID>)group;
+- (nullable NSArray<id<MKMID>> *)membersOfBroadcastGroup:(id<MKMID>)group;
 
 @end
 

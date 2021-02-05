@@ -43,7 +43,7 @@
 
 #import "DIMTransceiver.h"
 
-static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
+static inline BOOL isBroadcast(id<DKDMessage> msg) {
     id<MKMID> receiver = msg.group;
     if (!receiver) {
         receiver = msg.receiver;
@@ -85,7 +85,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 - (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
                     encodeData:(NSData *)data {
-    if (isBroadcast(iMsg, self)) {
+    if (isBroadcast(iMsg)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so no need to encode to Base64 here
         return MKMUTF8Decode(data);
@@ -95,7 +95,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
                 serializeKey:(id<MKMSymmetricKey>)password {
-    if (isBroadcast(iMsg, self)) {
+    if (isBroadcast(iMsg)) {
         // broadcast message has no key
         return nil;
     }
@@ -105,7 +105,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
                   encryptKey:(NSData *)data
                  forReceiver:(id<MKMID>)receiver {
-    NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
+    NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
     // encrypt with receiver's public key
     DIMUser *contact = [self userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
@@ -114,7 +114,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 - (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
                      encodeKey:(NSData *)data {
-    NSAssert(!isBroadcast(iMsg, self), @"broadcast message has no key: %@", iMsg);
+    NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
     return MKMBase64Encode(data);
 }
 
@@ -122,7 +122,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                    decodeKey:(NSObject *)dataString {
-    NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
+    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
     return MKMBase64Decode((NSString *)dataString);
 }
 
@@ -131,7 +131,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
                         from:(id<MKMID>)sender
                           to:(id<MKMID>)receiver {
     // NOTICE: the receiver will be group ID in a group message here
-    NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
+    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
     id<MKMID> ID = sMsg.receiver;
     DIMUser *user = [self userWithID:ID];
@@ -145,7 +145,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
                                    to:(id<MKMID>)receiver {
     // NOTICE: the receiver will be group ID in a group message here
     if (data) {
-        NSAssert(!isBroadcast(sMsg, self), @"broadcast message has no key: %@", sMsg);
+        NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
         NSDictionary *dict = MKMJSONDecode(data);
         // TODO: translate short keys
         //       'A' -> 'algorithm'
@@ -162,7 +162,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                   decodeData:(NSObject *)dataString {
-    if (isBroadcast(sMsg, self)) {
+    if (isBroadcast(sMsg)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so return the string data directly
         NSString *string = (NSString *)dataString;
@@ -187,7 +187,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg, DIMTransceiver *tranceiver) {
     //       'G' -> 'group'
     id<DKDContent> content = DKDContentFromDictionary(dict);
     
-    if (!isBroadcast(sMsg, self)) {
+    if (!isBroadcast(sMsg)) {
         // check and cache key for reuse
         id<MKMID> sender = sMsg.sender;
         id<MKMID> group = [self overtGroupForContent:content];

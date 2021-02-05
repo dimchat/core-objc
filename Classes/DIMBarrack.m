@@ -261,24 +261,64 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 #pragma mark - DIMGroupDataSource
 
+static inline NSString *id_name(id<MKMID> group) {
+    NSString *name = [group name];
+    NSUInteger len = [name length];
+    if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
+        return nil;
+    }
+    return name;
+}
+
+- (nullable id<MKMID>)founderOfBroadcastGroup:(id<MKMID>)group {
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the founder of group 'everyone@everywhere'
+        //            'Albert Moky'
+        return MKMIDFromString(@"moky@anywhere");
+    } else {
+        // DISCUSS: who should be the founder of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.founder@anywhere'
+        return MKMIDFromString([name stringByAppendingString:@".founder@anywhere"]);
+    }
+}
+
+- (nullable id<MKMID>)ownerOfBroadcastGroup:(id<MKMID>)group {
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the owner of group 'everyone@everywhere'
+        //            'anyone@anywhere'
+        return MKMAnyone();
+    } else {
+        // DISCUSS: who should be the owner of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.owner@anywhere'
+        return MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
+    }
+}
+
+- (nullable NSArray<id<MKMID>> *)membersOfBroadcastGroup:(id<MKMID>)group {
+    NSMutableArray<id<MKMID>> *mArray = [[NSMutableArray alloc] init];
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the member of group 'everyone@everywhere'
+        //            'anyone@anywhere'
+        [mArray addObject:MKMAnyone()];
+    } else {
+        // DISCUSS: who should be the member of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.member@anywhere'
+        id<MKMID> owner = MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
+        id<MKMID> member = MKMIDFromString([name stringByAppendingString:@".member@anywhere"]);
+        [mArray addObject:owner];
+        [mArray addObject:member];
+    }
+    return mArray;
+}
+
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // founder of broadcast group
-        // founder of broadcast group
-        NSString *founder;
-        NSString *name = [group name];
-        NSUInteger len = [name length];
-        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
-            // Consensus: the founder of group 'everyone@everywhere'
-            //            'Albert Moky'
-            founder = @"moky@anywhere";
-        } else {
-            // DISCUSS: who should be the founder of group 'xxx@everywhere'?
-            //          'anyone@anywhere', or 'xxx.founder@anywhere'
-            founder = [name stringByAppendingString:@".founder@anywhere"];
-        }
-        return MKMIDFromString(founder);
+        return [self founderOfBroadcastGroup:group];
     }
     
     // check each member's public key with group meta
@@ -313,19 +353,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // owner of broadcast group
-        NSString *owner;
-        NSString *name = [group name];
-        NSUInteger len = [name length];
-        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
-            // Consensus: the owner of group 'everyone@everywhere'
-            //            'anyone@anywhere'
-            owner = @"anyone@anywhere";
-        } else {
-            // DISCUSS: who should be the owner of group 'xxx@everywhere'?
-            //          'anyone@anywhere', or 'xxx.owner@anywhere'
-            owner = [name stringByAppendingString:@".owner@anywhere"];
-        }
-        return MKMIDFromString(owner);
+        return [self ownerOfBroadcastGroup:group];
     }
     
     // check group type
@@ -342,32 +370,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // members of broadcast group
-        NSString *member;
-        NSString *owner;
-        NSString *name = [group name];
-        NSUInteger len = [name length];
-        if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
-            // Consensus: the member of group 'everyone@everywhere'
-            //            'anyone@anywhere'
-            member = @"anyone@anywhere";
-            owner = @"anyone@anywhere";
-        } else {
-            // DISCUSS: who should be the member of group 'xxx@everywhere'?
-            //          'anyone@anywhere', or 'xxx.member@anywhere'
-            member = [name stringByAppendingString:@".member@anywhere"];
-            owner = [name stringByAppendingString:@".owner@anywhere"];
-        }
-        id<MKMID> admin = MKMIDFromString(owner);
-        NSAssert(admin, @"failed to get owner of broadcast group: %@", group);
-        // add owner first
-        NSMutableArray *mArray = [[NSMutableArray alloc] init];
-        [mArray addObject:admin];
-        // check and add member
-        id<MKMID> ID = MKMIDFromString(member);
-        if (![admin isEqual:ID]) {
-            [mArray addObject:ID];
-        }
-        return mArray;
+        return [self membersOfBroadcastGroup:group];
     }
     
     // NOTICE: let sub-class to load members from database

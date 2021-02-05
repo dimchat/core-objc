@@ -112,7 +112,7 @@
     DIMContentFactoryRegister(DKDContentType_History, hisParser);
     
     // unknown content type
-    DIMContentFactoryRegisterClass(DKDContentType_Unknown, DKDContent);
+    DIMContentFactoryRegisterClass(0, DKDContent);
 }
 
 @end
