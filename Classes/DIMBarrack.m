@@ -205,7 +205,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
 
 - (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user {
     id<MKMMeta> meta = [self metaForID:user];
-    NSAssert(meta, @"failed to get meta for ID: %@", user);
+    //NSAssert(meta, @"failed to get meta for ID: %@", user);
     return meta.key;
 }
 

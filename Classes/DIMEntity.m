@@ -87,7 +87,7 @@
     return [self description];
 }
 
-- (MKMNetworkType)type {
+- (UInt8)type {
     return _ID.type;
 }
 
