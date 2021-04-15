@@ -42,6 +42,8 @@
 #import "DIMAudioContent.h"
 #import "DIMVideoContent.h"
 #import "DIMWebpageContent.h"
+#import "DIMMoneyContent.h"
+#import "DIMTransferContent.h"
 
 #import "DIMCommand.h"
 #import "DIMHistoryCommand.h"
@@ -102,6 +104,10 @@
     
     // Web Page
     DIMContentFactoryRegisterClass(DKDContentType_Page, DIMWebpageContent);
+    
+    // Money
+    DIMContentFactoryRegisterClass(DKDContentType_Money, DIMMoneyContent);
+    DIMContentFactoryRegisterClass(DKDContentType_Transfer, DIMTransferContent);
     
     // Command
     id<DKDContentFactory> cmdParser = [[DIMCommandFactory alloc] init];
