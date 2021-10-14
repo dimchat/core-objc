@@ -86,7 +86,7 @@
 
 @implementation DIMContentFactory (Register)
 
-+ (void)registerCoreFactories {
++ (void)registerContentFactories {
     
     // Top-Secret
     DIMContentFactoryRegisterClass(DKDContentType_Forward, DIMForwardContent);

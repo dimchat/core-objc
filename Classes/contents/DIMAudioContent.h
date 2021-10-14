@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMAudioContent <DIMFileContent>
 
 @property (strong, nonatomic) NSData *audioData;
+@property (strong, nonatomic, nullable) NSString *text;
 
 @end
 

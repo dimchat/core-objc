@@ -72,7 +72,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 // facebook
 #define DIMCommand_Meta      @"meta"
-#define DIMCommand_Profile   @"profile"
 #define DIMCommand_Document  @"document"
 
 #pragma mark - Creation
@@ -135,7 +134,7 @@ typedef DIMCommand *_Nullable(^DIMCommandParserBlock)(NSDictionary *cmd);
 /**
  *  Register core command parsers
  */
-+ (void)registerCoreFactories;
++ (void)registerCommandFactories;
 
 @end
 

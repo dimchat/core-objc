@@ -66,65 +66,93 @@
     return self;
 }
 
-- (nullable NSData *)processData:(NSData *)data {
+- (NSArray<NSData *> *)processData:(NSData *)data {
+    DIMTransceiver *transceiver = [self transceiver];
     // 1. deserialize message
-    id<DKDReliableMessage> rMsg = [self.transceiver deserializeMessage:data];
+    id<DKDReliableMessage> rMsg = [transceiver deserializeMessage:data];
     if (!rMsg) {
         // no message received
         return nil;
     }
     // 2. process message
-    rMsg = [self.transceiver processMessage:rMsg];
-    if (!rMsg) {
+    NSArray<id<DKDReliableMessage>> *responses = [transceiver processMessage:rMsg];
+    if ([responses count] == 0) {
         // nothing to response
         return nil;
     }
-    // serialize message
-    return [self.transceiver serializeMessage:rMsg];
+    // serialize messages
+    NSMutableArray<NSData *> *packages = [[NSMutableArray alloc] initWithCapacity:[responses count]];
+    NSData * pack;
+    for (id<DKDReliableMessage> res in responses) {
+        pack = [transceiver serializeMessage:res];
+        if ([pack length] > 0) {
+            [packages addObject:pack];
+        }
+    }
+    return packages;
 }
 
-- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg {
+    DIMTransceiver *transceiver = [self transceiver];
     // 1. verify message
-    id<DKDSecureMessage> sMsg = [self.transceiver verifyMessage:rMsg];
+    id<DKDSecureMessage> sMsg = [transceiver verifyMessage:rMsg];
     if (!sMsg) {
         // waiting for sender's meta if not eixsts
         return nil;
     }
     // 2. process message
-    sMsg = [self.transceiver processSecure:sMsg withMessage:rMsg];
-    if (!sMsg) {
+    NSArray<id<DKDSecureMessage>> *responses = [transceiver processSecure:sMsg withMessage:rMsg];
+    if ([responses count] == 0) {
         // nothing to respond
         return nil;
     }
-    // 3. sign message
-    return [self.transceiver signMessage:sMsg];
+    // 3. sign messages
+    NSMutableArray<id<DKDReliableMessage>> *messages = [[NSMutableArray alloc] initWithCapacity:[responses count]];
+    id<DKDReliableMessage> msg;
+    for (id<DKDSecureMessage> res in responses) {
+        msg = [transceiver signMessage:res];
+        if (msg) {
+            [messages addObject:msg];
+        }
+    }
+    return messages;
 }
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
-                                   withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg {
+    DIMTransceiver *transceiver = [self transceiver];
     // 1. decrypt message
-    id<DKDInstantMessage> iMsg = [self.transceiver decryptMessage:sMsg];
+    id<DKDInstantMessage> iMsg = [transceiver decryptMessage:sMsg];
     if (!iMsg) {
         // cannot decrypt this message, not for you?
         // delivering message to other receiver?
         return nil;
     }
     // 2. process message
-    iMsg = [self.transceiver processInstant:iMsg withMessage:rMsg];
-    if (!iMsg) {
+    NSArray<id<DKDInstantMessage>> *responses = [transceiver processInstant:iMsg withMessage:rMsg];
+    if ([responses count] == 0) {
         // nothing to respond
         return nil;
     }
-    // 3. encrypt message
-    return [self.transceiver encryptMessage:iMsg];
+    // 3. encrypt messages
+    NSMutableArray<id<DKDSecureMessage>> *messages = [[NSMutableArray alloc] initWithCapacity:[responses count]];
+    id<DKDSecureMessage> msg;
+    for (id<DKDInstantMessage> res in responses) {
+        msg = [transceiver encryptMessage:res];
+        if (msg) {
+            [messages addObject:msg];
+        }
+    }
+    return messages;
 }
 
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
-                                     withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
+                                       withMessage:(id<DKDReliableMessage>)rMsg {
+    DIMTransceiver *transceiver = [self transceiver];
     // 1. process content
     id<DKDContent> content = iMsg.content;
-    id<DKDContent> res = [self.transceiver processContent:content withMessage:rMsg];
-    if (!res) {
+    NSArray<id<DKDContent>> * responses = [transceiver processContent:content withMessage:rMsg];
+    if ([responses count] == 0) {
         // nothing to respond
         return nil;
     }
@@ -132,16 +160,29 @@
     // 2. select a local user to build message
     id<MKMID> sender = iMsg.sender;
     id<MKMID> receiver = iMsg.receiver;
-    DIMUser *user = [self.transceiver selectLocalUserWithID:receiver];
+    DIMUser *user = [transceiver selectLocalUserWithID:receiver];
     NSAssert(user, @"receiver error: %@", receiver);
     
-    // 3. pack message
-    id<DKDEnvelope> env = DKDEnvelopeCreate(user.ID, sender, nil);
-    return DKDInstantMessageCreate(env, res);
+    // 3. pack messages
+    NSMutableArray<id<DKDInstantMessage>> *messages = [[NSMutableArray alloc] initWithCapacity:[responses count]];
+    id<DKDEnvelope> env;
+    id<DKDInstantMessage> msg;
+    for (id<DKDContent> res in responses) {
+        if (!res) {
+            // should not happen
+            continue;
+        }
+        env = DKDEnvelopeCreate(user.ID, sender, nil);
+        msg = DKDInstantMessageCreate(env, res);
+        if (msg) {
+            [messages addObject:msg];
+        }
+    }
+    return messages;
 }
 
-- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                              withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
+                                withMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(false, @"implements me!");
     return nil;
 }
@@ -151,8 +192,8 @@
 @implementation DIMProcessor (Register)
 
 + (void)registerCoreFactories {
-    [DIMContentFactory registerCoreFactories];
-    [DIMCommandFactory registerCoreFactories];
+    [DIMContentFactory registerContentFactories];
+    [DIMCommandFactory registerCommandFactories];
 }
 
 @end

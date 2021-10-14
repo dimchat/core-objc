@@ -43,7 +43,7 @@
     NSAssert(text, @"text cannot be empty");
     if (self = [self initWithType:DKDContentType_Text]) {
         // text
-        if (text) {
+        if ([text length] > 0) {
             [self setObject:text forKey:@"text"];
         }
     }

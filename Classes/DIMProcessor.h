@@ -49,25 +49,25 @@ NS_ASSUME_NONNULL_BEGIN
  *  Process received data package
  *
  * @param data - package from network connection
- * @return response to sender
+ * @return responses
  */
-- (nullable NSData *)processData:(NSData *)data;
+- (NSArray<NSData *> *)processData:(NSData *)data;
 
 // NOTICE: override to check broadcast message before calling it
 // NOTICE: override to deliver to the receiver when catch exception "ReceiverError"
-- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
-                                   withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg;
 
 // NOTICE: override to save the received instant message
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
-                                     withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
+                                       withMessage:(id<DKDReliableMessage>)rMsg;
 
 // NOTICE: override to check group
 // NOTICE: override to filter the response
-- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                              withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
+                                withMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

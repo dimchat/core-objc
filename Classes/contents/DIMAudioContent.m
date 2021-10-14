@@ -62,4 +62,16 @@
     self.fileData = audioData;
 }
 
+- (nullable NSString *)text {
+    return [self objectForKey:@"text"];
+}
+
+- (void)setText:(nullable NSString *)text {
+    if ([text length] > 0) {
+        [self setObject:text forKey:@"text"];
+    } else {
+        [self removeObjectForKey:@"text"];
+    }
+}
+
 @end

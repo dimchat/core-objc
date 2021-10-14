@@ -142,18 +142,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMTransceiver (Processor)
 
-- (nullable NSData *)processData:(NSData *)data;
+- (NSArray<NSData *> *)processData:(NSData *)data;
 
-- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
-                                   withMessage:(id<DKDReliableMessage>)rMsg;
-
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
+- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
                                      withMessage:(id<DKDReliableMessage>)rMsg;
 
-- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                              withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
+                                       withMessage:(id<DKDReliableMessage>)rMsg;
+
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
+                                withMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

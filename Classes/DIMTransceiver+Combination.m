@@ -115,26 +115,26 @@
 
 @implementation DIMTransceiver (Processor)
 
-- (nullable NSData *)processData:(NSData *)data {
+- (NSArray<NSData *> *)processData:(NSData *)data {
     return [self.processor processData:data];
 }
 
-- (nullable id<DKDReliableMessage>)processMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg {
     return [self.processor processMessage:rMsg];
 }
 
-- (nullable id<DKDSecureMessage>)processSecure:(id<DKDSecureMessage>)sMsg
-                                   withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
+                                     withMessage:(id<DKDReliableMessage>)rMsg {
     return [self.processor processSecure:sMsg withMessage:rMsg];
 }
 
-- (nullable id<DKDInstantMessage>)processInstant:(id<DKDInstantMessage>)iMsg
-                                     withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
+                                       withMessage:(id<DKDReliableMessage>)rMsg {
     return [self.processor processInstant:iMsg withMessage:rMsg];
 }
 
-- (nullable id<DKDContent>)processContent:(id<DKDContent>)content
-                              withMessage:(id<DKDReliableMessage>)rMsg {
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
+                                withMessage:(id<DKDReliableMessage>)rMsg {
     return [self.processor processContent:content withMessage:rMsg];
 }
 

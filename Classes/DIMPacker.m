@@ -82,9 +82,10 @@
 }
 
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg {
+    DIMTransceiver *transceiver = [self transceiver];
     // check message delegate
     if (!iMsg.delegate) {
-        iMsg.delegate = self.transceiver;
+        iMsg.delegate = transceiver;
     }
     id<MKMID> sender = iMsg.sender;
     id<MKMID> receiver = iMsg.receiver;
@@ -109,11 +110,11 @@
     id<MKMSymmetricKey> password;
     if (group) {
         // group message (excludes group command)
-        password = [self.transceiver cipherKeyFrom:sender to:group generate:YES];
+        password = [transceiver cipherKeyFrom:sender to:group generate:YES];
         NSAssert(password, @"failed to get msg key: %@ -> %@", sender, group);
     } else {
         // personal message or (group) command
-        password = [self.transceiver cipherKeyFrom:sender to:receiver generate:YES];
+        password = [transceiver cipherKeyFrom:sender to:receiver generate:YES];
         NSAssert(password, @"failed to get msg key: %@ -> %@", sender, receiver);
     }
 
@@ -123,7 +124,7 @@
     id<DKDSecureMessage> sMsg = nil;
     if (MKMIDIsGroup(receiver)) {
         // group message
-        DIMGroup *grp = [self.transceiver groupWithID:receiver];
+        DIMGroup *grp = [transceiver groupWithID:receiver];
         NSArray<id<MKMID>> *members = [grp members];
         if (members.count == 0) {
             // group not ready
@@ -156,7 +157,7 @@
 - (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg {
     // check message delegate
     if (sMsg.delegate == nil) {
-        sMsg.delegate = self.transceiver;;
+        sMsg.delegate = [self transceiver];
     }
     NSAssert(sMsg.data, @"message data cannot be empty");
     // sign 'data' by sender
@@ -187,7 +188,7 @@
 - (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg {
     // check message delegate
     if (rMsg.delegate == nil) {
-        rMsg.delegate = self.transceiver;;
+        rMsg.delegate = [self transceiver];
     }
     //
     //  NOTICE: check [Visa Protocol] before calling this
@@ -203,7 +204,7 @@
 - (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg {
     // check message delegate
     if (sMsg.delegate == nil) {
-        sMsg.delegate = self.transceiver;
+        sMsg.delegate = [self transceiver];
     }
     //
     //  NOTICE: make sure the receiver is YOU!

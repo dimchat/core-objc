@@ -173,19 +173,20 @@ static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil
 
 @implementation DIMCommandFactory (Register)
 
-+ (void)registerCoreFactories {
++ (void)registerCommandFactories {
     
     // Meta Command
     DIMCommandFactoryRegisterClass(DIMCommand_Meta, DIMMetaCommand);
     
     // Document Command
-    id<DIMCommandFactory> docParser = DIMCommandFactoryWithClass(DIMDocumentCommand);
-    DIMCommandFactoryRegister(DIMCommand_Profile, docParser);
-    DIMCommandFactoryRegister(DIMCommand_Document, docParser);
-    
+    id<DIMCommandFactory> factory = DIMCommandFactoryWithClass(DIMDocumentCommand);
+    DIMCommandFactoryRegister(DIMCommand_Document, factory);
+    DIMCommandFactoryRegister(@"profile", factory);
+    DIMCommandFactoryRegister(@"visa", factory);
+    DIMCommandFactoryRegister(@"bulletin", factory);
+
     // Group Commands
-    id<DIMCommandFactory> grpParser = [[DIMGroupCommandFactory alloc] init];
-    DIMCommandFactoryRegister(@"group", grpParser);
+    DIMCommandFactoryRegister(@"group", [[DIMGroupCommandFactory alloc] init]);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Invite, DIMInviteCommand);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Expel, DIMExpelCommand);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Join, DIMJoinCommand);
