@@ -44,7 +44,7 @@
 
 @interface DIMPacker ()
 
-@property (weak, nonatomic) DIMTransceiver *transceiver;
+@property (weak, nonatomic) __kindof DIMTransceiver *transceiver;
 
 @end
 

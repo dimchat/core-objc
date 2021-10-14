@@ -73,22 +73,22 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Delegate for getting entity
  */
-@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (weak, nonatomic) __kindof id<DIMEntityDelegate> barrack;
 
 /**
  *  Delegate for getting message key
  */
-@property (weak, nonatomic) id<DIMCipherKeyDelegate> keyCache;
+@property (weak, nonatomic) __kindof id<DIMCipherKeyDelegate> keyCache;
 
 /**
  *  Delegate for parsing message
  */
-@property (weak, nonatomic) id<DIMPacker> packer;
+@property (weak, nonatomic) __kindof id<DIMPacker> packer;
 
 /**
  *  Delegate for processing message
  */
-@property (weak, nonatomic) id<DIMProcessor> processor;
+@property (weak, nonatomic) __kindof id<DIMProcessor> processor;
 
 @end
 

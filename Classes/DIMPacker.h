@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMPacker : NSObject <DIMPacker>
 
-@property (readonly, weak, nonatomic) DIMTransceiver *transceiver;
+@property (readonly, weak, nonatomic) __kindof DIMTransceiver *transceiver;
 
 - (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver
 NS_DESIGNATED_INITIALIZER;
