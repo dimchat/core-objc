@@ -79,7 +79,7 @@
         }
         // Members
         if (list.count > 0) {
-            [self setObject:[MKMID revert:list] forKey:@"members"];
+            [self setObject:MKMIDRevert(list) forKey:@"members"];
         }
     }
     return self;
@@ -94,7 +94,7 @@
     if (array.count == 0) {
         return nil;
     }
-    return [MKMID convert:array];
+    return MKMIDConvert(array);
 }
 
 @end
