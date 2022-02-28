@@ -68,35 +68,20 @@ NS_ASSUME_NONNULL_BEGIN
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
  */
-@interface DIMBarrack : NSObject <DIMEntityDelegate,
-                                  DIMUserDataSource,
-                                  DIMGroupDataSource>
-
-/**
- *  Get all local users (for decrypting received message)
- *
- * @return users with private key
- */
-@property (readonly, strong, nonatomic, nullable) NSArray<DIMUser *> *localUsers;
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSInteger)reduceMemory;
-
-// override to create user
-- (nullable __kindof DIMUser *)createUser:(id<MKMID>)ID;
-// override to create group
-- (nullable __kindof DIMGroup *)createGroup:(id<MKMID>)ID;
-
-// broadcast group
-- (nullable id<MKMID>)founderOfBroadcastGroup:(id<MKMID>)group;
-- (nullable id<MKMID>)ownerOfBroadcastGroup:(id<MKMID>)group;
-- (nullable NSArray<id<MKMID>> *)membersOfBroadcastGroup:(id<MKMID>)group;
+@interface DIMBarrack : NSObject <DIMEntityDelegate, DIMUserDataSource, DIMGroupDataSource>
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
+id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
+NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

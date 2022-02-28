@@ -37,123 +37,7 @@
 
 #import "DIMBarrack.h"
 
-@interface DIMBarrack () {
-    
-    NSMutableDictionary<id<MKMID>, DIMUser *> *_userTable;
-    NSMutableDictionary<id<MKMID>, DIMGroup *> *_groupTable;
-}
-
-@end
-
-/**
- *  Remove 1/2 objects from the dictionary
- *
- * @param mDict - mutable dictionary
- */
-static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
-    NSArray *keys = [mDict allKeys];
-    for (id addr in keys) {
-        if ((++finger & 1) == 1) {
-            // kill it
-            [mDict removeObjectForKey:addr];
-        }
-        // let it go
-    }
-    return finger;
-}
-
 @implementation DIMBarrack
-
-- (instancetype)init {
-    if (self = [super init]) {
-        _userTable = [[NSMutableDictionary alloc] init];
-        _groupTable = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
-
-- (NSInteger)reduceMemory {
-    NSInteger finger = 0;
-    finger = thanos(_userTable, finger);
-    finger = thanos(_groupTable, finger);
-    return finger >> 1;
-}
-
-- (void)cacheUser:(DIMUser *)user {
-    if (user.dataSource == nil) {
-        user.dataSource = self;
-    }
-    [_userTable setObject:user forKey:user.ID];
-}
-
-- (void)cacheGroup:(DIMGroup *)group {
-    if (group.dataSource == nil) {
-        group.dataSource = self;
-    }
-    [_groupTable setObject:group forKey:group.ID];
-}
-
-- (nullable DIMUser *)createUser:(id<MKMID>)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-#pragma mark - DIMEntityDelegate
-
-- (nullable NSArray<DIMUser *> *)localUsers {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-- (nullable DIMUser *)userWithID:(id<MKMID>)ID {
-    // 1. get from user cache
-    DIMUser *user = [_userTable objectForKey:ID];
-    if (!user) {
-        // 2. create user and cache it
-        user = [self createUser:ID];
-        if (user) {
-            [self cacheUser:user];
-        }
-    }
-    return user;
-}
-
-- (nullable DIMGroup *)groupWithID:(id<MKMID>)ID {
-    // 1. get from group cache
-    DIMGroup *group = [_groupTable objectForKey:ID];
-    if (!group) {
-        // 2. create group and cache it
-        group = [self createGroup:ID];
-        if (group) {
-            [self cacheGroup:group];
-        }
-    }
-    return group;
-}
-
-#pragma mark - DIMEntityDataSource
-
-- (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
-
-#pragma mark - DIMUserDataSource
-
-- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
-    NSAssert(false, @"implement me!");
-    return nil;
-}
 
 - (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user {
     id<MKMDocument> doc = [self documentForID:user type:MKMDocument_Visa];
@@ -170,6 +54,37 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     id<MKMMeta> meta = [self metaForID:user];
     //NSAssert(meta, @"failed to get meta for ID: %@", user);
     return meta.key;
+}
+
+#pragma mark DIMEntityDelegate
+
+- (nullable DIMUser *)userWithID:(id<MKMID>)ID {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (nullable DIMGroup *)groupWithID:(id<MKMID>)ID {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+#pragma mark DIMEntityDataSource
+
+- (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+#pragma mark DIMUserDataSource
+
+- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
+    NSAssert(false, @"implement me!");
+    return nil;
 }
 
 - (nullable id<MKMEncryptKey>)publicKeyForEncryption:(id<MKMID>)user {
@@ -222,66 +137,13 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-#pragma mark - DIMGroupDataSource
-
-static inline NSString *id_name(id<MKMID> group) {
-    NSString *name = [group name];
-    NSUInteger len = [name length];
-    if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
-        return nil;
-    }
-    return name;
-}
-
-- (nullable id<MKMID>)founderOfBroadcastGroup:(id<MKMID>)group {
-    NSString *name = id_name(group);
-    if (!name) {
-        // Consensus: the founder of group 'everyone@everywhere'
-        //            'Albert Moky'
-        return MKMIDFromString(@"moky@anywhere");
-    } else {
-        // DISCUSS: who should be the founder of group 'xxx@everywhere'?
-        //          'anyone@anywhere', or 'xxx.founder@anywhere'
-        return MKMIDFromString([name stringByAppendingString:@".founder@anywhere"]);
-    }
-}
-
-- (nullable id<MKMID>)ownerOfBroadcastGroup:(id<MKMID>)group {
-    NSString *name = id_name(group);
-    if (!name) {
-        // Consensus: the owner of group 'everyone@everywhere'
-        //            'anyone@anywhere'
-        return MKMAnyone();
-    } else {
-        // DISCUSS: who should be the owner of group 'xxx@everywhere'?
-        //          'anyone@anywhere', or 'xxx.owner@anywhere'
-        return MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
-    }
-}
-
-- (nullable NSArray<id<MKMID>> *)membersOfBroadcastGroup:(id<MKMID>)group {
-    NSMutableArray<id<MKMID>> *mArray = [[NSMutableArray alloc] init];
-    NSString *name = id_name(group);
-    if (!name) {
-        // Consensus: the member of group 'everyone@everywhere'
-        //            'anyone@anywhere'
-        [mArray addObject:MKMAnyone()];
-    } else {
-        // DISCUSS: who should be the member of group 'xxx@everywhere'?
-        //          'anyone@anywhere', or 'xxx.member@anywhere'
-        id<MKMID> owner = MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
-        id<MKMID> member = MKMIDFromString([name stringByAppendingString:@".member@anywhere"]);
-        [mArray addObject:owner];
-        [mArray addObject:member];
-    }
-    return mArray;
-}
+#pragma mark DIMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // founder of broadcast group
-        return [self founderOfBroadcastGroup:group];
+        return DIMBroadcastGroupFounder(group);
     }
     
     // check each member's public key with group meta
@@ -316,7 +178,7 @@ static inline NSString *id_name(id<MKMID> group) {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // owner of broadcast group
-        return [self ownerOfBroadcastGroup:group];
+        return DIMBroadcastGroupOwner(group);
     }
     
     // check group type
@@ -333,7 +195,7 @@ static inline NSString *id_name(id<MKMID> group) {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // members of broadcast group
-        return [self membersOfBroadcastGroup:group];
+        return DIMBroadcastGroupMembers(group);
     }
     
     // NOTICE: let sub-class to load members from database
@@ -347,9 +209,63 @@ static inline NSString *id_name(id<MKMID> group) {
             return [(id<MKMBulletin>) doc assistants];
         }
     }
-    
-    // NOTICE: let sub-class to get group bots from SP configuration
+    // TODO: get group bots from SP configuration
     return nil;
 }
 
 @end
+
+#pragma mark - Broadcast Group
+
+static inline NSString *id_name(id<MKMID> group) {
+    NSString *name = [group name];
+    NSUInteger len = [name length];
+    if (len == 0 || (len == 8 && [name isEqualToString:@"everyone"])) {
+        return nil;
+    }
+    return name;
+}
+
+id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group) {
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the founder of group 'everyone@everywhere'
+        //            'Albert Moky'
+        return MKMIDFromString(@"moky@anywhere");
+    } else {
+        // DISCUSS: who should be the founder of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.founder@anywhere'
+        return MKMIDFromString([name stringByAppendingString:@".founder@anywhere"]);
+    }
+}
+
+id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group) {
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the owner of group 'everyone@everywhere'
+        //            'anyone@anywhere'
+        return MKMAnyone();
+    } else {
+        // DISCUSS: who should be the owner of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.owner@anywhere'
+        return MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
+    }
+}
+
+NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group) {
+    NSMutableArray<id<MKMID>> *mArray = [[NSMutableArray alloc] init];
+    NSString *name = id_name(group);
+    if (!name) {
+        // Consensus: the member of group 'everyone@everywhere'
+        //            'anyone@anywhere'
+        [mArray addObject:MKMAnyone()];
+    } else {
+        // DISCUSS: who should be the member of group 'xxx@everywhere'?
+        //          'anyone@anywhere', or 'xxx.member@anywhere'
+        id<MKMID> owner = MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
+        id<MKMID> member = MKMIDFromString([name stringByAppendingString:@".member@anywhere"]);
+        [mArray addObject:owner];
+        [mArray addObject:member];
+    }
+    return mArray;
+}

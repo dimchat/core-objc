@@ -52,8 +52,8 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 @implementation DIMTransceiver
 
 - (id<DIMEntityDelegate>)barrack {
-    NSAssert(false, @"implement me!");
-    return nil;
+    NSAssert(_barrack, @"barrack not set yet!");
+    return _barrack;
 }
 
 #pragma mark DKDInstantMessageDelegate
