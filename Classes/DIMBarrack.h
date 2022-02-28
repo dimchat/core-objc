@@ -96,9 +96,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSInteger)reduceMemory;
 
 // override to create user
-- (nullable DIMUser *)createUser:(id<MKMID>)ID;
+- (nullable __kindof DIMUser *)createUser:(id<MKMID>)ID;
 // override to create group
-- (nullable DIMGroup *)createGroup:(id<MKMID>)ID;
+- (nullable __kindof DIMGroup *)createGroup:(id<MKMID>)ID;
 
 // broadcast group
 - (nullable id<MKMID>)founderOfBroadcastGroup:(id<MKMID>)group;

@@ -49,11 +49,11 @@
     return [self.barrack selectLocalUserWithID:receiver];
 }
 
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID {
+- (nullable DIMUser *)userWithID:(id<MKMID>)ID {
     return [self.barrack userWithID:ID];
 }
 
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID {
+- (nullable DIMGroup *)groupWithID:(id<MKMID>)ID {
     return [self.barrack groupWithID:ID];
 }
 
@@ -63,9 +63,9 @@
 
 @implementation DIMTransceiver (CipherKeyDelegate)
 
-- (nullable __kindof id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
-                                                    to:(id<MKMID>)receiver
-                                              generate:(BOOL)create {
+- (nullable id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
+                                           to:(id<MKMID>)receiver
+                                     generate:(BOOL)create {
     return [self.keyCache cipherKeyFrom:sender to:receiver generate:create];
 }
 

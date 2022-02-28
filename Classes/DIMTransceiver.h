@@ -50,9 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @param create - generate when key not exists
  * @return cipher key
  */
-- (nullable __kindof id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
-                                                    to:(id<MKMID>)receiver
-                                              generate:(BOOL)create;
+- (nullable id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
+                                           to:(id<MKMID>)receiver
+                                     generate:(BOOL)create;
 
 /**
  *  Cache cipher key for reusing, with the direction (from 'sender' to 'receiver')
@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMTransceiver (EntityDelegate)
 
-- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
+- (nullable __kindof DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
 
 - (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
 
@@ -108,9 +108,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMTransceiver (CipherKeyDelegate)
 
-- (nullable __kindof id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
-                                                    to:(id<MKMID>)receiver
-                                              generate:(BOOL)create;
+- (nullable id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
+                                           to:(id<MKMID>)receiver
+                                     generate:(BOOL)create;
 
 - (void)cacheCipherKey:(id<MKMSymmetricKey>)key
                   from:(id<MKMID>)sender

@@ -123,20 +123,20 @@
     return self;
 }
 
-- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd {
+- (nullable DIMCommand *)parseCommand:(NSDictionary *)cmd {
     if (self.block == NULL) {
         return [[DIMCommand alloc] initWithDictionary:cmd];
     }
     return self.block(cmd);
 }
 
-- (nullable __kindof id<DKDContent>)parseContent:(NSDictionary *)content {
+- (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
     NSString *command = [DIMCommand command:content];
     id<DIMCommandFactory> factory = [DIMCommand factoryForCommand:command];
     if (!factory) {
         // check for group commands
-        if ([DKDContent group:content]) {
+        if (DKDContentGetGroup(content)) {
             factory = [DIMCommand factoryForCommand:@"group"];
         }
         if (!factory) {

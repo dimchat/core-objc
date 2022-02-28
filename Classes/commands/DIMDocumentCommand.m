@@ -85,7 +85,7 @@
     if (self = [self initWithCommand:DIMCommand_Document]) {
         // ID
         if (ID) {
-            [self setObject:[ID string] forKey:@"ID"];
+            [self setObject:ID forKey:@"ID"];
         }
         // meta
         if (meta) {
@@ -124,7 +124,7 @@
                 return nil;
             }
             NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [mDict setObject:[ID string] forKey:@"ID"];
+            [mDict setObject:ID forKey:@"ID"];
             [mDict setObject:data forKey:@"data"];
             [mDict setObject:signature forKey:@"signature"];
             data = mDict;

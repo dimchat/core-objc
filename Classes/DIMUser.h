@@ -135,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return visa.key or meta.key
  */
-- (nullable id<MKMEncryptKey>)publicKeyForEncryption:(id<MKMID>)user;
+- (nullable __kindof id<MKMEncryptKey>)publicKeyForEncryption:(id<MKMID>)user;
 
 /**
  *  Get user's public keys for verification
@@ -162,7 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return private key
  */
-- (id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user;
+- (__kindof id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user;
 
 /**
  *  Get user's private key for signing visa
@@ -170,7 +170,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return private key
  */
-- (id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user;
+- (__kindof id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user;
 
 @end
 

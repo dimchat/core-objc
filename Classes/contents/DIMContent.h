@@ -59,19 +59,19 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
             })                                                                 \
                                    /* EOF 'DIMContentFactoryWithClass(clazz)' */
 
-#define DIMContentFactoryRegister(type, factory)                               \
-            [DKDContent setFactory:(factory) forType:(type)]                   \
-                            /* EOF 'DIMContentFactoryRegister(type, factory)' */
+#define DIMContentRegister(type, factory)                                      \
+            DKDContentRegister(type, factory)                                  \
+                                   /* EOF 'DIMContentRegister(type, factory)' */
 
-#define DIMContentFactoryRegisterBlock(type, block)                            \
-            DIMContentFactoryRegister((type),                                  \
+#define DIMContentRegisterBlock(type, block)                                   \
+            DIMContentRegister((type),                                         \
                                       DIMContentFactoryWithBlock(block))       \
-                         /* EOF 'DIMContentFactoryRegisterBlock(type, block)' */
+                                /* EOF 'DIMContentRegisterBlock(type, block)' */
 
-#define DIMContentFactoryRegisterClass(type, clazz)                            \
-            DIMContentFactoryRegister((type),                                  \
+#define DIMContentRegisterClass(type, clazz)                                   \
+            DIMContentRegister((type),                                         \
                                       DIMContentFactoryWithClass(clazz))       \
-                         /* EOF 'DIMContentFactoryRegisterClass(type, clazz)' */
+                                /* EOF 'DIMContentRegisterClass(type, clazz)' */
 
 @interface DIMContentFactory (Register)
 

@@ -45,7 +45,7 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
     }
     return self;
@@ -58,11 +58,11 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
         // Member ID
         if (memberID) {
-            [self setObject:[memberID string] forKey:@"member"];
+            [self setObject:memberID forKey:@"member"];
         }
     }
     return self;
@@ -75,7 +75,7 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
+            [self setObject:groupID forKey:@"group"];
         }
         // Members
         if (list.count > 0) {
@@ -163,14 +163,14 @@
 
 @implementation DIMGroupCommandFactory
 
-- (nullable __kindof DIMCommand *)parseCommand:(NSDictionary *)cmd {
+- (nullable DIMCommand *)parseCommand:(NSDictionary *)cmd {
     if (self.block == NULL) {
         return [[DIMGroupCommand alloc] initWithDictionary:cmd];
     }
     return self.block(cmd);
 }
 
-- (nullable __kindof id<DKDContent>)parseContent:(NSDictionary *)content {
+- (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
     NSString *command = [DIMCommand command:content];
     id<DIMCommandFactory> parser = [DIMCommand factoryForCommand:command];

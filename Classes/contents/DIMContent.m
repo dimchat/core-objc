@@ -73,7 +73,7 @@
     return self;
 }
 
-- (nullable __kindof id<DKDContent>)parseContent:(NSDictionary *)content {
+- (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     if (_block == NULL) {
         return [[DKDContent alloc] initWithDictionary:content];
     }
@@ -89,36 +89,36 @@
 + (void)registerContentFactories {
     
     // Top-Secret
-    DIMContentFactoryRegisterClass(DKDContentType_Forward, DIMForwardContent);
+    DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
     // Text
-    DIMContentFactoryRegisterClass(DKDContentType_Text, DIMTextContent);
+    DIMContentRegisterClass(DKDContentType_Text, DIMTextContent);
     
     // File
-    DIMContentFactoryRegisterClass(DKDContentType_File, DIMFileContent);
+    DIMContentRegisterClass(DKDContentType_File, DIMFileContent);
     // Image
-    DIMContentFactoryRegisterClass(DKDContentType_Image, DIMImageContent);
+    DIMContentRegisterClass(DKDContentType_Image, DIMImageContent);
     // Audio
-    DIMContentFactoryRegisterClass(DKDContentType_Audio, DIMAudioContent);
+    DIMContentRegisterClass(DKDContentType_Audio, DIMAudioContent);
     // Video
-    DIMContentFactoryRegisterClass(DKDContentType_Video, DIMVideoContent);
+    DIMContentRegisterClass(DKDContentType_Video, DIMVideoContent);
     
     // Web Page
-    DIMContentFactoryRegisterClass(DKDContentType_Page, DIMWebpageContent);
+    DIMContentRegisterClass(DKDContentType_Page, DIMWebpageContent);
     
     // Money
-    DIMContentFactoryRegisterClass(DKDContentType_Money, DIMMoneyContent);
-    DIMContentFactoryRegisterClass(DKDContentType_Transfer, DIMTransferContent);
+    DIMContentRegisterClass(DKDContentType_Money, DIMMoneyContent);
+    DIMContentRegisterClass(DKDContentType_Transfer, DIMTransferContent);
     
     // Command
     id<DKDContentFactory> cmdParser = [[DIMCommandFactory alloc] init];
-    DIMContentFactoryRegister(DKDContentType_Command, cmdParser);
+    DIMContentRegister(DKDContentType_Command, cmdParser);
     
     // History Command
     id<DKDContentFactory> hisParser = [[DIMHistoryCommandFactory alloc] init];
-    DIMContentFactoryRegister(DKDContentType_History, hisParser);
+    DIMContentRegister(DKDContentType_History, hisParser);
     
     // unknown content type
-    DIMContentFactoryRegisterClass(0, DKDContent);
+    DIMContentRegisterClass(0, DKDContent);
 }
 
 @end

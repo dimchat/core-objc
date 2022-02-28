@@ -116,7 +116,7 @@
 
 @implementation DIMUser (Visa)
 
-- (nullable __kindof id<MKMVisa>)visa {
+- (nullable id<MKMVisa>)visa {
     id<MKMDocument> doc = [self documentWithType:MKMDocument_Visa];
     if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
         return (id<MKMVisa>)doc;
@@ -142,7 +142,8 @@
         return NO;
     }
     // if meta not exists, user won't be created
-    id<MKMVerifyKey> key = [self.meta key];
+    id<MKMMeta> meta = [self meta];
+    id<MKMVerifyKey> key = [meta key];
     NSAssert(key, @"failed to get verify key for visa: %@", self.ID);
     return [visa verify:key];
 }

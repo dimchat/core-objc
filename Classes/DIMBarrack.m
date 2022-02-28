@@ -146,7 +146,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID {
+- (nullable DIMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
     DIMUser *user = [_userTable objectForKey:ID];
     if (!user) {
@@ -159,7 +159,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return user;
 }
 
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID {
+- (nullable DIMGroup *)groupWithID:(id<MKMID>)ID {
     // 1. get from group cache
     DIMGroup *group = [_groupTable objectForKey:ID];
     if (!group) {
@@ -179,8 +179,7 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
-                                              type:(nullable NSString *)type {
+- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type {
     NSAssert(false, @"implement me!");
     return nil;
 }

@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  Get meta for entity ID
  *
  * @param ID - entity ID
- * @return meta object
+ * @return Meta
  */
 - (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID;
 
@@ -76,10 +76,10 @@ NS_ASSUME_NONNULL_BEGIN
  *  Get document for entity ID
  *
  * @param ID - entity ID
- * @return document instance
+ * @param type - document type
+ * @return Document
  */
-- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID
-                                              type:(nullable NSString *)type;
+- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type;
 
 @end
 

@@ -77,7 +77,7 @@
     return MKMUTF8Decode(MKMJSONEncode(info));
 }
 
-- (nullable __kindof id<MKMBulletin>)bulletin {
+- (nullable id<MKMBulletin>)bulletin {
     id<MKMDocument> doc = [self documentWithType:MKMDocument_Bulletin];
     if ([doc conformsToProtocol:@protocol(MKMBulletin)]) {
         return (id<MKMBulletin>)doc;

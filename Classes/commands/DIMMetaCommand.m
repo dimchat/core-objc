@@ -71,7 +71,7 @@
     if (self = [self initWithCommand:DIMCommand_Meta]) {
         // ID
         if (ID) {
-            [self setObject:[ID string] forKey:@"ID"];
+            [self setObject:ID forKey:@"ID"];
         }
         
         // meta
