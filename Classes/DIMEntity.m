@@ -70,12 +70,10 @@
         return YES;
     }
     if ([object isKindOfClass:[DIMEntity class]]) {
-        // check with ID
-        DIMEntity *entity = (DIMEntity *)object;
-        return [entity.ID isEqual:_ID];
+        object = [(DIMEntity *)object ID];
     }
-    // nil or unknown object
-    return NO;
+    // check with ID
+    return [_ID isEqual:object];
 }
 
 - (NSString *)description {

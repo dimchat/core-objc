@@ -39,23 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMGroup : DIMEntity
-
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMBulletin> bulletin;
-
-@property (readonly, strong, nonatomic) id<MKMID> founder;
-@property (readonly, strong, nonatomic) id<MKMID> owner;
-
-// NOTICE: the owner must be a member
-//         (usually the first one)
-@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *members;
-
-@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *assistants;
-
-@end
-
-#pragma mark - Group Data Source
-
 @protocol DIMGroupDataSource <DIMEntityDataSource>
 
 /**
@@ -89,6 +72,21 @@ NS_ASSUME_NONNULL_BEGIN
  * @return robot ID list
  */
 - (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
+
+@end
+
+@interface DIMGroup : DIMEntity
+
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMBulletin> bulletin;
+
+@property (readonly, strong, nonatomic) id<MKMID> founder;
+@property (readonly, strong, nonatomic) id<MKMID> owner;
+
+// NOTICE: the owner must be a member
+//         (usually the first one)
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *members;
+
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *assistants;
 
 @end
 

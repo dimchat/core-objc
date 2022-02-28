@@ -39,63 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMUser : DIMEntity
-
-/**
- *  Verify data with signature, use meta.key
- *
- * @param data - message data
- * @param signature - message signature
- * @return true on correct
- */
-- (BOOL)verify:(NSData *)data withSignature:(NSData *)signature;
-
-/**
- *  Encrypt data, try visa.key first, if not found, use meta.key
- *
- * @param plaintext - message data
- * @return encrypted data
- */
-- (NSData *)encrypt:(NSData *)plaintext;
-
-@end
-
-@interface DIMUser (Local)
-
-@property (readonly, strong, nonatomic) NSArray<id<MKMID>> *contacts;
-
-/**
- *  Sign data with user's private key
- *
- * @param data - message data
- * @return signature
- */
-- (NSData *)sign:(NSData *)data;
-
-/**
- *  Decrypt data with user's private key
- *
- * @param ciphertext - encrypted data
- * @return plain text
- */
-- (nullable NSData *)decrypt:(NSData *)ciphertext;
-
-@end
-
-#pragma mark Interfaces for Visa
-
-@interface DIMUser (Visa)
-
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMVisa> visa;
-
-- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
-
-- (BOOL)verifyVisa:(id<MKMVisa>)visa;
-
-@end
-
-#pragma mark - User Data Source
-
 /**
  *  User Data Source
  *  ~~~~~~~~~~~~~~~~
@@ -171,6 +114,55 @@ NS_ASSUME_NONNULL_BEGIN
  * @return private key
  */
 - (__kindof id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user;
+
+@end
+
+@interface DIMUser : DIMEntity
+
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMVisa> visa;
+
+- (BOOL)verifyVisa:(id<MKMVisa>)visa;
+
+/**
+ *  Verify data and signature with user's public keys
+ *
+ * @param data - message data
+ * @param signature - message signature
+ * @return true on correct
+ */
+- (BOOL)verify:(NSData *)data withSignature:(NSData *)signature;
+
+/**
+ *  Encrypt data, try visa.key first, if not found, use meta.key
+ *
+ * @param plaintext - message data
+ * @return encrypted data
+ */
+- (NSData *)encrypt:(NSData *)plaintext;
+
+@end
+
+@interface DIMUser (Local)
+
+@property (readonly, strong, nonatomic) NSArray<id<MKMID>> *contacts;
+
+- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
+
+/**
+ *  Sign data with user's private key
+ *
+ * @param data - message data
+ * @return signature
+ */
+- (NSData *)sign:(NSData *)data;
+
+/**
+ *  Decrypt data with user's private key
+ *
+ * @param ciphertext - encrypted data
+ * @return plain text
+ */
+- (nullable NSData *)decrypt:(NSData *)ciphertext;
 
 @end
 

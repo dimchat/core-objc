@@ -39,29 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDataSource;
-
-@interface DIMEntity : NSObject <NSCopying>
-
-@property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
-
-@property (readonly, nonatomic) UInt8 type;    // Network ID
-
-@property (readonly, strong, nonatomic) id<MKMMeta> meta;
-
-@property (weak, nonatomic) __kindof id<DIMEntityDataSource> dataSource;
-
-- (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
-
-/**
- *  Get entity document with type
- */
-- (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
-
-@end
-
-#pragma mark - Entity Data Source
-
 @protocol DIMEntityDataSource <NSObject>
 
 /**
@@ -80,6 +57,25 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Document
  */
 - (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type;
+
+@end
+
+@interface DIMEntity : NSObject <NSCopying>
+
+@property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
+
+@property (readonly, nonatomic) UInt8 type;    // Network ID
+
+@property (readonly, strong, nonatomic) id<MKMMeta> meta;
+
+@property (weak, nonatomic) __kindof id<DIMEntityDataSource> dataSource;
+
+- (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
+
+/**
+ *  Get entity document with type
+ */
+- (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
 
 @end
 

@@ -104,4 +104,9 @@
     return [self.dataSource membersOfGroup:self.ID];
 }
 
+- (NSArray<id<MKMID>> *)assistants {
+    NSAssert(self.dataSource, @"group data source not set yet");
+    return [self.dataSource assistantsOfGroup:self.ID];
+}
+
 @end

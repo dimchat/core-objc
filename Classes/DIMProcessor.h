@@ -71,30 +71,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@class DIMTransceiver;
-@protocol DIMEntityDelegate;
-@protocol DIMMessagePacker;
-
-@interface DIMProcessor : NSObject <DIMProcessor>
-
-@property (readonly, weak, nonatomic) __kindof DIMTransceiver *transceiver;
-
-- (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver
-NS_DESIGNATED_INITIALIZER;
-
-@end
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- *  Register Core Content/Command Factories
- */
-void DIMRegisterCoreFactories(void);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
 NS_ASSUME_NONNULL_END

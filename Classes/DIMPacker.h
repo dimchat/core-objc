@@ -73,17 +73,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@class DIMTransceiver;
-@protocol DIMEntityDelegate;
-@protocol DIMCipherKeyDelegate;
-
-@interface DIMPacker : NSObject <DIMPacker>
-
-@property (readonly, weak, nonatomic) __kindof DIMTransceiver *transceiver;
-
-- (instancetype)initWithTransceiver:(DIMTransceiver *)transceiver
-NS_DESIGNATED_INITIALIZER;
-
-@end
-
 NS_ASSUME_NONNULL_END

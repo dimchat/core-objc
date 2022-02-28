@@ -39,12 +39,33 @@
 
 @implementation DIMUser
 
+- (nullable id<MKMVisa>)visa {
+    id<MKMDocument> doc = [self documentWithType:MKMDocument_Visa];
+    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
+        return (id<MKMVisa>)doc;
+    }
+    NSAssert(!doc, @"visa document error: %@", doc);
+    return nil;
+}
+
+- (BOOL)verifyVisa:(id<MKMVisa>)visa {
+    if (![self.ID isEqual:visa.ID]) {
+        // visa ID not match
+        return NO;
+    }
+    // if meta not exists, user won't be created
+    id<MKMMeta> meta = [self meta];
+    id<MKMVerifyKey> PK = [meta key];
+    NSAssert(PK, @"failed to get verify key for visa: %@", self.ID);
+    return [visa verify:PK];
+}
+
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature {
     // NOTICE: I suggest using the private key paired with meta.key to sign message
     //         so here should return the meta.key
     NSArray<id<MKMVerifyKey>> *keys = [self.dataSource publicKeysForVerification:self.ID];
-    for (id<MKMVerifyKey> key in keys) {
-        if ([key verify:data withSignature:signature]) {
+    for (id<MKMVerifyKey> PK in keys) {
+        if ([PK verify:data withSignature:signature]) {
             // matched!
             return YES;
         }
@@ -55,9 +76,9 @@
 - (NSData *)encrypt:(NSData *)plaintext {
     // NOTICE: meta.key will never changed, so use visa.key to encrypt
     //         is the better way
-    id<MKMEncryptKey> key = [self.dataSource publicKeyForEncryption:self.ID];
-    NSAssert(key, @"failed to get encrypt key for user: %@", self.ID);
-    return [key encrypt:plaintext];
+    id<MKMEncryptKey> PK = [self.dataSource publicKeyForEncryption:self.ID];
+    NSAssert(PK, @"failed to get encrypt key for user: %@", self.ID);
+    return [PK encrypt:plaintext];
 }
 
 @end
@@ -82,12 +103,23 @@
     return [self.dataSource contactsOfUser:self.ID];
 }
 
+- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {
+    if (![self.ID isEqual:visa.ID]) {
+        // visa ID not match
+        return nil;
+    }
+    id<MKMSignKey> SK = [self.dataSource privateKeyForVisaSignature:self.ID];
+    NSAssert(SK, @"failed to get visa sign key for user: %@", self.ID);
+    [visa sign:SK];
+    return visa;
+}
+
 - (NSData *)sign:(NSData *)data {
     // NOTICE: I suggest use the private key which paired to visa.key
     //         to sign message
-    id<MKMSignKey> key = [self.dataSource privateKeyForSignature:self.ID];
-    NSAssert(key, @"failed to get sign key for user: %@", self.ID);
-    return [key sign:data];
+    id<MKMSignKey> SK = [self.dataSource privateKeyForSignature:self.ID];
+    NSAssert(SK, @"failed to get sign key for user: %@", self.ID);
+    return [SK sign:data];
 }
 
 - (nullable NSData *)decrypt:(NSData *)ciphertext {
@@ -96,10 +128,10 @@
     NSArray<id<MKMDecryptKey>> *keys = [self.dataSource privateKeysForDecryption:self.ID];
     NSAssert([keys count] > 0, @"failed to get decrypt keys for user: %@", self.ID);
     NSData *plaintext = nil;
-    for (id<MKMDecryptKey> key in keys) {
+    for (id<MKMDecryptKey> SK in keys) {
         // try decrypting it with each private key
         @try {
-            plaintext = [key decrypt:ciphertext];
+            plaintext = [SK decrypt:ciphertext];
             if ([plaintext length] > 0) {
                 // OK!
                 return plaintext;
@@ -110,42 +142,6 @@
     }
     // decryption failed
     return nil;
-}
-
-@end
-
-@implementation DIMUser (Visa)
-
-- (nullable id<MKMVisa>)visa {
-    id<MKMDocument> doc = [self documentWithType:MKMDocument_Visa];
-    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
-        return (id<MKMVisa>)doc;
-    }
-    NSAssert(!doc, @"visa document error: %@", doc);
-    return nil;
-}
-
-- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {
-    if (![self.ID isEqual:visa.ID]) {
-        // visa ID not match
-        return nil;
-    }
-    id<MKMSignKey> key = [self.dataSource privateKeyForVisaSignature:self.ID];
-    NSAssert(key, @"failed to get visa sign key for user: %@", self.ID);
-    [visa sign:key];
-    return visa;
-}
-
-- (BOOL)verifyVisa:(id<MKMVisa>)visa {
-    if (![self.ID isEqual:visa.ID]) {
-        // visa ID not match
-        return NO;
-    }
-    // if meta not exists, user won't be created
-    id<MKMMeta> meta = [self meta];
-    id<MKMVerifyKey> key = [meta key];
-    NSAssert(key, @"failed to get verify key for visa: %@", self.ID);
-    return [visa verify:key];
 }
 
 @end

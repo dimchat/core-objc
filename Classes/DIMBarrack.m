@@ -110,42 +110,6 @@ static inline NSInteger thanos(NSMutableDictionary *mDict, NSInteger finger) {
     return nil;
 }
 
-- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver {
-    NSArray<DIMUser *> *users = self.localUsers;
-    if ([users count] == 0) {
-        NSAssert(false, @"local users should not be empty");
-        return nil;
-    } else if (MKMIDIsBroadcast(receiver)) {
-        // broadcast message can decrypt by anyone, so just return current user
-        return [users firstObject];
-    }
-    if (MKMIDIsGroup(receiver)) {
-        // group message (recipient not designated)
-        NSArray<id<MKMID>> *members = [self membersOfGroup:receiver];
-        if (members.count == 0) {
-            // TODO: group not ready, waiting for group info
-            return nil;
-        }
-        for (DIMUser *item in users) {
-            if ([members containsObject:item.ID]) {
-                // DISCUSS: set this item to be current user?
-                return item;
-            }
-        }
-    } else {
-        // 1. personal message
-        // 2. split group message
-        for (DIMUser *item in users) {
-            if ([receiver isEqual:item.ID]) {
-                // DISCUSS: set this item to be current user?
-                return item;
-            }
-        }
-    }
-    NSAssert(false, @"receiver not in local users: %@, %@", receiver, users);
-    return nil;
-}
-
 - (nullable DIMUser *)userWithID:(id<MKMID>)ID {
     // 1. get from user cache
     DIMUser *user = [_userTable objectForKey:ID];

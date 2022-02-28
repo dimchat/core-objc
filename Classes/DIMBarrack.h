@@ -45,14 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMEntityDelegate <NSObject>
 
 /**
- *  Select local user for receiver
- *
- * @param receiver - user/group ID
- * @return local user
- */
-- (nullable DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
-
-/**
  *  Create user with ID
  *
  * @param ID - user ID
