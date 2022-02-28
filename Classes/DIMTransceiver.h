@@ -35,101 +35,51 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMPacker.h>
-#import <DIMCore/DIMProcessor.h>
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMCipherKeyDelegate <NSObject>
-
-/**
- *  Get cipher key for encrypt message from 'sender' to 'receiver'
+/*
+ *  Message Transceiver
+ *  ~~~~~~~~~~~~~~~~~~~
  *
- * @param sender - user or contact ID
- * @param receiver - contact or user/group ID
- * @param create - generate when key not exists
- * @return cipher key
+ *  Converting message format between InstantMessage & ReliableMessage
  */
-- (nullable id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
-                                           to:(id<MKMID>)receiver
-                                     generate:(BOOL)create;
-
-/**
- *  Cache cipher key for reusing, with the direction (from 'sender' to 'receiver')
- *
- * @param key - cipher key
- * @param sender - user or contact ID
- * @param receiver - contact or user/group ID
- */
-- (void)cacheCipherKey:(id<MKMSymmetricKey>)key
-                  from:(id<MKMID>)sender
-                    to:(id<MKMID>)receiver;
-
-@end
-
-@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
-                                      DKDReliableMessageDelegate>
+@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate, DKDReliableMessageDelegate>
 
 /**
  *  Delegate for getting entity
  */
 @property (weak, nonatomic) __kindof id<DIMEntityDelegate> barrack;
 
-/**
- *  Delegate for getting message key
- */
-@property (weak, nonatomic) __kindof id<DIMCipherKeyDelegate> keyCache;
-
-/**
- *  Delegate for parsing message
- */
-@property (weak, nonatomic) __kindof id<DIMPacker> packer;
-
-/**
- *  Delegate for processing message
- */
-@property (weak, nonatomic) __kindof id<DIMProcessor> processor;
-
 @end
 
-#pragma mark -
+/*
+ *  Message Packer
+ *  ~~~~~~~~~~~~~~
+ */
+@protocol DIMPacker <NSObject>
 
-@interface DIMTransceiver (EntityDelegate)
-
-- (nullable __kindof DIMUser *)selectLocalUserWithID:(id<MKMID>)receiver;
-
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
-
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
-
-@end
-
-#pragma mark -
-
-@interface DIMTransceiver (CipherKeyDelegate)
-
-- (nullable id<MKMSymmetricKey>)cipherKeyFrom:(id<MKMID>)sender
-                                           to:(id<MKMID>)receiver
-                                     generate:(BOOL)create;
-
-- (void)cacheCipherKey:(id<MKMSymmetricKey>)key
-                  from:(id<MKMID>)sender
-                    to:(id<MKMID>)receiver;
-
-@end
-
-#pragma mark -
-
-@interface DIMTransceiver (Packer)
-
+/**
+ *  Get group ID which should be exposed to public network
+ *
+ * @param content - message content
+ * @return exposed group ID
+ */
 - (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
 
+//
+//  InstantMessage -> SecureMessage -> ReliableMessage -> Data
+//
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
 
 - (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
 
 - (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
 
+//
+//  Data -> ReliableMessage -> SecureMessage -> InstantMessage
+//
 - (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
 
 - (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
@@ -138,20 +88,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#pragma mark -
+/*
+ *  Message Processor
+ *  ~~~~~~~~~~~~~~~~~
+ */
+@protocol DIMProcessor <NSObject>
 
-@interface DIMTransceiver (Processor)
-
+/**
+ *  Process received data package
+ *
+ * @param data - package from network connection
+ * @return responses
+ */
 - (NSArray<NSData *> *)processData:(NSData *)data;
 
+// NOTICE: override to check broadcast message before calling it
+// NOTICE: override to deliver to the receiver when catch exception "ReceiverError"
 - (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
 
 - (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
                                      withMessage:(id<DKDReliableMessage>)rMsg;
 
+// NOTICE: override to save the received instant message
 - (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
                                        withMessage:(id<DKDReliableMessage>)rMsg;
 
+// NOTICE: override to check group
+// NOTICE: override to filter the response
 - (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
                                 withMessage:(id<DKDReliableMessage>)rMsg;
 

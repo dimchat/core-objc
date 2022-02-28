@@ -38,8 +38,6 @@
 #import "DIMCommand.h"
 
 #import "DIMBarrack.h"
-#import "DIMPacker.h"
-#import "DIMProcessor.h"
 
 #import "DIMTransceiver.h"
 
@@ -53,16 +51,9 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 
 @implementation DIMTransceiver
 
-- (instancetype)init {
-    if (self = [super init]) {
-        
-        _barrack = nil;
-        _keyCache = nil;
-        
-        _packer = nil;
-        _processor = nil;
-    }
-    return self;
+- (id<DIMEntityDelegate>)barrack {
+    NSAssert(false, @"implement me!");
+    return nil;
 }
 
 #pragma mark DKDInstantMessageDelegate
@@ -106,9 +97,10 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
                   encryptKey:(NSData *)data
                  forReceiver:(id<MKMID>)receiver {
     NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
-    // encrypt with receiver's public key
-    DIMUser *contact = [self userWithID:receiver];
+    // TODO: make sure the receiver's public key exists
+    DIMUser *contact = [self.barrack userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
+    // encrypt with receiver's public key
     return [contact encrypt:data];
 }
 
@@ -134,7 +126,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
     id<MKMID> ID = sMsg.receiver;
-    DIMUser *user = [self userWithID:ID];
+    DIMUser *user = [self.barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     return [user decrypt:key];
 }
@@ -144,20 +136,15 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
                                  from:(id<MKMID>)sender
                                    to:(id<MKMID>)receiver {
     // NOTICE: the receiver will be group ID in a group message here
-    if (data) {
-        NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
-        NSDictionary *dict = MKMJSONDecode(data);
-        // TODO: translate short keys
-        //       'A' -> 'algorithm'
-        //       'D' -> 'data'
-        //       'V' -> 'iv'
-        //       'M' -> 'mode'
-        //       'P' -> 'padding'
-        return MKMSymmetricKeyFromDictionary(dict);
-    } else {
-        // get key from cache
-        return [self cipherKeyFrom:sender to:receiver generate:NO];
-    }
+    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
+    NSDictionary *dict = MKMJSONDecode(data);
+    // TODO: translate short keys
+    //       'A' -> 'algorithm'
+    //       'D' -> 'data'
+    //       'V' -> 'iv'
+    //       'M' -> 'mode'
+    //       'P' -> 'padding'
+    return MKMSymmetricKeyFromDictionary(dict);
 }
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
@@ -185,33 +172,13 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     //       'T' -> 'type'
     //       'N' -> 'sn'
     //       'G' -> 'group'
-    id<DKDContent> content = DKDContentFromDictionary(dict);
-    
-    if (!isBroadcast(sMsg)) {
-        // check and cache key for reuse
-        id<MKMID> sender = sMsg.sender;
-        id<MKMID> group = [self overtGroupForContent:content];
-        if (group) {
-            // group message (excludes group command)
-            // cache the key with direction (sender -> group)
-            [self cacheCipherKey:password from:sender to:group];
-        } else {
-            id<MKMID> receiver = sMsg.receiver;
-            // personal message or (group) command
-            // cache key with direction (sender -> receiver)
-            [self cacheCipherKey:password from:sender to:receiver];
-        }
-    }
-
-    // NOTICE: check attachment for File/Image/Audio/Video message content
-    //         after deserialize content, this job should be do in subclass
-    return content;
+    return DKDContentFromDictionary(dict);
 }
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                     signData:(NSData *)data
                    forSender:(id<MKMID>)sender {
-    DIMUser *user = [self userWithID:sender];
+    DIMUser *user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
@@ -232,7 +199,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
       forSender:(id<MKMID>)sender {
-    DIMUser *user = [self userWithID:sender];
+    DIMUser *user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }
