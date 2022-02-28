@@ -163,7 +163,7 @@
 
 @implementation DIMGroupCommandFactory
 
-- (nullable DIMCommand *)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
     if (self.block == NULL) {
         return [[DIMGroupCommand alloc] initWithDictionary:cmd];
     }
@@ -172,8 +172,8 @@
 
 - (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
-    NSString *command = [DIMCommand command:content];
-    id<DIMCommandFactory> parser = [DIMCommand factoryForCommand:command];
+    NSString *command = DIMCommandGetName(content);
+    id<DIMCommandFactory> parser = DIMCommandGetFactory(command);
     if (!parser) {
         parser = self;
     }

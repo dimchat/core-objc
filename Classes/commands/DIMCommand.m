@@ -41,6 +41,28 @@
 
 #import "DIMCommand.h"
 
+static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil;
+
+id<DIMCommandFactory> DIMCommandGetFactory(NSString *name) {
+    return [s_factories objectForKey:name];
+}
+
+void DIMCommandSetFactory(NSString *name, id<DIMCommandFactory> factory) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        //if (!s_factories) {
+            s_factories = [[NSMutableDictionary alloc] init];
+        //}
+    });
+    [s_factories setObject:factory forKey:name];
+}
+
+NSString *DIMCommandGetName(NSDictionary *cmd) {
+    return [cmd objectForKey:@"command"];
+}
+
+#pragma mark - Base Command
+
 @interface DIMCommand ()
 
 @property (strong, nonatomic) NSString *command;
@@ -86,20 +108,16 @@
     return cmd;
 }
 
-+ (NSString *)command:(NSDictionary *)cmd {
-    return [cmd objectForKey:@"command"];
-}
-
 - (NSString *)command {
     if (!_command) {
-        _command = [DIMCommand command:self.dictionary];
+        _command = DIMCommandGetName(self.dictionary);
     }
     return _command;
 }
 
 @end
 
-#pragma mark - Creation
+#pragma mark -
 
 @interface DIMCommandFactory ()
 
@@ -123,7 +141,7 @@
     return self;
 }
 
-- (nullable DIMCommand *)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
     if (self.block == NULL) {
         return [[DIMCommand alloc] initWithDictionary:cmd];
     }
@@ -132,12 +150,12 @@
 
 - (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
-    NSString *command = [DIMCommand command:content];
-    id<DIMCommandFactory> factory = [DIMCommand factoryForCommand:command];
+    NSString *command = DIMCommandGetName(content);
+    id<DIMCommandFactory> factory = DIMCommandGetFactory(command);
     if (!factory) {
         // check for group commands
         if (DKDContentGetGroup(content)) {
-            factory = [DIMCommand factoryForCommand:@"group"];
+            factory = DIMCommandGetFactory(@"group");
         }
         if (!factory) {
             factory = self;
@@ -148,36 +166,11 @@
 
 @end
 
-@implementation DIMCommand (Creation)
+void DIMRegisterCommandFactories(void) {
 
-static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil;
-
-+ (void)setFactory:(id<DIMCommandFactory>)factory forCommand:(NSString *)name {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        //if (!s_factories) {
-            s_factories = [[NSMutableDictionary alloc] init];
-        //}
-    });
-    [s_factories setObject:factory forKey:name];
-}
-
-+ (id<DIMCommandFactory>)factoryForCommand:(NSString *)name {
-    NSAssert(s_factories, @"command factories not set yet");
-    return [s_factories objectForKey:name];
-}
-
-@end
-
-#pragma mark - Register Parsers
-
-@implementation DIMCommandFactory (Register)
-
-+ (void)registerCommandFactories {
-    
     // Meta Command
     DIMCommandFactoryRegisterClass(DIMCommand_Meta, DIMMetaCommand);
-    
+
     // Document Command
     id<DIMCommandFactory> factory = DIMCommandFactoryWithClass(DIMDocumentCommand);
     DIMCommandFactoryRegister(DIMCommand_Document, factory);
@@ -194,5 +187,3 @@ static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Query, DIMQueryGroupCommand);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Reset, DIMResetGroupCommand);
 }
-
-@end

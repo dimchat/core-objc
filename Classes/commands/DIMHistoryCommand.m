@@ -70,7 +70,7 @@
 
 @implementation DIMHistoryCommandFactory
 
-- (nullable DIMCommand *)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
     if (self.block == NULL) {
         return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
     }

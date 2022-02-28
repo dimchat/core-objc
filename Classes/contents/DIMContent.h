@@ -73,13 +73,17 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
                                       DIMContentFactoryWithClass(clazz))       \
                                 /* EOF 'DIMContentRegisterClass(type, clazz)' */
 
-@interface DIMContentFactory (Register)
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
- *  Register core content parsers
+ *  Register Core Content Factories
  */
-+ (void)registerContentFactories;
+void DIMRegisterContentFactories(void);
 
-@end
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

@@ -84,13 +84,17 @@ NS_DESIGNATED_INITIALIZER;
 
 @end
 
-@interface DIMProcessor (Register)
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  *  Register Core Content/Command Factories
  */
-+ (void)registerCoreFactories;
+void DIMRegisterCoreFactories(void);
 
-@end
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

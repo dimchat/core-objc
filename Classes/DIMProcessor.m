@@ -189,11 +189,7 @@
 
 @end
 
-@implementation DIMProcessor (Register)
-
-+ (void)registerCoreFactories {
-    [DIMContentFactory registerContentFactories];
-    [DIMCommandFactory registerCommandFactories];
+void DIMRegisterCoreFactories(void) {
+    DIMRegisterContentFactories();
+    DIMRegisterCommandFactories();
 }
-
-@end

@@ -82,11 +82,7 @@
 
 @end
 
-#pragma mark - Register Parsers
-
-@implementation DIMContentFactory (Register)
-
-+ (void)registerContentFactories {
+void DIMRegisterContentFactories(void) {
     
     // Top-Secret
     DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
@@ -120,5 +116,3 @@
     // unknown content type
     DIMContentRegisterClass(0, DKDContent);
 }
-
-@end
