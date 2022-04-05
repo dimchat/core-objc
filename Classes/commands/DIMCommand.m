@@ -172,11 +172,7 @@ void DIMRegisterCommandFactories(void) {
     DIMCommandFactoryRegisterClass(DIMCommand_Meta, DIMMetaCommand);
 
     // Document Command
-    id<DIMCommandFactory> factory = DIMCommandFactoryWithClass(DIMDocumentCommand);
-    DIMCommandFactoryRegister(DIMCommand_Document, factory);
-    DIMCommandFactoryRegister(@"profile", factory);
-    DIMCommandFactoryRegister(@"visa", factory);
-    DIMCommandFactoryRegister(@"bulletin", factory);
+    DIMCommandFactoryRegisterClass(DIMCommand_Document, DIMDocumentCommand);
 
     // Group Commands
     DIMCommandFactoryRegister(@"group", [[DIMGroupCommandFactory alloc] init]);

@@ -94,7 +94,7 @@
         
         // document
         if (doc) {
-            [self setObject:[doc dictionary] forKey:@"profile"];
+            [self setObject:[doc dictionary] forKey:@"document"];
         }
         _document = doc;
     }
@@ -111,39 +111,8 @@
 
 - (nullable id<MKMDocument>)document {
     if (!_document) {
-        NSObject *data = [self objectForKey:@"profile"];
-        if ([data isKindOfClass:[NSString class]]) {
-            // compatible with v1.0
-            //    "ID"        : "{ID}",
-            //    "profile"   : "{JsON}",
-            //    "signature" : "{BASE64}"
-            id<MKMID> ID = self.ID;
-            NSString *signature = [self objectForKey:@"signature"];
-            if (!ID || !signature) {
-                NSAssert(false, @"profile ID & signature should not be empty: %@", self);
-                return nil;
-            }
-            NSMutableDictionary *mDict = [[NSMutableDictionary alloc] initWithCapacity:3];
-            [mDict setObject:ID forKey:@"ID"];
-            [mDict setObject:data forKey:@"data"];
-            [mDict setObject:signature forKey:@"signature"];
-            data = mDict;
-        } else {
-            if (!data) {
-                data = [self objectForKey:@"document"];
-            }
-            // (v1.1)
-            //    "ID"      : "{ID}",
-            //    "profile" : {
-            //        "ID"        : "{ID}",
-            //        "data"      : "{JsON}",
-            //        "signature" : "{BASE64}"
-            //    }
-            NSAssert(!data || [data isKindOfClass:[NSDictionary class]], @"profile data error: %@", data);
-        }
-        if ([data isKindOfClass:[NSDictionary class]]) {
-            _document = MKMDocumentFromDictionary((NSDictionary *)data);
-        }
+        id dict = [self objectForKey:@"document"];
+        _document = MKMDocumentFromDictionary(dict);
     }
     return _document;
 }

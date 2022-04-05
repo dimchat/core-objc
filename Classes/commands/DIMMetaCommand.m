@@ -98,7 +98,7 @@
 
 - (nullable id<MKMMeta>)meta {
     if (!_meta) {
-        NSDictionary *dict = [self objectForKey:@"meta"];
+        id dict = [self objectForKey:@"meta"];
         _meta = MKMMetaFromDictionary(dict);
     }
     return _meta;

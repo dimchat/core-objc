@@ -44,10 +44,10 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x88,
  *      sn   : 123,
  *
- *      command   : "profile", // command name
- *      ID        : "{ID}",    // entity ID
- *      meta      : {...},     // only for handshaking with new friend
- *      profile   : {...}      // when profile is empty, means query for ID
+ *      command   : "document", // command name
+ *      ID        : "{ID}",     // entity ID
+ *      meta      : {...},      // only for handshaking with new friend
+ *      document  : {...}       // when profile is empty, means query for ID
  *  }
  */
 @protocol DIMDocumentCommand <DIMMetaCommand>
