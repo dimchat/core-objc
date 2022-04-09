@@ -66,9 +66,8 @@
     return [self initWithID:ID meta:nil];
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      meta:(nullable id<MKMMeta>)meta {
-    if (self = [self initWithCommand:DIMCommand_Meta]) {
+- (instancetype)initWithCommand:(NSString *)name ID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
+    if (self = [self initWithCommand:name]) {
         // ID
         if (ID) {
             [self setObject:ID forKey:@"ID"];
@@ -81,6 +80,10 @@
         _meta = meta;
     }
     return self;
+}
+
+- (instancetype)initWithID:(id<MKMID>)ID meta:(nullable id<MKMMeta>)meta {
+    return [self initWithCommand:DIMCommand_Meta ID:ID meta:meta];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {

@@ -58,6 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMMetaCommand : DIMCommand <DIMMetaCommand>
 
+- (instancetype)initWithCommand:(NSString *)name
+                             ID:(id<MKMID>)ID
+                           meta:(nullable id<MKMMeta>)meta;
+
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta;
 // query command

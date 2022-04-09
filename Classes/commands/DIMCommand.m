@@ -63,56 +63,19 @@ NSString *DIMCommandGetName(NSDictionary *cmd) {
 
 #pragma mark - Base Command
 
-@interface DIMCommand ()
-
-@property (strong, nonatomic) NSString *command;
-
-@end
-
 @implementation DIMCommand
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _command = nil;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-        _command = nil;
-    }
-    return self;
-}
-
 - (instancetype)initWithCommand:(NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
     if (self = [self initWithType:DKDContentType_Command]) {
         // command
-        if (cmd) {
-            [self setObject:cmd forKey:@"command"];
-        }
-        _command = cmd;
+        NSAssert(cmd.length > 0, @"command name cannot be empty");
+        [self setObject:cmd forKey:@"command"];
     }
     return self;
-}
-
-- (id)copyWithZone:(nullable NSZone *)zone {
-    DIMCommand *cmd = [super copyWithZone:zone];
-    if (cmd) {
-        cmd.command = _command;
-    }
-    return cmd;
 }
 
 - (NSString *)command {
-    if (!_command) {
-        _command = DIMCommandGetName(self.dictionary);
-    }
-    return _command;
+    return DIMCommandGetName(self.dictionary);
 }
 
 @end

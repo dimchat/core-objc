@@ -82,16 +82,7 @@
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
                   document:(nullable id<MKMDocument>)doc {
-    if (self = [self initWithCommand:DIMCommand_Document]) {
-        // ID
-        if (ID) {
-            [self setObject:ID forKey:@"ID"];
-        }
-        // meta
-        if (meta) {
-            [self setObject:[meta dictionary] forKey:@"meta"];
-        }
-        
+    if (self = [self initWithCommand:DIMCommand_Document ID:ID meta:meta]) {
         // document
         if (doc) {
             [self setObject:[doc dictionary] forKey:@"document"];

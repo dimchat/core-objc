@@ -77,8 +77,8 @@
     if (!_forwardMessage) {
         id forward = [self objectForKey:@"forward"];
         _forwardMessage = DKDReliableMessageFromDictionary(forward);
+        NSAssert(_forwardMessage, @"forward message not found: %@", self);
     }
-    NSAssert(_forwardMessage, @"forward message not found: %@", self);
     return _forwardMessage;
 }
 
