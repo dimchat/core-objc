@@ -65,7 +65,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     //         before serialize content, this job should be do in subclass
     
     NSAssert(content == iMsg.content, @"message content not match: %@", content);
-    return MKMJSONEncode(content);
+    return MKMUTF8Encode(MKMJSONEncode(content));
 }
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -90,7 +90,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
         // broadcast message has no key
         return nil;
     }
-    return MKMJSONEncode(password);
+    return MKMUTF8Encode(MKMJSONEncode(password));
 }
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -137,7 +137,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
                                    to:(id<MKMID>)receiver {
     // NOTICE: the receiver will be group ID in a group message here
     NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
-    id dict = MKMJSONDecode(data);
+    id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'A' -> 'algorithm'
     //       'D' -> 'data'
@@ -167,7 +167,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg
                 deserializeContent:(NSData *)data
                            withKey:(id<MKMSymmetricKey>)password {
-    id dict = MKMJSONDecode(data);
+    id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'T' -> 'type'
     //       'N' -> 'sn'

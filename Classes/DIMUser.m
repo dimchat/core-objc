@@ -87,7 +87,7 @@
 
 - (NSString *)debugDescription {
     NSString *desc = [super debugDescription];
-    NSDictionary *dict = MKMJSONDecode(MKMUTF8Encode(desc));
+    NSDictionary *dict = MKMJSONDecode(desc);
     NSMutableDictionary *info;
     if ([dict isKindOfClass:[NSMutableDictionary class]]) {
         info = (NSMutableDictionary *)dict;
@@ -95,7 +95,7 @@
         info = [dict mutableCopy];
     }
     [info setObject:@(self.contacts.count) forKey:@"contacts"];
-    return MKMUTF8Decode(MKMJSONEncode(info));
+    return MKMJSONEncode(info);
 }
 
 - (NSArray<id<MKMID>> *)contacts {
