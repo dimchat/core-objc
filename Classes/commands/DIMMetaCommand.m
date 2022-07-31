@@ -70,7 +70,7 @@
     if (self = [self initWithCommand:name]) {
         // ID
         if (ID) {
-            [self setObject:ID forKey:@"ID"];
+            [self setObject:[ID string] forKey:@"ID"];
         }
         
         // meta

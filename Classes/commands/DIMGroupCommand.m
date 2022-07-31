@@ -45,7 +45,7 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:groupID forKey:@"group"];
+            [self setObject:[groupID string] forKey:@"group"];
         }
     }
     return self;
@@ -58,11 +58,11 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:groupID forKey:@"group"];
+            [self setObject:[groupID string] forKey:@"group"];
         }
         // Member ID
         if (memberID) {
-            [self setObject:memberID forKey:@"member"];
+            [self setObject:[memberID string] forKey:@"member"];
         }
     }
     return self;
@@ -75,7 +75,7 @@
     if (self = [self initWithHistoryCommand:cmd]) {
         // Group ID
         if (groupID) {
-            [self setObject:groupID forKey:@"group"];
+            [self setObject:[groupID string] forKey:@"group"];
         }
         // Members
         if (list.count > 0) {
