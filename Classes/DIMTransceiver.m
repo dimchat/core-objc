@@ -137,6 +137,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
                                    to:(id<MKMID>)receiver {
     // NOTICE: the receiver will be group ID in a group message here
     NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
+    NSAssert([data length] > 0, @"check key data by sub-class: %@", sMsg);
     id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'A' -> 'algorithm'
@@ -167,6 +168,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg
                 deserializeContent:(NSData *)data
                            withKey:(id<MKMSymmetricKey>)password {
+    NSAssert([data length] > 0, @"content data should not be empty: %@", sMsg);
     id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'T' -> 'type'

@@ -81,9 +81,7 @@
     return [PK encrypt:plaintext];
 }
 
-@end
-
-@implementation DIMUser (Local)
+#pragma mark Local User
 
 - (NSString *)debugDescription {
     NSString *desc = [super debugDescription];

@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMGroup : DIMEntity
+@protocol DIMGroup <DIMEntity>
 
 @property (readonly, strong, nonatomic, nullable) __kindof id<MKMBulletin> bulletin;
 
@@ -87,6 +87,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, copy, nonatomic) NSArray<id<MKMID>> *members;
 
 @property (readonly, copy, nonatomic) NSArray<id<MKMID>> *assistants;
+
+@end
+
+@interface DIMGroup : DIMEntity <DIMGroup>
 
 @end
 

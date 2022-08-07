@@ -37,6 +37,14 @@
 
 #import "DIMEntity.h"
 
+@interface DIMEntity () {
+    
+    id<MKMID> _ID;
+    __weak id<DIMEntityDataSource> _dataSource;
+}
+
+@end
+
 @implementation DIMEntity
 
 - (instancetype)init {
@@ -85,8 +93,20 @@
     return [self description];
 }
 
+- (id<MKMID>)ID {
+    return _ID;
+}
+
 - (UInt8)type {
     return _ID.type;
+}
+
+- (id<DIMEntityDataSource>)dataSource {
+    return _dataSource;
+}
+
+- (void)setDataSource:(id<DIMEntityDataSource>)dataSource {
+    _dataSource = dataSource;
 }
 
 - (id<MKMMeta>)meta {

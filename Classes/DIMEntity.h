@@ -60,22 +60,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMEntity : NSObject <NSCopying>
+@protocol DIMEntity <NSObject>
 
 @property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
 
 @property (readonly, nonatomic) UInt8 type;    // Network ID
 
-@property (readonly, strong, nonatomic) id<MKMMeta> meta;
-
 @property (weak, nonatomic) __kindof id<DIMEntityDataSource> dataSource;
 
-- (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
+@property (readonly, strong, nonatomic) id<MKMMeta> meta;
 
 /**
  *  Get entity document with type
  */
 - (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
+
+@end
+
+@interface DIMEntity : NSObject <DIMEntity, NSCopying>
+
+- (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
 
 @end
 

@@ -117,11 +117,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMUser : DIMEntity
+@protocol DIMUser <DIMEntity>
 
 @property (readonly, strong, nonatomic, nullable) __kindof id<MKMVisa> visa;
-
-- (BOOL)verifyVisa:(id<MKMVisa>)visa;
 
 /**
  *  Verify data and signature with user's public keys
@@ -140,13 +138,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSData *)encrypt:(NSData *)plaintext;
 
+- (BOOL)verifyVisa:(id<MKMVisa>)visa;
+
 @end
 
-@interface DIMUser (Local)
+@protocol DIMLocalUser <DIMUser>
 
 @property (readonly, strong, nonatomic) NSArray<id<MKMID>> *contacts;
-
-- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
 
 /**
  *  Sign data with user's private key
@@ -163,6 +161,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @return plain text
  */
 - (nullable NSData *)decrypt:(NSData *)ciphertext;
+
+- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
+
+@end
+
+@interface DIMUser : DIMEntity <DIMUser, DIMLocalUser>
 
 @end
 
