@@ -39,10 +39,10 @@
 
 @implementation DIMGroupCommand
 
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID {
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID {
     
-    if (self = [self initWithHistoryCommand:cmd]) {
+    if (self = [self initWithHistoryName:cmd]) {
         // Group ID
         if (groupID) {
             [self setObject:[groupID string] forKey:@"group"];
@@ -51,11 +51,11 @@
     return self;
 }
 
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID
-                         member:(id<MKMID>)memberID {
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID
+                             member:(id<MKMID>)memberID {
     
-    if (self = [self initWithHistoryCommand:cmd]) {
+    if (self = [self initWithHistoryName:cmd]) {
         // Group ID
         if (groupID) {
             [self setObject:[groupID string] forKey:@"group"];
@@ -68,11 +68,11 @@
     return self;
 }
 
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID
-                        members:(NSArray<id<MKMID>> *)list {
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID
+                            members:(NSArray<id<MKMID>> *)list {
     
-    if (self = [self initWithHistoryCommand:cmd]) {
+    if (self = [self initWithHistoryName:cmd]) {
         // Group ID
         if (groupID) {
             [self setObject:[groupID string] forKey:@"group"];
@@ -104,11 +104,11 @@
 @implementation DIMInviteCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
-    return [self initWithCommand:DIMGroupCommand_Invite group:groupID member:memberID];
+    return [self initWithCommandName:DIMGroupCommand_Invite group:groupID member:memberID];
 }
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommand:DIMGroupCommand_Invite group:groupID members:list];
+    return [self initWithCommandName:DIMGroupCommand_Invite group:groupID members:list];
 }
 
 @end
@@ -116,11 +116,11 @@
 @implementation DIMExpelCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
-    return [self initWithCommand:DIMGroupCommand_Expel group:groupID member:memberID];
+    return [self initWithCommandName:DIMGroupCommand_Expel group:groupID member:memberID];
 }
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommand:DIMGroupCommand_Expel group:groupID members:list];
+    return [self initWithCommandName:DIMGroupCommand_Expel group:groupID members:list];
 }
 
 @end
@@ -128,7 +128,7 @@
 @implementation DIMJoinCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommand:DIMGroupCommand_Join group:groupID];
+    return [self initWithCommandName:DIMGroupCommand_Join group:groupID];
 }
 
 @end
@@ -136,7 +136,7 @@
 @implementation DIMQuitCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommand:DIMGroupCommand_Quit group:groupID];
+    return [self initWithCommandName:DIMGroupCommand_Quit group:groupID];
 }
 
 @end
@@ -146,7 +146,7 @@
 @implementation DIMResetGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommand:DIMGroupCommand_Reset group:groupID members:list];
+    return [self initWithCommandName:DIMGroupCommand_Reset group:groupID members:list];
 }
 
 @end
@@ -154,7 +154,7 @@
 @implementation DIMQueryGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommand:DIMGroupCommand_Query group:groupID];
+    return [self initWithCommandName:DIMGroupCommand_Query group:groupID];
 }
 
 @end
@@ -163,17 +163,17 @@
 
 @implementation DIMGroupCommandFactory
 
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
     if (self.block == NULL) {
-        return [[DIMGroupCommand alloc] initWithDictionary:cmd];
+        return [[DIMGroupCommand alloc] initWithDictionary:command];
     }
-    return self.block(cmd);
+    return self.block(command);
 }
 
 - (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
-    NSString *command = DIMCommandGetName(content);
-    id<DIMCommandFactory> parser = DIMCommandGetFactory(command);
+    NSString *cmd = DIMCommandGetName(content);
+    id<DIMCommandFactory> parser = DIMCommandGetFactory(cmd);
     if (!parser) {
         parser = self;
     }

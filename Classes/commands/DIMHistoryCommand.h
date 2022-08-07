@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "...", // command name
+ *      cmd     : "...", // command name
  *      time    : 0,     // timestamp
  *      extra   : info   // command parameters
  *  }
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMHistoryCommand : DIMCommand <DIMHistoryCommand>
 
-- (instancetype)initWithHistoryCommand:(NSString *)cmd;
+- (instancetype)initWithHistoryName:(NSString *)cmd;
 
 @end
 

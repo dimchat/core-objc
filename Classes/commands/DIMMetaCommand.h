@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x88,
  *      sn   : 123,
  *
- *      command : "meta", // command name
+ *      cmd     : "meta", // command name
  *      ID      : "{ID}", // contact's ID
  *      meta    : {...}   // When meta is empty, means query meta for ID
  *  }
@@ -58,9 +58,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMMetaCommand : DIMCommand <DIMMetaCommand>
 
-- (instancetype)initWithCommand:(NSString *)name
-                             ID:(id<MKMID>)ID
-                           meta:(nullable id<MKMMeta>)meta;
+- (instancetype)initWithCommandName:(NSString *)name
+                                 ID:(id<MKMID>)ID
+                               meta:(nullable id<MKMMeta>)meta;
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta;

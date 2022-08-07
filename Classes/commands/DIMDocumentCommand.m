@@ -82,7 +82,7 @@
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
                   document:(nullable id<MKMDocument>)doc {
-    if (self = [self initWithCommand:DIMCommand_Document ID:ID meta:meta]) {
+    if (self = [self initWithCommandName:DIMCommand_Document ID:ID meta:meta]) {
         // document
         if (doc) {
             [self setObject:[doc dictionary] forKey:@"document"];
@@ -93,11 +93,11 @@
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    DIMDocumentCommand *cmd = [super copyWithZone:zone];
-    if (cmd) {
-        cmd.document = _document;
+    DIMDocumentCommand *command = [super copyWithZone:zone];
+    if (command) {
+        command.document = _document;
     }
-    return cmd;
+    return command;
 }
 
 - (nullable id<MKMDocument>)document {

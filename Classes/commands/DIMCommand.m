@@ -43,38 +43,43 @@
 
 static NSMutableDictionary<NSString *, id<DIMCommandFactory>> *s_factories = nil;
 
-id<DIMCommandFactory> DIMCommandGetFactory(NSString *name) {
-    return [s_factories objectForKey:name];
+id<DIMCommandFactory> DIMCommandGetFactory(NSString *cmd) {
+    return [s_factories objectForKey:cmd];
 }
 
-void DIMCommandSetFactory(NSString *name, id<DIMCommandFactory> factory) {
+void DIMCommandSetFactory(NSString *cmd, id<DIMCommandFactory> factory) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         //if (!s_factories) {
             s_factories = [[NSMutableDictionary alloc] init];
         //}
     });
-    [s_factories setObject:factory forKey:name];
+    [s_factories setObject:factory forKey:cmd];
 }
 
-NSString *DIMCommandGetName(NSDictionary *cmd) {
-    return [cmd objectForKey:@"command"];
+NSString *DIMCommandGetName(NSDictionary *command) {
+    // TODO: modify after all server/clients support 'cmd'
+    NSString *cmd = [command objectForKey:@"cmd"];
+    if (!cmd) {
+        cmd = [command objectForKey:@"command"];
+    }
+    return cmd;
 }
 
 #pragma mark - Base Command
 
 @implementation DIMCommand
 
-- (instancetype)initWithCommand:(NSString *)cmd {
+- (instancetype)initWithCommandName:(NSString *)cmd {
     if (self = [self initWithType:DKDContentType_Command]) {
-        // command
+        // TODO: modify after all server/clients support 'cmd'
         NSAssert(cmd.length > 0, @"command name cannot be empty");
         [self setObject:cmd forKey:@"command"];
     }
     return self;
 }
 
-- (NSString *)command {
+- (NSString *)cmd {
     return DIMCommandGetName(self.dictionary);
 }
 
@@ -104,17 +109,17 @@ NSString *DIMCommandGetName(NSDictionary *cmd) {
     return self;
 }
 
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
     if (self.block == NULL) {
-        return [[DIMCommand alloc] initWithDictionary:cmd];
+        return [[DIMCommand alloc] initWithDictionary:command];
     }
-    return self.block(cmd);
+    return self.block(command);
 }
 
 - (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
     // get factory by command name
-    NSString *command = DIMCommandGetName(content);
-    id<DIMCommandFactory> factory = DIMCommandGetFactory(command);
+    NSString *cmd = DIMCommandGetName(content);
+    id<DIMCommandFactory> factory = DIMCommandGetFactory(cmd);
     if (!factory) {
         // check for group commands
         if (DKDContentGetGroup(content)) {

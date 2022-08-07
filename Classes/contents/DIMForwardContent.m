@@ -37,9 +37,36 @@
 
 #import "DIMForwardContent.h"
 
+/**
+ *  Convert message list from dictionary array
+ */
+NSArray<id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary *> *messages) {
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+    id<DKDMessage> msg;
+    for (NSDictionary *item in messages) {
+        msg = DKDReliableMessageParse(item);
+        if (msg) {
+            [mArray addObject:msg];
+        }
+    }
+    return mArray;
+}
+
+/**
+ *  Revert message list to dictionary array
+ */
+NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages) {
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+    for (id<DKDMessage> msg in messages) {
+        [mArray addObject:[msg dictionary]];
+    }
+    return mArray;
+}
+
 @interface DIMForwardContent ()
 
-@property (nonatomic) id<DKDReliableMessage> forwardMessage;
+@property (nonatomic) id<DKDReliableMessage> forward;
+@property (nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 
@@ -48,10 +75,19 @@
 - (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(rMsg, @"forward message cannot be empty");
     if (self = [self initWithType:DKDContentType_Forward]) {
-        // top-secret message
-        if (rMsg) {
-            [self setObject:[rMsg dictionary] forKey:@"forward"];
-        }
+        _forward = rMsg;
+        _secrets = nil;
+        [self setObject:[rMsg dictionary] forKey:@"forward"];
+    }
+    return self;
+}
+
+- (instancetype)initWithSecretMessages:(NSArray<id<DKDReliableMessage>> *)secrets {
+    NSAssert(secrets, @"secret messages cannot be empty");
+    if (self = [self initWithType:DKDContentType_Forward]) {
+        _forward = nil;
+        _secrets = secrets;
+        [self setObject:DIMReliableMessageRevert(secrets) forKey:@"secrets"];
     }
     return self;
 }
@@ -60,7 +96,8 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _forwardMessage = nil;
+        _forward = nil;
+        _secrets = nil;
     }
     return self;
 }
@@ -68,18 +105,35 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMForwardContent *content = [super copyWithZone:zone];
     if (content) {
-        content.forwardMessage = _forwardMessage;
+        content.forward = _forward;
+        content.secrets = _secrets;
     }
     return content;
 }
 
-- (id<DKDReliableMessage>)forwardMessage {
-    if (!_forwardMessage) {
-        id forward = [self objectForKey:@"forward"];
-        _forwardMessage = DKDReliableMessageFromDictionary(forward);
-        NSAssert(_forwardMessage, @"forward message not found: %@", self);
+- (id<DKDReliableMessage>)forward {
+    if (!_forward) {
+        id info = [self objectForKey:@"forward"];
+        _forward = DKDReliableMessageFromDictionary(info);
     }
-    return _forwardMessage;
+    return _forward;
+}
+
+- (NSArray<id<DKDReliableMessage>> *)secrets {
+    if (!_secrets) {
+        id info = [self objectForKey:@"secrets"];
+        if (info) {
+            // get from 'secrets'
+            _secrets = DIMReliableMessageConvert(info);
+        } else {
+            // get from 'forward'
+            id<DKDReliableMessage> msg = [self forward];
+            if (msg) {
+                _secrets = @[msg];
+            }
+        }
+    }
+    return _secrets;
 }
 
 @end

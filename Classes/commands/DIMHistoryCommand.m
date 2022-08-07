@@ -53,13 +53,11 @@
     return self;
 }
 
-- (instancetype)initWithHistoryCommand:(NSString *)cmd {
+- (instancetype)initWithHistoryName:(NSString *)cmd {
     NSAssert(cmd.length > 0, @"command name cannot be empty");
     if (self = [self initWithType:DKDContentType_History]) {
-        // command
-        if (cmd) {
-            [self setObject:cmd forKey:@"command"];
-        }
+        // command name
+        [self setObject:cmd forKey:@"command"];
     }
     return self;
 }
@@ -70,11 +68,11 @@
 
 @implementation DIMHistoryCommandFactory
 
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)cmd {
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
     if (self.block == NULL) {
-        return [[DIMHistoryCommand alloc] initWithDictionary:cmd];
+        return [[DIMHistoryCommand alloc] initWithDictionary:command];
     }
-    return self.block(cmd);
+    return self.block(command);
 }
 
 @end

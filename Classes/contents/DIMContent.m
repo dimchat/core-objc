@@ -84,8 +84,6 @@
 
 void DIMRegisterContentFactories(void) {
     
-    // Top-Secret
-    DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
     // Text
     DIMContentRegisterClass(DKDContentType_Text, DIMTextContent);
     
@@ -113,6 +111,13 @@ void DIMRegisterContentFactories(void) {
     id<DKDContentFactory> hisParser = [[DIMHistoryCommandFactory alloc] init];
     DIMContentRegister(DKDContentType_History, hisParser);
     
+    // Content Array
+    
+    // Application Customized
+    
+    // Top-Secret
+    DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
+
     // unknown content type
     DIMContentRegisterClass(0, DKDContent);
 }

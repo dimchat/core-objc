@@ -54,8 +54,8 @@ typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
                                    /* EOF 'DIMContentFactoryWithBlock(block)' */
 
 #define DIMContentFactoryWithClass(clazz)                                      \
-            DIMContentFactoryWithBlock(^(NSDictionary *cmd) {                  \
-                return [[clazz alloc] initWithDictionary:cmd];                 \
+            DIMContentFactoryWithBlock(^(NSDictionary *content) {              \
+                return [[clazz alloc] initWithDictionary:content];             \
             })                                                                 \
                                    /* EOF 'DIMContentFactoryWithClass(clazz)' */
 

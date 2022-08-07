@@ -56,40 +56,40 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "join",      // or quit
+ *      cmd     : "join",      // or quit
  *      group   : "{GROUP_ID}",
  *  }
  */
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID;
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID;
 
 /*
  *  Group history command: {
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "invite",      // or expel
+ *      cmd     : "invite",      // or expel
  *      group   : "{GROUP_ID}",
  *      member  : "{MEMBER_ID}",
  *  }
  */
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID
-                         member:(id<MKMID>)memberID;
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID
+                             member:(id<MKMID>)memberID;
 
 /*
  *  Group history command: {
  *      type : 0x89,
  *      sn   : 123,
  *
- *      command : "invite",      // or expel
+ *      cmd     : "invite",      // or expel
  *      group   : "{GROUP_ID}",
  *      members : ["{MEMBER_ID}", ],
  *  }
  */
-- (instancetype)initWithCommand:(NSString *)cmd
-                          group:(id<MKMID>)groupID
-                        members:(NSArray<id<MKMID>> *)list;
+- (instancetype)initWithCommandName:(NSString *)cmd
+                              group:(id<MKMID>)groupID
+                            members:(NSArray<id<MKMID>> *)list;
 
 @end
 
