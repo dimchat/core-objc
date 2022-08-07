@@ -89,6 +89,8 @@ NSString *DIMCommandGetName(NSDictionary *command);
 
 @interface DIMCommand : DKDContent <DIMCommand>
 
+- (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd;
+
 - (instancetype)initWithCommandName:(NSString *)cmd;
 
 @end

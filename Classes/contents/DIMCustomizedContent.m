@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2019 by Moky <albert.moky@gmail.com>
+//                               Written in 2022 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2022 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,45 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMHistoryCommand.m
+//  DIMCustomizedContent.m
 //  DIMCore
 //
-//  Created by Albert Moky on 2019/1/28.
-//  Copyright © 2019 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2022/8/8.
+//  Copyright © 2022 DIM Group. All rights reserved.
 //
 
-#import "DIMHistoryCommand.h"
+#import "DIMCustomizedContent.h"
 
-@implementation DIMHistoryCommand
+@implementation DIMCustomizedContent
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
+- (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act {
+    if (self = [self initWithType:DKDContentType_Customized]) {
+        // App ID
+        if (app) {
+            [self setObject:app forKey:@"app"];
+        }
+        // Module
+        if (mod) {
+            [self setObject:mod forKey:@"mod"];
+        }
+        // Action
+        if (act) {
+            [self setObject:act forKey:@"act"];
+        }
     }
     return self;
 }
 
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-    }
-    return self;
+- (NSString *)application {
+    return [self objectForKey:@"app"];
 }
 
-- (instancetype)initWithHistoryName:(NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [self initWithType:DKDContentType_History commandName:cmd]) {
-        //
-    }
-    return self;
+- (NSString *)module {
+    return [self objectForKey:@"mod"];
 }
 
-@end
-
-#pragma mark - Creation
-
-@implementation DIMHistoryCommandFactory
-
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
-    if (self.block == NULL) {
-        return [[DIMHistoryCommand alloc] initWithDictionary:command];
-    }
-    return self.block(command);
+- (NSString *)action {
+    return [self objectForKey:@"act"];
 }
 
 @end

@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2019 by Moky <albert.moky@gmail.com>
+//                               Written in 2022 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Albert Moky
+// Copyright (c) 2022 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,40 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMHistoryCommand.m
+//  DIMCustomizedContent.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2019/1/28.
-//  Copyright © 2019 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2022/8/8.
+//  Copyright © 2022 DIM Group. All rights reserved.
 //
 
-#import "DIMHistoryCommand.h"
+#import <DIMCore/DIMContent.h>
 
-@implementation DIMHistoryCommand
+NS_ASSUME_NONNULL_BEGIN
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-    }
-    return self;
-}
+/*
+ *  Application Customized message: {
+ *      type : 0xCC,
+ *      sn   : 123,
+ *
+ *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+ *      act   : "{ACTION}",  // action name (e.g.: "throw")
+ *      extra : info         // action parameters
+ *  }
+ */
+@protocol DIMCustomizedContent <DKDContent>
 
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-    }
-    return self;
-}
-
-- (instancetype)initWithHistoryName:(NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [self initWithType:DKDContentType_History commandName:cmd]) {
-        //
-    }
-    return self;
-}
+@property (readonly, strong, nonatomic) NSString *application;
+@property (readonly, strong, nonatomic) NSString *module;
+@property (readonly, strong, nonatomic) NSString *action;
 
 @end
 
-#pragma mark - Creation
+@interface DIMCustomizedContent : DKDContent <DIMCustomizedContent>
 
-@implementation DIMHistoryCommandFactory
-
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
-    if (self.block == NULL) {
-        return [[DIMHistoryCommand alloc] initWithDictionary:command];
-    }
-    return self.block(command);
-}
+- (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act;
 
 @end
+
+NS_ASSUME_NONNULL_END

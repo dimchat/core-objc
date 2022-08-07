@@ -70,11 +70,18 @@ NSString *DIMCommandGetName(NSDictionary *command) {
 
 @implementation DIMCommand
 
-- (instancetype)initWithCommandName:(NSString *)cmd {
-    if (self = [self initWithType:DKDContentType_Command]) {
+- (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd {
+    if (self = [self initWithType:type]) {
         // TODO: modify after all server/clients support 'cmd'
         NSAssert(cmd.length > 0, @"command name cannot be empty");
         [self setObject:cmd forKey:@"command"];
+    }
+    return self;
+}
+
+- (instancetype)initWithCommandName:(NSString *)cmd {
+    if (self = [self initWithType:DKDContentType_Command commandName:cmd]) {
+        //
     }
     return self;
 }

@@ -44,11 +44,16 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x41,
  *      sn   : 123,
  *
- *      currency : "RMB", // USD, USDT, ...
- *      amount   : 100.00
+ *      currency : "RMB",    // USD, USDT, ...
+ *      amount   : 100.00,
+ *      remitter : "{FROM}", // sender ID
+ *      remittee : "{TO}"    // receiver ID
  *  }
  */
 @protocol DIMTransferContent <DIMMoneyContent>
+
+@property (strong, nonatomic, nullable) id<MKMID> remitter;
+@property (strong, nonatomic, nullable) id<MKMID> remittee;
 
 @end
 

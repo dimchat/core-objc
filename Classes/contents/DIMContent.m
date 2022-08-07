@@ -35,7 +35,6 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMForwardContent.h"
 #import "DIMTextContent.h"
 #import "DIMFileContent.h"
 #import "DIMImageContent.h"
@@ -44,6 +43,9 @@
 #import "DIMWebpageContent.h"
 #import "DIMMoneyContent.h"
 #import "DIMTransferContent.h"
+#import "DIMArrayContent.h"
+#import "DIMCustomizedContent.h"
+#import "DIMForwardContent.h"
 
 #import "DIMCommand.h"
 #import "DIMHistoryCommand.h"
@@ -112,9 +114,14 @@ void DIMRegisterContentFactories(void) {
     DIMContentRegister(DKDContentType_History, hisParser);
     
     // Content Array
+    DIMContentRegisterClass(DKDContentType_Array, DIMArrayContent);
     
+    /*
     // Application Customized
-    
+    DIMContentRegisterClass(DKDContentType_Customized, DIMCustomizedContent);
+    DIMContentRegisterClass(DKDContentType_Application, DIMCustomizedContent);
+     */
+
     // Top-Secret
     DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
 

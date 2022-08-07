@@ -55,13 +55,15 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #define __DIM_CORE__ 1
 
 // Content
-#import <DIMCore/DIMForwardContent.h>
 #import <DIMCore/DIMTextContent.h>
 #import <DIMCore/DIMFileContent.h>
 #import <DIMCore/DIMImageContent.h>
 #import <DIMCore/DIMAudioContent.h>
 #import <DIMCore/DIMVideoContent.h>
 #import <DIMCore/DIMWebpageContent.h>
+#import <DIMCore/DIMArrayContent.h>
+#import <DIMCore/DIMCustomizedContent.h>
+#import <DIMCore/DIMForwardContent.h>
 
 // Commands
 #import <DIMCore/DIMCommand.h>

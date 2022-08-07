@@ -43,4 +43,28 @@
     return [self initWithType:DKDContentType_Transfer currency:currency amount:value];
 }
 
+- (nullable id<MKMID>)remitter {
+    return MKMIDFromString([self objectForKey:@"remitter"]);
+}
+
+- (void)setRemitter:(id<MKMID>)sender {
+    if (sender) {
+        [self setObject:[sender string] forKey:@"remitter"];
+    } else {
+        [self removeObjectForKey:@"remitter"];
+    }
+}
+
+- (nullable id<MKMID>)remittee {
+    return MKMIDFromString([self objectForKey:@"remittee"]);
+}
+
+- (void)setRemittee:(id<MKMID>)receiver {
+    if (receiver) {
+        [self setObject:[receiver string] forKey:@"remittee"];
+    } else {
+        [self removeObjectForKey:@"remittee"];
+    }
+}
+
 @end
