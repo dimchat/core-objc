@@ -37,7 +37,7 @@
 
 #import "DIMWebpageContent.h"
 
-@implementation DIMWebpageContent
+@implementation DIMPageContent
 
 - (instancetype)initWithURL:(NSURL *)url
                       title:(nullable NSString *)title

@@ -99,7 +99,7 @@ void DIMRegisterContentFactories(void) {
     DIMContentRegisterClass(DKDContentType_Video, DIMVideoContent);
     
     // Web Page
-    DIMContentRegisterClass(DKDContentType_Page, DIMWebpageContent);
+    DIMContentRegisterClass(DKDContentType_Page, DIMPageContent);
     
     // Money
     DIMContentRegisterClass(DKDContentType_Money, DIMMoneyContent);

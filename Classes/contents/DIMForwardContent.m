@@ -72,7 +72,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 
 @implementation DIMForwardContent
 
-- (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg {
+- (instancetype)initWithMessage:(id<DKDReliableMessage>)rMsg {
     NSAssert(rMsg, @"forward message cannot be empty");
     if (self = [self initWithType:DKDContentType_Forward]) {
         _forward = rMsg;
@@ -82,7 +82,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
     return self;
 }
 
-- (instancetype)initWithSecretMessages:(NSArray<id<DKDReliableMessage>> *)secrets {
+- (instancetype)initWithMessages:(NSArray<id<DKDReliableMessage>> *)secrets {
     NSAssert(secrets, @"secret messages cannot be empty");
     if (self = [self initWithType:DKDContentType_Forward]) {
         _forward = nil;

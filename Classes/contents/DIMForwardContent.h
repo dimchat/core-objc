@@ -70,8 +70,8 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 
 @interface DIMForwardContent : DKDContent <DIMForwardContent>
 
-- (instancetype)initWithForwardMessage:(id<DKDReliableMessage>)rMsg;
-- (instancetype)initWithSecretMessages:(NSArray<id<DKDReliableMessage>> *)secrets;
+- (instancetype)initWithMessage:(id<DKDReliableMessage>)rMsg;
+- (instancetype)initWithMessages:(NSArray<id<DKDReliableMessage>> *)secrets;
 
 @end
 
