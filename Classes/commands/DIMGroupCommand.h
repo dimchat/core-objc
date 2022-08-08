@@ -93,19 +93,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#pragma mark -
+#pragma mark - Invite group command
 
-@interface DIMInviteCommand : DIMGroupCommand
+@protocol DIMInviteCommand <DIMGroupCommand> @end
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
-                       member:(id<MKMID>)memberID;
-
-- (instancetype)initWithGroup:(id<MKMID>)groupID
-                      members:(NSArray<id<MKMID>> *)list;
-
-@end
-
-@interface DIMExpelCommand : DIMGroupCommand
+@interface DIMInviteCommand : DIMGroupCommand <DIMInviteCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                        member:(id<MKMID>)memberID;
@@ -115,28 +107,56 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMJoinCommand : DIMGroupCommand
+#pragma mark Expel group command
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
+@protocol DIMExpelCommand <DIMGroupCommand> @end
 
-@end
+@interface DIMExpelCommand : DIMGroupCommand <DIMExpelCommand>
 
-@interface DIMQuitCommand : DIMGroupCommand
-
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
-
-@end
-
-#pragma mark -
-
-@interface DIMResetGroupCommand : DIMGroupCommand
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                       member:(id<MKMID>)memberID;
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                       members:(NSArray<id<MKMID>> *)list;
 
 @end
 
-@interface DIMQueryGroupCommand : DIMGroupCommand
+#pragma mark Join group command
+
+@protocol DIMJoinCommand <DIMGroupCommand> @end
+
+@interface DIMJoinCommand : DIMGroupCommand <DIMJoinCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID;
+
+@end
+
+#pragma mark Quit group command
+
+@protocol DIMQuitCommand <DIMGroupCommand> @end
+
+@interface DIMQuitCommand : DIMGroupCommand <DIMQuitCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID;
+
+@end
+
+#pragma mark Reset group command
+
+@protocol DIMResetGroupCommand <DIMGroupCommand> @end
+
+@interface DIMResetGroupCommand : DIMGroupCommand <DIMResetGroupCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                      members:(NSArray<id<MKMID>> *)list;
+
+@end
+
+#pragma mark Query group command
+
+@protocol DIMQueryGroupCommand <DIMGroupCommand> @end
+
+@interface DIMQueryGroupCommand : DIMGroupCommand <DIMQueryGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
 
