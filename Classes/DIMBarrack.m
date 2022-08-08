@@ -58,12 +58,12 @@
 
 #pragma mark DIMEntityDelegate
 
-- (nullable DIMUser *)userWithID:(id<MKMID>)ID {
+- (nullable id<DIMUser>)userWithID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-- (nullable DIMGroup *)groupWithID:(id<MKMID>)ID {
+- (nullable id<DIMGroup>)groupWithID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }

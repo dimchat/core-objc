@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return contacts list (ID)
  */
-- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user;
+- (nullable NSArray<__kindof id<MKMID>> *)contactsOfUser:(id<MKMID>)user;
 
 /**
  *  Get user's public key for encryption
@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return public keys
  */
-- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user;
+- (nullable NSArray<__kindof id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user;
 
 /**
  *  Get user's private keys for decryption
@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return private keys
  */
-- (NSArray<id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user;
+- (NSArray<__kindof id<MKMDecryptKey>> *)privateKeysForDecryption:(id<MKMID>)user;
 
 /**
  *  Get user's private key for signature
@@ -140,11 +140,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)verifyVisa:(id<MKMVisa>)visa;
 
-@end
+//@end
+//
+//@protocol DIMLocalUser <DIMUser>
 
-@protocol DIMLocalUser <DIMUser>
-
-@property (readonly, strong, nonatomic) NSArray<id<MKMID>> *contacts;
+@property (readonly, strong, nonatomic) NSArray<__kindof id<MKMID>> *contacts;
 
 /**
  *  Sign data with user's private key
@@ -162,11 +162,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSData *)decrypt:(NSData *)ciphertext;
 
-- (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
+- (nullable __kindof id<MKMVisa>)signVisa:(id<MKMVisa>)visa;
 
 @end
 
-@interface DIMUser : DIMEntity <DIMUser, DIMLocalUser>
+@interface DIMUser : DIMEntity <DIMUser>
 
 @end
 

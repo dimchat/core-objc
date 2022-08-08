@@ -101,7 +101,7 @@
 
 #pragma mark -
 
-@implementation DIMInviteCommand
+@implementation DIMInviteGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
     return [self initWithCommandName:DIMGroupCommand_Invite group:groupID member:memberID];
@@ -113,7 +113,7 @@
 
 @end
 
-@implementation DIMExpelCommand
+@implementation DIMExpelGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
     return [self initWithCommandName:DIMGroupCommand_Expel group:groupID member:memberID];
@@ -125,7 +125,7 @@
 
 @end
 
-@implementation DIMJoinCommand
+@implementation DIMJoinGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommandName:DIMGroupCommand_Join group:groupID];
@@ -133,7 +133,7 @@
 
 @end
 
-@implementation DIMQuitCommand
+@implementation DIMQuitGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommandName:DIMGroupCommand_Quit group:groupID];

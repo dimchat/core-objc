@@ -151,10 +151,10 @@ void DIMRegisterCommandFactories(void) {
 
     // Group Commands
     DIMCommandFactoryRegister(@"group", [[DIMGroupCommandFactory alloc] init]);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Invite, DIMInviteCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Expel, DIMExpelCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Join, DIMJoinCommand);
-    DIMCommandFactoryRegisterClass(DIMGroupCommand_Quit, DIMQuitCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Invite, DIMInviteGroupCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Expel, DIMExpelGroupCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Join, DIMJoinGroupCommand);
+    DIMCommandFactoryRegisterClass(DIMGroupCommand_Quit, DIMQuitGroupCommand);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Query, DIMQueryGroupCommand);
     DIMCommandFactoryRegisterClass(DIMGroupCommand_Reset, DIMResetGroupCommand);
 }

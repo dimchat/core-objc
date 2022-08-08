@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user
  */
-- (nullable __kindof DIMUser *)userWithID:(id<MKMID>)ID;
+- (nullable __kindof id<DIMUser>)userWithID:(id<MKMID>)ID;
 
 /**
  *  Create group with ID
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable __kindof DIMGroup *)groupWithID:(id<MKMID>)ID;
+- (nullable __kindof id<DIMGroup>)groupWithID:(id<MKMID>)ID;
 
 @end
 
@@ -76,9 +76,9 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
-id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
-NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group);
+__kindof id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
+__kindof id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
+NSArray<__kindof id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
+typedef __kindof id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
 
 @interface DIMContentFactory : NSObject <DKDContentFactory>
 

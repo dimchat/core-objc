@@ -77,8 +77,8 @@
         // same object
         return YES;
     }
-    if ([object isKindOfClass:[DIMEntity class]]) {
-        object = [(DIMEntity *)object ID];
+    if ([object conformsToProtocol:@protocol(DIMEntity)]) {
+        object = [(id<DIMEntity>)object ID];
     }
     // check with ID
     return [_ID isEqual:object];

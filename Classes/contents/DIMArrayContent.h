@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Convert content list from dictionary array
  */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents);
+NSArray<__kindof id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents);
 
 /**
  *  Revert content list to dictionary array
@@ -59,13 +59,13 @@ NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
  */
 @protocol DIMArrayContent <DKDContent>
 
-@property (readonly, nonatomic) NSArray<id<DKDContent>> *contents;
+@property (readonly, nonatomic) NSArray<__kindof id<DKDContent>> *contents;
 
 @end
 
 @interface DIMArrayContent : DKDContent <DIMArrayContent>
 
-- (instancetype)initWithContents:(NSArray<id<DKDContent>> *)array;
+- (instancetype)initWithContents:(NSArray<__kindof id<DKDContent>> *)array;
 
 @end
 

@@ -44,8 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 // Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) id<MKMID> group;
 
-@property (readonly, strong, nonatomic, nullable) id<MKMID> member;
-@property (readonly, strong, nonatomic, nullable) NSArray<id<MKMID>> *members;
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMID> member;
+@property (readonly, strong, nonatomic, nullable) NSArray<__kindof id<MKMID>> *members;
 
 @end
 
@@ -95,9 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Invite group command
 
-@protocol DIMInviteCommand <DIMGroupCommand> @end
+@protocol DIMInviteGroupCommand <DIMGroupCommand> @end
 
-@interface DIMInviteCommand : DIMGroupCommand <DIMInviteCommand>
+@interface DIMInviteGroupCommand : DIMGroupCommand <DIMInviteGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                        member:(id<MKMID>)memberID;
@@ -109,9 +109,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Expel group command
 
-@protocol DIMExpelCommand <DIMGroupCommand> @end
+@protocol DIMExpelGroupCommand <DIMGroupCommand> @end
 
-@interface DIMExpelCommand : DIMGroupCommand <DIMExpelCommand>
+@interface DIMExpelGroupCommand : DIMGroupCommand <DIMExpelGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                        member:(id<MKMID>)memberID;
@@ -123,9 +123,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Join group command
 
-@protocol DIMJoinCommand <DIMGroupCommand> @end
+@protocol DIMJoinGroupCommand <DIMGroupCommand> @end
 
-@interface DIMJoinCommand : DIMGroupCommand <DIMJoinCommand>
+@interface DIMJoinGroupCommand : DIMGroupCommand <DIMJoinGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
 
@@ -133,9 +133,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Quit group command
 
-@protocol DIMQuitCommand <DIMGroupCommand> @end
+@protocol DIMQuitGroupCommand <DIMGroupCommand> @end
 
-@interface DIMQuitCommand : DIMGroupCommand <DIMQuitCommand>
+@interface DIMQuitGroupCommand : DIMGroupCommand <DIMQuitGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
 

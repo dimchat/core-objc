@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMDocumentCommand <DIMMetaCommand>
 
-@property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMDocument> document;
 
 // current signature string for querying document,
 // if this matched, the station will respond 304 (Not Modified)
