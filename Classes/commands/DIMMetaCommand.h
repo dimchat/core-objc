@@ -51,8 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMMetaCommand <DIMCommand>
 
-@property (readonly, strong, nonatomic) __kindof id<MKMID> ID;
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMMeta> meta;
+@property (readonly, strong, nonatomic) id<MKMID> ID;
+@property (readonly, strong, nonatomic, nullable) id<MKMMeta> meta;
 
 @end
 

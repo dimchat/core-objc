@@ -88,25 +88,29 @@
 
 - (id<MKMID>)founder {
     if (!_founder) {
-        NSAssert(self.dataSource, @"group data source not set yet");
-        _founder = [self.dataSource founderOfGroup:self.ID];
+        id<DIMGroupDataSource> delegate = (id<DIMGroupDataSource>)[self dataSource];
+        NSAssert(delegate, @"group data source not set yet");
+        _founder = [delegate founderOfGroup:self.ID];
     }
     return _founder;
 }
 
 - (id<MKMID>)owner {
-    NSAssert(self.dataSource, @"group data source not set yet");
-    return [self.dataSource ownerOfGroup:self.ID];
+    id<DIMGroupDataSource> delegate = (id<DIMGroupDataSource>)[self dataSource];
+    NSAssert(delegate, @"group data source not set yet");
+    return [delegate ownerOfGroup:self.ID];
 }
 
 - (NSArray<id<MKMID>> *)members {
-    NSAssert(self.dataSource, @"group data source not set yet");
-    return [self.dataSource membersOfGroup:self.ID];
+    id<DIMGroupDataSource> delegate = (id<DIMGroupDataSource>)[self dataSource];
+    NSAssert(delegate, @"group data source not set yet");
+    return [delegate membersOfGroup:self.ID];
 }
 
 - (NSArray<id<MKMID>> *)assistants {
-    NSAssert(self.dataSource, @"group data source not set yet");
-    return [self.dataSource assistantsOfGroup:self.ID];
+    id<DIMGroupDataSource> delegate = (id<DIMGroupDataSource>)[self dataSource];
+    NSAssert(delegate, @"group data source not set yet");
+    return [delegate assistantsOfGroup:self.ID];
 }
 
 @end

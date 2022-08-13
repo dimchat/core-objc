@@ -52,8 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMTransferContent <DIMMoneyContent>
 
-@property (strong, nonatomic, nullable) __kindof id<MKMID> remitter;
-@property (strong, nonatomic, nullable) __kindof id<MKMID> remittee;
+@property (strong, nonatomic, nullable) id<MKMID> remitter;
+@property (strong, nonatomic, nullable) id<MKMID> remittee;
 
 @end
 

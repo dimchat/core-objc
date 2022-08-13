@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Convert message list from dictionary array
  */
-NSArray<__kindof id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary *> *messages);
+NSArray<id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary *> *messages);
 
 /**
  *  Revert message list to dictionary array
@@ -61,10 +61,10 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 @protocol DIMForwardContent <DKDContent>
 
 // forward message
-@property (readonly, nonatomic) __kindof id<DKDReliableMessage> forward;
+@property (readonly, nonatomic) id<DKDReliableMessage> forward;
 
 // secret messages
-@property (readonly, nonatomic) NSArray<__kindof id<DKDReliableMessage>> *secrets;
+@property (readonly, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 

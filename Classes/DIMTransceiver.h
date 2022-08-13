@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Delegate for getting entity
  */
-@property (weak, nonatomic) __kindof id<DIMEntityDelegate> barrack;
+@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
 
 @end
 
@@ -66,25 +66,25 @@ NS_ASSUME_NONNULL_BEGIN
  * @param content - message content
  * @return exposed group ID
  */
-- (nullable __kindof id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
+- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
 
 //
 //  InstantMessage -> SecureMessage -> ReliableMessage -> Data
 //
-- (nullable __kindof id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
+- (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
 
-- (nullable __kindof id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
+- (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
 
 - (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
 
 //
 //  Data -> ReliableMessage -> SecureMessage -> InstantMessage
 //
-- (nullable __kindof id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
+- (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
 
-- (nullable __kindof id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
+- (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
 
-- (nullable __kindof id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
+- (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
 
 @end
 
@@ -104,19 +104,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 // NOTICE: override to check broadcast message before calling it
 // NOTICE: override to deliver to the receiver when catch exception "ReceiverError"
-- (NSArray<__kindof id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
 
-- (NSArray<__kindof id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg
-                                              withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg withMessage:(id<DKDReliableMessage>)rMsg;
 
 // NOTICE: override to save the received instant message
-- (NSArray<__kindof id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg
-                                                withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg withMessage:(id<DKDReliableMessage>)rMsg;
 
 // NOTICE: override to check group
 // NOTICE: override to filter the response
-- (NSArray<__kindof id<DKDContent>> *)processContent:(id<DKDContent>)content
-                                         withMessage:(id<DKDReliableMessage>)rMsg;
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content withMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

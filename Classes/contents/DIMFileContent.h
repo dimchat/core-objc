@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong, nonatomic, nullable) NSString *filename;
 
 // for decrypt file data after download from CDN
-@property (strong, nonatomic, nullable) __kindof id<MKMSymmetricKey> password;
+@property (strong, nonatomic, nullable) id<MKMSymmetricKey> password;
 
 @end
 

@@ -44,8 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 // Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) id<MKMID> group;
 
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMID> member;
-@property (readonly, strong, nonatomic, nullable) NSArray<__kindof id<MKMID>> *members;
+@property (readonly, strong, nonatomic, nullable) id<MKMID> member;
+@property (readonly, strong, nonatomic, nullable) NSArray<id<MKMID>> *members;
 
 @end
 

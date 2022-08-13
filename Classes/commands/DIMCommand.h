@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param command - command content
  * @return Command
  */
-- (nullable __kindof id<DIMCommand>)parseCommand:(NSDictionary *)command;
+- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command;
 
 @end
 
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-__kindof id<DIMCommandFactory> DIMCommandGetFactory(NSString *cmd);
+id<DIMCommandFactory> DIMCommandGetFactory(NSString *cmd);
 void DIMCommandSetFactory(NSString *cmd, id<DIMCommandFactory> factory);
 
 // get command name
@@ -103,7 +103,7 @@ NSString *DIMCommandGetName(NSDictionary *command);
 
 #pragma mark Command Factory
 
-typedef __kindof id<DIMCommand>_Nullable(^DIMCommandParserBlock)(NSDictionary *command);
+typedef id<DIMCommand>_Nullable(^DIMCommandParserBlock)(NSDictionary *command);
 
 @interface DIMCommandFactory : NSObject <DKDContentFactory, DIMCommandFactory>
 

@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - entity ID
  * @return Meta
  */
-- (nullable __kindof id<MKMMeta>)metaForID:(id<MKMID>)ID;
+- (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID;
 
 /**
  *  Get document for entity ID
@@ -56,24 +56,24 @@ NS_ASSUME_NONNULL_BEGIN
  * @param type - document type
  * @return Document
  */
-- (nullable __kindof id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type;
+- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type;
 
 @end
 
 @protocol DIMEntity <NSObject>
 
-@property (readonly, copy, nonatomic) __kindof id<MKMID> ID;     // name@address
+@property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
 
 @property (readonly, nonatomic) UInt8 type;    // Network ID
 
-@property (weak, nonatomic) __kindof id<DIMEntityDataSource> dataSource;
+@property (weak, nonatomic) id<DIMEntityDataSource> dataSource;
 
-@property (readonly, strong, nonatomic) __kindof id<MKMMeta> meta;
+@property (readonly, strong, nonatomic) id<MKMMeta> meta;
 
 /**
  *  Get entity document with type
  */
-- (nullable __kindof id<MKMDocument>)documentWithType:(nullable NSString *)type;
+- (nullable id<MKMDocument>)documentWithType:(nullable NSString *)type;
 
 @end
 

@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return fonder ID
  */
-- (nullable __kindof id<MKMID>)founderOfGroup:(id<MKMID>)group;
+- (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group;
 
 /**
  *  Get group owner
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return owner ID
  */
-- (nullable __kindof id<MKMID>)ownerOfGroup:(id<MKMID>)group;
+- (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group;
 
 /**
  *  Get group members list
@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return members list (ID)
  */
-- (nullable NSArray<__kindof id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
+- (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
 
 /**
  *  Get assistants for this group
@@ -71,22 +71,22 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return robot ID list
  */
-- (nullable NSArray<__kindof id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
+- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
 
 @end
 
 @protocol DIMGroup <DIMEntity>
 
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMBulletin> bulletin;
+@property (readonly, strong, nonatomic, nullable) id<MKMBulletin> bulletin;
 
-@property (readonly, strong, nonatomic) __kindof id<MKMID> founder;
-@property (readonly, strong, nonatomic) __kindof id<MKMID> owner;
+@property (readonly, strong, nonatomic) id<MKMID> founder;
+@property (readonly, strong, nonatomic) id<MKMID> owner;
 
 // NOTICE: the owner must be a member
 //         (usually the first one)
-@property (readonly, copy, nonatomic) NSArray<__kindof id<MKMID>> *members;
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *members;
 
-@property (readonly, copy, nonatomic) NSArray<__kindof id<MKMID>> *assistants;
+@property (readonly, copy, nonatomic) NSArray<id<MKMID>> *assistants;
 
 @end
 
