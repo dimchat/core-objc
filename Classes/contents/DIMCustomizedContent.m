@@ -39,8 +39,9 @@
 
 @implementation DIMCustomizedContent
 
-- (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act {
-    if (self = [self initWithType:DKDContentType_Customized]) {
+- (instancetype)initWithType:(DKDContentType)type
+                 application:(NSString *)app module:(NSString *)mod action:(NSString *)act {
+    if (self = [self initWithType:type]) {
         // App ID
         if (app) {
             [self setObject:app forKey:@"app"];
@@ -53,6 +54,14 @@
         if (act) {
             [self setObject:act forKey:@"act"];
         }
+    }
+    return self;
+}
+
+- (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act {
+    if (self = [self initWithType:DKDContentType_Customized
+                      application:app module:mod action:act]) {
+        //
     }
     return self;
 }

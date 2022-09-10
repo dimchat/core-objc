@@ -60,6 +60,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMCustomizedContent : DKDContent <DIMCustomizedContent>
 
+- (instancetype)initWithType:(DKDContentType)type
+                 application:(NSString *)app module:(NSString *)mod action:(NSString *)act;
+
 - (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act;
 
 @end

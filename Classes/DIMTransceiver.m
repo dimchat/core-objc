@@ -173,6 +173,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     // TODO: translate short keys
     //       'T' -> 'type'
     //       'N' -> 'sn'
+    //       'W' -> 'time'
     //       'G' -> 'group'
     return DKDContentFromDictionary(dict);
 }
