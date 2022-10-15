@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
 
-@property (readonly, nonatomic) UInt8 type;    // Network ID
+@property (readonly, nonatomic) MKMEntityType type;    // Network ID
 
 @property (weak, nonatomic) id<DIMEntityDataSource> dataSource;
 

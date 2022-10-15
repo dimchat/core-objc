@@ -97,7 +97,7 @@
     return _ID;
 }
 
-- (UInt8)type {
+- (MKMEntityType)type {
     return _ID.type;
 }
 

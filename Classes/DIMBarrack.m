@@ -182,7 +182,7 @@
     }
     
     // check group type
-    if (group.type == MKMNetwork_Polylogue) {
+    if (group.type == MKMEntityType_Group) {
         // Polylogue's owner is its founder
         return [self founderOfGroup:group];
     }
