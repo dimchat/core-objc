@@ -54,6 +54,17 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #if !defined(__DIM_CORE__)
 #define __DIM_CORE__ 1
 
+// Account
+#import <DIMCore/DIMAddressFactory.h>
+#import <DIMCore/DIMIDFactory.h>
+#import <DIMCore/DIMMeta.h>
+#import <DIMCore/DIMDocument.h>
+#import <DIMCore/DIMDocs.h>
+
+#import <DIMCore/DIMEntity.h>
+#import <DIMCore/DIMUser.h>
+#import <DIMCore/DIMGroup.h>
+
 // Message
 #import <DIMCore/DIMEnvelope.h>
 #import <DIMCore/DIMMessage.h>
@@ -84,10 +95,6 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMFactoryManager.h>
 
 // Core
-#import <DIMCore/DIMEntity.h>
-#import <DIMCore/DIMUser.h>
-#import <DIMCore/DIMGroup.h>
-
 #import <DIMCore/DIMBarrack.h>
 #import <DIMCore/DIMTransceiver.h>
 
