@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
-
 #import <DIMCore/DIMUser.h>
 #import <DIMCore/DIMGroup.h>
 

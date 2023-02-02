@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMCommand.h"
-
 #import "DIMBarrack.h"
 
 #import "DIMTransceiver.h"

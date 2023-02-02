@@ -39,6 +39,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  General Factory for Commands
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 @protocol DIMGeneralFactory <DKDGeneralFactory>
 
 #pragma mark Command

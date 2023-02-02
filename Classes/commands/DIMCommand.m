@@ -35,9 +35,6 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMMetaCommand.h"
-#import "DIMDocumentCommand.h"
-#import "DIMGroupCommand.h"
 #import "DIMFactoryManager.h"
 
 #import "DIMCommand.h"
@@ -63,9 +60,8 @@ id<DKDCommand> DKDCommandParse(id command) {
 
 - (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd {
     if (self = [self initWithType:type]) {
-        // TODO: modify after all server/clients support 'cmd'
         NSAssert(cmd.length > 0, @"command name cannot be empty");
-        [self setObject:cmd forKey:@"command"];
+        [self setObject:cmd forKey:@"cmd"];
     }
     return self;
 }

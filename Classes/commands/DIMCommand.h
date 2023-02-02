@@ -80,10 +80,6 @@ id<DKDCommand> DKDCommandParse(id command);
 } /* end of extern "C" */
 #endif
 
-//#define DKDCommandFromDictionary(dict)    DKDCommandParse(dict)
-//
-//#define DKDCommandRegister(cmd, factory)  DKDCommandSetFactory(cmd, factory)
-
 #pragma mark - Base Command
 
 @interface DIMCommand : DIMContent <DKDCommand>
