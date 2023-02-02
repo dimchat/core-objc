@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  DIMP : Decentralized Instant Messaging Protocol
+//  Dao-Ke-Dao: Universal Message Module
 //
 //                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
@@ -28,81 +28,83 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMImageContent.m
+//  DIMMessage.m
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/11/27.
+//  Created by Albert Moky on 2018/10/20.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import "DIMImageContent.h"
+#import "DIMMessage.h"
 
-@interface DIMContent (Hacking)
+@interface DIMMessage ()
 
-@property (nonatomic) DKDContentType type;
+@property (strong, nonatomic) id<DKDEnvelope> envelope;
 
 @end
 
-@interface DIMImageContent () {
-    
-    NSData *_thumbnail;
+@implementation DIMMessage
+
+@synthesize delegate;
+
+- (instancetype)init {
+    NSAssert(false, @"DON'T call me!");
+    NSDictionary *dict = nil;
+    return [self initWithDictionary:dict];
 }
 
-@end
-
-@implementation DIMImageContent
+/* designated initializer */
+- (instancetype)initWithEnvelope:(id<DKDEnvelope>)env {
+    NSAssert(env, @"envelope cannot be empty");
+    // share the same inner dictionary with envelope object
+    if (self = [super initWithDictionary:env.dictionary]) {
+        _envelope = env;
+    }
+    return self;
+}
 
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _thumbnail = nil;
+        _envelope = nil; // lazy
     }
     return self;
 }
 
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-        _thumbnail = nil;
+- (id)copyWithZone:(nullable NSZone *)zone {
+    DIMMessage *msg = [super copyWithZone:zone];
+    if (msg) {
+        msg.envelope = _envelope;
+        msg.delegate = self.delegate;
     }
     return self;
 }
 
-- (instancetype)initWithImageData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:name]) {
-        // change content type
-        self.type = DKDContentType_Image;
+- (id<DKDEnvelope>)envelope {
+    if (!_envelope) {
+        _envelope = DKDEnvelopeParse(self.dictionary);
     }
-    return self;
+    return _envelope;
 }
 
-- (NSData *)imageData {
-    return [self fileData];
+- (id<MKMID>)sender {
+    return [self.envelope sender];
 }
 
-- (void)setImageData:(NSData *)imageData {
-    [self setFileData:imageData];
+- (id<MKMID>)receiver {
+    return [self.envelope receiver];
 }
 
-- (nullable NSData *)thumbnail {
-    if (!_thumbnail) {
-        NSString *small = [self objectForKey:@"thumbnail"];
-        if ([small length] > 0) {
-            _thumbnail = MKMBase64Decode(small);
-        }
-    }
-    return _thumbnail;
+- (NSDate *)time {
+    return [self.envelope time];
 }
 
-- (void)setThumbnail:(NSData *)thumbnail {
-    if ([thumbnail length] > 0) {
-        [self setObject:MKMBase64Encode(thumbnail) forKey:@"thumbnail"];
-    } else {
-        [self removeObjectForKey:@"thumbnail"];
-    }
-    _thumbnail = thumbnail;
+- (id<MKMID>)group {
+    return [self.envelope group];
+}
+
+- (DKDContentType)type {
+    return [self.envelope type];
 }
 
 @end

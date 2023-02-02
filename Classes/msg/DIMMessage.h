@@ -1,6 +1,6 @@
 // license: https://mit-license.org
 //
-//  DIMP : Decentralized Instant Messaging Protocol
+//  Dao-Ke-Dao: Universal Message Module
 //
 //                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
@@ -28,39 +28,24 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMVideoContent.h
+//  DIMMessage.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/11/27.
+//  Created by Albert Moky on 2018/10/20.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMFileContent.h>
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Video message: {
- *      type : 0x16,
- *      sn   : 123,
- *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(video)
- *      snapshot : "...",     // base64_encode(smallImage)
- *      filename : "..."
- *  }
- */
-@protocol DKDVideoContent <DKDFileContent>
+@interface DIMMessage : MKMDictionary <DKDMessage>
 
-@property (strong, nonatomic) NSData *videoData;
-@property (strong, nonatomic, nullable) NSData *snapshot;
+- (instancetype)initWithDictionary:(NSDictionary *)dict
+NS_DESIGNATED_INITIALIZER;
 
-@end
-
-@interface DIMVideoContent : DIMFileContent <DKDVideoContent>
-
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name;
+- (instancetype)initWithEnvelope:(id<DKDEnvelope>)env
+NS_DESIGNATED_INITIALIZER;
 
 @end
 

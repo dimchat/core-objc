@@ -57,13 +57,13 @@ NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
  *      contents : [...]  // content array
  *  }
  */
-@protocol DIMArrayContent <DKDContent>
+@protocol DKDArrayContent <DKDContent>
 
 @property (readonly, nonatomic) NSArray<id<DKDContent>> *contents;
 
 @end
 
-@interface DIMArrayContent : DKDContent <DIMArrayContent>
+@interface DIMArrayContent : DIMContent <DKDArrayContent>
 
 - (instancetype)initWithContents:(NSArray<id<DKDContent>> *)array;
 

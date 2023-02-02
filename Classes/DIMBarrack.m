@@ -231,11 +231,11 @@ id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group) {
     if (!name) {
         // Consensus: the founder of group 'everyone@everywhere'
         //            'Albert Moky'
-        return MKMIDFromString(@"moky@anywhere");
+        return MKMIDParse(@"moky@anywhere");
     } else {
         // DISCUSS: who should be the founder of group 'xxx@everywhere'?
         //          'anyone@anywhere', or 'xxx.founder@anywhere'
-        return MKMIDFromString([name stringByAppendingString:@".founder@anywhere"]);
+        return MKMIDParse([name stringByAppendingString:@".founder@anywhere"]);
     }
 }
 
@@ -248,7 +248,7 @@ id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group) {
     } else {
         // DISCUSS: who should be the owner of group 'xxx@everywhere'?
         //          'anyone@anywhere', or 'xxx.owner@anywhere'
-        return MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
+        return MKMIDParse([name stringByAppendingString:@".owner@anywhere"]);
     }
 }
 
@@ -262,8 +262,8 @@ NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group) {
     } else {
         // DISCUSS: who should be the member of group 'xxx@everywhere'?
         //          'anyone@anywhere', or 'xxx.member@anywhere'
-        id<MKMID> owner = MKMIDFromString([name stringByAppendingString:@".owner@anywhere"]);
-        id<MKMID> member = MKMIDFromString([name stringByAppendingString:@".member@anywhere"]);
+        id<MKMID> owner = MKMIDParse([name stringByAppendingString:@".owner@anywhere"]);
+        id<MKMID> member = MKMIDParse([name stringByAppendingString:@".member@anywhere"]);
         [mArray addObject:owner];
         [mArray addObject:member];
     }

@@ -29,8 +29,20 @@
 		E95D4A0728A034EE00523488 /* DIMArrayContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E95D4A0528A034EE00523488 /* DIMArrayContent.m */; };
 		E95D4A0D28A03CD200523488 /* DIMCustomizedContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E95D4A0B28A03CD200523488 /* DIMCustomizedContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E95D4A0E28A03CD200523488 /* DIMCustomizedContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E95D4A0C28A03CD200523488 /* DIMCustomizedContent.m */; };
-		E97A219C257F883700313C5F /* DIMContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E97A219A257F883700313C5F /* DIMContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E97A219D257F883700313C5F /* DIMContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E97A219B257F883700313C5F /* DIMContent.m */; };
+		E964A119298B7D7300AC76F1 /* DIMContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E964A117298B7D7300AC76F1 /* DIMContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E964A11A298B7D7300AC76F1 /* DIMContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E964A118298B7D7300AC76F1 /* DIMContent.m */; };
+		E964A11D298B8F8600AC76F1 /* DIMFactoryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E964A11B298B8F8600AC76F1 /* DIMFactoryManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E964A11E298B8F8600AC76F1 /* DIMFactoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E964A11C298B8F8600AC76F1 /* DIMFactoryManager.m */; };
+		E966CD9A298AA54500FA9507 /* DIMEnvelope.m in Sources */ = {isa = PBXBuildFile; fileRef = E966CD97298AA54500FA9507 /* DIMEnvelope.m */; };
+		E966CD9B298AA54500FA9507 /* DIMEnvelope.h in Headers */ = {isa = PBXBuildFile; fileRef = E966CD98298AA54500FA9507 /* DIMEnvelope.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E966CDA2298AA5B500FA9507 /* DIMMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = E966CDA0298AA5B500FA9507 /* DIMMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E966CDA3298AA5B500FA9507 /* DIMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = E966CDA1298AA5B500FA9507 /* DIMMessage.m */; };
+		E966CDA6298AA5C400FA9507 /* DIMInstantMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = E966CDA4298AA5C400FA9507 /* DIMInstantMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E966CDA7298AA5C400FA9507 /* DIMInstantMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = E966CDA5298AA5C400FA9507 /* DIMInstantMessage.m */; };
+		E966CDAA298AA5D000FA9507 /* DIMSecureMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = E966CDA8298AA5D000FA9507 /* DIMSecureMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E966CDAB298AA5D000FA9507 /* DIMSecureMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = E966CDA9298AA5D000FA9507 /* DIMSecureMessage.m */; };
+		E966CDAE298AA5DD00FA9507 /* DIMReliableMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = E966CDAC298AA5DD00FA9507 /* DIMReliableMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E966CDAF298AA5DD00FA9507 /* DIMReliableMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = E966CDAD298AA5DD00FA9507 /* DIMReliableMessage.m */; };
 		E97E1374259B0D230016A68C /* DIMEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = E97E1372259B0D230016A68C /* DIMEntity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E97E1375259B0D230016A68C /* DIMEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = E97E1373259B0D230016A68C /* DIMEntity.m */; };
 		E97E137A259B0D420016A68C /* DIMUser.h in Headers */ = {isa = PBXBuildFile; fileRef = E97E1378259B0D420016A68C /* DIMUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -48,9 +60,9 @@
 		E9D71D4F25BAE48200773ED1 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
 		E9D71D5025BAE48200773ED1 /* DaoKeDao.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E9D71F1125BB2AE600773ED1 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */; };
-		E9DBDF24262833B2006151E0 /* DIMMoneyContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */; };
+		E9DBDF24262833B2006151E0 /* DIMMoneyContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9DBDF25262833B2006151E0 /* DIMMoneyContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBDF23262833B2006151E0 /* DIMMoneyContent.m */; };
-		E9DBDF2A26283644006151E0 /* DIMTransferContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF2826283644006151E0 /* DIMTransferContent.h */; };
+		E9DBDF2A26283644006151E0 /* DIMTransferContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF2826283644006151E0 /* DIMTransferContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9DBDF2B26283644006151E0 /* DIMTransferContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBDF2926283644006151E0 /* DIMTransferContent.m */; };
 		E9F3AA4621CBD02C009690F6 /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */; };
 		E9F3AA4B21CBD02C009690F6 /* DIMCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */; };
@@ -119,35 +131,47 @@
 		E9596515239107C800DAA870 /* DIMImageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMImageContent.h; sourceTree = "<group>"; };
 		E9596516239107C800DAA870 /* DIMFileContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMFileContent.m; sourceTree = "<group>"; };
 		E9596517239107C800DAA870 /* DIMWebpageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMWebpageContent.h; sourceTree = "<group>"; };
-		E95A80C42205FCD4007EA611 /* DIMGroupCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMGroupCommand.h; sourceTree = "<group>"; };
-		E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMGroupCommand.m; sourceTree = "<group>"; };
-		E95A80C922060142007EA611 /* DIMDocumentCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMDocumentCommand.h; sourceTree = "<group>"; };
-		E95A80CA22060142007EA611 /* DIMDocumentCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMDocumentCommand.m; sourceTree = "<group>"; };
+		E95A80C42205FCD4007EA611 /* DIMGroupCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMGroupCommand.h; sourceTree = "<group>"; };
+		E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMGroupCommand.m; sourceTree = "<group>"; };
+		E95A80C922060142007EA611 /* DIMDocumentCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMDocumentCommand.h; sourceTree = "<group>"; };
+		E95A80CA22060142007EA611 /* DIMDocumentCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMDocumentCommand.m; sourceTree = "<group>"; };
 		E95D4A0428A034EE00523488 /* DIMArrayContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMArrayContent.h; sourceTree = "<group>"; };
 		E95D4A0528A034EE00523488 /* DIMArrayContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMArrayContent.m; sourceTree = "<group>"; };
 		E95D4A0B28A03CD200523488 /* DIMCustomizedContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCustomizedContent.h; sourceTree = "<group>"; };
 		E95D4A0C28A03CD200523488 /* DIMCustomizedContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMCustomizedContent.m; sourceTree = "<group>"; };
-		E97A219A257F883700313C5F /* DIMContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMContent.h; sourceTree = "<group>"; };
-		E97A219B257F883700313C5F /* DIMContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMContent.m; sourceTree = "<group>"; };
-		E97E1372259B0D230016A68C /* DIMEntity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMEntity.h; sourceTree = "<group>"; };
-		E97E1373259B0D230016A68C /* DIMEntity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMEntity.m; sourceTree = "<group>"; };
-		E97E1378259B0D420016A68C /* DIMUser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMUser.h; sourceTree = "<group>"; };
-		E97E1379259B0D420016A68C /* DIMUser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMUser.m; sourceTree = "<group>"; };
-		E97E137C259B0D4C0016A68C /* DIMGroup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMGroup.h; sourceTree = "<group>"; };
-		E97E137D259B0D4C0016A68C /* DIMGroup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMGroup.m; sourceTree = "<group>"; };
+		E964A117298B7D7300AC76F1 /* DIMContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMContent.h; sourceTree = "<group>"; };
+		E964A118298B7D7300AC76F1 /* DIMContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMContent.m; sourceTree = "<group>"; };
+		E964A11B298B8F8600AC76F1 /* DIMFactoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMFactoryManager.h; sourceTree = "<group>"; };
+		E964A11C298B8F8600AC76F1 /* DIMFactoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMFactoryManager.m; sourceTree = "<group>"; };
+		E966CD97298AA54500FA9507 /* DIMEnvelope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMEnvelope.m; sourceTree = "<group>"; };
+		E966CD98298AA54500FA9507 /* DIMEnvelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMEnvelope.h; sourceTree = "<group>"; };
+		E966CDA0298AA5B500FA9507 /* DIMMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMessage.h; sourceTree = "<group>"; };
+		E966CDA1298AA5B500FA9507 /* DIMMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMessage.m; sourceTree = "<group>"; };
+		E966CDA4298AA5C400FA9507 /* DIMInstantMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMInstantMessage.h; sourceTree = "<group>"; };
+		E966CDA5298AA5C400FA9507 /* DIMInstantMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMInstantMessage.m; sourceTree = "<group>"; };
+		E966CDA8298AA5D000FA9507 /* DIMSecureMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMSecureMessage.h; sourceTree = "<group>"; };
+		E966CDA9298AA5D000FA9507 /* DIMSecureMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMSecureMessage.m; sourceTree = "<group>"; };
+		E966CDAC298AA5DD00FA9507 /* DIMReliableMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMReliableMessage.h; sourceTree = "<group>"; };
+		E966CDAD298AA5DD00FA9507 /* DIMReliableMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMReliableMessage.m; sourceTree = "<group>"; };
+		E97E1372259B0D230016A68C /* DIMEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMEntity.h; sourceTree = "<group>"; };
+		E97E1373259B0D230016A68C /* DIMEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMEntity.m; sourceTree = "<group>"; };
+		E97E1378259B0D420016A68C /* DIMUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMUser.h; sourceTree = "<group>"; };
+		E97E1379259B0D420016A68C /* DIMUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMUser.m; sourceTree = "<group>"; };
+		E97E137C259B0D4C0016A68C /* DIMGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMGroup.h; sourceTree = "<group>"; };
+		E97E137D259B0D4C0016A68C /* DIMGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMGroup.m; sourceTree = "<group>"; };
 		E9BBBD43223AA13500E6ACDA /* DIMTransceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTransceiver.h; sourceTree = "<group>"; };
 		E9BBBD44223AA13500E6ACDA /* DIMTransceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTransceiver.m; sourceTree = "<group>"; };
 		E9BBBD75223AB02600E6ACDA /* DIMBarrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMBarrack.h; sourceTree = "<group>"; };
 		E9BBBD76223AB02600E6ACDA /* DIMBarrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMBarrack.m; sourceTree = "<group>"; };
-		E9CF980F21FF548F0092DD8B /* DIMCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMCommand.h; sourceTree = "<group>"; };
-		E9CF981021FF548F0092DD8B /* DIMCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
-		E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMMetaCommand.h; sourceTree = "<group>"; };
-		E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMMetaCommand.m; sourceTree = "<group>"; };
+		E9CF980F21FF548F0092DD8B /* DIMCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCommand.h; sourceTree = "<group>"; };
+		E9CF981021FF548F0092DD8B /* DIMCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
+		E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMetaCommand.h; sourceTree = "<group>"; };
+		E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMetaCommand.m; sourceTree = "<group>"; };
 		E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMMoneyContent.h; sourceTree = "<group>"; };
-		E9DBDF23262833B2006151E0 /* DIMMoneyContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMMoneyContent.m; sourceTree = "<group>"; };
-		E9DBDF2826283644006151E0 /* DIMTransferContent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMTransferContent.h; sourceTree = "<group>"; };
-		E9DBDF2926283644006151E0 /* DIMTransferContent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMTransferContent.m; sourceTree = "<group>"; };
+		E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMoneyContent.h; sourceTree = "<group>"; };
+		E9DBDF23262833B2006151E0 /* DIMMoneyContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMoneyContent.m; sourceTree = "<group>"; };
+		E9DBDF2826283644006151E0 /* DIMTransferContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTransferContent.h; sourceTree = "<group>"; };
+		E9DBDF2926283644006151E0 /* DIMTransferContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMTransferContent.m; sourceTree = "<group>"; };
 		E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DIMCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F3AA4021CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9F3AA4521CBD02C009690F6 /* DIMCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DIMCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,8 +179,8 @@
 		E9F3AA4C21CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9F3AA5B21CBD03C009690F6 /* DIMCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCore.h; sourceTree = "<group>"; };
 		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
-		E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
-		E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
+		E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
+		E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,8 +207,8 @@
 		E959650B239107C800DAA870 /* contents */ = {
 			isa = PBXGroup;
 			children = (
-				E97A219A257F883700313C5F /* DIMContent.h */,
-				E97A219B257F883700313C5F /* DIMContent.m */,
+				E964A117298B7D7300AC76F1 /* DIMContent.h */,
+				E964A118298B7D7300AC76F1 /* DIMContent.m */,
 				E9596514239107C800DAA870 /* DIMTextContent.h */,
 				E959650E239107C800DAA870 /* DIMTextContent.m */,
 				E959650D239107C800DAA870 /* DIMFileContent.h */,
@@ -211,19 +235,38 @@
 			path = contents;
 			sourceTree = "<group>";
 		};
+		E966CD96298AA54500FA9507 /* msg */ = {
+			isa = PBXGroup;
+			children = (
+				E966CD98298AA54500FA9507 /* DIMEnvelope.h */,
+				E966CD97298AA54500FA9507 /* DIMEnvelope.m */,
+				E966CDA0298AA5B500FA9507 /* DIMMessage.h */,
+				E966CDA1298AA5B500FA9507 /* DIMMessage.m */,
+				E966CDA4298AA5C400FA9507 /* DIMInstantMessage.h */,
+				E966CDA5298AA5C400FA9507 /* DIMInstantMessage.m */,
+				E966CDA8298AA5D000FA9507 /* DIMSecureMessage.h */,
+				E966CDA9298AA5D000FA9507 /* DIMSecureMessage.m */,
+				E966CDAC298AA5DD00FA9507 /* DIMReliableMessage.h */,
+				E966CDAD298AA5DD00FA9507 /* DIMReliableMessage.m */,
+			);
+			path = msg;
+			sourceTree = "<group>";
+		};
 		E9CF980921FF53470092DD8B /* commands */ = {
 			isa = PBXGroup;
 			children = (
 				E9CF980F21FF548F0092DD8B /* DIMCommand.h */,
 				E9CF981021FF548F0092DD8B /* DIMCommand.m */,
-				E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */,
-				E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */,
 				E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */,
 				E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */,
 				E95A80C922060142007EA611 /* DIMDocumentCommand.h */,
 				E95A80CA22060142007EA611 /* DIMDocumentCommand.m */,
+				E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */,
+				E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */,
 				E95A80C42205FCD4007EA611 /* DIMGroupCommand.h */,
 				E95A80C52205FCD4007EA611 /* DIMGroupCommand.m */,
+				E964A11B298B8F8600AC76F1 /* DIMFactoryManager.h */,
+				E964A11C298B8F8600AC76F1 /* DIMFactoryManager.m */,
 			);
 			path = commands;
 			sourceTree = "<group>";
@@ -269,6 +312,7 @@
 		E9F3AA5821CBD03C009690F6 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E966CD96298AA54500FA9507 /* msg */,
 				E959650B239107C800DAA870 /* contents */,
 				E9CF980921FF53470092DD8B /* commands */,
 				E97E1372259B0D230016A68C /* DIMEntity.h */,
@@ -313,27 +357,33 @@
 			files = (
 				E959651C239107C800DAA870 /* DIMAudioContent.h in Headers */,
 				E9DBDF2A26283644006151E0 /* DIMTransferContent.h in Headers */,
+				E966CDA2298AA5B500FA9507 /* DIMMessage.h in Headers */,
 				E9596519239107C800DAA870 /* DIMFileContent.h in Headers */,
 				E9596523239107C800DAA870 /* DIMWebpageContent.h in Headers */,
 				E97E1374259B0D230016A68C /* DIMEntity.h in Headers */,
 				E959651E239107C800DAA870 /* DIMVideoContent.h in Headers */,
+				E964A119298B7D7300AC76F1 /* DIMContent.h in Headers */,
 				E97E137E259B0D4C0016A68C /* DIMGroup.h in Headers */,
 				E95D4A0D28A03CD200523488 /* DIMCustomizedContent.h in Headers */,
 				E9596520239107C800DAA870 /* DIMTextContent.h in Headers */,
 				E9596521239107C800DAA870 /* DIMImageContent.h in Headers */,
 				E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */,
 				E97E137A259B0D420016A68C /* DIMUser.h in Headers */,
+				E966CD9B298AA54500FA9507 /* DIMEnvelope.h in Headers */,
 				E9BBBD79223AB02600E6ACDA /* DIMBarrack.h in Headers */,
 				E9CF981121FF548F0092DD8B /* DIMCommand.h in Headers */,
 				E95D4A0628A034EE00523488 /* DIMArrayContent.h in Headers */,
 				E95A80CB22060142007EA611 /* DIMDocumentCommand.h in Headers */,
 				E95A80C62205FCD4007EA611 /* DIMGroupCommand.h in Headers */,
 				E9CF981921FF5BA40092DD8B /* DIMMetaCommand.h in Headers */,
+				E966CDA6298AA5C400FA9507 /* DIMInstantMessage.h in Headers */,
 				E9BBBD49223AA13500E6ACDA /* DIMTransceiver.h in Headers */,
+				E966CDAE298AA5DD00FA9507 /* DIMReliableMessage.h in Headers */,
 				E94740C324E2929700AED7F2 /* DIMForwardContent.h in Headers */,
+				E964A11D298B8F8600AC76F1 /* DIMFactoryManager.h in Headers */,
 				E9DBDF24262833B2006151E0 /* DIMMoneyContent.h in Headers */,
 				E9F3AA7221CBD03C009690F6 /* DIMCore.h in Headers */,
-				E97A219C257F883700313C5F /* DIMContent.h in Headers */,
+				E966CDAA298AA5D000FA9507 /* DIMSecureMessage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,19 +511,25 @@
 			files = (
 				E9596522239107C800DAA870 /* DIMFileContent.m in Sources */,
 				E95D4A0E28A03CD200523488 /* DIMCustomizedContent.m in Sources */,
-				E97A219D257F883700313C5F /* DIMContent.m in Sources */,
 				E9DBDF25262833B2006151E0 /* DIMMoneyContent.m in Sources */,
 				E95D4A0728A034EE00523488 /* DIMArrayContent.m in Sources */,
 				E9DBDF2B26283644006151E0 /* DIMTransferContent.m in Sources */,
 				E959651D239107C800DAA870 /* DIMWebpageContent.m in Sources */,
+				E966CDA7298AA5C400FA9507 /* DIMInstantMessage.m in Sources */,
 				E9BBBD7A223AB02600E6ACDA /* DIMBarrack.m in Sources */,
 				E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */,
 				E959651B239107C800DAA870 /* DIMImageContent.m in Sources */,
+				E966CDAF298AA5DD00FA9507 /* DIMReliableMessage.m in Sources */,
+				E964A11E298B8F8600AC76F1 /* DIMFactoryManager.m in Sources */,
+				E966CD9A298AA54500FA9507 /* DIMEnvelope.m in Sources */,
 				E95A80CC22060142007EA611 /* DIMDocumentCommand.m in Sources */,
 				E95A80C72205FCD4007EA611 /* DIMGroupCommand.m in Sources */,
 				E94740C424E2929700AED7F2 /* DIMForwardContent.m in Sources */,
+				E966CDA3298AA5B500FA9507 /* DIMMessage.m in Sources */,
 				E9BBBD4A223AA13500E6ACDA /* DIMTransceiver.m in Sources */,
+				E966CDAB298AA5D000FA9507 /* DIMSecureMessage.m in Sources */,
 				E97E137F259B0D4C0016A68C /* DIMGroup.m in Sources */,
+				E964A11A298B7D7300AC76F1 /* DIMContent.m in Sources */,
 				E959651F239107C800DAA870 /* DIMAudioContent.m in Sources */,
 				E97E137B259B0D420016A68C /* DIMUser.m in Sources */,
 				E97E1375259B0D230016A68C /* DIMEntity.m in Sources */,

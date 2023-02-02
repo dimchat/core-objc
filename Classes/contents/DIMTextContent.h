@@ -47,13 +47,13 @@ NS_ASSUME_NONNULL_BEGIN
  *      text : "..."
  *  }
  */
-@protocol DIMTextContent <DKDContent>
+@protocol DKDTextContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSString *text;
 
 @end
 
-@interface DIMTextContent : DKDContent <DIMTextContent>
+@interface DIMTextContent : DIMContent <DKDTextContent>
 
 - (instancetype)initWithText:(NSString *)text;
 

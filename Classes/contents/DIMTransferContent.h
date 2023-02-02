@@ -35,7 +35,7 @@
 //  Copyright © 2021 DIM Group. All rights reserved.
 //
 
-#import "DIMMoneyContent.h"
+#import <DIMCore/DIMMoneyContent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -50,14 +50,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      remittee : "{TO}"    // receiver ID
  *  }
  */
-@protocol DIMTransferContent <DIMMoneyContent>
+@protocol DKDTransferContent <DKDMoneyContent>
 
 @property (strong, nonatomic, nullable) id<MKMID> remitter;
 @property (strong, nonatomic, nullable) id<MKMID> remittee;
 
 @end
 
-@interface DIMTransferContent : DIMMoneyContent <DIMTransferContent>
+@interface DIMTransferContent : DIMMoneyContent <DKDTransferContent>
 
 @end
 

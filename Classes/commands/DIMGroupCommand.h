@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMGroupCommand <DIMHistoryCommand>
+@protocol DKDGroupCommand <DKDHistoryCommand>
 
 // Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) id<MKMID> group;
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMGroupCommand : DIMHistoryCommand <DIMGroupCommand>
+@interface DIMGroupCommand : DIMHistoryCommand <DKDGroupCommand>
 
 /*
  *  Group history command: {
@@ -95,9 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Invite group command
 
-@protocol DIMInviteGroupCommand <DIMGroupCommand> @end
+@protocol DKDInviteGroupCommand <DKDGroupCommand> @end
 
-@interface DIMInviteGroupCommand : DIMGroupCommand <DIMInviteGroupCommand>
+@interface DIMInviteGroupCommand : DIMGroupCommand <DKDInviteGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                        member:(id<MKMID>)memberID;
@@ -109,9 +109,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Expel group command
 
-@protocol DIMExpelGroupCommand <DIMGroupCommand> @end
+@protocol DKDExpelGroupCommand <DKDGroupCommand> @end
 
-@interface DIMExpelGroupCommand : DIMGroupCommand <DIMExpelGroupCommand>
+@interface DIMExpelGroupCommand : DIMGroupCommand <DKDExpelGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                        member:(id<MKMID>)memberID;
@@ -123,9 +123,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Join group command
 
-@protocol DIMJoinGroupCommand <DIMGroupCommand> @end
+@protocol DKDJoinGroupCommand <DKDGroupCommand> @end
 
-@interface DIMJoinGroupCommand : DIMGroupCommand <DIMJoinGroupCommand>
+@interface DIMJoinGroupCommand : DIMGroupCommand <DKDJoinGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
 
@@ -133,9 +133,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Quit group command
 
-@protocol DIMQuitGroupCommand <DIMGroupCommand> @end
+@protocol DKDQuitGroupCommand <DKDGroupCommand> @end
 
-@interface DIMQuitGroupCommand : DIMGroupCommand <DIMQuitGroupCommand>
+@interface DIMQuitGroupCommand : DIMGroupCommand <DKDQuitGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
 
@@ -143,9 +143,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Reset group command
 
-@protocol DIMResetGroupCommand <DIMGroupCommand> @end
+@protocol DKDResetGroupCommand <DKDGroupCommand> @end
 
-@interface DIMResetGroupCommand : DIMGroupCommand <DIMResetGroupCommand>
+@interface DIMResetGroupCommand : DIMGroupCommand <DKDResetGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                       members:(NSArray<id<MKMID>> *)list;
@@ -154,17 +154,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Query group command
 
-@protocol DIMQueryGroupCommand <DIMGroupCommand> @end
+@protocol DKDQueryGroupCommand <DKDGroupCommand> @end
 
-@interface DIMQueryGroupCommand : DIMGroupCommand <DIMQueryGroupCommand>
+@interface DIMQueryGroupCommand : DIMGroupCommand <DKDQueryGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID;
-
-@end
-
-#pragma mark - Creation
-
-@interface DIMGroupCommandFactory : DIMHistoryCommandFactory
 
 @end
 

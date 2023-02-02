@@ -49,11 +49,11 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // command parameters
  *  }
  */
-@protocol DIMHistoryCommand <DIMCommand>
+@protocol DKDHistoryCommand <DKDCommand>
 
 @end
 
-@interface DIMHistoryCommand : DIMCommand <DIMHistoryCommand>
+@interface DIMHistoryCommand : DIMCommand <DKDHistoryCommand>
 
 - (instancetype)initWithHistoryName:(NSString *)cmd;
 
@@ -81,11 +81,5 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMGroupCommand_Hire       @"hire"
 #define DIMGroupCommand_Fire       @"fire"
 #define DIMGroupCommand_Resign     @"resign"
-
-#pragma mark - Creation
-
-@interface DIMHistoryCommandFactory : DIMCommandFactory
-
-@end
 
 NS_ASSUME_NONNULL_END

@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      desc  : "..."
  *  }
  */
-@protocol DIMPageContent <DKDContent>
+@protocol DKDPageContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSURL *URL;
 @property (readonly, strong, nonatomic, nullable) NSString *title;
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMPageContent : DKDContent <DIMPageContent>
+@interface DIMPageContent : DIMContent <DKDPageContent>
 
 - (instancetype)initWithURL:(NSURL *)url
                       title:(nullable NSString *)title

@@ -35,96 +35,98 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
-#import "DIMTextContent.h"
-#import "DIMFileContent.h"
-#import "DIMImageContent.h"
-#import "DIMAudioContent.h"
-#import "DIMVideoContent.h"
-#import "DIMWebpageContent.h"
-#import "DIMMoneyContent.h"
-#import "DIMTransferContent.h"
-#import "DIMArrayContent.h"
-#import "DIMCustomizedContent.h"
-#import "DIMForwardContent.h"
-
-#import "DIMCommand.h"
-#import "DIMHistoryCommand.h"
-
 #import "DIMContent.h"
 
-@interface DIMContentFactory () {
+@interface DIMContent () {
     
-    DIMContentParserBlock _block;
+    id<MKMID> _group;
 }
+
+@property (nonatomic) DKDContentType type;
+@property (nonatomic) unsigned long serialNumber;
+@property (strong, nonatomic, nullable) NSDate *time;
 
 @end
 
-@implementation DIMContentFactory
+@implementation DIMContent
 
 - (instancetype)init {
-    if (self = [super init]) {
-        _block = NULL;
+    NSAssert(false, @"DON'T call me");
+    return [self initWithType:0];
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    NSDate *now = [[NSDate alloc] init];
+    NSUInteger sn = DKDInstantMessageGenerateSerialNumber(type, now);
+    NSDictionary *dict = @{@"type":@(type),
+                           @"sn"  :@(sn),
+                           @"time":@([now timeIntervalSince1970]),
+                           };
+    if (self = [super initWithDictionary:dict]) {
+        _type = type;
+        _serialNumber = sn;
+        _time = now;
+        
+        _group = nil;
     }
     return self;
 }
 
-- (instancetype)initWithBlock:(DIMContentParserBlock)block {
-    if (self = [super init]) {
-        _block = block;
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy load
+        _type = 0;
+        _serialNumber = 0;
+        _time = nil;
+        _group = nil;
     }
     return self;
 }
 
-- (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
-    if (_block == NULL) {
-        return [[DKDContent alloc] initWithDictionary:content];
+- (id)copyWithZone:(nullable NSZone *)zone {
+    DIMContent *content = [super copyWithZone:zone];
+    if (content) {
+        content.type = _type;
+        content.serialNumber = _serialNumber;
+        content.time = _time;
+        //content.group = _group;
     }
-    return _block(content);
+    return content;
+}
+
+- (DKDContentType)type {
+    if (_type == 0) {
+        _type = [self uint8ForKey:@"type"];
+    }
+    return _type;
+}
+
+- (unsigned long)serialNumber {
+    if (_serialNumber == 0) {
+        _serialNumber = [self ulongForKey:@"sn"];
+    }
+    return _serialNumber;
+}
+
+- (nullable NSDate *)time {
+    if (!_time) {
+        _time = [self dateForKey:@"time"];
+    }
+    return _time;
+}
+
+- (nullable id<MKMID>)group {
+    if (!_group) {
+        _group = MKMIDParse([self objectForKey:@"group"]);
+    }
+    return _group;
+}
+
+- (void)setGroup:(nullable id<MKMID>)group {
+    [self setString:group forKey:@"group"];
+    _group = group;
 }
 
 @end
-
-void DIMRegisterContentFactories(void) {
-    
-    // Text
-    DIMContentRegisterClass(DKDContentType_Text, DIMTextContent);
-    
-    // File
-    DIMContentRegisterClass(DKDContentType_File, DIMFileContent);
-    // Image
-    DIMContentRegisterClass(DKDContentType_Image, DIMImageContent);
-    // Audio
-    DIMContentRegisterClass(DKDContentType_Audio, DIMAudioContent);
-    // Video
-    DIMContentRegisterClass(DKDContentType_Video, DIMVideoContent);
-    
-    // Web Page
-    DIMContentRegisterClass(DKDContentType_Page, DIMPageContent);
-    
-    // Money
-    DIMContentRegisterClass(DKDContentType_Money, DIMMoneyContent);
-    DIMContentRegisterClass(DKDContentType_Transfer, DIMTransferContent);
-    
-    // Command
-    id<DKDContentFactory> cmdParser = [[DIMCommandFactory alloc] init];
-    DIMContentRegister(DKDContentType_Command, cmdParser);
-    
-    // History Command
-    id<DKDContentFactory> hisParser = [[DIMHistoryCommandFactory alloc] init];
-    DIMContentRegister(DKDContentType_History, hisParser);
-    
-    // Content Array
-    DIMContentRegisterClass(DKDContentType_Array, DIMArrayContent);
-    
-    /*
-    // Application Customized
-    DIMContentRegisterClass(DKDContentType_Customized, DIMCustomizedContent);
-    DIMContentRegisterClass(DKDContentType_Application, DIMCustomizedContent);
-     */
-
-    // Top-Secret
-    DIMContentRegisterClass(DKDContentType_Forward, DIMForwardContent);
-
-    // unknown content type
-    DIMContentRegisterClass(0, DKDContent);
-}

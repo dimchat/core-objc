@@ -96,13 +96,13 @@
 
 - (id<MKMID>)ID {
     id string = [self objectForKey:@"ID"];
-    return MKMIDFromString(string);
+    return MKMIDParse(string);
 }
 
 - (nullable id<MKMMeta>)meta {
     if (!_meta) {
         id dict = [self objectForKey:@"meta"];
-        _meta = MKMMetaFromDictionary(dict);
+        _meta = MKMMetaParse(dict);
     }
     return _meta;
 }

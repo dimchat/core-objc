@@ -54,13 +54,23 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #if !defined(__DIM_CORE__)
 #define __DIM_CORE__ 1
 
+// Message
+#import <DIMCore/DIMEnvelope.h>
+#import <DIMCore/DIMMessage.h>
+#import <DIMCore/DIMInstantMessage.h>
+#import <DIMCore/DIMSecureMessage.h>
+#import <DIMCore/DIMReliableMessage.h>
+
 // Content
+#import <DIMCore/DIMContent.h>
 #import <DIMCore/DIMTextContent.h>
 #import <DIMCore/DIMFileContent.h>
 #import <DIMCore/DIMImageContent.h>
 #import <DIMCore/DIMAudioContent.h>
 #import <DIMCore/DIMVideoContent.h>
 #import <DIMCore/DIMWebpageContent.h>
+#import <DIMCore/DIMMoneyContent.h>
+#import <DIMCore/DIMTransferContent.h>
 #import <DIMCore/DIMArrayContent.h>
 #import <DIMCore/DIMCustomizedContent.h>
 #import <DIMCore/DIMForwardContent.h>
@@ -71,8 +81,9 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMDocumentCommand.h>
 #import <DIMCore/DIMHistoryCommand.h>
 #import <DIMCore/DIMGroupCommand.h>
+#import <DIMCore/DIMFactoryManager.h>
 
-//-
+// Core
 #import <DIMCore/DIMEntity.h>
 #import <DIMCore/DIMUser.h>
 #import <DIMCore/DIMGroup.h>

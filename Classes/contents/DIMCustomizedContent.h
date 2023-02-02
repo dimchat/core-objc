@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra : info         // action parameters
  *  }
  */
-@protocol DIMCustomizedContent <DKDContent>
+@protocol DKDCustomizedContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSString *application;
 @property (readonly, strong, nonatomic) NSString *module;
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMCustomizedContent : DKDContent <DIMCustomizedContent>
+@interface DIMCustomizedContent : DIMContent <DKDCustomizedContent>
 
 - (instancetype)initWithType:(DKDContentType)type
                  application:(NSString *)app module:(NSString *)mod action:(NSString *)act;

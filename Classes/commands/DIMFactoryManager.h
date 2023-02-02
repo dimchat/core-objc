@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2018 Albert Moky
+// Copyright (c) 2023 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,39 +28,42 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMVideoContent.h
+//  DIMFactoryManager.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/11/27.
-//  Copyright © 2018 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2023/2/2.
+//  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMFileContent.h>
+#import <DIMCore/DIMCommand.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Video message: {
- *      type : 0x16,
- *      sn   : 123,
- *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(video)
- *      snapshot : "...",     // base64_encode(smallImage)
- *      filename : "..."
- *  }
- */
-@protocol DKDVideoContent <DKDFileContent>
+@protocol DIMGeneralFactory <DKDGeneralFactory>
 
-@property (strong, nonatomic) NSData *videoData;
-@property (strong, nonatomic, nullable) NSData *snapshot;
+#pragma mark Command
+
+- (void)setCommandFactory:(id<DKDCommandFactory>)factory forName:(NSString *)cmd;
+- (nullable id<DKDCommandFactory>)commandFactoryForName:(NSString *)cmd;
+
+// get command name: "cmd"
+- (nullable NSString *)getCmd:(NSDictionary<NSString *, id> *)command;
+
+- (nullable id<DKDCommand>)parseCommand:(id)command;
 
 @end
 
-@interface DIMVideoContent : DIMFileContent <DKDVideoContent>
+#pragma mark -
 
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name;
+@interface DIMGeneralFactory : DKDGeneralFactory <DIMGeneralFactory>
+
+@end
+
+@interface DIMFactoryManager : NSObject
+
+@property(strong, nonatomic) id<DIMGeneralFactory> generalFactory;
+
++ (instancetype)sharedManager;
 
 @end
 

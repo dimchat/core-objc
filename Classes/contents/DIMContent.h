@@ -39,51 +39,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef id<DKDContent>_Nullable(^DIMContentParserBlock)(NSDictionary *content);
+@interface DIMContent : MKMDictionary <DKDContent>
 
-@interface DIMContentFactory : NSObject <DKDContentFactory>
+- (instancetype)initWithDictionary:(NSDictionary *)dict NS_DESIGNATED_INITIALIZER;
 
-@property (readonly, nonatomic, nullable) DIMContentParserBlock block;
-
-- (instancetype)initWithBlock:(DIMContentParserBlock)block;
+- (instancetype)initWithType:(DKDContentType)type NS_DESIGNATED_INITIALIZER;
 
 @end
-
-#define DIMContentFactoryWithBlock(block)                                      \
-            [[DIMContentFactory alloc] initWithBlock:(block)]                  \
-                                   /* EOF 'DIMContentFactoryWithBlock(block)' */
-
-#define DIMContentFactoryWithClass(clazz)                                      \
-            DIMContentFactoryWithBlock(^(NSDictionary *content) {              \
-                return [[clazz alloc] initWithDictionary:content];             \
-            })                                                                 \
-                                   /* EOF 'DIMContentFactoryWithClass(clazz)' */
-
-#define DIMContentRegister(type, factory)                                      \
-            DKDContentRegister(type, factory)                                  \
-                                   /* EOF 'DIMContentRegister(type, factory)' */
-
-#define DIMContentRegisterBlock(type, block)                                   \
-            DIMContentRegister((type),                                         \
-                                      DIMContentFactoryWithBlock(block))       \
-                                /* EOF 'DIMContentRegisterBlock(type, block)' */
-
-#define DIMContentRegisterClass(type, clazz)                                   \
-            DIMContentRegister((type),                                         \
-                                      DIMContentFactoryWithClass(clazz))       \
-                                /* EOF 'DIMContentRegisterClass(type, clazz)' */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- *  Register Core Content Factories
- */
-void DIMRegisterContentFactories(void);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
 
 NS_ASSUME_NONNULL_END

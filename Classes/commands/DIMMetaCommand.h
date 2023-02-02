@@ -49,14 +49,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      meta    : {...}   // When meta is empty, means query meta for ID
  *  }
  */
-@protocol DIMMetaCommand <DIMCommand>
+@protocol DKDMetaCommand <DKDCommand>
 
 @property (readonly, strong, nonatomic) id<MKMID> ID;
 @property (readonly, strong, nonatomic, nullable) id<MKMMeta> meta;
 
 @end
 
-@interface DIMMetaCommand : DIMCommand <DIMMetaCommand>
+@interface DIMMetaCommand : DIMCommand <DKDMetaCommand>
 
 - (instancetype)initWithCommandName:(NSString *)name
                                  ID:(id<MKMID>)ID

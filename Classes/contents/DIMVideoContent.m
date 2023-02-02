@@ -37,7 +37,7 @@
 
 #import "DIMVideoContent.h"
 
-@interface DKDContent (Hacking)
+@interface DIMContent (Hacking)
 
 @property (nonatomic) DKDContentType type;
 

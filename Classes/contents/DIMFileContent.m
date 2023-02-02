@@ -142,7 +142,7 @@
 
 - (nullable id<MKMSymmetricKey>)password {
     id pwd = [self objectForKey:@"password"];
-    return MKMSymmetricKeyFromDictionary(pwd);
+    return MKMSymmetricKeyParse(pwd);
 }
 
 @end

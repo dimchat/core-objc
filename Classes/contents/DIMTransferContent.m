@@ -44,7 +44,7 @@
 }
 
 - (nullable id<MKMID>)remitter {
-    return MKMIDFromString([self objectForKey:@"remitter"]);
+    return MKMIDParse([self objectForKey:@"remitter"]);
 }
 
 - (void)setRemitter:(id<MKMID>)sender {
@@ -56,7 +56,7 @@
 }
 
 - (nullable id<MKMID>)remittee {
-    return MKMIDFromString([self objectForKey:@"remittee"]);
+    return MKMIDParse([self objectForKey:@"remittee"]);
 }
 
 - (void)setRemittee:(id<MKMID>)receiver {

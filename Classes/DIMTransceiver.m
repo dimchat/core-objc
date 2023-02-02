@@ -145,7 +145,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     //       'V' -> 'iv'
     //       'M' -> 'mode'
     //       'P' -> 'padding'
-    return MKMSymmetricKeyFromDictionary(dict);
+    return MKMSymmetricKeyParse(dict);
 }
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
@@ -175,7 +175,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     //       'N' -> 'sn'
     //       'W' -> 'time'
     //       'G' -> 'group'
-    return DKDContentFromDictionary(dict);
+    return DKDContentParse(dict);
 }
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg

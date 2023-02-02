@@ -114,7 +114,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 - (id<DKDReliableMessage>)forward {
     if (!_forward) {
         id info = [self objectForKey:@"forward"];
-        _forward = DKDReliableMessageFromDictionary(info);
+        _forward = DKDReliableMessageParse(info);
     }
     return _forward;
 }

@@ -58,7 +58,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
  *      secrets : [...]  // reliable (secure + certified) messages
  *  }
  */
-@protocol DIMForwardContent <DKDContent>
+@protocol DKDForwardContent <DKDContent>
 
 // forward message
 @property (readonly, nonatomic) id<DKDReliableMessage> forward;
@@ -68,7 +68,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 
 @end
 
-@interface DIMForwardContent : DKDContent <DIMForwardContent>
+@interface DIMForwardContent : DIMContent <DKDForwardContent>
 
 - (instancetype)initWithMessage:(id<DKDReliableMessage>)rMsg;
 - (instancetype)initWithMessages:(NSArray<id<DKDReliableMessage>> *)secrets;

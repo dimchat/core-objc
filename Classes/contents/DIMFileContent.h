@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename : "..."
  *  }
  */
-@protocol DIMFileContent <DKDContent>
+@protocol DKDFileContent <DKDContent>
 
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMFileContent : DKDContent <DIMFileContent>
+@interface DIMFileContent : DIMContent <DKDFileContent>
 
 - (instancetype)initWithFileData:(NSData *)data
                         filename:(nullable NSString *)name;

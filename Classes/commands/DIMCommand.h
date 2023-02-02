@@ -48,14 +48,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra   : info   // command parameters
  *  }
  */
-@protocol DIMCommand <DKDContent>
+@protocol DKDCommand <DKDContent>
 
 // command name
 @property (readonly, strong, nonatomic) NSString *cmd;
 
 @end
 
-@protocol DIMCommandFactory <NSObject>
+@protocol DKDCommandFactory <NSObject>
 
 /**
  *  Parse map object to command
@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param command - command content
  * @return Command
  */
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command;
+- (nullable id<DKDCommand>)parseCommand:(NSDictionary *)command;
 
 @end
 
@@ -71,23 +71,22 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-id<DIMCommandFactory> DIMCommandGetFactory(NSString *cmd);
-void DIMCommandSetFactory(NSString *cmd, id<DIMCommandFactory> factory);
+id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
+void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
-// get command name
-NSString *DIMCommandGetName(NSDictionary *command);
+id<DKDCommand> DKDCommandParse(id command);
 
 #ifdef __cplusplus
 } /* end of extern "C" */
 #endif
 
-#define DIMCommandFromDictionary(dict)    DIMCommandParse(dict)
-
-#define DIMCommandRegister(cmd, factory)  DIMCommandSetFactory(cmd, factory)
+//#define DKDCommandFromDictionary(dict)    DKDCommandParse(dict)
+//
+//#define DKDCommandRegister(cmd, factory)  DKDCommandSetFactory(cmd, factory)
 
 #pragma mark - Base Command
 
-@interface DIMCommand : DKDContent <DIMCommand>
+@interface DIMCommand : DIMContent <DKDCommand>
 
 - (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd;
 
@@ -100,54 +99,5 @@ NSString *DIMCommandGetName(NSDictionary *command);
 // command names
 #define DIMCommand_Meta      @"meta"
 #define DIMCommand_Document  @"document"
-
-#pragma mark Command Factory
-
-typedef id<DIMCommand>_Nullable(^DIMCommandParserBlock)(NSDictionary *command);
-
-@interface DIMCommandFactory : NSObject <DKDContentFactory, DIMCommandFactory>
-
-@property (readonly, nonatomic, nullable) DIMCommandParserBlock block;
-
-- (instancetype)initWithBlock:(DIMCommandParserBlock)block;
-
-@end
-
-#define DIMCommandFactoryWithBlock(block)                                      \
-            [[DIMCommandFactory alloc] initWithBlock:(block)]                  \
-                                   /* EOF 'DIMCommandFactoryWithBlock(block)' */
-
-#define DIMCommandFactoryWithClass(clazz)                                      \
-            DIMCommandFactoryWithBlock(^(NSDictionary *command) {              \
-                return [[clazz alloc] initWithDictionary:command];             \
-            })                                                                 \
-                                   /* EOF 'DIMCommandFactoryWithClass(clazz)' */
-
-#define DIMCommandFactoryRegister(name, factory)                               \
-            DIMCommandRegister(name, factory)                                  \
-                            /* EOF 'DIMCommandFactoryRegister(name, factory)' */
-
-#define DIMCommandFactoryRegisterBlock(name, block)                            \
-            DIMCommandFactoryRegister((name),                                  \
-                                      DIMCommandFactoryWithBlock(block))       \
-                         /* EOF 'DIMCommandFactoryRegisterBlock(name, block)' */
-
-#define DIMCommandFactoryRegisterClass(name, clazz)                            \
-            DIMCommandFactoryRegister((name),                                  \
-                                      DIMCommandFactoryWithClass(clazz))       \
-                         /* EOF 'DIMCommandFactoryRegisterClass(name, clazz)' */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- *  Register Core Command Factories
- */
-void DIMRegisterCommandFactories(void);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
 
 NS_ASSUME_NONNULL_END

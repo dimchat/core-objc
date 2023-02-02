@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      document  : {...}       // when profile is empty, means query for ID
  *  }
  */
-@protocol DIMDocumentCommand <DIMMetaCommand>
+@protocol DKDDocumentCommand <DKDMetaCommand>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
 
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMDocumentCommand : DIMMetaCommand <DIMDocumentCommand>
+@interface DIMDocumentCommand : DIMMetaCommand <DKDDocumentCommand>
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta

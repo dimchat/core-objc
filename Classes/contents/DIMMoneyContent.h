@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      amount   : 100.00
  *  }
  */
-@protocol DIMMoneyContent <DKDContent>
+@protocol DKDMoneyContent <DKDContent>
 
 @property (readonly, strong, nonatomic) NSString *currency;
 
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMMoneyContent : DKDContent <DIMMoneyContent>
+@interface DIMMoneyContent : DIMContent <DKDMoneyContent>
 
 - (instancetype)initWithType:(DKDContentType)type currency:(NSString *)currency amount:(float)value;
 

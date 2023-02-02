@@ -86,7 +86,7 @@
 }
 
 - (nullable id<MKMID>)member {
-    return MKMIDFromString([self objectForKey:@"member"]);
+    return MKMIDParse([self objectForKey:@"member"]);
 }
 
 - (nullable NSArray<id<MKMID>> *)members {
@@ -155,29 +155,6 @@
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID {
     return [self initWithCommandName:DIMGroupCommand_Query group:groupID];
-}
-
-@end
-
-#pragma mark - Creation
-
-@implementation DIMGroupCommandFactory
-
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
-    if (self.block == NULL) {
-        return [[DIMGroupCommand alloc] initWithDictionary:command];
-    }
-    return self.block(command);
-}
-
-- (nullable id<DKDContent>)parseContent:(NSDictionary *)content {
-    // get factory by command name
-    NSString *cmd = DIMCommandGetName(content);
-    id<DIMCommandFactory> parser = DIMCommandGetFactory(cmd);
-    if (!parser) {
-        parser = self;
-    }
-    return [parser parseCommand:content];
 }
 
 @end

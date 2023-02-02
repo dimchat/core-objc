@@ -103,7 +103,7 @@
 - (nullable id<MKMDocument>)document {
     if (!_document) {
         id dict = [self objectForKey:@"document"];
-        _document = MKMDocumentFromDictionary(dict);
+        _document = MKMDocumentParse(dict);
     }
     return _document;
 }

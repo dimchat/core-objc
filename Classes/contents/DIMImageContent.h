@@ -50,14 +50,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename  : "..."
  *  }
  */
-@protocol DIMImageContent <DIMFileContent>
+@protocol DKDImageContent <DKDFileContent>
 
 @property (strong, nonatomic) NSData *imageData;
 @property (strong, nonatomic, nullable) NSData *thumbnail;
 
 @end
 
-@interface DIMImageContent : DIMFileContent <DIMImageContent>
+@interface DIMImageContent : DIMFileContent <DKDImageContent>
 
 - (instancetype)initWithImageData:(NSData *)data
                          filename:(nullable NSString *)name;

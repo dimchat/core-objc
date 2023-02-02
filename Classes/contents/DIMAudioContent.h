@@ -50,14 +50,14 @@ NS_ASSUME_NONNULL_BEGIN
  *      filename : "..."
  *  }
  */
-@protocol DIMAudioContent <DIMFileContent>
+@protocol DKDAudioContent <DKDFileContent>
 
 @property (strong, nonatomic) NSData *audioData;
 @property (strong, nonatomic, nullable) NSString *text;
 
 @end
 
-@interface DIMAudioContent : DIMFileContent <DIMAudioContent>
+@interface DIMAudioContent : DIMFileContent <DKDAudioContent>
 
 - (instancetype)initWithAudioData:(NSData *)data
                          filename:(nullable NSString *)name;

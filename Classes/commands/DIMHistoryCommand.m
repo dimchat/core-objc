@@ -62,16 +62,3 @@
 }
 
 @end
-
-#pragma mark - Creation
-
-@implementation DIMHistoryCommandFactory
-
-- (nullable id<DIMCommand>)parseCommand:(NSDictionary *)command {
-    if (self.block == NULL) {
-        return [[DIMHistoryCommand alloc] initWithDictionary:command];
-    }
-    return self.block(command);
-}
-
-@end
