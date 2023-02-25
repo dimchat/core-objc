@@ -87,11 +87,11 @@
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    DIMMetaCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.meta = _meta;
+    DIMMetaCommand *content = [super copyWithZone:zone];
+    if (content) {
+        content.meta = _meta;
     }
-    return command;
+    return content;
 }
 
 - (id<MKMID>)ID {

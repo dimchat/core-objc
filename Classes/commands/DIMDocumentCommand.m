@@ -93,11 +93,11 @@
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    DIMDocumentCommand *command = [super copyWithZone:zone];
-    if (command) {
-        command.document = _document;
+    DIMDocumentCommand *content = [super copyWithZone:zone];
+    if (content) {
+        content.document = _document;
     }
-    return command;
+    return content;
 }
 
 - (nullable id<MKMDocument>)document {

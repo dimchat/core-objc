@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      cmd     : "join",      // or quit
+ *      command : "join",      // or quit
  *      group   : "{GROUP_ID}",
  *  }
  */
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      cmd     : "invite",      // or expel
+ *      command : "invite",      // or expel
  *      group   : "{GROUP_ID}",
  *      member  : "{MEMBER_ID}",
  *  }
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      cmd     : "invite",      // or expel
+ *      command : "invite",      // or expel
  *      group   : "{GROUP_ID}",
  *      members : ["{MEMBER_ID}", ],
  *  }

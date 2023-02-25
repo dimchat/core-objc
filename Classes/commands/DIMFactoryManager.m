@@ -88,20 +88,20 @@ static DIMFactoryManager *s_manager = nil;
     return [_commandFactories objectForKey:cmd];
 }
 
-- (nullable NSString *)getCmd:(NSDictionary<NSString *,id> *)command {
-    return [command objectForKey:@"cmd"];
+- (nullable NSString *)getCmd:(NSDictionary<NSString *,id> *)content {
+    return [content objectForKey:@"command"];
 }
 
-- (nullable id<DKDCommand>)parseCommand:(id)command {
-    if (!command) {
+- (nullable id<DKDCommand>)parseCommand:(id)content {
+    if (!content) {
         return nil;
-    } else if ([command conformsToProtocol:@protocol(DKDCommand)]) {
-        return (id<DKDCommand>)command;
+    } else if ([content conformsToProtocol:@protocol(DKDCommand)]) {
+        return (id<DKDCommand>)content;
     }
-    NSDictionary<NSString *, id> *info = MKMGetMap(command);
-    NSAssert([info isKindOfClass:[NSDictionary class]], @"command error: %@", command);
+    NSDictionary<NSString *, id> *info = MKMGetMap(content);
+    NSAssert([info isKindOfClass:[NSDictionary class]], @"command error: %@", content);
     NSString *cmd = [self getCmd:info];
-    NSAssert(cmd, @"command name not found: %@", command);
+    NSAssert(cmd, @"command name not found: %@", content);
 
     // get factory by command name
     id<DKDCommandFactory> factory = [self commandFactoryForName:cmd];
@@ -111,7 +111,7 @@ static DIMFactoryManager *s_manager = nil;
         //NSAssert(type > 0, @"content type error: %@", content);
 
         factory = (id<DKDCommandFactory>)[self contentFactoryForType:type];
-        NSAssert(factory, @"cannot parse command: %@", command);
+        NSAssert(factory, @"cannot parse command: %@", content);
     }
     return [factory parseCommand:info];
 }

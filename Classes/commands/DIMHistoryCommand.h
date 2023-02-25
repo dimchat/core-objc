@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x89,
  *      sn   : 123,
  *
- *      cmd     : "...", // command name
+ *      command : "...", // command name
  *      time    : 0,     // timestamp
  *      extra   : info   // command parameters
  *  }

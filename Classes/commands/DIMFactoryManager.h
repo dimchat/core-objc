@@ -50,10 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setCommandFactory:(id<DKDCommandFactory>)factory forName:(NSString *)cmd;
 - (nullable id<DKDCommandFactory>)commandFactoryForName:(NSString *)cmd;
 
-// get command name: "cmd"
-- (nullable NSString *)getCmd:(NSDictionary<NSString *, id> *)command;
+// get command name
+- (nullable NSString *)getCmd:(NSDictionary<NSString *, id> *)content;
 
-- (nullable id<DKDCommand>)parseCommand:(id)command;
+- (nullable id<DKDCommand>)parseCommand:(id)content;
 
 @end
 

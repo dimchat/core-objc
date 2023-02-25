@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x88,
  *      sn   : 123,
  *
- *      cmd     : "...", // command name
+ *      command : "...", // command name
  *      extra   : info   // command parameters
  *  }
  */
@@ -60,10 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Parse map object to command
  *
- * @param command - command content
+ * @param content - command content
  * @return Command
  */
-- (nullable id<DKDCommand>)parseCommand:(NSDictionary *)command;
+- (nullable id<DKDCommand>)parseCommand:(NSDictionary *)content;
 
 @end
 
@@ -74,7 +74,7 @@ extern "C" {
 id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
-id<DKDCommand> DKDCommandParse(id command);
+id<DKDCommand> DKDCommandParse(id content);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

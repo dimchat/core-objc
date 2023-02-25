@@ -44,10 +44,11 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x88,
  *      sn   : 123,
  *
- *      cmd       : "document", // command name
+ *      command   : "document", // command name
  *      ID        : "{ID}",     // entity ID
  *      meta      : {...},      // only for handshaking with new friend
- *      document  : {...}       // when profile is empty, means query for ID
+ *      document  : {...},      // when profile is empty, means query for ID
+ *      signature : "..."       // old document's signature for querying
  *  }
  */
 @protocol DKDDocumentCommand <DKDMetaCommand>

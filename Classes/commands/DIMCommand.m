@@ -49,9 +49,9 @@ void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory) {
     [man.generalFactory setCommandFactory:factory forName:cmd];
 }
 
-id<DKDCommand> DKDCommandParse(id command) {
+id<DKDCommand> DKDCommandParse(id content) {
     DIMFactoryManager *man = [DIMFactoryManager sharedManager];
-    return [man.generalFactory parseCommand:command];
+    return [man.generalFactory parseCommand:content];
 }
 
 #pragma mark - Base Command
@@ -61,7 +61,7 @@ id<DKDCommand> DKDCommandParse(id command) {
 - (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd {
     if (self = [self initWithType:type]) {
         NSAssert(cmd.length > 0, @"command name cannot be empty");
-        [self setObject:cmd forKey:@"cmd"];
+        [self setObject:cmd forKey:@"command"];
     }
     return self;
 }
@@ -74,7 +74,7 @@ id<DKDCommand> DKDCommandParse(id command) {
 }
 
 - (NSString *)cmd {
-    return [self stringForKey:@"cmd"];
+    return [self stringForKey:@"command"];
 }
 
 @end
