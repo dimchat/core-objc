@@ -67,9 +67,6 @@
 		E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CF981021FF548F0092DD8B /* DIMCommand.m */; };
 		E9CF981921FF5BA40092DD8B /* DIMMetaCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9CF981A21FF5BA40092DD8B /* DIMMetaCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */; };
-		E9D71D4F25BAE48200773ED1 /* DaoKeDao.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; };
-		E9D71D5025BAE48200773ED1 /* DaoKeDao.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E9D71F1125BB2AE600773ED1 /* MingKeMing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */; };
 		E9DBDF24262833B2006151E0 /* DIMMoneyContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9DBDF25262833B2006151E0 /* DIMMoneyContent.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBDF23262833B2006151E0 /* DIMMoneyContent.m */; };
 		E9DBDF2A26283644006151E0 /* DIMTransferContent.h in Headers */ = {isa = PBXBuildFile; fileRef = E9DBDF2826283644006151E0 /* DIMTransferContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -89,27 +86,6 @@
 			remoteGlobalIDString = E9F3AA3B21CBD02C009690F6;
 			remoteInfo = DIMCore;
 		};
-		E9F3AB9821D077D3009690F6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9F3A9B121CBC160009690F6;
-			remoteInfo = DaoKeDao;
-		};
-		E9F3AB9A21D077D3009690F6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E9F3A9BA21CBC160009690F6;
-			remoteInfo = DaoKeDaoTests;
-		};
-		E9F3AC2F21D23A10009690F6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E9F3A9B021CBC160009690F6;
-			remoteInfo = DaoKeDao;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -119,7 +95,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E9D71D5025BAE48200773ED1 /* DaoKeDao.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,7 +162,6 @@
 		E9CF981021FF548F0092DD8B /* DIMCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMCommand.m; sourceTree = "<group>"; };
 		E9CF981721FF5BA40092DD8B /* DIMMetaCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMetaCommand.h; sourceTree = "<group>"; };
 		E9CF981821FF5BA40092DD8B /* DIMMetaCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMetaCommand.m; sourceTree = "<group>"; };
-		E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MingKeMing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DBDF22262833B2006151E0 /* DIMMoneyContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMMoneyContent.h; sourceTree = "<group>"; };
 		E9DBDF23262833B2006151E0 /* DIMMoneyContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMMoneyContent.m; sourceTree = "<group>"; };
 		E9DBDF2826283644006151E0 /* DIMTransferContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMTransferContent.h; sourceTree = "<group>"; };
@@ -198,7 +172,6 @@
 		E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCoreTests.m; sourceTree = "<group>"; };
 		E9F3AA4C21CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9F3AA5B21CBD03C009690F6 /* DIMCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMCore.h; sourceTree = "<group>"; };
-		E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = DaoKeDao.xcodeproj; path = "../../dkd-objc/DaoKeDao/DaoKeDao.xcodeproj"; sourceTree = "<group>"; };
 		E9FC8E2322B92EE80013FCD3 /* DIMHistoryCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIMHistoryCommand.h; sourceTree = "<group>"; };
 		E9FC8E2422B92EE80013FCD3 /* DIMHistoryCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIMHistoryCommand.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,8 +181,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E9D71F1125BB2AE600773ED1 /* MingKeMing.framework in Frameworks */,
-				E9D71D4F25BAE48200773ED1 /* DaoKeDao.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,7 +288,6 @@
 		E9F3AA3221CBD02C009690F6 = {
 			isa = PBXGroup;
 			children = (
-				E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */,
 				E9F3AA5821CBD03C009690F6 /* Classes */,
 				E9F3AA3E21CBD02C009690F6 /* DIMCore */,
 				E9F3AA4921CBD02C009690F6 /* DIMCoreTests */,
@@ -372,18 +342,8 @@
 		E9F3AA9621CBD1E5009690F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9D71F1025BB2AE600773ED1 /* MingKeMing.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E9F3AB9321D077D2009690F6 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */,
-				E9F3AB9B21D077D3009690F6 /* DaoKeDaoTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -446,7 +406,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E9F3AC3021D23A10009690F6 /* PBXTargetDependency */,
 			);
 			name = DIMCore;
 			productName = DIMCore;
@@ -499,12 +458,6 @@
 			mainGroup = E9F3AA3221CBD02C009690F6;
 			productRefGroup = E9F3AA3D21CBD02C009690F6 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = E9F3AB9321D077D2009690F6 /* Products */;
-					ProjectRef = E9F3AB9221D077D2009690F6 /* DaoKeDao.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				E9F3AA3B21CBD02C009690F6 /* DIMCore */,
@@ -512,23 +465,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		E9F3AB9921D077D3009690F6 /* DaoKeDao.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = DaoKeDao.framework;
-			remoteRef = E9F3AB9821D077D3009690F6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E9F3AB9B21D077D3009690F6 /* DaoKeDaoTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = DaoKeDaoTests.xctest;
-			remoteRef = E9F3AB9A21D077D3009690F6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E9F3AA3A21CBD02C009690F6 /* Resources */ = {
@@ -603,11 +539,6 @@
 			isa = PBXTargetDependency;
 			target = E9F3AA3B21CBD02C009690F6 /* DIMCore */;
 			targetProxy = E9F3AA4721CBD02C009690F6 /* PBXContainerItemProxy */;
-		};
-		E9F3AC3021D23A10009690F6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = DaoKeDao;
-			targetProxy = E9F3AC2F21D23A10009690F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -745,7 +676,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = DIMCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -772,7 +703,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = DIMCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
