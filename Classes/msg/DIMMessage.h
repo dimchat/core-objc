@@ -39,6 +39,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Base Message
+ */
 @interface DIMMessage : MKMDictionary <DKDMessage>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict

@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  6. public key for visa verification
  *     meta.key only
  */
-@protocol DIMUserDataSource <DIMEntityDataSource>
+@protocol MKMUserDataSource <MKMEntityDataSource>
 
 /**
  *  Get contacts list
@@ -117,7 +117,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol DIMUser <DIMEntity>
+@protocol MKMUser <MKMEntity>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMVisa> visa;
 
@@ -142,7 +142,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //@end
 //
-//@protocol DIMLocalUser <DIMUser>
+//@protocol MKMLocalUser <MKMUser>
 
 @property (readonly, strong, nonatomic) NSArray<id<MKMID>> *contacts;
 
@@ -166,7 +166,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMUser : DIMEntity <DIMUser>
+/**
+ *  Base User
+ */
+@interface DIMUser : DIMEntity <MKMUser>
 
 @end
 

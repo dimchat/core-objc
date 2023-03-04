@@ -39,6 +39,7 @@
 
 @implementation DIMBarrack
 
+// private
 - (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user {
     id<MKMDocument> doc = [self documentForID:user type:MKMDocument_Visa];
     if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
@@ -50,25 +51,26 @@
     return nil;
 }
 
+// private
 - (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user {
     id<MKMMeta> meta = [self metaForID:user];
     //NSAssert(meta, @"failed to get meta for ID: %@", user);
     return meta.key;
 }
 
-#pragma mark DIMEntityDelegate
+#pragma mark MKMEntityDelegate
 
-- (nullable id<DIMUser>)userWithID:(id<MKMID>)ID {
+- (nullable id<MKMUser>)userWithID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-- (nullable id<DIMGroup>)groupWithID:(id<MKMID>)ID {
+- (nullable id<MKMGroup>)groupWithID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
-#pragma mark DIMEntityDataSource
+#pragma mark MKMEntityDataSource
 
 - (nullable id<MKMMeta>)metaForID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
@@ -80,7 +82,7 @@
     return nil;
 }
 
-#pragma mark DIMUserDataSource
+#pragma mark MKMUserDataSource
 
 - (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
     NSAssert(false, @"implement me!");
@@ -137,7 +139,7 @@
     return nil;
 }
 
-#pragma mark DIMGroupDataSource
+#pragma mark MKMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     // check broadcast group
@@ -217,6 +219,7 @@
 
 #pragma mark - Broadcast Group
 
+// group seed
 static inline NSString *id_name(id<MKMID> group) {
     NSString *name = [group name];
     NSUInteger len = [name length];

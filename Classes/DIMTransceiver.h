@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Delegate for getting entity
  */
-@property (weak, nonatomic) id<DIMEntityDelegate> barrack;
+@property (weak, nonatomic) id<MKMEntityDelegate> barrack;
 
 @end
 

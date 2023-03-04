@@ -40,7 +40,7 @@
 @interface DIMEntity () {
     
     id<MKMID> _ID;
-    __weak id<DIMEntityDataSource> _dataSource;
+    __weak id<MKMEntityDataSource> _dataSource;
 }
 
 @end
@@ -77,8 +77,8 @@
         // same object
         return YES;
     }
-    if ([object conformsToProtocol:@protocol(DIMEntity)]) {
-        object = [(id<DIMEntity>)object ID];
+    if ([object conformsToProtocol:@protocol(MKMEntity)]) {
+        object = [(id<MKMEntity>)object ID];
     }
     // check with ID
     return [_ID isEqual:object];
@@ -101,11 +101,11 @@
     return _ID.type;
 }
 
-- (id<DIMEntityDataSource>)dataSource {
+- (id<MKMEntityDataSource>)dataSource {
     return _dataSource;
 }
 
-- (void)setDataSource:(id<DIMEntityDataSource>)dataSource {
+- (void)setDataSource:(id<MKMEntityDataSource>)dataSource {
     _dataSource = dataSource;
 }
 

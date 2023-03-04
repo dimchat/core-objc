@@ -40,7 +40,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDelegate <NSObject>
+@protocol MKMEntityDelegate <NSObject>
 
 /**
  *  Create user with ID
@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user
  */
-- (nullable id<DIMUser>)userWithID:(id<MKMID>)ID;
+- (nullable id<MKMUser>)userWithID:(id<MKMID>)ID;
 
 /**
  *  Create group with ID
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable id<DIMGroup>)groupWithID:(id<MKMID>)ID;
+- (nullable id<MKMGroup>)groupWithID:(id<MKMID>)ID;
 
 @end
 
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
  */
-@interface DIMBarrack : NSObject <DIMEntityDelegate, DIMUserDataSource, DIMGroupDataSource>
+@interface DIMBarrack : NSObject <MKMEntityDelegate, MKMUserDataSource, MKMGroupDataSource>
 
 @end
 

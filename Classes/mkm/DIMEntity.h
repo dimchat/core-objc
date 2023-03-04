@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMEntityDataSource <NSObject>
+@protocol MKMEntityDataSource <NSObject>
 
 /**
  *  Get meta for entity ID
@@ -60,13 +60,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol DIMEntity <NSObject>
+@protocol MKMEntity <NSObject>
 
 @property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
 
 @property (readonly, nonatomic) MKMEntityType type;    // Network ID
 
-@property (weak, nonatomic) id<DIMEntityDataSource> dataSource;
+@property (weak, nonatomic) id<MKMEntityDataSource> dataSource;
 
 @property (readonly, strong, nonatomic) id<MKMMeta> meta;
 
@@ -77,7 +77,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMEntity : NSObject <DIMEntity, NSCopying>
+/**
+ *  Base Entity
+ */
+@interface DIMEntity : NSObject <MKMEntity, NSCopying>
 
 - (instancetype)initWithID:(id<MKMID>)ID NS_DESIGNATED_INITIALIZER;
 

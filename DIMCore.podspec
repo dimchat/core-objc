@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint dkd-objc.podspec' to ensure this is a
+# Be sure to run `pod lib lint core-objc.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name                  = 'DIMCore'
-    s.version               = '0.6.0'
+    s.version               = '0.6.1'
     s.summary               = 'Decentralized Instant Messaging Protocol'
     s.description           = <<-DESC
             Decentralized Instant Messaging Protocol (Objective-C)

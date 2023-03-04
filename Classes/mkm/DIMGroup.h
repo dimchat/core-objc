@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol DIMGroupDataSource <DIMEntityDataSource>
+@protocol MKMGroupDataSource <MKMEntityDataSource>
 
 /**
  *  Get group founder
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol DIMGroup <DIMEntity>
+@protocol MKMGroup <MKMEntity>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMBulletin> bulletin;
 
@@ -90,7 +90,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface DIMGroup : DIMEntity <DIMGroup>
+/**
+ *  Base Group
+ */
+@interface DIMGroup : DIMEntity <MKMGroup>
 
 @end
 

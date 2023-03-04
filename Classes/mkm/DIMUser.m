@@ -61,7 +61,7 @@
 }
 
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature {
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     // NOTICE: I suggest using the private key paired with meta.key to sign message
     //         so here should return the meta.key
@@ -76,7 +76,7 @@
 }
 
 - (NSData *)encrypt:(NSData *)plaintext {
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     // NOTICE: meta.key will never changed, so use visa.key to encrypt
     //         is the better way
@@ -101,7 +101,7 @@
 }
 
 - (NSArray<id<MKMID>> *)contacts {
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     return [delegate contactsOfUser:self.ID];
 }
@@ -111,7 +111,7 @@
         // visa ID not match
         return nil;
     }
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     id<MKMSignKey> SK = [delegate privateKeyForVisaSignature:self.ID];
     NSAssert(SK, @"failed to get visa sign key for user: %@", self.ID);
@@ -120,7 +120,7 @@
 }
 
 - (NSData *)sign:(NSData *)data {
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     // NOTICE: I suggest use the private key which paired to visa.key
     //         to sign message
@@ -130,7 +130,7 @@
 }
 
 - (nullable NSData *)decrypt:(NSData *)ciphertext {
-    id<DIMUserDataSource> delegate = (id<DIMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
     NSAssert(delegate, @"user data source not set yet");
     // NOTICE: if you provide a public key in visa for encryption
     //         here you should return the private key paired with visa.key

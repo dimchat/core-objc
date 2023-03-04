@@ -49,7 +49,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 
 @implementation DIMTransceiver
 
-- (id<DIMEntityDelegate>)barrack {
+- (id<MKMEntityDelegate>)barrack {
     NSAssert(_barrack, @"barrack not set yet!");
     return _barrack;
 }
@@ -96,7 +96,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
                  forReceiver:(id<MKMID>)receiver {
     NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
     // TODO: make sure the receiver's public key exists
-    id<DIMUser> contact = [self.barrack userWithID:receiver];
+    id<MKMUser> contact = [self.barrack userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
     // encrypt with receiver's public key
     return [contact encrypt:data];
@@ -124,7 +124,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
     // decrypt key data with the receiver/group member's private key
     id<MKMID> ID = sMsg.receiver;
-    id<DIMUser> user = [self.barrack userWithID:ID];
+    id<MKMUser> user = [self.barrack userWithID:ID];
     NSAssert(user, @"failed to get decrypt keys: %@", ID);
     return [user decrypt:key];
 }
@@ -179,7 +179,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                     signData:(NSData *)data
                    forSender:(id<MKMID>)sender {
-    id<DIMUser> user = [self.barrack userWithID:sender];
+    id<MKMUser> user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
@@ -200,7 +200,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
      verifyData:(NSData *)data
   withSignature:(NSData *)signature
       forSender:(id<MKMID>)sender {
-    id<DIMUser> user = [self.barrack userWithID:sender];
+    id<MKMUser> user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];
 }
