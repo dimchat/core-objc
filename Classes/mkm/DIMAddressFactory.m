@@ -79,3 +79,25 @@
 }
 
 @end
+
+@implementation DIMAddressFactory (Thanos)
+
++ (NSUInteger)thanos:(NSMutableDictionary *)planet finger:(NSUInteger)snap {
+    NSArray *people = [planet allKeys];
+    for (id key in people) {
+        if ((++snap & 1) == 1) {
+            // kill it
+            [planet removeObjectForKey:key];
+        }
+        // let it go
+    }
+    return snap;
+}
+
+- (NSUInteger)reduceMemory {
+    NSUInteger snap = 0;
+    snap = [DIMAddressFactory thanos:_addresses finger:snap];
+    return snap;
+}
+
+@end

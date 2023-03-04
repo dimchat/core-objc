@@ -35,6 +35,8 @@
 //  Copyright © 2020 Albert Moky. All rights reserved.
 //
 
+#import "DIMAddressFactory.h"
+
 #import "DIMIDFactory.h"
 
 static inline NSString *concat(NSString *name, id<MKMAddress> address, NSString *terminal) {
@@ -138,6 +140,16 @@ static inline NSString *concat(NSString *name, id<MKMAddress> address, NSString 
         return nil;
     }
     return [self newID:identifier name:name address:address terminal:terminal];
+}
+
+@end
+
+@implementation DIMIDFactory (Thanos)
+
+- (NSUInteger)reduceMemory {
+    NSUInteger snap = 0;
+    snap = [DIMAddressFactory thanos:_identifiers finger:snap];
+    return snap;
 }
 
 @end

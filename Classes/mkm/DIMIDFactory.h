@@ -49,4 +49,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface DIMIDFactory (Thanos)
+
+/**
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return number of survivors
+ */
+- (NSUInteger)reduceMemory;
+
+@end
+
 NS_ASSUME_NONNULL_END
