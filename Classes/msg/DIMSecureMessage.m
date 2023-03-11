@@ -133,7 +133,8 @@
     if (key.length > 0) {
         key = [delegate message:self decryptKey:key from:sender to:receiver];
         if (key.length == 0) {
-            @throw [NSException exceptionWithName:@"ReceiverError" reason:@"failed to decrypt key in msg" userInfo:[self dictionary]];
+            //@throw [NSException exceptionWithName:@"ReceiverError" reason:@"failed to decrypt key in msg" userInfo:[self dictionary]];
+            return nil;
         }
     }
     // 1.3. deserialize key
