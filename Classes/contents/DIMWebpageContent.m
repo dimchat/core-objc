@@ -37,6 +37,16 @@
 
 #import "DIMWebpageContent.h"
 
+DIMPageContent *DIMPageContentCreate(NSURL *url,
+                                     NSString *title,
+                                     NSString *desc,
+                                     NSData *icon) {
+    return [[DIMPageContent alloc] initWithURL:url
+                                         title:title
+                                   description:desc
+                                          icon:icon];
+}
+
 @implementation DIMPageContent
 
 - (instancetype)initWithURL:(NSURL *)url
@@ -70,20 +80,20 @@
 }
 
 - (NSURL *)URL {
-    NSString *string = [self objectForKey:@"URL"];
+    NSString *string = [self stringForKey:@"URL"];
     return [NSURL URLWithString:string];
 }
 
 - (NSString *)title {
-    return [self objectForKey:@"title"];
+    return [self stringForKey:@"title"];
 }
 
 - (NSString *)desc {
-    return [self objectForKey:@"desc"];
+    return [self stringForKey:@"desc"];
 }
 
 - (NSData *)icon {
-    NSString *str = [self objectForKey:@"icon"];
+    NSString *str = [self stringForKey:@"icon"];
     return MKMBase64Decode(str);
 }
 

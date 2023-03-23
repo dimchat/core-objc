@@ -44,24 +44,32 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x12,
  *      sn   : 123,
  *
- *      URL       : "http://", // upload to CDN
- *      data      : "...",     // if (!URL) base64_encode(image)
- *      thumbnail : "...",     // base64_encode(smallImage)
- *      filename  : "..."
+ *      URL       : "http://",  // upload to CDN
+ *      filename  : "...",
+ *      data      : "...",      // if (!URL) base64_encode(image)
+ *      thumbnail : "..."       // base64_encode(smallImage)
  *  }
  */
 @protocol DKDImageContent <DKDFileContent>
 
-@property (strong, nonatomic) NSData *imageData;
 @property (strong, nonatomic, nullable) NSData *thumbnail;
 
 @end
 
 @interface DIMImageContent : DIMFileContent <DKDImageContent>
 
-- (instancetype)initWithImageData:(NSData *)data
-                         filename:(nullable NSString *)name;
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)image;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMImageContent *DIMImageContentCreate(NSString *filename, NSData *image);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

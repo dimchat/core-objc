@@ -162,4 +162,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMGroupCommand *DIMGroupCommandCreate(NSString *name,
+                                       id<MKMID> group,
+                                       NSArray<id<MKMID>> *members);
+
+DIMInviteGroupCommand *DIMGroupCommandInvite(id<MKMID> group,
+                                             NSArray<id<MKMID>> *members);
+
+DIMExpelGroupCommand *DIMGroupCommandExpel(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members);
+
+DIMJoinGroupCommand *DIMGroupCommandJoin(id<MKMID> group);
+
+DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group);
+
+DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members);
+
+DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

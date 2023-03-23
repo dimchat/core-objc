@@ -37,6 +37,10 @@
 
 #import "DIMMoneyContent.h"
 
+DIMMoneyContent *DIMMoneyContentCreate(NSString *currency, float value) {
+    return [[DIMMoneyContent alloc] initWithCurrency:currency amount:value];
+}
+
 @implementation DIMMoneyContent
 
 /* designated initializer */
@@ -53,7 +57,8 @@
     return self;
 }
 
-- (instancetype)initWithType:(DKDContentType)type currency:(NSString *)currency amount:(float)value {
+- (instancetype)initWithType:(DKDContentType)type
+                    currency:(NSString *)currency amount:(float)value {
     if (self = [self initWithType:type]) {
         
         // currency
@@ -70,11 +75,12 @@
 }
 
 - (instancetype)initWithCurrency:(NSString *)currency amount:(float)value {
-    return [self initWithType:DKDContentType_Money currency:currency amount:value];
+    return [self initWithType:DKDContentType_Money
+                     currency:currency amount:value];
 }
 
 - (NSString *)currency {
-    return [self objectForKey:@"currency"];
+    return [self stringForKey:@"currency"];
 }
 
 - (float)amount {

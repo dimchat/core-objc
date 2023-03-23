@@ -37,6 +37,10 @@
 
 #import "DIMHistoryCommand.h"
 
+DIMHistoryCommand *DIMHistoryCommandCreate(NSString *cmd) {
+    return [[DIMHistoryCommand alloc] initWithCommandName:cmd];
+}
+
 @implementation DIMHistoryCommand
 
 /* designated initializer */

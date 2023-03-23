@@ -37,37 +37,22 @@
 
 #import "DIMAudioContent.h"
 
-@interface DIMContent (Hacking)
-
-@property (nonatomic) DKDContentType type;
-
-@end
+DIMAudioContent *DIMAudioContentCreate(NSString *filename, NSData *audio) {
+    return [[DIMAudioContent alloc] initWithFilename:filename data:audio];
+}
 
 @implementation DIMAudioContent
 
-- (instancetype)initWithAudioData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:name]) {
-        // change content type
-        self.type = DKDContentType_Audio;
-    }
-    return self;
-}
-
-- (NSData *)audioData {
-    return [self fileData];
-}
-
-- (void)setAudioData:(NSData *)audioData {
-    self.fileData = audioData;
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)audio {
+    return [self initWithType:DKDContentType_Audio filename:name data:audio];
 }
 
 - (nullable NSString *)text {
-    return [self objectForKey:@"text"];
+    return [self stringForKey:@"text"];
 }
 
 - (void)setText:(nullable NSString *)text {
-    if ([text length] > 0) {
+    if (text) {
         [self setObject:text forKey:@"text"];
     } else {
         [self removeObjectForKey:@"text"];

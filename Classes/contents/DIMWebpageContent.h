@@ -68,4 +68,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMPageContent *DIMPageContentCreate(NSURL *url,
+                                     NSString *title,
+                                     NSString *desc,
+                                     NSData *icon);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

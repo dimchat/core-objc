@@ -67,19 +67,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
-void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
-
-id<DKDCommand> DKDCommandParse(id content);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
 #pragma mark - Base Command
 
 @interface DIMCommand : DIMContent <DKDCommand>
@@ -95,5 +82,20 @@ id<DKDCommand> DKDCommandParse(id content);
 // command names
 #define DIMCommand_Meta      @"meta"
 #define DIMCommand_Document  @"document"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
+void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
+
+id<DKDCommand> DKDCommandParse(id content);
+
+DIMCommand *DIMCommandCreate(NSString *cmd);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

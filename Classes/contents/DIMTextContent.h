@@ -59,4 +59,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMTextContent *DIMTextContentCreate(NSString *text);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

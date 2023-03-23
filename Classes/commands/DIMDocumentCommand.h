@@ -78,4 +78,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
+                                               id<MKMMeta> meta,
+                                               id<MKMDocument> doc);
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

@@ -117,8 +117,12 @@
     return MKMIDParse([self objectForKey:@"group"]);
 }
 
-- (void)setGroup:(id<MKMID>)group {
-    [self setString:group forKey:@"group"];
+- (void)setGroup:(nullable id<MKMID>)group {
+    if (group) {
+        [self setString:group forKey:@"group"];
+    } else {
+        [self removeObjectForKey:@"group"];
+    }
 }
 
 - (DKDContentType)type {

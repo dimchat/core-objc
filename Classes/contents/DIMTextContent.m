@@ -37,13 +37,17 @@
 
 #import "DIMTextContent.h"
 
+DIMTextContent *DIMTextContentCreate(NSString *text) {
+    return [[DIMTextContent alloc] initWithText:text];
+}
+
 @implementation DIMTextContent
 
 - (instancetype)initWithText:(NSString *)text {
     NSAssert(text, @"text cannot be empty");
     if (self = [self initWithType:DKDContentType_Text]) {
         // text
-        if ([text length] > 0) {
+        if (text) {
             [self setObject:text forKey:@"text"];
         }
     }
@@ -51,7 +55,7 @@
 }
 
 - (NSString *)text {
-    return [self objectForKey:@"text"];
+    return [self stringForKey:@"text"];
 }
 
 @end

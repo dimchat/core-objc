@@ -37,6 +37,46 @@
 
 #import "DIMGroupCommand.h"
 
+DIMGroupCommand *DIMGroupCommandCreate(NSString *name,
+                                       id<MKMID> group,
+                                       NSArray<id<MKMID>> *members) {
+    return [[DIMGroupCommand alloc] initWithCommandName:name
+                                                  group:group
+                                                members:members];
+}
+
+DIMInviteGroupCommand *DIMGroupCommandInvite(id<MKMID> group,
+                                             NSArray<id<MKMID>> *members) {
+    return [[DIMInviteGroupCommand alloc] initWithGroup:group
+                                                members:members];
+}
+
+DIMExpelGroupCommand *DIMGroupCommandExpel(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members) {
+    return [[DIMExpelGroupCommand alloc] initWithGroup:group
+                                               members:members];
+}
+
+DIMJoinGroupCommand *DIMGroupCommandJoin(id<MKMID> group) {
+    return [[DIMJoinGroupCommand alloc] initWithGroup:group];
+}
+
+DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group) {
+    return [[DIMQuitGroupCommand alloc] initWithGroup:group];
+}
+
+DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members) {
+    return [[DIMResetGroupCommand alloc] initWithGroup:group
+                                               members:members];
+}
+
+DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group) {
+    return [[DIMQueryGroupCommand alloc] initWithGroup:group];
+}
+
+#pragma mark -
+
 @implementation DIMGroupCommand
 
 - (instancetype)initWithCommandName:(NSString *)cmd

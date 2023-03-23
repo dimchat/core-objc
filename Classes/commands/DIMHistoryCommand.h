@@ -82,4 +82,14 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMGroupCommand_Fire       @"fire"
 #define DIMGroupCommand_Resign     @"resign"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMHistoryCommand *DIMHistoryCommandCreate(NSString *cmd);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

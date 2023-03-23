@@ -44,24 +44,32 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x14,
  *      sn   : 123,
  *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(audio)
- *      text     : "...",     // Automatic Speech Recognition
- *      filename : "..."
+ *      URL      : "http://",  // upload to CDN
+ *      filename : "...",
+ *      data     : "...",      // if (!URL) base64_encode(audio)
+ *      text     : "..."       // Automatic Speech Recognition
  *  }
  */
 @protocol DKDAudioContent <DKDFileContent>
 
-@property (strong, nonatomic) NSData *audioData;
 @property (strong, nonatomic, nullable) NSString *text;
 
 @end
 
 @interface DIMAudioContent : DIMFileContent <DKDAudioContent>
 
-- (instancetype)initWithAudioData:(NSData *)data
-                         filename:(nullable NSString *)name;
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)audio;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMAudioContent *DIMAudioContentCreate(NSString *filename, NSData *audio);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

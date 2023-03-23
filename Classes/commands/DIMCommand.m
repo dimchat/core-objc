@@ -54,6 +54,10 @@ id<DKDCommand> DKDCommandParse(id content) {
     return [man.generalFactory parseCommand:content];
 }
 
+DIMCommand *DIMCommandCreate(NSString *cmd) {
+    return [[DIMCommand alloc] initWithCommandName:cmd];
+}
+
 #pragma mark - Base Command
 
 @implementation DIMCommand

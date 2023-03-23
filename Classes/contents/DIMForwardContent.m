@@ -40,7 +40,7 @@
 /**
  *  Convert message list from dictionary array
  */
-NSArray<id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary *> *messages) {
+NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<NSDictionary *> *messages) {
     NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
     id<DKDMessage> msg;
     for (NSDictionary *item in messages) {
@@ -55,12 +55,16 @@ NSArray<id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary 
 /**
  *  Revert message list to dictionary array
  */
-NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages) {
+NSArray<NSDictionary *> *DKDReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages) {
     NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
     for (id<DKDMessage> msg in messages) {
         [mArray addObject:[msg dictionary]];
     }
     return mArray;
+}
+
+DIMForwardContent *DIMForwardContentCreate(NSArray<id<DKDReliableMessage>> *secrets) {
+    return [[DIMForwardContent alloc] initWithMessages:secrets];
 }
 
 @interface DIMForwardContent ()
@@ -87,7 +91,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
     if (self = [self initWithType:DKDContentType_Forward]) {
         _forward = nil;
         _secrets = secrets;
-        [self setObject:DIMReliableMessageRevert(secrets) forKey:@"secrets"];
+        [self setObject:DKDReliableMessageRevert(secrets) forKey:@"secrets"];
     }
     return self;
 }
@@ -124,7 +128,7 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
         id info = [self objectForKey:@"secrets"];
         if (info) {
             // get from 'secrets'
-            _secrets = DIMReliableMessageConvert(info);
+            _secrets = DKDReliableMessageConvert(info);
         } else {
             // get from 'forward'
             id<DKDReliableMessage> msg = [self forward];

@@ -44,24 +44,32 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x16,
  *      sn   : 123,
  *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(video)
- *      snapshot : "...",     // base64_encode(smallImage)
- *      filename : "..."
+ *      URL      : "http://",  // upload to CDN
+ *      filename : "...",
+ *      data     : "...",      // if (!URL) base64_encode(video)
+ *      snapshot : "..."       // base64_encode(smallImage)
  *  }
  */
 @protocol DKDVideoContent <DKDFileContent>
 
-@property (strong, nonatomic) NSData *videoData;
 @property (strong, nonatomic, nullable) NSData *snapshot;
 
 @end
 
 @interface DIMVideoContent : DIMFileContent <DKDVideoContent>
 
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name;
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)video;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMVideoContent *DIMVideoContentCreate(NSString *filename, NSData *video);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

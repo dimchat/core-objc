@@ -37,6 +37,10 @@
 
 #import "DIMTransferContent.h"
 
+DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
+    return [[DIMTransferContent alloc] initWithCurrency:currency amount:value];
+}
+
 @implementation DIMTransferContent
 
 - (instancetype)initWithCurrency:(NSString *)currency amount:(float)value {
@@ -49,7 +53,7 @@
 
 - (void)setRemitter:(id<MKMID>)sender {
     if (sender) {
-        [self setObject:[sender string] forKey:@"remitter"];
+        [self setString:sender forKey:@"remitter"];
     } else {
         [self removeObjectForKey:@"remitter"];
     }
@@ -61,7 +65,7 @@
 
 - (void)setRemittee:(id<MKMID>)receiver {
     if (receiver) {
-        [self setObject:[receiver string] forKey:@"remittee"];
+        [self setString:receiver forKey:@"remittee"];
     } else {
         [self removeObjectForKey:@"remittee"];
     }

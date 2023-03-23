@@ -39,16 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Convert message list from dictionary array
- */
-NSArray<id<DKDReliableMessage>> *DIMReliableMessageConvert(NSArray<NSDictionary *> *messages);
-
-/**
- *  Revert message list to dictionary array
- */
-NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages);
-
 /*
  *  Top-Secret message: {
  *      type : 0xFF,
@@ -74,5 +64,25 @@ NSArray<NSDictionary *> *DIMReliableMessageRevert(NSArray<id<DKDReliableMessage>
 - (instancetype)initWithMessages:(NSArray<id<DKDReliableMessage>> *)secrets;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ *  Convert message list from dictionary array
+ */
+NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<NSDictionary *> *messages);
+
+/**
+ *  Revert message list to dictionary array
+ */
+NSArray<NSDictionary *> *DKDReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages);
+
+DIMForwardContent *DIMForwardContentCreate(NSArray<id<DKDReliableMessage>> *secrets);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

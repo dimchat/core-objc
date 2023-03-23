@@ -37,11 +37,9 @@
 
 #import "DIMImageContent.h"
 
-@interface DIMContent (Hacking)
-
-@property (nonatomic) DKDContentType type;
-
-@end
+DIMImageContent *DIMImageContentCreate(NSString *filename, NSData *image) {
+    return [[DIMImageContent alloc] initWithFilename:filename data:image];
+}
 
 @interface DIMImageContent () {
     
@@ -62,28 +60,17 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
+- (instancetype)initWithType:(DKDContentType)type
+                    filename:(NSString *)name
+                        data:(nullable NSData *)file {
+    if (self = [super initWithType:type filename:name data:file]) {
         _thumbnail = nil;
     }
     return self;
 }
 
-- (instancetype)initWithImageData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:name]) {
-        // change content type
-        self.type = DKDContentType_Image;
-    }
-    return self;
-}
-
-- (NSData *)imageData {
-    return [self fileData];
-}
-
-- (void)setImageData:(NSData *)imageData {
-    [self setFileData:imageData];
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)image {
+    return [self initWithType:DKDContentType_Image filename:name data:image];
 }
 
 - (nullable NSData *)thumbnail {

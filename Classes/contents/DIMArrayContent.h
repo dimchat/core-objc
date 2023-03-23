@@ -39,16 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Convert content list from dictionary array
- */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents);
-
-/**
- *  Revert content list to dictionary array
- */
-NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
-
 /*
  *  Content Array message: {
  *      type : 0xCA,
@@ -68,5 +58,25 @@ NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
 - (instancetype)initWithContents:(NSArray<id<DKDContent>> *)array;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ *  Convert content list from dictionary array
+ */
+NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents);
+
+/**
+ *  Revert content list to dictionary array
+ */
+NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
+
+DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

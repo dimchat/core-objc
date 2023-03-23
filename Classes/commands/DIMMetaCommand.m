@@ -37,6 +37,15 @@
 
 #import "DIMMetaCommand.h"
 
+DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
+                                       id<MKMMeta> meta) {
+    return [[DIMMetaCommand alloc] initWithID:ID meta:meta];
+}
+
+DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
+    return [[DIMMetaCommand alloc] initWithID:ID];
+}
+
 @interface DIMMetaCommand ()
 
 @property (strong, nonatomic, nullable) id<MKMMeta> meta;

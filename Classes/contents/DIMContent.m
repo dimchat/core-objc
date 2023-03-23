@@ -37,6 +37,10 @@
 
 #import "DIMContent.h"
 
+DIMContent *DIMContentCreate(DKDContentType type) {
+    return [[DIMContent alloc] initWithType:type];
+}
+
 @interface DIMContent () {
     
     id<MKMID> _group;
@@ -125,7 +129,11 @@
 }
 
 - (void)setGroup:(nullable id<MKMID>)group {
-    [self setString:group forKey:@"group"];
+    if (group) {
+        [self setString:group forKey:@"group"];
+    } else {
+        [self removeObjectForKey:@"group"];
+    }
     _group = group;
 }
 

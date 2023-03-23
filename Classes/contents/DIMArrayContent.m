@@ -63,6 +63,10 @@ NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents) {
     return mArray;
 }
 
+DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
+    return [[DIMArrayContent alloc] initWithContents:contents];
+}
+
 @interface DIMArrayContent () {
     
     NSArray<id<DKDContent>> *_contents;

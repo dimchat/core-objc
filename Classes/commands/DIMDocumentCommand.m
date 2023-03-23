@@ -37,6 +37,16 @@
 
 #import "DIMDocumentCommand.h"
 
+DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
+                                               id<MKMMeta> meta,
+                                               id<MKMDocument> doc) {
+    return [[DIMDocumentCommand alloc] initWithID:ID meta:meta document:doc];
+}
+
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID) {
+    return [[DIMDocumentCommand alloc] initWithID:ID];
+}
+
 @interface DIMDocumentCommand ()
 
 @property (strong, nonatomic, nullable) id<MKMDocument> document;

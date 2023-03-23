@@ -37,6 +37,10 @@
 
 #import "DIMFileContent.h"
 
+DIMFileContent *DIMFileContentCreate(NSString *filename, NSData *file) {
+    return [[DIMFileContent alloc] initWithFilename:filename data:file];
+}
+
 @interface DIMFileContent () {
     
     id _attachment;
@@ -55,47 +59,50 @@
     return self;
 }
 
-/* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-        _attachment = nil;
-    }
-    return self;
+    NSString *name = nil;
+    return [self initWithType:type filename:name data:nil];
 }
 
-- (instancetype)initWithFileData:(NSData *)data
-                        filename:(nullable NSString *)name {
-    NSAssert(data.length > 0, @"file data cannot be empty");
-    if (self = [self initWithType:DKDContentType_File]) {
-        
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type
+                    filename:(NSString *)name
+                        data:(nullable NSData *)file {
+    if (self = [super initWithType:type]) {
         // filename
         if (name) {
             [self setObject:name forKey:@"filename"];
         }
-        
         // file data
-        self.fileData = data;
+        if (file) {
+            self.data = file;
+        }
     }
     return self;
+}
+
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)file {
+    NSAssert([file length] > 0, @"file data cannot be empty");
+    return [self initWithType:DKDContentType_File filename:name data:file];
 }
 
 //- (id)copyWithZone:(nullable NSZone *)zone {
 //    DIMFileContent *content = [super copyWithZone:zone];
 //    if (content) {
-//        //content.fileData = _attachment;
+//        //content.data = _attachment;
 //    }
 //    return content;
 //}
 
 - (nullable NSURL *)URL {
-    NSString *string = [self objectForKey:@"URL"];
+    NSString *string = [self stringForKey:@"URL"];
     if (string) {
         return [NSURL URLWithString:string];
     }
     return nil;
 }
 
-- (void)setURL:(NSURL *)URL {
+- (void)setURL:(nullable NSURL *)URL {
     NSString *string = [URL absoluteString];
     if (string) {
         [self setObject:string forKey:@"URL"];
@@ -104,35 +111,30 @@
     }
 }
 
-- (nullable NSData *)fileData {
+- (nullable NSData *)data {
+    if (!_attachment) {
+        NSString *base64 = [self stringForKey:@"data"];
+        if (base64) {
+            _attachment = MKMBase64Decode(base64);
+        }
+    }
     return _attachment;
 }
 
-- (void)setFileData:(NSData *)fileData {
-    _attachment = fileData;
-    
-    // update filename with MD5 string
-    if (fileData.length > 0) {
-        NSString *filename = MKMHexEncode(MKMMD5Digest(fileData));
-        NSString *ext = [[self.filename pathExtension] lowercaseString];
-        if (ext.length > 0) {
-            filename = [NSString stringWithFormat:@"%@.%@", filename, ext];
-        }
-        //NSAssert([self.filename isEqualToString:filename], @"filename error");
-        [self setObject:filename forKey:@"filename"];
-        
-        // file data
+- (void)setData:(nullable NSData *)fileData {
+    if ([fileData length] > 0) {
         [self setObject:MKMBase64Encode(fileData) forKey:@"data"];
     } else {
         [self removeObjectForKey:@"data"];
     }
+    _attachment = fileData;
 }
 
-- (nullable NSString *)filename {
-    return [self objectForKey:@"filename"];
+- (NSString *)filename {
+    return [self stringForKey:@"filename"];
 }
 
-- (void)setPassword:(id<MKMSymmetricKey>)password {
+- (void)setPassword:(nullable id<MKMSymmetricKey>)password {
     if (password) {
         [self setObject:[password dictionary] forKey:@"password"];
     } else {

@@ -37,6 +37,14 @@
 
 #import "DIMCustomizedContent.h"
 
+DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
+                                                 NSString *mod,
+                                                 NSString *act) {
+    return [[DIMCustomizedContent alloc] initWithApplication:app
+                                                      module:mod
+                                                      action:act];
+}
+
 @implementation DIMCustomizedContent
 
 - (instancetype)initWithType:(DKDContentType)type
@@ -67,15 +75,15 @@
 }
 
 - (NSString *)application {
-    return [self objectForKey:@"app"];
+    return [self stringForKey:@"app"];
 }
 
 - (NSString *)module {
-    return [self objectForKey:@"mod"];
+    return [self stringForKey:@"mod"];
 }
 
 - (NSString *)action {
-    return [self objectForKey:@"act"];
+    return [self stringForKey:@"act"];
 }
 
 @end

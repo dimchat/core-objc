@@ -69,4 +69,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
+                                       id<MKMMeta> meta);
+DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
 NS_ASSUME_NONNULL_END

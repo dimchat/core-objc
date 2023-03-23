@@ -44,9 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x10,
  *      sn   : 123,
  *
- *      URL      : "http://", // upload to CDN
- *      data     : "...",     // if (!URL) base64_encode(fileContent)
- *      filename : "..."
+ *      URL      : "http://",  // upload to CDN
+ *      filename : "...",
+ *      data     : "..."       // if (!URL) base64_encode(fileContent)
  *  }
  */
 @protocol DKDFileContent <DKDContent>
@@ -54,8 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
-@property (strong, nonatomic, nullable) NSData *fileData;
-@property (readonly, strong, nonatomic, nullable) NSString *filename;
+@property (strong, nonatomic, nullable) NSData *data;
+@property (strong, nonatomic, readonly) NSString *filename;
 
 // for decrypt file data after download from CDN
 @property (strong, nonatomic, nullable) id<MKMSymmetricKey> password;
@@ -64,9 +64,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMFileContent : DIMContent <DKDFileContent>
 
-- (instancetype)initWithFileData:(NSData *)data
-                        filename:(nullable NSString *)name;
+- (instancetype)initWithDictionary:(NSDictionary *)dict
+NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithType:(DKDContentType)type
+                    filename:(NSString *)name
+                        data:(nullable NSData *)file
+NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)file;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMFileContent *DIMFileContentCreate(NSString *filename, NSData *file);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

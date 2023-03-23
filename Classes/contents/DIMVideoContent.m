@@ -37,11 +37,9 @@
 
 #import "DIMVideoContent.h"
 
-@interface DIMContent (Hacking)
-
-@property (nonatomic) DKDContentType type;
-
-@end
+DIMVideoContent *DIMVideoContentCreate(NSString *filename, NSData *video) {
+    return [[DIMVideoContent alloc] initWithFilename:filename data:video];
+}
 
 @interface DIMVideoContent () {
     
@@ -62,28 +60,17 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
+- (instancetype)initWithType:(DKDContentType)type
+                    filename:(NSString *)name
+                        data:(nullable NSData *)file {
+    if (self = [super initWithType:type filename:name data:file]) {
         _snapshot = nil;
     }
     return self;
 }
 
-- (instancetype)initWithVideoData:(NSData *)data
-                         filename:(nullable NSString *)name {
-    if (self = [self initWithFileData:data filename:nil]) {
-        // change content type
-        self.type = DKDContentType_Video;
-    }
-    return self;
-}
-
-- (NSData *)videoData {
-    return [self fileData];
-}
-
-- (void)setVideoData:(NSData *)videoData {
-    [self setFileData:videoData];
+- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)video {
+    return [self initWithType:DKDContentType_Video filename:name data:video];
 }
 
 - (nullable NSData *)snapshot {
