@@ -81,6 +81,8 @@
         id pubKey = MKMPublicKeyParse(dict);
         if ([pubKey conformsToProtocol:@protocol(MKMEncryptKey)]) {
             _key = pubKey;
+        } else {
+            NSAssert(!pubKey, @"visa key error: %@", pubKey);
         }
     }
     return _key;

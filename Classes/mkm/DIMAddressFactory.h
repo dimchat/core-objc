@@ -45,9 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMAddressFactory (Thanos)
 
-// Thanos can kill half lives of a world with a snap of the finger
-+ (NSUInteger)thanos:(NSMutableDictionary *)planet finger:(NSUInteger)snap;
-
 /**
  * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
  * this will remove 50% of cached objects
@@ -57,5 +54,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSUInteger)reduceMemory;
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Thanos can kill half lives of a world with a snap of the finger
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

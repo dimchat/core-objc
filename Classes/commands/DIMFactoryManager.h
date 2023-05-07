@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  General Factory for Commands
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-@protocol DIMGeneralFactory <DKDGeneralFactory>
+@protocol DIMGeneralCommandFactory
 
 #pragma mark Command
 
@@ -59,13 +59,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -
 
-@interface DIMGeneralFactory : DKDGeneralFactory <DIMGeneralFactory>
+@interface DIMGeneralCommandFactory : NSObject <DIMGeneralCommandFactory>
 
 @end
 
-@interface DIMFactoryManager : NSObject
+@interface DIMCommandFactoryManager : NSObject
 
-@property(strong, nonatomic) id<DIMGeneralFactory> generalFactory;
+@property(strong, nonatomic) id<DIMGeneralCommandFactory> generalFactory;
 
 + (instancetype)sharedManager;
 

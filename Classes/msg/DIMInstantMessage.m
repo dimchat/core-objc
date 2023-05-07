@@ -37,9 +37,10 @@
 
 #import "DIMInstantMessage.h"
 
-@interface DIMInstantMessage ()
-
-@property (strong, nonatomic) id<DKDContent> content;
+@interface DIMInstantMessage () {
+    
+    id<DKDContent> _content;
+}
 
 @end
 
@@ -91,6 +92,10 @@
     }
     return _content;
 }
+- (void)setContent:(id<DKDContent>)content {
+    [self setDictionary:content forKey:@"content"];
+    _content = content;
+}
 
 - (NSDate *)time {
     NSDate *when = [self.content time];
@@ -133,7 +138,7 @@
     id<DKDInstantMessageDelegate> delegate = (id<DKDInstantMessageDelegate>)[self delegate];
     NSAssert(delegate, @"message delegate not set yet");
     // 0. check attachment for File/Image/Audio/Video message content
-    //    (do it in 'core' module)
+    //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
     NSMutableDictionary *msg = [self _prepareWithKey:password];
@@ -163,7 +168,7 @@
     id<DKDInstantMessageDelegate> delegate = (id<DKDInstantMessageDelegate>)[self delegate];
     NSAssert(delegate, @"message delegate not set yet");
     // 0. check attachment for File/Image/Audio/Video message content
-    //    (do it in 'core' module)
+    //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
     NSMutableDictionary *msg = [self _prepareWithKey:password];
@@ -197,18 +202,50 @@
 
 @end
 
+@interface DIMInstantMessageFactory () {
+    
+    uint32_t _sn;
+}
+
+@end
+
 @implementation DIMInstantMessageFactory
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _sn = arc4random();
+    }
+    return self;
+}
+
+/**
+ *  next sn
+ *
+ * @return 1 ~ 2^31-1
+ */
+- (uint32_t)_next {
+    uint32_t sn = _sn;
+    if (sn < 0x7fffffff) {
+        sn += 1;
+    } else {
+        sn = 1;
+    }
+    return _sn = sn;
+}
 
 - (NSUInteger)generateSerialNumber:(DKDContentType)type time:(NSDate *)now {
     // because we must make sure all messages in a same chat box won't have
     // same serial numbers, so we can't use time-related numbers, therefore
     // the best choice is a totally random number, maybe.
+    /*/
     uint32_t sn = arc4random();
     if (sn == 0) {
         // ZERO? do it again!
         sn = 9527 + 9394;
     }
     return sn;
+    /*/
+    return [self _next];
 }
 
 - (id<DKDInstantMessage>)createInstantMessageWithEnvelope:(id<DKDEnvelope>)head

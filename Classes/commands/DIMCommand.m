@@ -40,17 +40,17 @@
 #import "DIMCommand.h"
 
 id<DKDCommandFactory> DIMCommandGetFactory(NSString *cmd) {
-    DIMFactoryManager *man = [DIMFactoryManager sharedManager];
+    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
     return [man.generalFactory commandFactoryForName:cmd];
 }
 
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory) {
-    DIMFactoryManager *man = [DIMFactoryManager sharedManager];
+    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
     [man.generalFactory setCommandFactory:factory forName:cmd];
 }
 
 id<DKDCommand> DKDCommandParse(id content) {
-    DIMFactoryManager *man = [DIMFactoryManager sharedManager];
+    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
     return [man.generalFactory parseCommand:content];
 }
 

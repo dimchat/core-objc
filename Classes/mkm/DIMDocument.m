@@ -293,12 +293,9 @@
 #pragma mark properties getter/setter
 
 - (NSDate *)time {
-    NSNumber *timestamp = [self propertyForKey:@"time"];
-    if (!timestamp) {
-        //NSAssert(false, @"sign time not found: %@", env);
-        return nil;
-    }
-    return [[NSDate alloc] initWithTimeIntervalSince1970:[timestamp doubleValue]];
+    // timestamp
+    id seconds = [self propertyForKey:@"time"];
+    return MKMConverterGetDate(seconds);
 }
 
 - (NSString *)name {

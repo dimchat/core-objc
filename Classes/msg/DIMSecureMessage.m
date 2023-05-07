@@ -44,7 +44,7 @@
 @property (strong, nonatomic) NSData *data;
 
 @property (strong, nonatomic, nullable) NSData *encryptedKey;
-@property (strong, nonatomic, nullable) NSDictionary<NSString *, NSString *> *encryptedKeys;
+@property (strong, nonatomic, nullable) NSDictionary *encryptedKeys;
 
 @end
 
@@ -93,7 +93,7 @@
         NSString *key = [self objectForKey:@"key"];
         if (!key) {
             // check 'keys'
-            NSDictionary<NSString *, NSString *> *keys = self.encryptedKeys;
+            NSDictionary *keys = self.encryptedKeys;
             key = [keys objectForKey:[self.receiver string]];
         }
         if (key) {
@@ -105,7 +105,7 @@
     return _encryptedKey;
 }
 
-- (NSDictionary<NSString *, NSString *> *)encryptedKeys {
+- (NSDictionary *)encryptedKeys {
     if (!_encryptedKeys) {
         _encryptedKeys = [self objectForKey:@"keys"];
     }
@@ -134,6 +134,7 @@
         key = [delegate message:self decryptKey:key from:sender to:receiver];
         if (key.length == 0) {
             //@throw [NSException exceptionWithName:@"ReceiverError" reason:@"failed to decrypt key in msg" userInfo:[self dictionary]];
+            // TODO: check whether my visa key is changed, push new visa to this contact
             return nil;
         }
     }
@@ -163,7 +164,7 @@
     //          decrypt file data with password;
     //      else,
     //          save password to 'message.content.password'.
-    //      (do it in 'core' module)
+    //      (do it in application level)
     
     // 3. pack message
     NSMutableDictionary *mDict = [self dictionary:NO];
@@ -194,7 +195,7 @@
 - (NSArray<id<DKDSecureMessage>> *)splitForMembers:(NSArray<id<MKMID>> *)members {
     NSMutableDictionary *msg = [self dictionary:NO];
     // check 'keys'
-    NSDictionary<NSString *, NSString *> *keyMap = self.encryptedKeys;
+    NSDictionary *keyMap = self.encryptedKeys;
     if (keyMap) {
         [msg removeObjectForKey:@"keys"];
     }

@@ -63,7 +63,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     //         before serialize content, this job should be do in subclass
     
     NSAssert(content == iMsg.content, @"message content not match: %@", content);
-    return MKMUTF8Encode(MKMJSONEncode(content));
+    return MKMUTF8Encode(MKMJSONEncode(content.dictionary));
 }
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -88,7 +88,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
         // broadcast message has no key
         return nil;
     }
-    return MKMUTF8Encode(MKMJSONEncode(password));
+    return MKMUTF8Encode(MKMJSONEncode(password.dictionary));
 }
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
@@ -160,6 +160,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
               decryptContent:(NSData *)data
                      withKey:(id<MKMSymmetricKey>)password {
+    // TODO: check 'IV' in sMsg for AES decryption
     return [password decrypt:data];
 }
 

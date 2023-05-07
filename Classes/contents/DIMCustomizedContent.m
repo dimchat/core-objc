@@ -41,14 +41,16 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
                                                  NSString *mod,
                                                  NSString *act) {
     return [[DIMCustomizedContent alloc] initWithApplication:app
-                                                      module:mod
-                                                      action:act];
+                                                  moduleName:mod
+                                                  actionName:act];
 }
 
 @implementation DIMCustomizedContent
 
 - (instancetype)initWithType:(DKDContentType)type
-                 application:(NSString *)app module:(NSString *)mod action:(NSString *)act {
+                 application:(NSString *)app
+                  moduleName:(NSString *)mod
+                  actionName:(NSString *)act {
     if (self = [self initWithType:type]) {
         // App ID
         if (app) {
@@ -66,9 +68,13 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
     return self;
 }
 
-- (instancetype)initWithApplication:(NSString *)app module:(NSString *)mod action:(NSString *)act {
+- (instancetype)initWithApplication:(NSString *)app
+                         moduleName:(NSString *)mod
+                         actionName:(NSString *)act {
     if (self = [self initWithType:DKDContentType_Customized
-                      application:app module:mod action:act]) {
+                      application:app
+                       moduleName:mod
+                       actionName:act]) {
         //
     }
     return self;
@@ -78,11 +84,11 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
     return [self stringForKey:@"app"];
 }
 
-- (NSString *)module {
+- (NSString *)moduleName {
     return [self stringForKey:@"mod"];
 }
 
-- (NSString *)action {
+- (NSString *)actionName {
     return [self stringForKey:@"act"];
 }
 

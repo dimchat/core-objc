@@ -88,6 +88,7 @@
         return DKDSecureMessageParse(mDict);
     } else {
         NSAssert(false, @"message signature not match: %@", self);
+        // TODO: check whether visa is expired, query new document for this contact
         return nil;
     }
 }
@@ -111,6 +112,8 @@
         id<MKMDocument> doc = MKMDocumentParse(dict);
         if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
             _visa = (id<MKMVisa>) doc;
+        } else {
+            NSAssert(!doc, @"visa document error: %@", doc);
         }
     }
     return _visa;

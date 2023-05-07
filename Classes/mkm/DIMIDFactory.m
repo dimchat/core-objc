@@ -148,7 +148,7 @@ static inline NSString *concat(NSString *name, id<MKMAddress> address, NSString 
 
 - (NSUInteger)reduceMemory {
     NSUInteger snap = 0;
-    snap = [DIMAddressFactory thanos:_identifiers finger:snap];
+    snap = DIMThanos(_identifiers, snap);
     return snap;
 }
 

@@ -49,6 +49,7 @@
 }
 
 - (BOOL)verifyVisa:(id<MKMVisa>)visa {
+    // NOTICE: only verify visa with meta.key
     if (![self.ID isEqual:visa.ID]) {
         // visa ID not match
         return NO;
@@ -72,6 +73,8 @@
             return YES;
         }
     }
+    // signature not match
+    // TODO: check whether visa is expired, query new document for this contact
     return NO;
 }
 
@@ -115,8 +118,7 @@
     NSAssert(delegate, @"user data source not set yet");
     id<MKMSignKey> SK = [delegate privateKeyForVisaSignature:self.ID];
     NSAssert(SK, @"failed to get visa sign key for user: %@", self.ID);
-    [visa sign:SK];
-    return visa;
+    return !SK || [visa sign:SK].length == 0 ? nil : visa;
 }
 
 - (NSData *)sign:(NSData *)data {
@@ -139,17 +141,14 @@
     NSData *plaintext = nil;
     for (id<MKMDecryptKey> SK in keys) {
         // try decrypting it with each private key
-        @try {
-            plaintext = [SK decrypt:ciphertext];
-            if ([plaintext length] > 0) {
-                // OK!
-                return plaintext;
-            }
-        } @catch (NSException *exception) {
-            // this key not match, try next one
+        plaintext = [SK decrypt:ciphertext];
+        if ([plaintext length] > 0) {
+            // OK!
+            return plaintext;
         }
     }
     // decryption failed
+    // TODO: check whether my visa key is changed, push new visa to this contact
     return nil;
 }
 

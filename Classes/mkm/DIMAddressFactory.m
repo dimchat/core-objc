@@ -82,22 +82,22 @@
 
 @implementation DIMAddressFactory (Thanos)
 
-+ (NSUInteger)thanos:(NSMutableDictionary *)planet finger:(NSUInteger)snap {
+- (NSUInteger)reduceMemory {
+    NSUInteger snap = 0;
+    snap = DIMThanos(_addresses, snap);
+    return snap;
+}
+
+@end
+
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger) {
     NSArray *people = [planet allKeys];
     for (id key in people) {
-        if ((++snap & 1) == 1) {
+        if ((++finger & 1) == 1) {
             // kill it
             [planet removeObjectForKey:key];
         }
         // let it go
     }
-    return snap;
+    return finger;
 }
-
-- (NSUInteger)reduceMemory {
-    NSUInteger snap = 0;
-    snap = [DIMAddressFactory thanos:_addresses finger:snap];
-    return snap;
-}
-
-@end
