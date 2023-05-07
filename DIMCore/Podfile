@@ -1,5 +1,5 @@
-platform :ios, '12.0'
+platform :ios, '11.0'
 
 target 'DIMCore' do
-    pod 'DaoKeDao', '~> 0.6.3'
+    pod 'DaoKeDao', '~> 0.6.4'
 end
