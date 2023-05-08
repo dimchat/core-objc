@@ -75,7 +75,7 @@ static inline NSString *concat(NSString *name, id<MKMAddress> address, NSString 
                            type:(MKMEntityType)network
                        terminal:(nullable NSString *)location {
     id<MKMAddress> address = MKMAddressGenerate(network, meta);
-    NSAssert(address, @"failed to generate ID with meta: %@", meta);
+    NSAssert(address, @"failed to generate address with meta: %@", meta);
     return MKMIDCreate(meta.seed, address, location);
 }
 
@@ -114,29 +114,32 @@ static inline NSString *concat(NSString *name, id<MKMAddress> address, NSString 
     NSString *terminal;
     // split ID string
     NSArray<NSString *> *pair = [identifier componentsSeparatedByString:@"/"];
+    NSAssert(pair.firstObject.length > 0, @"ID error: %@", identifier);
     // terminal
     if (pair.count == 1) {
+        // no terminal
         terminal = nil;
     } else {
-        assert(pair.count == 2);
-        assert(pair.lastObject.length > 0);
+        // got terminal
+        NSAssert(pair.count == 2, @"ID error: %@", identifier);
+        NSAssert(pair.lastObject.length > 0, @"ID.terminal error: %@", identifier);
         terminal = pair.lastObject;
     }
     // name @ address
     pair = [pair.firstObject componentsSeparatedByString:@"@"];
-    assert(pair.firstObject.length > 0);
+    NSAssert(pair.lastObject.length > 0, @"ID.address error: %@", identifier);
     if (pair.count == 1) {
         // got address without name
         name = nil;
-        address = MKMAddressParse(pair.firstObject);
     } else {
         // got name & address
-        assert(pair.count == 2);
-        assert(pair.lastObject.length > 0);
+        NSAssert(pair.count == 2, @"ID error: %@", identifier);
+        NSAssert(pair.firstObject.length > 0, @"ID error: %@", identifier);
         name = pair.firstObject;
-        address = MKMAddressParse(pair.lastObject);
     }
+    address = MKMAddressParse(pair.lastObject);
     if (address == nil) {
+        NSAssert(false, @"cannot get address from ID: %@", identifier);
         return nil;
     }
     return [self newID:identifier name:name address:address terminal:terminal];

@@ -39,6 +39,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Base Address Factory
+ */
 @interface DIMAddressFactory : NSObject <MKMAddressFactory>
 
 @end

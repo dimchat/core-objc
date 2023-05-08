@@ -79,27 +79,31 @@
 
 - (NSData *)data {
     if (!_data) {
-        NSString *content = [self objectForKey:@"data"];
-        NSAssert(content, @"content data cannot be empty");
-        id<DKDSecureMessageDelegate> delegate = (id<DKDSecureMessageDelegate>)[self delegate];
-        NSAssert(delegate, @"message delegate not set yet");
-        _data = [delegate message:self decodeData:content];
+        NSObject *b64 = [self objectForKey:@"data"];
+        NSAssert(b64, @"content data cannot be empty");
+        id<DKDSecureMessageDelegate> transceiver;
+        transceiver = (id<DKDSecureMessageDelegate>)[self delegate];
+        NSAssert(transceiver, @"message delegate not set yet");
+        _data = [transceiver message:self decodeData:b64];
+        NSAssert(_data, @"message data error: %@", b64);
     }
     return _data;
 }
 
 - (NSData *)encryptedKey {
     if (!_encryptedKey) {
-        NSString *key = [self objectForKey:@"key"];
-        if (!key) {
+        NSObject *b64 = [self objectForKey:@"key"];
+        if (!b64) {
             // check 'keys'
             NSDictionary *keys = self.encryptedKeys;
-            key = [keys objectForKey:[self.receiver string]];
+            b64 = [keys objectForKey:[self.receiver string]];
         }
-        if (key) {
-            id<DKDSecureMessageDelegate> delegate = (id<DKDSecureMessageDelegate>)[self delegate];
-            NSAssert(delegate, @"message delegate not set yet");
-            _encryptedKey = [delegate message:self decodeKey:key];
+        if (b64) {
+            id<DKDSecureMessageDelegate> transceiver;
+            transceiver = (id<DKDSecureMessageDelegate>)[self delegate];
+            NSAssert(transceiver, @"message delegate not set yet");
+            _encryptedKey = [transceiver message:self decodeKey:b64];
+            NSAssert(_encryptedKey, @"message key error: %@", b64);
         }
     }
     return _encryptedKey;
@@ -123,15 +127,16 @@
         // not split group message
         receiver = [self receiver];
     }
-    id<DKDSecureMessageDelegate> delegate = (id<DKDSecureMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
 
     // 1. decrypt 'message.key' to symmetric key
+    id<DKDSecureMessageDelegate> transceiver;
+    transceiver = (id<DKDSecureMessageDelegate>)[self delegate];
+    NSAssert(transceiver, @"message delegate not set yet");
     // 1.1. decode encrypted key data
     NSData *key = self.encryptedKey;
     // 1.2. decrypt key data
     if (key.length > 0) {
-        key = [delegate message:self decryptKey:key from:sender to:receiver];
+        key = [transceiver message:self decryptKey:key from:sender to:receiver];
         if (key.length == 0) {
             //@throw [NSException exceptionWithName:@"ReceiverError" reason:@"failed to decrypt key in msg" userInfo:[self dictionary]];
             // TODO: check whether my visa key is changed, push new visa to this contact
@@ -140,23 +145,25 @@
     }
     // 1.3. deserialize key
     //      if key is empty, means it should be reused, get it from key cache
-    id<MKMSymmetricKey> password = [delegate message:self deserializeKey:key from:sender to:receiver];
+    id<MKMSymmetricKey> password = [transceiver message:self deserializeKey:key
+                                                   from:sender to:receiver];
     NSAssert(password, @"failed to get msg key: %@ -> %@, %@", sender, receiver, self);
     
     // 2. decrypt 'message.data' to 'message.content'
     // 2.1. decode encrypted content data
-    NSData *data = [self data];
-    NSAssert(data.length > 0, @"failed to decode content data: %@", self);
+    NSData *ciphertext = [self data];
+    NSAssert(ciphertext.length > 0, @"failed to decode content data: %@", self);
     // 2.2. decrypt content data
-    data = [delegate message:self decryptContent:data withKey:password];
-    if (!data) {
+    NSData *plaintext = [transceiver message:self decryptContent:ciphertext
+                                     withKey:password];
+    if (!plaintext) {
         NSAssert(false, @"failed to decrypt data with key: %@", password);
         return nil;
     }
     // 2.3. deserialize content
-    id<DKDContent> content = [delegate message:self deserializeContent:data withKey:password];
+    id<DKDContent> content = [transceiver message:self deserializeContent:plaintext withKey:password];
     if (!content) {
-        //NSAssert(false, @"content data error: [%@]", MKMUTF8Decode(data));
+        NSAssert(false, @"content data error: [%@]", MKMUTF8Decode(plaintext));
         return nil;
     }
     // 2.4. check attachment for File/Image/Audio/Video message content
@@ -175,20 +182,18 @@
     return DKDInstantMessageParse(mDict);
 }
 
-- (nullable id<DKDReliableMessage>)sign {
-    id<DKDSecureMessageDelegate> delegate = (id<DKDSecureMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
+- (id<DKDReliableMessage>)sign {
+    id<DKDSecureMessageDelegate> transceiver;
+    transceiver = (id<DKDSecureMessageDelegate>)[self delegate];
+    NSAssert(transceiver, @"message delegate not set yet");
     // 1. sign with sender's private key
-    NSData *signature = [delegate message:self signData:self.data forSender:self.sender];
+    NSData *signature = [transceiver message:self signData:self.data forSender:self.sender];
     NSAssert(signature, @"failed to sign message: %@", self);
-    NSObject *base64 = [delegate message:self encodeSignature:signature];
-    if (!base64) {
-        NSAssert(false, @"failed to encode signature: %@", signature);
-        return nil;
-    }
+    NSObject *b64 = [transceiver message:self encodeSignature:signature];
+    NSAssert(b64, @"failed to encode signature: %@", signature);
     // 2. pack message
     NSMutableDictionary *mDict = [self dictionary:NO];
-    [mDict setObject:base64 forKey:@"signature"];
+    [mDict setObject:b64 forKey:@"signature"];
     return DKDReliableMessageParse(mDict);
 }
 
@@ -205,19 +210,21 @@
     //    when the group message separated to multi-messages;
     //    if don't want the others know your membership,
     //    DON'T do this.
-    [msg setObject:[self.receiver string] forKey:@"group"];
+    id<MKMID> receiver = [self receiver];
+    NSAssert([receiver isGroup], @"receiver error: %@", receiver);
+    [msg setObject:[receiver string] forKey:@"group"];
     
     NSMutableArray *messages;
     messages = [[NSMutableArray alloc] initWithCapacity:members.count];
-    NSString *base64;
+    NSString *b64;
     id<DKDSecureMessage> item;
-    for (id<MKMID> member in members) {
+    for (id<MKMID> mem in members) {
         // 2. change receiver to each group member
-        [msg setObject:[member string] forKey:@"receiver"];
+        [msg setObject:[mem string] forKey:@"receiver"];
         // 3. get encrypted key
-        base64 = [keyMap objectForKey:[member string]];
-        if (base64) {
-            [msg setObject:base64 forKey:@"key"];
+        b64 = [keyMap objectForKey:[mem string]];
+        if (b64) {
+            [msg setObject:b64 forKey:@"key"];
         } else {
             [msg removeObjectForKey:@"key"];
         }
@@ -235,19 +242,21 @@
     // check 'keys'
     NSDictionary *keys = [mDict objectForKey:@"keys"];
     if (keys) {
-        NSString *base64 = [keys objectForKey:[member string]];
-        if (base64) {
-            [mDict setObject:base64 forKey:@"key"];
+        NSString *b64 = [keys objectForKey:[member string]];
+        if (b64) {
+            [mDict setObject:b64 forKey:@"key"];
         }
         [mDict removeObjectForKey:@"keys"];
     }
     // check 'group'
-    id<MKMID> group = self.group;
+    id<MKMID> group = [self group];
     if (!group) {
         // if 'group' not exists, the 'receiver' must be a group ID here, and
         // it will not be equal to the member of course,
         // so move 'receiver' to 'group'
-        [mDict setObject:[self.receiver string] forKey:@"group"];
+        id<MKMID> receiver = [self receiver];
+        NSAssert([receiver isGroup], @"receiver error: %@", receiver);
+        [mDict setObject:[receiver string] forKey:@"group"];
     }
     // replace receiver
     [mDict setObject:[member string] forKey:@"receiver"];

@@ -39,9 +39,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  General ID Factory
+ */
 @interface DIMIDFactory : NSObject <MKMIDFactory>
 
-// protected override for customized ID
+// protected, override for customized ID
 - (id<MKMID>)newID:(NSString *)identifier name:(nullable NSString *)seed address:(id<MKMAddress>)main terminal:(nullable NSString *)loc;
 
 // protected

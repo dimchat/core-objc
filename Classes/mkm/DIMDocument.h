@@ -44,11 +44,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithID:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig
+- (instancetype)initWithID:(id<MKMID>)ID
+                      data:(NSString *)json
+                 signature:(NSString *)sig
 NS_DESIGNATED_INITIALIZER;
 
 // create a new empty document with entity ID & document type
-- (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type
+- (instancetype)initWithID:(id<MKMID>)ID
+                      type:(NSString *)type
 NS_DESIGNATED_INITIALIZER;
 
 @end

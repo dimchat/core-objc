@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return members list (ID)
  */
-- (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group;
 
 /**
  *  Get assistants for this group
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param group - group ID
  * @return bot ID list
  */
-- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
+- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group;
 
 @end
 

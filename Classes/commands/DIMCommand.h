@@ -87,10 +87,10 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
+_Nullable id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
-id<DKDCommand> DKDCommandParse(id content);
+_Nullable id<DKDCommand> DKDCommandParse(id content);
 
 DIMCommand *DIMCommandCreate(NSString *cmd);
 

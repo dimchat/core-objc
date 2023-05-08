@@ -101,10 +101,13 @@ DIMContent *DIMContentCreate(DKDContentType type) {
 }
 
 - (DKDContentType)type {
-    if (_type == 0) {
-        _type = [self uint8ForKey:@"type"];
+    DKDContentType msgType = _type;
+    if (msgType == 0) {
+        DKDFactoryManager *man = [DKDFactoryManager sharedManager];
+        msgType = [man.generalFactory contentType:self.dictionary];
+        _type = msgType;
     }
-    return _type;
+    return msgType;
 }
 
 - (unsigned long)serialNumber {
@@ -129,11 +132,7 @@ DIMContent *DIMContentCreate(DKDContentType type) {
 }
 
 - (void)setGroup:(nullable id<MKMID>)group {
-    if (group) {
-        [self setString:group forKey:@"group"];
-    } else {
-        [self removeObjectForKey:@"group"];
-    }
+    [self setString:group forKey:@"group"];
     _group = group;
 }
 

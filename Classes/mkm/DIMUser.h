@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return contacts list (ID)
  */
-- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user;
+- (NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user;
 
 /**
  *  Get user's public key for encryption
@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return public keys
  */
-- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user;
+- (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user;
 
 /**
  *  Get user's private keys for decryption
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return private key
  */
-- (id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user;
+- (nullable id<MKMSignKey>)privateKeyForSignature:(id<MKMID>)user;
 
 /**
  *  Get user's private key for signing visa
@@ -113,10 +113,23 @@ NS_ASSUME_NONNULL_BEGIN
  * @param user - user ID
  * @return private key
  */
-- (id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user;
+- (nullable id<MKMSignKey>)privateKeyForVisaSignature:(id<MKMID>)user;
 
 @end
 
+/**
+ *  User account for communication
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  This class is for creating user account
+ *
+ *  functions:
+ *      (User)
+ *      1. verify(data, signature) - verify (encrypted content) data and signature
+ *      2. encrypt(data)           - encrypt (symmetric key) data
+ *      (LocalUser)
+ *      3. sign(data)    - calculate signature of (encrypted content) data
+ *      4. decrypt(data) - decrypt (symmetric key) data
+ */
 @protocol MKMUser <MKMEntity>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMVisa> visa;

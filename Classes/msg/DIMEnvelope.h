@@ -46,7 +46,7 @@ NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithSender:(id<MKMID>)from
                       receiver:(id<MKMID>)to
-                          time:(NSDate *)when
+                          time:(nullable NSDate *)when
 NS_DESIGNATED_INITIALIZER;
 
 @end

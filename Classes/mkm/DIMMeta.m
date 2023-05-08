@@ -106,17 +106,20 @@
 }
 
 - (MKMMetaType)type {
-    if (_type == 0) {
-        _type = [self uint8ForKey:@"type"];
+    MKMMetaType version = _type;
+    if (version == 0) {
+        MKMFactoryManager *man = [MKMFactoryManager sharedManager];
+        version = [man.generalFactory metaType:self.dictionary];
+        _type = version;
     }
-    return _type;
+    return version;
 }
 
 - (id<MKMVerifyKey>)key {
     if (!_key) {
         id dict = [self objectForKey:@"key"];
         NSAssert(dict, @"meta key not found: %@", self);
-        _key = (id<MKMVerifyKey>)MKMPublicKeyParse(dict);
+        _key = MKMPublicKeyParse(dict);
     }
     return _key;
 }
@@ -131,15 +134,15 @@
 
 - (nullable NSData *)fingerprint {
     if (!_fingerprint && MKMMeta_HasSeed(self.type)) {
-        NSString *base64 = [self stringForKey:@"fingerprint"];
-        NSAssert(base64, @"meta.fingerprint should not be empty: %@", self);
-        _fingerprint = MKMBase64Decode(base64);
-        NSAssert([_fingerprint length] > 0, @"meta.fingerprint error: %@", self);
+        NSString *b64 = [self stringForKey:@"fingerprint"];
+        NSAssert(b64, @"meta.fingerprint should not be empty: %@", self);
+        _fingerprint = MKMBase64Decode(b64);
+        NSAssert([_fingerprint length] > 0, @"meta.fingerprint error: %@", b64);
     }
     return _fingerprint;
 }
 
-- (nullable id<MKMAddress>)generateAddress:(MKMEntityType)network {
+- (id<MKMAddress>)generateAddress:(MKMEntityType)network {
     NSAssert(false, @"implement me!");
     return nil;
 }

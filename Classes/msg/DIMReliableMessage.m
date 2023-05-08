@@ -68,20 +68,25 @@
 
 - (NSData *)signature {
     if (!_signature) {
-        NSString *CT = [self objectForKey:@"signature"];
-        NSAssert(CT, @"signature cannot be empty");
-        id<DKDReliableMessageDelegate> delegate = (id<DKDReliableMessageDelegate>)[self delegate];
-        NSAssert(delegate, @"message delegate not set yet");
-        _signature = [delegate message:self decodeSignature:CT];
+        NSObject *b64 = [self objectForKey:@"signature"];
+        NSAssert(b64, @"signature cannot be empty");
+        id<DKDReliableMessageDelegate> transceiver;
+        transceiver = (id<DKDReliableMessageDelegate>)[self delegate];
+        NSAssert(transceiver, @"message delegate not set yet");
+        _signature = [transceiver message:self decodeSignature:b64];
+        NSAssert(_signature, @"message signature error: %@", b64);
     }
     return _signature;
 }
 
 - (nullable id<DKDSecureMessage>)verify {
-    id<DKDReliableMessageDelegate> delegate = (id<DKDReliableMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
+    id<DKDReliableMessageDelegate> transceiver;
+    transceiver = (id<DKDReliableMessageDelegate>)[self delegate];
+    NSAssert(transceiver, @"message delegate not set yet");
     // 1. verify data signature with sender's public key
-    if ([delegate message:self verifyData:self.data withSignature:self.signature forSender:self.sender]) {
+    if ([transceiver message:self
+                  verifyData:self.data withSignature:self.signature
+                   forSender:self.sender]) {
         // 2. pack message
         NSMutableDictionary *mDict = [self dictionary:NO];
         [mDict removeObjectForKey:@"signature"];

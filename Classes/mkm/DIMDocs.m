@@ -154,7 +154,8 @@
 }
 
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
-    [self setProperty:assistants forKey:@"assistants"];
+    NSAssert([assistants count] > 0, @"bots empty");
+    [self setProperty:MKMIDRevert(assistants) forKey:@"assistants"];
     _assistants = assistants;
 }
 

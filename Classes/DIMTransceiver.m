@@ -56,9 +56,9 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 
 #pragma mark DKDInstantMessageDelegate
 
-- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
-            serializeContent:(id<DKDContent>)content
-                     withKey:(id<MKMSymmetricKey>)password {
+- (NSData *)message:(id<DKDInstantMessage>)iMsg
+   serializeContent:(id<DKDContent>)content
+            withKey:(id<MKMSymmetricKey>)password {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
     
@@ -66,14 +66,14 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     return MKMUTF8Encode(MKMJSONEncode(content.dictionary));
 }
 
-- (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
-              encryptContent:(NSData *)data
-                     withKey:(id<MKMSymmetricKey>)password {
+- (NSData *)message:(id<DKDInstantMessage>)iMsg
+     encryptContent:(NSData *)data
+            withKey:(id<MKMSymmetricKey>)password {
     return [password encrypt:data];
 }
 
-- (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
-                    encodeData:(NSData *)data {
+- (NSObject *)message:(id<DKDInstantMessage>)iMsg
+           encodeData:(NSData *)data {
     if (isBroadcast(iMsg)) {
         // broadcast message content will not be encrypted (just encoded to JsON),
         // so no need to encode to Base64 here
@@ -102,8 +102,8 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     return [contact encrypt:data];
 }
 
-- (nullable NSObject *)message:(id<DKDInstantMessage>)iMsg
-                     encodeKey:(NSData *)data {
+- (NSObject *)message:(id<DKDInstantMessage>)iMsg
+            encodeKey:(NSData *)data {
     NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
     return MKMBase64Encode(data);
 }
@@ -177,16 +177,16 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     return DKDContentParse(dict);
 }
 
-- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
-                    signData:(NSData *)data
-                   forSender:(id<MKMID>)sender {
+- (NSData *)message:(id<DKDSecureMessage>)sMsg
+           signData:(NSData *)data
+          forSender:(id<MKMID>)sender {
     id<MKMUser> user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
 
-- (nullable NSObject *)message:(id<DKDSecureMessage>)sMsg
-               encodeSignature:(NSData *)signature {
+- (NSObject *)message:(id<DKDSecureMessage>)sMsg
+      encodeSignature:(NSData *)signature {
     return MKMBase64Encode(signature);
 }
 

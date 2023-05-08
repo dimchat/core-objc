@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- *  Entity pool to manage User/Contace/Group/Member instances
+ *  Entity pool to manage User/Contact/Group/Member instances
  *
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
@@ -74,8 +74,8 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
-id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
+_Nullable id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
+_Nullable id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
 NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group);
 
 #ifdef __cplusplus

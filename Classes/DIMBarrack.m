@@ -84,7 +84,7 @@
 
 #pragma mark MKMUserDataSource
 
-- (nullable NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
+- (NSArray<id<MKMID>> *)contactsOfUser:(id<MKMID>)user {
     NSAssert(false, @"implement me!");
     return nil;
 }
@@ -104,7 +104,7 @@
     return nil;
 }
 
-- (nullable NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
+- (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
     NSMutableArray *mArray = [[NSMutableArray alloc] init];
     // 1. get key from visa
     id visaKey = [self visaKeyForID:user];
@@ -193,7 +193,7 @@
     return nil;
 }
 
-- (nullable NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // members of broadcast group
@@ -201,10 +201,10 @@
     }
     
     // NOTICE: let sub-class to load members from database
-    return nil;
+    return @[];
 }
 
-- (nullable NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
+- (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
     id<MKMDocument> doc = [self documentForID:group type:MKMDocument_Bulletin];
     if ([doc conformsToProtocol:@protocol(MKMBulletin)]) {
         if ([doc isValid]) {
@@ -212,7 +212,7 @@
         }
     }
     // TODO: get group bots from SP configuration
-    return nil;
+    return @[];
 }
 
 @end

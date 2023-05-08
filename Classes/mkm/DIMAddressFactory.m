@@ -53,12 +53,11 @@
     return self;
 }
 
-- (nullable id<MKMAddress>)generateAddressWithMeta:(id<MKMMeta>)meta
-                                              type:(MKMEntityType)network {
+- (id<MKMAddress>)generateAddressWithMeta:(id<MKMMeta>)meta
+                                     type:(MKMEntityType)network {
     id<MKMAddress> address = [meta generateAddress:network];
-    if (address) {
-        [_addresses setObject:address forKey:address.string];
-    }
+    NSAssert(address, @"failed to generate address: %@", meta);
+    [_addresses setObject:address forKey:address.string];
     return address;
 }
 
@@ -92,6 +91,8 @@
 
 NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger) {
     NSArray *people = [planet allKeys];
+    // if ++finger is odd, remove it,
+    // else, let it go
     for (id key in people) {
         if ((++finger & 1) == 1) {
             // kill it

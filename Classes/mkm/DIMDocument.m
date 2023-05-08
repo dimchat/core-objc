@@ -93,7 +93,7 @@
         _ID = ID;
 
         _data = json;
-        _signature = MKMBase64Decode(sig);
+        _signature = nil;  // MKMBase64Decode(sig);
         
         _properties = nil;
 
@@ -143,13 +143,16 @@
 }
 
 - (NSString *)type {
-    if (!_type) {
-        _type = [self propertyForKey:@"type"];
-        if (!_type) {
-            _type = [self objectForKey:@"type"];
+    NSString *docType = _type;
+    if (!docType) {
+        docType = [self propertyForKey:@"type"];
+        if (!docType) {
+            MKMFactoryManager *man = [MKMFactoryManager sharedManager];
+            docType = [man.generalFactory documentType:self.dictionary];
         }
+        _type = docType;
     }
-    return _type;
+    return docType;
 }
 
 - (id<MKMID>)ID {
@@ -168,9 +171,10 @@
 
 - (NSData *)signature {
     if (!_signature) {
-        NSString *base64 = [self stringForKey:@"signature"];
-        if (base64) {
-            _signature = MKMBase64Decode(base64);
+        NSString *b64 = [self stringForKey:@"signature"];
+        if (b64) {
+            _signature = MKMBase64Decode(b64);
+            NSAssert(_signature, @"document signature error: %@", b64);
         }
     }
     return _signature;
@@ -272,12 +276,12 @@
     // 2. encode & sign
     NSString *data = MKMJSONEncode(self.properties);
     if ([data length] == 0) {
-        // properties error
+        NSAssert(false, @"should not happen");
         return nil;
     }
     NSData *signature = [SK sign:MKMUTF8Encode(data)];
     if ([signature length] == 0) {
-        // signature error
+        NSAssert(false, @"should not happen");
         return nil;
     }
     // 3. update 'data' & 'signature' fields
@@ -310,6 +314,18 @@
 
 #pragma mark -
 
+static inline NSString *doc_type(NSString *docType, id<MKMID> ID) {
+    if ([docType isEqualToString:@"*"]) {
+        if (MKMIDIsGroup(ID)) {
+            return MKMDocument_Bulletin;
+        } else if (MKMIDIsUser(ID)) {
+            return MKMDocument_Visa;
+        }
+        return MKMDocument_Profile;
+    }
+    return docType;
+}
+
 @implementation DIMDocumentFactory
 
 - (instancetype)initWithType:(NSString *)type {
@@ -319,20 +335,8 @@
     return self;
 }
 
-- (NSString *)typeForID:(id<MKMID>)ID {
-    if ([_type isEqualToString:@"*"]) {
-        if (MKMIDIsGroup(ID)) {
-            return MKMDocument_Bulletin;
-        } else if (MKMIDIsUser(ID)) {
-            return MKMDocument_Visa;
-        }
-        return MKMDocument_Profile;
-    }
-    return _type;
-}
-
 - (id<MKMDocument>)createDocument:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig {
-    NSString *type = [self typeForID:ID];
+    NSString *type = doc_type(_type, ID);
     if ([type isEqualToString:MKMDocument_Visa]) {
         return [[DIMVisa alloc] initWithID:ID data:json signature:sig];
     }
@@ -344,7 +348,7 @@
 
 // create a new empty document with entity ID
 - (id<MKMDocument>)createDocument:(id<MKMID>)ID {
-    NSString *type = [self typeForID:ID];
+    NSString *type = doc_type(_type, ID);
     if ([type isEqualToString:MKMDocument_Visa]) {
         return [[DIMVisa alloc] initWithID:ID];
     }
@@ -357,15 +361,13 @@
 - (nullable id<MKMDocument>)parseDocument:(NSDictionary *)doc {
     id<MKMID> ID = MKMIDParse([doc objectForKey:@"ID"]);
     if (!ID) {
+        NSAssert(false, @"document ID not found: %@", doc);
         return nil;
     }
-    NSString *type = [doc objectForKey:@"type"];
+    MKMFactoryManager *man = [MKMFactoryManager sharedManager];
+    NSString *type = [man.generalFactory documentType:doc];
     if (type.length == 0) {
-        if (MKMIDIsGroup(ID)) {
-            type = MKMDocument_Bulletin;
-        } else {
-            type = MKMDocument_Visa;
-        }
+        type = doc_type(@"*", ID);
     }
     if ([type isEqualToString:MKMDocument_Visa]) {
         return [[DIMVisa alloc] initWithDictionary:doc];

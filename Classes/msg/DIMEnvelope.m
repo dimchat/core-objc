@@ -65,7 +65,12 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithSender:(id<MKMID>)from receiver:(id<MKMID>)to time:(NSDate *)when {
+- (instancetype)initWithSender:(id<MKMID>)from receiver:(id<MKMID>)to
+                          time:(nullable NSDate *)when {
+    if (!when) {
+        // now()
+        when = [[NSDate alloc] init];
+    }
     NSDictionary *dict = @{
         @"sender":[from string],
         @"receiver":[to string],
@@ -92,6 +97,7 @@
 - (id<MKMID>)sender {
     if (!_sender) {
         _sender = MKMIDParse([self objectForKey:@"sender"]);
+        NSAssert(_sender, @"message sender not found: %@", self);
     }
     return _sender;
 }
@@ -118,11 +124,7 @@
 }
 
 - (void)setGroup:(nullable id<MKMID>)group {
-    if (group) {
-        [self setString:group forKey:@"group"];
-    } else {
-        [self removeObjectForKey:@"group"];
-    }
+    [self setString:group forKey:@"group"];
 }
 
 - (DKDContentType)type {
@@ -140,10 +142,6 @@
 - (id<DKDEnvelope>)createEnvelopeWithSender:(id<MKMID>)from
                                    receiver:(id<MKMID>)to
                                        time:(nullable NSDate *)when {
-    if (!when) {
-        // now()
-        when = [[NSDate alloc] init];
-    }
     return [[DIMEnvelope alloc] initWithSender:from receiver:to time:when];
 }
 

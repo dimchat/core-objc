@@ -63,9 +63,7 @@
     
     if (self = [super initWithEnvelope:env]) {
         // content
-        if (content) {
-            [self setObject:[content dictionary] forKey:@"content"];
-        }
+        [self setDictionary:content forKey:@"content"];
         _content = content;
     }
     return self;
@@ -80,7 +78,7 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMInstantMessage *iMsg = [super copyWithZone:zone];
     if (iMsg) {
-        iMsg.content = _content;
+        iMsg.innerContent = _content;
     }
     return iMsg;
 }
@@ -94,6 +92,9 @@
 }
 - (void)setContent:(id<DKDContent>)content {
     [self setDictionary:content forKey:@"content"];
+    _content = content;
+}
+- (void)setInnerContent:(id<DKDContent>)content {
     _content = content;
 }
 
@@ -113,18 +114,17 @@
     return [self.content type];
 }
 
-- (nullable NSMutableDictionary *)_prepareWithKey:(id<MKMSymmetricKey>)PW {
-    id<DKDInstantMessageDelegate> delegate = (id<DKDInstantMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
-    // 1. serialize content
-    NSData *data = [delegate message:self serializeContent:self.content withKey:PW];
+- (NSMutableDictionary *)_prepare:(id<MKMSymmetricKey>)PW
+                         delegate:(id<DKDInstantMessageDelegate>)transceiver {
+    // 1. serialize message content
+    NSData *data = [transceiver message:self serializeContent:self.content withKey:PW];
     
-    // 2. encrypt content data
-    data = [delegate message:self encryptContent:data withKey:PW];
+    // 2. encrypt content data with password
+    data = [transceiver message:self encryptContent:data withKey:PW];
     NSAssert(data, @"failed to encrypt content with key: %@", PW);
     
     // 3. encode encrypted data
-    NSObject *base64 = [delegate message:self encodeData:data];
+    NSObject *base64 = [transceiver message:self encodeData:data];
     NSAssert(base64, @"failed to encode data: %@", data);
     
     // 4. replace 'content' with encrypted 'data'
@@ -135,67 +135,88 @@
 }
 
 - (nullable id<DKDSecureMessage>)encryptWithKey:(id<MKMSymmetricKey>)password {
-    id<DKDInstantMessageDelegate> delegate = (id<DKDInstantMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
+    id<DKDInstantMessageDelegate> transceiver;
+    transceiver = (id<DKDInstantMessageDelegate>)[self delegate];
+    NSAssert(transceiver, @"message delegate not set yet");
     // 0. check attachment for File/Image/Audio/Video message content
     //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
-    NSMutableDictionary *msg = [self _prepareWithKey:password];
+    NSMutableDictionary *msg = [self _prepare:password delegate:transceiver];
     
     // 2. encrypt symmetric key(password) to 'message.key'
-    id<MKMID> receiver = self.receiver;
     // 2.1. serialize symmetric key
-    NSData *key = [delegate message:self serializeKey:password];
-    if (key) {
-        // 2.2. encrypt symmetric key data
-        key = [delegate message:self encryptKey:key forReceiver:receiver];
-        if (key) {
-            // 2.3. encode encrypted key data
-            NSObject *base64 = [delegate message:self encodeKey:key];
-            NSAssert(base64, @"failed to encode key data: %@", key);
-            // 2.4. insert as 'key'
-            [msg setObject:base64 forKey:@"key"];
-        }
+    NSData *pwd = [transceiver message:self serializeKey:password];
+    if (!pwd) {
+        // A) broadcast message has no key
+        // B) reused key
+        return DKDSecureMessageParse(msg);
+    }
+    id<MKMID> receiver = self.receiver;
+
+    // 2.2. encrypt symmetric key data
+    NSData *key = [transceiver message:self encryptKey:pwd forReceiver:receiver];
+    if (!key) {
+        // public key for encryption not found
+        // TODO: suspend this message for waiting receiver's visa
+        return nil;
     }
     
+    // 2.3. encode encrypted key data
+    NSObject *b64 = [transceiver message:self encodeKey:key];
+    NSAssert(b64, @"failed to encode key data: %lu byte(s)", key.length);
+    // 2.4. insert as 'key'
+    [msg setObject:b64 forKey:@"key"];
+
     // 3. pack message
     return DKDSecureMessageParse(msg);
 }
 
 - (nullable id<DKDSecureMessage>)encryptWithKey:(id<MKMSymmetricKey>)password
                                      forMembers:(NSArray<id<MKMID>> *)members {
-    id<DKDInstantMessageDelegate> delegate = (id<DKDInstantMessageDelegate>)[self delegate];
-    NSAssert(delegate, @"message delegate not set yet");
+    id<DKDInstantMessageDelegate> transceiver;
+    transceiver = (id<DKDInstantMessageDelegate>)[self delegate];
+    NSAssert(transceiver, @"message delegate not set yet");
     // 0. check attachment for File/Image/Audio/Video message content
     //    (do it in application level)
 
     // 1. encrypt 'message.content' to 'message.data'
-    NSMutableDictionary *msg = [self _prepareWithKey:password];
+    NSMutableDictionary *msg = [self _prepare:password delegate:transceiver];
     
-    // 2. serialize symmetric key
-    NSData *key = [delegate message:self serializeKey:password];
-    if (key) {
-        // encrypt key data to 'message.keys'
-        NSMutableDictionary *map = [[NSMutableDictionary alloc] initWithCapacity:members.count];
-        NSData *data;
-        NSObject *base64;
-        for (id<MKMID> ID in members) {
-            // 2.1. encrypt symmetric key data
-            data = [delegate message:self encryptKey:key forReceiver:ID];
-            if (data) {
-                // 2.2. encode encrypted key data
-                base64 = [delegate message:self encodeKey:data];
-                NSAssert(base64, @"failed to encode key data: %@", data);
-                // 2.3. insert to 'message.keys' with member ID
-                [map setObject:base64 forKey:[ID string]];
-            }
-        }
-        if (map.count > 0) {
-            [msg setObject:map forKey:@"keys"];
-        }
+    // 2. encrypt symmetric key(password) to 'message.keys'
+    // 2.1. serialize symmetric key
+    NSData *pwd = [transceiver message:self serializeKey:password];
+    if (!pwd) {
+        // A) broadcast message has no key
+        // B) reused key
+        return DKDSecureMessageParse(msg);
     }
+    // keys map
+    NSMutableDictionary *map = [[NSMutableDictionary alloc] initWithCapacity:members.count];
+    NSData *key;
+    NSObject *b64;
     
+    for (id<MKMID> ID in members) {
+        // 2.2. encrypt symmetric key data
+        key = [transceiver message:self encryptKey:pwd forReceiver:ID];
+        if (!key) {
+            // public key for member not found
+            // TODO: suspend this message for waiting member's visa
+            continue;
+        }
+        // 2.3. encode encrypted key data
+        b64 = [transceiver message:self encodeKey:key];
+        NSAssert(b64, @"failed to encode key data: %lu byte(s)", key.length);
+        // 2.4. insert to 'message.keys' with member ID
+        [map setObject:b64 forKey:[ID string]];
+    }
+    if (map.count == 0) {
+        // public key for member(s) not found
+        // TODO: suspend this message for waiting member's visa
+        return nil;
+    }
+    [msg setObject:map forKey:@"keys"];
+
     // 3. pack message
     return DKDSecureMessageParse(msg);
 }

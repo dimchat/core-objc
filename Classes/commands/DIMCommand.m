@@ -78,7 +78,8 @@ DIMCommand *DIMCommandCreate(NSString *cmd) {
 }
 
 - (NSString *)cmd {
-    return [self stringForKey:@"command"];
+    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
+    return [man.generalFactory getCmd:self.dictionary];
 }
 
 @end

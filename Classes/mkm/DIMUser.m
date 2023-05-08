@@ -62,11 +62,11 @@
 }
 
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature {
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
     // NOTICE: I suggest using the private key paired with meta.key to sign message
     //         so here should return the meta.key
-    NSArray<id<MKMVerifyKey>> *keys = [delegate publicKeysForVerification:self.ID];
+    NSArray<id<MKMVerifyKey>> *keys = [barrack publicKeysForVerification:self.ID];
     for (id<MKMVerifyKey> PK in keys) {
         if ([PK verify:data withSignature:signature]) {
             // matched!
@@ -79,11 +79,11 @@
 }
 
 - (NSData *)encrypt:(NSData *)plaintext {
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
     // NOTICE: meta.key will never changed, so use visa.key to encrypt
     //         is the better way
-    id<MKMEncryptKey> PK = [delegate publicKeyForEncryption:self.ID];
+    id<MKMEncryptKey> PK = [barrack publicKeyForEncryption:self.ID];
     NSAssert(PK, @"failed to get encrypt key for user: %@", self.ID);
     return [PK encrypt:plaintext];
 }
@@ -104,9 +104,9 @@
 }
 
 - (NSArray<id<MKMID>> *)contacts {
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
-    return [delegate contactsOfUser:self.ID];
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
+    return [barrack contactsOfUser:self.ID];
 }
 
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {
@@ -114,29 +114,29 @@
         // visa ID not match
         return nil;
     }
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
-    id<MKMSignKey> SK = [delegate privateKeyForVisaSignature:self.ID];
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
+    id<MKMSignKey> SK = [barrack privateKeyForVisaSignature:self.ID];
     NSAssert(SK, @"failed to get visa sign key for user: %@", self.ID);
     return !SK || [visa sign:SK].length == 0 ? nil : visa;
 }
 
 - (NSData *)sign:(NSData *)data {
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
     // NOTICE: I suggest use the private key which paired to visa.key
     //         to sign message
-    id<MKMSignKey> SK = [delegate privateKeyForSignature:self.ID];
+    id<MKMSignKey> SK = [barrack privateKeyForSignature:self.ID];
     NSAssert(SK, @"failed to get sign key for user: %@", self.ID);
     return [SK sign:data];
 }
 
 - (nullable NSData *)decrypt:(NSData *)ciphertext {
-    id<MKMUserDataSource> delegate = (id<MKMUserDataSource>)[self dataSource];
-    NSAssert(delegate, @"user data source not set yet");
+    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    NSAssert(barrack, @"user data source not set yet");
     // NOTICE: if you provide a public key in visa for encryption
     //         here you should return the private key paired with visa.key
-    NSArray<id<MKMDecryptKey>> *keys = [delegate privateKeysForDecryption:self.ID];
+    NSArray<id<MKMDecryptKey>> *keys = [barrack privateKeysForDecryption:self.ID];
     NSAssert([keys count] > 0, @"failed to get decrypt keys for user: %@", self.ID);
     NSData *plaintext = nil;
     for (id<MKMDecryptKey> SK in keys) {

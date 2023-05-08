@@ -60,6 +60,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+/**
+ *  Entity (User/Group)
+ *  ~~~~~~~~~~~~~~~~~~~
+ *  Base class of User and Group, ...
+ *
+ *  properties:
+ *      identifier - entity ID
+ *      type       - entity type
+ *      meta       - meta for generate ID
+ *      document   - entity document
+ */
 @protocol MKMEntity <NSObject>
 
 @property (readonly, copy, nonatomic) id<MKMID> ID;     // name@address
