@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2022 by Moky <albert.moky@gmail.com>
+//                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2022 Albert Moky
+// Copyright (c) 2023 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,39 +28,18 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMIDFactory.h
+//  DIMBaseDataWrapper.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2020/12/12.
-//  Copyright © 2020 Albert Moky. All rights reserved.
+//  Created by Albert Moky on 2023/12/7.
+//  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/MingKeMing.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  General ID Factory
- */
-@interface DIMIDFactory : NSObject <MKMIDFactory>
-
-// protected, override for customized ID
-- (id<MKMID>)newID:(NSString *)identifier name:(nullable NSString *)seed address:(id<MKMAddress>)main terminal:(nullable NSString *)loc;
-
-// protected
-- (nullable id<MKMID>)parse:(NSString *)identifier;
-
-@end
-
-@interface DIMIDFactory (Thanos)
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
+@interface DIMBaseDataWrapper : NSObject
 
 @end
 

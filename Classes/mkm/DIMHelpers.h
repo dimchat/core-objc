@@ -2,12 +2,12 @@
 //
 //  Ming-Ke-Ming : Decentralized User Identity Authentication
 //
-//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2018 Albert Moky
+// Copyright (c) 2023 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,55 +28,18 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMDocs.h
+//  DIMHelpers.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/9/30.
-//  Copyright © 2018 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2023/12/7.
+//  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMDocument.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  User Document
- *  ~~~~~~~~~~~~~
- *  This interface is defined for authorizing other apps to login,
- *  which can generate a temporary asymmetric key pair for messaging.
- */
-@protocol MKMVisa <MKMDocument>
-
-// public key for other user to encrypt message
-@property (strong, nonatomic, nullable) id<MKMEncryptKey> publicKey;
-
-// avatar URL
-@property (strong, nonatomic, nullable) NSString *avatar;
-
-@end
-
-/**
- *  Group Document
- *  ~~~~~~~~~~~~~~
- */
-@protocol MKMBulletin <MKMDocument>
-
-// Bot ID list as group assistants
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;
-
-@end
-
-#pragma mark -
-
-@interface DIMVisa : DIMDocument <MKMVisa>
-
-- (instancetype)initWithID:(id<MKMID>)ID;
-
-@end
-
-@interface DIMBulletin : DIMDocument <MKMBulletin>
-
-- (instancetype)initWithID:(id<MKMID>)ID;
+@interface DIMHelpers : NSObject
 
 @end
 

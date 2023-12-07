@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2020 by Moky <albert.moky@gmail.com>
+//                               Written in 2023 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Albert Moky
+// Copyright (c) 2023 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,45 +28,15 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMAddressFactory.h
+//  DIMPublicKey.m
 //  DIMCore
 //
-//  Created by Albert Moky on 2020/12/12.
-//  Copyright © 2020 Albert Moky. All rights reserved.
+//  Created by Albert Moky on 2023/12/7.
+//  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/MingKeMing.h>
+#import "DIMPublicKey.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-/**
- *  Base Address Factory
- */
-@interface DIMAddressFactory : NSObject <MKMAddressFactory>
+@implementation DIMPublicKey
 
 @end
-
-@interface DIMAddressFactory (Thanos)
-
-/**
- * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
- * this will remove 50% of cached objects
- *
- * @return number of survivors
- */
-- (NSUInteger)reduceMemory;
-
-@end
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Thanos can kill half lives of a world with a snap of the finger
-NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
-NS_ASSUME_NONNULL_END
