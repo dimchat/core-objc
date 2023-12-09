@@ -39,14 +39,31 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Reliable Message signed by an asymmetric key
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  This class is used to sign the SecureMessage
+ *  It contains a 'signature' field which signed with sender's private key
+ *
+ *  data format: {
+ *      //-- envelope
+ *      sender   : "moki@xxx",
+ *      receiver : "hulk@yyy",
+ *      time     : 123,
+ *      //-- content data and key/keys
+ *      data     : "...",  // base64_encode( symmetric_encrypt(content))
+ *      key      : "...",  // base64_encode(asymmetric_encrypt(password))
+ *      keys     : {
+ *          "ID1": "key1", // base64_encode(asymmetric_encrypt(password))
+ *      },
+ *      //-- signature
+ *      signature: "..."   // base64_encode(asymmetric_sign(data))
+ *  }
+ */
 @interface DIMReliableMessage : DIMSecureMessage <DKDReliableMessage>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
-
-@end
-
-@interface DIMReliableMessageFactory : NSObject <DKDReliableMessageFactory>
 
 @end
 

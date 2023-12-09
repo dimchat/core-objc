@@ -44,27 +44,41 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x20,
  *      sn   : 123,
  *
- *      URL   : "https://github.com/moky/dimp", // Page URL
- *      icon  : "...",                          // base64_encode(icon)
- *      title : "...",
- *      desc  : "..."
+ *      title : "...",                // Web title
+ *      icon  : "...",                // base64_encode(icon)
+ *      desc  : "...",
+ *
+ *      URL   : "https://github.com/moky/dimp",
+ *
+ *      HTML      : "...",            // Web content
+ *      mime_type : "text/html",      // Content-Type
+ *      encoding  : "utf8",
+ *      base      : "about:blank"     // Base URL
+ *
  *  }
  */
 @protocol DKDPageContent <DKDContent>
 
-@property (readonly, strong, nonatomic) NSURL *URL;
-@property (readonly, strong, nonatomic, nullable) NSString *title;
-@property (readonly, strong, nonatomic, nullable) NSString *desc;
-@property (readonly, strong, nonatomic, nullable) NSData *icon;
+@property (strong, nonatomic) NSString *title;
+@property (strong, atomic, nullable) NSData *icon;
+@property (strong, nonatomic, nullable) NSString *desc;
+
+@property (strong, nonatomic, nullable) NSURL *URL;
+@property (strong, nonatomic, nullable) NSString *HTML;
 
 @end
 
 @interface DIMPageContent : DIMContent <DKDPageContent>
 
 - (instancetype)initWithURL:(NSURL *)url
-                      title:(nullable NSString *)title
+                      title:(NSString *)title
                 description:(nullable NSString *)desc
-                       icon:(nullable NSData *)icon;
+                       icon:(nullable id<MKMTransportableData>)icon;
+
+- (instancetype)initWithHTML:(NSString *)html
+                       title:(NSString *)title
+                 description:(nullable NSString *)desc
+                        icon:(nullable id<MKMTransportableData>)icon;
 
 @end
 
@@ -72,10 +86,17 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMPageContent *DIMPageContentCreate(NSURL *url,
-                                     NSString *title,
-                                     NSString *desc,
-                                     NSData *icon);
+// create from URL
+DIMPageContent *DIMPageContentFromURL(NSURL *url,
+                                      NSString *title,
+                                      NSString * _Nullable desc,
+                                      _Nullable id<MKMTransportableData> icon);
+
+// create from HTML
+DIMPageContent *DIMPageContentFromHTML(NSString *html,
+                                       NSString *title,
+                                       NSString * _Nullable desc,
+                                       _Nullable id<MKMTransportableData> icon);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

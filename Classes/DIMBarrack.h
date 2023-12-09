@@ -70,16 +70,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-_Nullable id<MKMID> DIMBroadcastGroupFounder(id<MKMID> group);
-_Nullable id<MKMID> DIMBroadcastGroupOwner(id<MKMID> group);
-NSArray<id<MKMID>> * DIMBroadcastGroupMembers(id<MKMID> group);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
 NS_ASSUME_NONNULL_END

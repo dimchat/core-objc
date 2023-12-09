@@ -47,17 +47,16 @@ NS_ASSUME_NONNULL_BEGIN
  *      command   : "document", // command name
  *      ID        : "{ID}",     // entity ID
  *      meta      : {...},      // only for handshaking with new friend
- *      document  : {...},      // when profile is empty, means query for ID
- *      signature : "..."       // old document's signature for querying
+ *      document  : {...},      // when document is empty, means query for ID
+ *      last_time : 12345       // old document time for querying
  *  }
  */
 @protocol DKDDocumentCommand <DKDMetaCommand>
 
 @property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
 
-// current signature string for querying document,
-// if this matched, the station will respond 304 (Not Modified)
-@property (readonly, strong, nonatomic, nullable) NSString *signature;
+// Last document time for querying
+@property (readonly, strong, nonatomic, nullable) NSDate *lastTime;
 
 @end
 
@@ -67,14 +66,9 @@ NS_ASSUME_NONNULL_BEGIN
                       meta:(nullable id<MKMMeta>)meta
                   document:(nullable id<MKMDocument>)doc;
 
+// query document for updating with last document time
 - (instancetype)initWithID:(id<MKMID>)ID
-                  document:(id<MKMDocument>)doc;
-
-// query document
-- (instancetype)initWithID:(id<MKMID>)ID;
-
-// query document for updating with current signature
-- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature;
+                      time:(nullable NSDate *)lastTime;
 
 @end
 
@@ -83,9 +77,11 @@ extern "C" {
 #endif
 
 DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
-                                               id<MKMMeta> meta,
+                                               _Nullable id<MKMMeta> meta,
                                                id<MKMDocument> doc);
-DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID);
+
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
+                                            NSDate * _Nullable lastTime);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

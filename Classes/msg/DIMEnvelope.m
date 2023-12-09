@@ -114,7 +114,7 @@
 
 - (NSDate *)time {
     if (!_time) {
-        _time = [self dateForKey:@"time"];
+        _time = [self dateForKey:@"time" defaultValue:nil];
     }
     return _time;
 }
@@ -128,31 +128,11 @@
 }
 
 - (DKDContentType)type {
-    return [self uint8ForKey:@"type"];
+    return [self uint8ForKey:@"type" defaultValue:0];
 }
 
 - (void)setType:(DKDContentType)type {
     [self setObject:@(type) forKey:@"type"];
-}
-
-@end
-
-@implementation DIMEnvelopeFactory
-
-- (id<DKDEnvelope>)createEnvelopeWithSender:(id<MKMID>)from
-                                   receiver:(id<MKMID>)to
-                                       time:(nullable NSDate *)when {
-    return [[DIMEnvelope alloc] initWithSender:from receiver:to time:when];
-}
-
-- (nullable id<DKDEnvelope>)parseEnvelope:(NSDictionary *)env {
-    // check 'sender'
-    id sender = [env objectForKey:@"sender"];
-    if (!sender) {
-        // env.sender should not be empty
-        return nil;
-    }
-    return [[DIMEnvelope alloc] initWithDictionary:env];
 }
 
 @end

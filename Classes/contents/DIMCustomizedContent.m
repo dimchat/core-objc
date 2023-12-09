@@ -81,15 +81,15 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
 }
 
 - (NSString *)application {
-    return [self stringForKey:@"app"];
+    return [self stringForKey:@"app" defaultValue:@""];
 }
 
 - (NSString *)moduleName {
-    return [self stringForKey:@"mod"];
+    return [self stringForKey:@"mod" defaultValue:@""];
 }
 
 - (NSString *)actionName {
-    return [self stringForKey:@"act"];
+    return [self stringForKey:@"act" defaultValue:@""];
 }
 
 @end

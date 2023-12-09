@@ -44,21 +44,35 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x12,
  *      sn   : 123,
  *
- *      URL       : "http://",  // upload to CDN
- *      filename  : "...",
- *      data      : "...",      // if (!URL) base64_encode(image)
+ *      data     : "...",        // base64_encode(fileContent)
+ *      filename : "photo.png",
+ *
+ *      URL      : "http://...", // download from CDN
+ *      // before fileContent uploaded to a public CDN,
+ *      // it should be encrypted by a symmetric key
+ *      key      : {             // symmetric key to decrypt file content
+ *          algorithm : "AES",   // "DES", ...
+ *          data      : "{BASE64_ENCODE}",
+ *          ...
+ *      },
+ *
  *      thumbnail : "..."       // base64_encode(smallImage)
  *  }
  */
 @protocol DKDImageContent <DKDFileContent>
 
+// small image
 @property (strong, nonatomic, nullable) NSData *thumbnail;
 
 @end
 
 @interface DIMImageContent : DIMFileContent <DKDImageContent>
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)image;
+- (instancetype)initWithData:(id<MKMTransportableData>)image
+                    filename:(NSString *)name;
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key;
 
 @end
 
@@ -66,7 +80,11 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMImageContent *DIMImageContentCreate(NSString *filename, NSData *image);
+DIMImageContent *DIMImageContentFromData(NSData *image,
+                                         NSString *filename);
+
+DIMImageContent *DIMImageContentFromURL(NSURL *url,
+                                        _Nullable id<MKMDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

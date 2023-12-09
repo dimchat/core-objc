@@ -117,6 +117,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol MKMVisa;
+
 /**
  *  User account for communication
  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,6 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMUser <MKMEntity>
 
+// user document
 @property (readonly, strong, nonatomic, nullable) id<MKMVisa> visa;
 
 /**

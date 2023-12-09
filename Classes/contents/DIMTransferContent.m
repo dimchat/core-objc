@@ -52,11 +52,7 @@ DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
 }
 
 - (void)setRemitter:(id<MKMID>)sender {
-    if (sender) {
-        [self setString:sender forKey:@"remitter"];
-    } else {
-        [self removeObjectForKey:@"remitter"];
-    }
+    [self setString:sender forKey:@"remitter"];
 }
 
 - (nullable id<MKMID>)remittee {
@@ -64,11 +60,7 @@ DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
 }
 
 - (void)setRemittee:(id<MKMID>)receiver {
-    if (receiver) {
-        [self setString:receiver forKey:@"remittee"];
-    } else {
-        [self removeObjectForKey:@"remittee"];
-    }
+    [self setString:receiver forKey:@"remittee"];
 }
 
 @end

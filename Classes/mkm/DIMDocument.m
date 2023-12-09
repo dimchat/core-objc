@@ -41,16 +41,17 @@
 
 @interface DIMDocument ()
 
-@property (strong, nonatomic) NSString *type;
-
 @property (strong, nonatomic) id<MKMID> ID;
 
-@property (strong, nonatomic) NSString *data;    // JsON.encode(properties)
-@property (strong, nonatomic) NSData *signature; // User(ID).sign(data)
+// JsON.encode(properties)
+@property (strong, nonatomic) NSString *data;
+// User(ID).sign(data)
+@property (strong, nonatomic) id<MKMTransportableData> CT;
 
 @property (strong, nonatomic) NSMutableDictionary *properties;
 
-@property (nonatomic) NSInteger status;          // 1 for valid, -1 for invalid
+// 1 for valid, -1 for invalid
+@property (nonatomic) NSInteger status;
 
 @end
 
@@ -66,12 +67,10 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _type = nil;
-        
         _ID = nil;
         
         _data = nil;
-        _signature = nil;
+        _CT = nil;
         
         _properties = nil;
 
@@ -81,21 +80,21 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithID:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig {
+- (instancetype)initWithID:(id<MKMID>)ID
+                      data:(NSString *)json
+                 signature:(id<MKMTransportableData>)CT {
     NSDictionary *dict = @{
         @"ID": [ID string],
         @"data": json,
-        @"signature": sig
+        @"signature": [CT object],
     };
     if (self = [super initWithDictionary:dict]) {
-        _type = nil;
-        
         _ID = ID;
 
         _data = json;
-        _signature = nil;  // MKMBase64Decode(sig);
+        _CT = CT;
         
-        _properties = nil;
+        _properties = nil;  // lazy
 
         // all documents must be verified before saving into local storage
         _status = 1;
@@ -105,20 +104,21 @@
 
 /* designated initializer */
 - (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
-    if (self = [super initWithDictionary:@{@"ID": [ID string]}]) {
-        _type = type;
-        
+    NSDictionary *dict = @{
+        @"ID": [ID string],
+    };
+    if (self = [super initWithDictionary:dict]) {
         _ID = ID;
         
         _data = nil;
-        _signature = nil;
+        _CT = nil;
         
-        if (type.length > 0) {
-            _properties = [[NSMutableDictionary alloc] init];
-            [_properties setObject:type forKey:@"type"];
-        } else {
-            _properties = nil;
-        }
+        // initialize properties with created time
+        NSTimeInterval now = [[[NSDate alloc] init] timeIntervalSince1970];
+        NSMutableDictionary *info = [[NSMutableDictionary alloc] init];
+        [info setObject:type forKey:@"type"];  // deprecated
+        [info setObject:@(now) forKey:@"created_time"];
+        _properties = info;
 
         _status = 0;
     }
@@ -128,10 +128,9 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMDocument *doc = [super copyWithZone:zone];
     if (doc) {
-        doc.type = _type;
         doc.ID = _ID;
         doc.data = _data;
-        doc.signature = _signature;
+        doc.CT = _CT;
         doc.properties = _properties;
         doc.status = _status;
     }
@@ -143,14 +142,11 @@
 }
 
 - (NSString *)type {
-    NSString *docType = _type;
+    NSString *docType = [self propertyForKey:@"type"];  // deprecated
     if (!docType) {
-        docType = [self propertyForKey:@"type"];
-        if (!docType) {
-            MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-            docType = [man.generalFactory documentType:self.dictionary];
-        }
-        _type = docType;
+        MKMFactoryManager *man = [MKMFactoryManager sharedManager];
+        docType = [man.generalFactory documentType:self.dictionary
+                                      defaultValue:nil];
     }
     return docType;
 }
@@ -164,20 +160,18 @@
 
 - (NSString *)data {
     if (!_data) {
-        _data = [self stringForKey:@"data"];
+        _data = [self stringForKey:@"data" defaultValue:nil];
     }
     return _data;
 }
 
 - (NSData *)signature {
-    if (!_signature) {
-        NSString *b64 = [self stringForKey:@"signature"];
-        if (b64) {
-            _signature = MKMBase64Decode(b64);
-            NSAssert(_signature, @"document signature error: %@", b64);
-        }
+    id<MKMTransportableData> ted = _CT;
+    if (!ted) {
+        id text = [self objectForKey:@"signature"];
+        _CT = ted = MKMTransportableDataParse(text);
     }
-    return _signature;
+    return [ted data];
 }
 
 - (NSMutableDictionary *)properties {
@@ -188,7 +182,7 @@
     if (!_properties) {
         NSString *data = [self data];
         if ([data length] > 0) {
-            NSDictionary *dict = MKMJSONDecode(data);
+            NSDictionary *dict = MKMJSONMapDecode(data);
             NSAssert(dict, @"document data error: %@", data);
             if ([dict isKindOfClass:[NSMutableDictionary class]]) {
                 _properties = (NSMutableDictionary *)dict;
@@ -196,6 +190,7 @@
                 _properties = [dict mutableCopy];
             }
         } else {
+            // create new properties
             _properties = [[NSMutableDictionary alloc] init];
         }
     }
@@ -232,7 +227,7 @@
     [self removeObjectForKey:@"data"];
     [self removeObjectForKey:@"signature"];
     _data = nil;
-    _signature = nil;
+    _CT = nil;
 }
 
 - (BOOL)verify:(id<MKMVerifyKey>)PK {
@@ -264,34 +259,42 @@
 }
 
 - (NSData *)sign:(id<MKMSignKey>)SK {
+    NSData *sig;
     if (_status > 0) {
         // already signed/verified
         NSAssert([_data length] > 0, @"document data error");
-        NSAssert([_signature length] > 0, @"document signature error");
-        return _signature;
+        sig = [self signature];
+        NSAssert([sig length] > 0, @"document signature error");
+        return sig;
     }
     // 1. update sign time
-    NSDate *now = [[NSDate alloc] init];
-    [self setProperty:@([now timeIntervalSince1970]) forKey:@"time"];
+    NSTimeInterval now = [[[NSDate alloc] init] timeIntervalSince1970];
+    [self setProperty:@(now) forKey:@"time"];
     // 2. encode & sign
-    NSString *data = MKMJSONEncode(self.properties);
+    NSDictionary *info = [self properties];
+    if (!info) {
+        NSAssert(false, @"document invalid: %@", self.dictionary);
+        return nil;
+    }
+    NSString *data = MKMJSONEncode(info);
     if ([data length] == 0) {
+        NSAssert(false, @"should not happen: %@", info);
+        return nil;
+    }
+    sig = [SK sign:MKMUTF8Encode(data)];
+    if ([sig length] == 0) {
         NSAssert(false, @"should not happen");
         return nil;
     }
-    NSData *signature = [SK sign:MKMUTF8Encode(data)];
-    if ([signature length] == 0) {
-        NSAssert(false, @"should not happen");
-        return nil;
-    }
+    id<MKMTransportableData> ted = MKMTransportableDataCreate(sig, nil);
     // 3. update 'data' & 'signature' fields
     [self setObject:data forKey:@"data"];
-    [self setObject:MKMBase64Encode(signature) forKey:@"signature"];
+    [self setObject:ted.object forKey:@"signature"];
     _data = data;
-    _signature = signature;
+    _CT = ted;
     // 4. update status
     _status = 1;
-    return signature;
+    return sig;
 }
 
 #pragma mark properties getter/setter
@@ -299,83 +302,16 @@
 - (NSDate *)time {
     // timestamp
     id seconds = [self propertyForKey:@"time"];
-    return MKMConverterGetDate(seconds);
+    return MKMConverterGetDate(seconds, nil);
 }
 
 - (NSString *)name {
-    return [self propertyForKey:@"name"];
+    id name = [self propertyForKey:@"name"];
+    return MKMConverterGetString(name, nil);
 }
 
 - (void)setName:(NSString *)name {
     [self setProperty:name forKey:@"name"];
-}
-
-@end
-
-#pragma mark -
-
-static inline NSString *doc_type(NSString *docType, id<MKMID> ID) {
-    if ([docType isEqualToString:@"*"]) {
-        if (MKMIDIsGroup(ID)) {
-            return MKMDocument_Bulletin;
-        } else if (MKMIDIsUser(ID)) {
-            return MKMDocument_Visa;
-        }
-        return MKMDocument_Profile;
-    }
-    return docType;
-}
-
-@implementation DIMDocumentFactory
-
-- (instancetype)initWithType:(NSString *)type {
-    if (self = [super init]) {
-        _type = type;
-    }
-    return self;
-}
-
-- (id<MKMDocument>)createDocument:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig {
-    NSString *type = doc_type(_type, ID);
-    if ([type isEqualToString:MKMDocument_Visa]) {
-        return [[DIMVisa alloc] initWithID:ID data:json signature:sig];
-    }
-    if ([type isEqualToString:MKMDocument_Bulletin]) {
-        return [[DIMBulletin alloc] initWithID:ID data:json signature:sig];
-    }
-    return [[DIMDocument alloc] initWithID:ID data:json signature:sig];
-}
-
-// create a new empty document with entity ID
-- (id<MKMDocument>)createDocument:(id<MKMID>)ID {
-    NSString *type = doc_type(_type, ID);
-    if ([type isEqualToString:MKMDocument_Visa]) {
-        return [[DIMVisa alloc] initWithID:ID];
-    }
-    if ([type isEqualToString:MKMDocument_Bulletin]) {
-        return [[DIMBulletin alloc] initWithID:ID];
-    }
-    return [[DIMDocument alloc] initWithID:ID type:type];
-}
-
-- (nullable id<MKMDocument>)parseDocument:(NSDictionary *)doc {
-    id<MKMID> ID = MKMIDParse([doc objectForKey:@"ID"]);
-    if (!ID) {
-        NSAssert(false, @"document ID not found: %@", doc);
-        return nil;
-    }
-    MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-    NSString *type = [man.generalFactory documentType:doc];
-    if (type.length == 0) {
-        type = doc_type(@"*", ID);
-    }
-    if ([type isEqualToString:MKMDocument_Visa]) {
-        return [[DIMVisa alloc] initWithDictionary:doc];
-    }
-    if ([type isEqualToString:MKMDocument_Bulletin]) {
-        return [[DIMBulletin alloc] initWithDictionary:doc];
-    }
-    return [[DIMDocument alloc] initWithDictionary:doc];
 }
 
 @end

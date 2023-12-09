@@ -64,8 +64,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta;
-// query command
-- (instancetype)initWithID:(id<MKMID>)ID;
 
 @end
 
@@ -75,6 +73,7 @@ extern "C" {
 
 DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
                                        id<MKMMeta> meta);
+
 DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID);
 
 #ifdef __cplusplus

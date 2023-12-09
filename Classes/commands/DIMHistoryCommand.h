@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
 #define DIMGroupCommand_Abdicate   @"abdicate"
 // group: member
 #define DIMGroupCommand_Invite     @"invite"
-#define DIMGroupCommand_Expel      @"expel"
+#define DIMGroupCommand_Expel      @"expel"  /* Deprecated (use 'reset' instead) */
 #define DIMGroupCommand_Join       @"join"
 #define DIMGroupCommand_Quit       @"quit"
 #define DIMGroupCommand_Query      @"query"

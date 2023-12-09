@@ -40,10 +40,10 @@
 /**
  *  Convert message list from dictionary array
  */
-NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<NSDictionary *> *messages) {
+NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<id> *messages) {
     NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
     id<DKDMessage> msg;
-    for (NSDictionary *item in messages) {
+    for (id item in messages) {
         msg = DKDReliableMessageParse(item);
         if (msg) {
             [mArray addObject:msg];

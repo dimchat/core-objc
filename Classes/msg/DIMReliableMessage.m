@@ -37,13 +37,9 @@
 
 #import "DIMReliableMessage.h"
 
-@interface DIMReliableMessage () {
-    
-    id<MKMMeta> _meta;
-    id<MKMVisa> _visa;
-}
+@interface DIMReliableMessage ()
 
-@property (strong, nonatomic) NSData *signature;
+@property (strong, nonatomic) id<MKMTransportableData> ct;
 
 @end
 
@@ -53,7 +49,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _signature = nil;
+        _ct = nil;
     }
     return self;
 }
@@ -61,90 +57,20 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMReliableMessage *rMsg = [super copyWithZone:zone];
     if (rMsg) {
-        rMsg.signature = _signature;
+        rMsg.ct = _ct;
     }
     return rMsg;
 }
 
 - (NSData *)signature {
-    if (!_signature) {
-        NSObject *b64 = [self objectForKey:@"signature"];
-        NSAssert(b64, @"signature cannot be empty");
-        id<DKDReliableMessageDelegate> transceiver;
-        transceiver = (id<DKDReliableMessageDelegate>)[self delegate];
-        NSAssert(transceiver, @"message delegate not set yet");
-        _signature = [transceiver message:self decodeSignature:b64];
-        NSAssert(_signature, @"message signature error: %@", b64);
+    id<MKMTransportableData> ted = _ct;
+    if (!ted) {
+        id text = [self objectForKey:@"signature"];
+        NSAssert(text, @"signature cannot be empty");
+        _ct = ted = MKMTransportableDataParse(text);
+        NSAssert(ted, @"failed to decode message signature: %@", text);
     }
-    return _signature;
-}
-
-- (nullable id<DKDSecureMessage>)verify {
-    id<DKDReliableMessageDelegate> transceiver;
-    transceiver = (id<DKDReliableMessageDelegate>)[self delegate];
-    NSAssert(transceiver, @"message delegate not set yet");
-    // 1. verify data signature with sender's public key
-    if ([transceiver message:self
-                  verifyData:self.data withSignature:self.signature
-                   forSender:self.sender]) {
-        // 2. pack message
-        NSMutableDictionary *mDict = [self dictionary:NO];
-        [mDict removeObjectForKey:@"signature"];
-        return DKDSecureMessageParse(mDict);
-    } else {
-        NSAssert(false, @"message signature not match: %@", self);
-        // TODO: check whether visa is expired, query new document for this contact
-        return nil;
-    }
-}
-
-- (id<MKMMeta>)meta {
-    if (!_meta) {
-        id dict = [self objectForKey:@"meta"];
-        _meta = MKMMetaParse(dict);
-    }
-    return _meta;
-}
-
-- (void)setMeta:(id<MKMMeta>)meta {
-    [self setDictionary:meta forKey:@"meta"];
-    _meta = meta;
-}
-
-- (id<MKMVisa>)visa {
-    if (!_visa) {
-        id dict = [self objectForKey:@"visa"];
-        id<MKMDocument> doc = MKMDocumentParse(dict);
-        if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
-            _visa = (id<MKMVisa>) doc;
-        } else {
-            NSAssert(!doc, @"visa document error: %@", doc);
-        }
-    }
-    return _visa;
-}
-
-- (void)setVisa:(id<MKMVisa>)visa {
-    [self setDictionary:visa forKey:@"visa"];
-    _visa = visa;
-}
-
-@end
-
-@implementation DIMReliableMessageFactory
-
-- (nullable id<DKDReliableMessage>)parseReliableMessage:(NSDictionary *)msg {
-    // check 'sender', 'data', 'signature'
-    id sender = [msg objectForKey:@"sender"];
-    id data = [msg objectForKey:@"data"];
-    id signature = [msg objectForKey:@"signature"];
-    if (!sender || !data || !signature) {
-        // msg.sender should not be empty
-        // msg.data should not be empty
-        // msg.signature should not be empty
-        return nil;
-    }
-    return [[DIMReliableMessage alloc] initWithDictionary:msg];
+    return [ted data];
 }
 
 @end

@@ -39,6 +39,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Instant Message
+ *  ~~~~~~~~~~~~~~~
+ *
+ *  data format: {
+ *      //-- envelope
+ *      sender   : "moki@xxx",
+ *      receiver : "hulk@yyy",
+ *      time     : 123,
+ *      //-- content
+ *      content  : {...}
+ *  }
+ */
 @interface DIMInstantMessage : DIMMessage <DKDInstantMessage>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
@@ -47,10 +60,6 @@ NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithEnvelope:(id<DKDEnvelope>)env
                          content:(id<DKDContent>)content
 NS_DESIGNATED_INITIALIZER;
-
-@end
-
-@interface DIMInstantMessageFactory : NSObject <DKDInstantMessageFactory>
 
 @end
 

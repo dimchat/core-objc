@@ -35,14 +35,20 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DIMHelpers.h"
+
 #import "DIMMeta.h"
 
 @interface DIMMeta ()
 
 @property (nonatomic) MKMMetaType type;
-@property (strong, nonatomic) id<MKMVerifyKey> key;
+@property (strong, nonatomic) id<MKMVerifyKey> publicKey;
 @property (strong, nonatomic, nullable) NSString *seed;
-@property (strong, nonatomic, nullable) NSData *fingerprint;
+
+@property (strong, nonatomic, nullable) id<MKMTransportableData> ct;
+
+// 1 for valid, -1 for invalid
+@property (nonatomic) NSInteger status;
 
 @end
 
@@ -59,9 +65,10 @@
     if (self = [super initWithDictionary:dict]) {
         // lazy
         _type = 0;
-        _key = nil;
+        _publicKey = nil;
         _seed = nil;
-        _fingerprint = nil;
+        _ct = nil;
+        _status = 0;
     }
     return self;
 }
@@ -70,14 +77,14 @@
 - (instancetype)initWithType:(MKMMetaType)version
                          key:(id<MKMVerifyKey>)publicKey
                         seed:(nullable NSString *)seed
-                 fingerprint:(nullable NSData *)fingerprint {
+                 fingerprint:(nullable id<MKMTransportableData>)CT {
     NSDictionary *dict;
-    if (seed && fingerprint) {
+    if (seed && CT) {
         dict = @{
             @"type": @(version),
             @"key": [publicKey dictionary],
             @"seed": seed,
-            @"fingerprint": MKMBase64Encode(fingerprint),
+            @"fingerprint": [CT object],
         };
     } else {
         dict = @{
@@ -87,9 +94,12 @@
     }
     if (self = [super initWithDictionary:dict]) {
         _type = version;
-        _key = publicKey;
+        _publicKey = publicKey;
         _seed = seed;
-        _fingerprint = fingerprint;
+        _ct = CT;
+        // generated meta, or loaded from local storage,
+        // no need to verify again.
+        _status = 1;
     }
     return self;
 }
@@ -98,9 +108,10 @@
     DIMMeta *meta = [super copyWithZone:zone];
     if (meta) {
         meta.type = _type;
-        meta.key = _key;
+        meta.publicKey = _publicKey;
         meta.seed = _seed;
-        meta.fingerprint = _fingerprint;
+        meta.ct = _ct;
+        meta.status = _status;
     }
     return meta;
 }
@@ -109,42 +120,68 @@
     MKMMetaType version = _type;
     if (version == 0) {
         MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-        version = [man.generalFactory metaType:self.dictionary];
+        version = [man.generalFactory metaType:self.dictionary
+                                  defaultValue:0];
         _type = version;
     }
     return version;
 }
 
-- (id<MKMVerifyKey>)key {
-    if (!_key) {
+- (id<MKMVerifyKey>)publicKey {
+    if (!_publicKey) {
         id dict = [self objectForKey:@"key"];
         NSAssert(dict, @"meta key not found: %@", self);
-        _key = MKMPublicKeyParse(dict);
+        _publicKey = MKMPublicKeyParse(dict);
     }
-    return _key;
+    return _publicKey;
 }
 
 - (nullable NSString *)seed {
     if (!_seed && MKMMeta_HasSeed(self.type)) {
-        _seed = [self stringForKey:@"seed"];
+        _seed = [self stringForKey:@"seed" defaultValue:nil];
         NSAssert([_seed length] > 0, @"meta.seed should not be empty: %@", self);
     }
     return _seed;
 }
 
 - (nullable NSData *)fingerprint {
-    if (!_fingerprint && MKMMeta_HasSeed(self.type)) {
-        NSString *b64 = [self stringForKey:@"fingerprint"];
-        NSAssert(b64, @"meta.fingerprint should not be empty: %@", self);
-        _fingerprint = MKMBase64Decode(b64);
-        NSAssert([_fingerprint length] > 0, @"meta.fingerprint error: %@", b64);
+    id<MKMTransportableData> ted = _ct;
+    if (!ted && MKMMeta_HasSeed(self.type)) {
+        id text = [self objectForKey:@"fingerprint"];
+        NSAssert(text, @"meta.fingerprint should not be empty: %@", self);
+        _ct = ted = MKMTransportableDataParse(text);
+        NSAssert(ted, @"meta.fingerprint error: %@", text);
     }
-    return _fingerprint;
+    return [ted data];
 }
 
 - (id<MKMAddress>)generateAddress:(MKMEntityType)network {
     NSAssert(false, @"implement me!");
     return nil;
+}
+
+#pragma mark Validation
+
+- (BOOL)isValid {
+    if (_status == 0) {
+        // meta from network, try to verify
+        if ([DIMMetaHelper checkMeta:self]) {
+            // correct
+            _status = 1;
+        } else {
+            // error
+            _status = -1;
+        }
+    }
+    return _status > 0;
+}
+
+- (BOOL)matchIdentifier:(id<MKMID>)ID {
+    return [DIMMetaHelper meta:self matchIdentifier:ID];
+}
+
+- (BOOL)matchPublicKey:(id<MKMVerifyKey>)PK {
+    return [DIMMetaHelper meta:self matchPublicKeyu:PK];
 }
 
 @end

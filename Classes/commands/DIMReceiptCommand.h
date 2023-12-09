@@ -35,12 +35,59 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <DIMCore/DIMCommand.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMReceiptCommand : NSObject
+/*
+ *  Command message: {
+ *      type : 0x88,
+ *      sn   : 456,
+ *
+ *      command : "receipt",
+ *      text    : "...",  // text message
+ *      origin  : {       // original message envelope
+ *          sender    : "...",
+ *          receiver  : "...",
+ *          time      : 0,
+ *
+ *          sn        : 123,
+ *          signature : "..."
+ *      }
+ *  }
+ */
+@protocol DKDReceiptCommand <DKDCommand>
+
+@property (readonly, strong, nonatomic) NSString *text;
+
+@property (readonly, strong, nonatomic, nullable) id<DKDEnvelope> originalEnvelope;
+@property (readonly, nonatomic) unsigned long originalSerialNumber;
+@property (readonly, strong, nonatomic, nullable) NSString *originalSignature;
 
 @end
+
+@interface DIMReceiptCommand : DIMCommand <DKDReceiptCommand>
+
+// protected
+@property (readonly, strong, nonatomic, nullable) NSDictionary *origin;
+
+- (instancetype)initWithText:(NSString *)text origin:(nullable NSDictionary *)info;
+
+@end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Create base receipt command with text & original message info
+DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
+                                           _Nullable id<DKDEnvelope> head,
+                                           _Nullable id<DKDContent> body);
+
+NSMutableDictionary *DIMReceiptCommandPurify(id<DKDEnvelope> envelope);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

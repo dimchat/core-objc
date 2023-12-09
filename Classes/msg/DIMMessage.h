@@ -39,8 +39,41 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/*
+ *  Message Transforming
+ *  ~~~~~~~~~~~~~~~~~~~~
+ *
+ *     Instant Message <-> Secure Message <-> Reliable Message
+ *     +-------------+     +------------+     +--------------+
+ *     |  sender     |     |  sender    |     |  sender      |
+ *     |  receiver   |     |  receiver  |     |  receiver    |
+ *     |  time       |     |  time      |     |  time        |
+ *     |             |     |            |     |              |
+ *     |  content    |     |  data      |     |  data        |
+ *     +-------------+     |  key/keys  |     |  key/keys    |
+ *                         +------------+     |  signature   |
+ *                                            +--------------+
+ *     Algorithm:
+ *         data      = password.encrypt(content)
+ *         key       = receiver.public_key.encrypt(password)
+ *         signature = sender.private_key.sign(data)
+ */
+
 /**
- *  Base Message
+ *  Message with Envelope
+ *  ~~~~~~~~~~~~~~~~~~~~~
+ *  Base classes for messages
+ *  This class is used to create a message
+ *  with the envelope fields, such as 'sender', 'receiver', and 'time'
+ *
+ *  data format: {
+ *      //-- envelope
+ *      sender   : "moki@xxx",
+ *      receiver : "hulk@yyy",
+ *      time     : 123,
+ *      //-- body
+ *      ...
+ *  }
  */
 @interface DIMMessage : MKMDictionary <DKDMessage>
 
@@ -49,6 +82,8 @@ NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithEnvelope:(id<DKDEnvelope>)env
 NS_DESIGNATED_INITIALIZER;
+
++ (BOOL)isBroadcast:(id<DKDMessage>)msg;
 
 @end
 

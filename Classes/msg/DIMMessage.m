@@ -45,8 +45,6 @@
 
 @implementation DIMMessage
 
-@synthesize delegate;
-
 - (instancetype)init {
     NSAssert(false, @"DON'T call me!");
     NSDictionary *dict = nil;
@@ -75,7 +73,6 @@
     DIMMessage *msg = [super copyWithZone:zone];
     if (msg) {
         msg.envelope = _envelope;
-        msg.delegate = self.delegate;
     }
     return self;
 }
@@ -105,6 +102,19 @@
 
 - (DKDContentType)type {
     return [self.envelope type];
+}
+
++ (BOOL)isBroadcast:(id<DKDMessage>)msg {
+    if ([msg.receiver isBroadcast]) {
+        return YES;
+    }
+    // check exposed group
+    id overtGroup = [msg objectForKey:@"group"];
+    if (!overtGroup) {
+        return NO;
+    }
+    id<MKMID> group = MKMIDParse(overtGroup);
+    return [group isBroadcast];
 }
 
 @end

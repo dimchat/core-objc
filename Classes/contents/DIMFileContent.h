@@ -44,21 +44,29 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x10,
  *      sn   : 123,
  *
- *      URL      : "http://",  // upload to CDN
- *      filename : "...",
- *      data     : "..."       // if (!URL) base64_encode(fileContent)
+ *      data     : "...",        // base64_encode(fileContent)
+ *      filename : "photo.png",
+ *
+ *      URL      : "http://...", // download from CDN
+ *      // before fileContent uploaded to a public CDN,
+ *      // it should be encrypted by a symmetric key
+ *      key      : {             // symmetric key to decrypt file content
+ *          algorithm : "AES",   // "DES", ...
+ *          data      : "{BASE64_ENCODE}",
+ *          ...
+ *      }
  *  }
  */
 @protocol DKDFileContent <DKDContent>
 
+@property (strong, nonatomic, nullable) NSData *data;
+@property (strong, nonatomic, nullable) NSString *filename;
+
 // URL for download the file data from CDN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
-@property (strong, nonatomic, nullable) NSData *data;
-@property (strong, nonatomic, readonly) NSString *filename;
-
-// for decrypt file data after download from CDN
-@property (strong, nonatomic, nullable) id<MKMSymmetricKey> password;
+// symmetric key to decrypt the downloaded data from URL
+@property (strong, nonatomic, nullable) id<MKMDecryptKey> password;
 
 @end
 
@@ -68,11 +76,11 @@ NS_ASSUME_NONNULL_BEGIN
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithType:(DKDContentType)type
-                    filename:(NSString *)name
-                        data:(nullable NSData *)file
+                        data:(nullable id<MKMTransportableData>)file
+                    filename:(nullable NSString *)name
+                         url:(nullable NSURL *)remote
+                    password:(nullable id<MKMDecryptKey>)key
 NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)file;
 
 @end
 
@@ -80,7 +88,11 @@ NS_DESIGNATED_INITIALIZER;
 extern "C" {
 #endif
 
-DIMFileContent *DIMFileContentCreate(NSString *filename, NSData *file);
+DIMFileContent *DIMFileContentFromData(NSData *data,
+                                       NSString *filename);
+
+DIMFileContent *DIMFileContentFromURL(NSURL *url,
+                                      _Nullable id<MKMDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

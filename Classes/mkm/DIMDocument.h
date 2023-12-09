@@ -46,23 +46,13 @@ NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       data:(NSString *)json
-                 signature:(NSString *)sig
+                 signature:(id<MKMTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 // create a new empty document with entity ID & document type
 - (instancetype)initWithID:(id<MKMID>)ID
                       type:(NSString *)type
 NS_DESIGNATED_INITIALIZER;
-
-@end
-
-#pragma mark -
-
-@interface DIMDocumentFactory : NSObject <MKMDocumentFactory>
-
-@property (readonly, strong, nonatomic) NSString *type;
-
-- (instancetype)initWithType:(NSString *)type;
 
 @end
 

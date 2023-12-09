@@ -44,21 +44,35 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x16,
  *      sn   : 123,
  *
- *      URL      : "http://",  // upload to CDN
- *      filename : "...",
- *      data     : "...",      // if (!URL) base64_encode(video)
+ *      data     : "...",        // base64_encode(fileContent)
+ *      filename : "movie.mp4",
+ *
+ *      URL      : "http://...", // download from CDN
+ *      // before fileContent uploaded to a public CDN,
+ *      // it should be encrypted by a symmetric key
+ *      key      : {             // symmetric key to decrypt file content
+ *          algorithm : "AES",   // "DES", ...
+ *          data      : "{BASE64_ENCODE}",
+ *          ...
+ *      },
+ *
  *      snapshot : "..."       // base64_encode(smallImage)
  *  }
  */
 @protocol DKDVideoContent <DKDFileContent>
 
+// small image
 @property (strong, nonatomic, nullable) NSData *snapshot;
 
 @end
 
 @interface DIMVideoContent : DIMFileContent <DKDVideoContent>
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)video;
+- (instancetype)initWithData:(id<MKMTransportableData>)video
+                    filename:(NSString *)name;
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key;
 
 @end
 
@@ -66,7 +80,11 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMVideoContent *DIMVideoContentCreate(NSString *filename, NSData *video);
+DIMVideoContent *DIMVideoContentFromData(NSData *video,
+                                         NSString *filename);
+
+DIMVideoContent *DIMVideoContentFromURL(NSURL *url,
+                                        _Nullable id<MKMDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

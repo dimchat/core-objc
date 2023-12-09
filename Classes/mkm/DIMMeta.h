@@ -39,6 +39,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  User/Group Meta data
+ *  ~~~~~~~~~~~~~~~~~~~~
+ *  This class is used to generate entity ID
+ *
+ *      data format: {
+ *          type: 1,             // algorithm version
+ *          seed: "moKy",        // user/group name
+ *          key: "{public key}", // PK = secp256k1(SK);
+ *          fingerprint: "..."   // CT = sign(seed, SK);
+ *      }
+ *
+ *      algorithm:
+ *          fingerprint = sign(seed, SK);
+ *
+ *  abstract method:
+ *      - Address generateAddress(int network);
+ */
 @interface DIMMeta : MKMDictionary <MKMMeta>
 
 /**
@@ -50,7 +68,7 @@ NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithType:(MKMMetaType)version
                          key:(id<MKMVerifyKey>)PK
                         seed:(nullable NSString *)name
-                 fingerprint:(nullable NSData *)CT
+                 fingerprint:(nullable id<MKMTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 @end

@@ -43,7 +43,7 @@ DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
 }
 
 DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
-    return [[DIMMetaCommand alloc] initWithID:ID];
+    return [[DIMMetaCommand alloc] initWithID:ID meta:nil];
 }
 
 @interface DIMMetaCommand ()
@@ -75,23 +75,23 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
     return [self initWithID:ID meta:nil];
 }
 
-- (instancetype)initWithCommandName:(NSString *)name ID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
+- (instancetype)initWithCommandName:(NSString *)name
+                                 ID:(id<MKMID>)ID
+                               meta:(id<MKMMeta>)meta {
     if (self = [self initWithCommandName:name]) {
         // ID
-        if (ID) {
-            [self setObject:[ID string] forKey:@"ID"];
-        }
+        [self setString:ID forKey:@"ID"];
         
         // meta
         if (meta) {
-            [self setObject:[meta dictionary] forKey:@"meta"];
+            [self setDictionary:meta forKey:@"meta"];
         }
         _meta = meta;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID meta:(nullable id<MKMMeta>)meta {
+- (instancetype)initWithID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
     return [self initWithCommandName:DIMCommand_Meta ID:ID meta:meta];
 }
 
@@ -108,7 +108,7 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
     return MKMIDParse(string);
 }
 
-- (nullable id<MKMMeta>)meta {
+- (id<MKMMeta>)meta {
     if (!_meta) {
         id dict = [self objectForKey:@"meta"];
         _meta = MKMMetaParse(dict);

@@ -40,10 +40,10 @@
 /**
  *  Convert content list from dictionary array
  */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents) {
+NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents) {
     NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[contents count]];
     id<DKDContent> ctx;
-    for (NSDictionary *item in contents) {
+    for (id item in contents) {
         ctx = DKDContentParse(item);
         if (ctx) {
             [mArray addObject:ctx];
@@ -57,7 +57,7 @@ NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents) {
  */
 NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents) {
     NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[contents count]];
-    for (id<DKDMessage> item in contents) {
+    for (id<DKDContent> item in contents) {
         [mArray addObject:[item dictionary]];
     }
     return mArray;
@@ -111,7 +111,7 @@ DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
 }
 
 - (void)setContents:(NSArray<id<DKDContent>> *)contents {
-    if (contents) {
+    if ([contents count] > 0) {
         [self setObject:DKDContentRevert(contents) forKey:@"contents"];
     } else {
         [self removeObjectForKey:@"contents"];

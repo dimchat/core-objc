@@ -35,11 +35,71 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMHelpers : NSObject
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Thanos can kill half lives of a world with a snap of the finger
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
+@interface DIMBroadcastHelper : NSObject
+
++ (id<MKMID>)broadcastFounder:(id<MKMID>)group;
+
++ (id<MKMID>)broadcastOwner:(id<MKMID>)group;
+
++ (NSArray<id<MKMID>> *)broadcastMembers:(id<MKMID>)group;
+
+@end
+
+@interface DIMMetaHelper : NSObject
+
++ (BOOL)checkMeta:(id<MKMMeta>)info;
+
++ (BOOL)meta:(id<MKMMeta>)info matchIdentifier:(id<MKMID>)ID;
+
++ (BOOL)meta:(id<MKMMeta>)info matchPublicKeyu:(id<MKMVerifyKey>)PK;
+
+@end
+
+@protocol MKMVisa;
+@protocol MKMBulletin;
+
+@interface DIMDocumentHelper : NSObject
+
+/**
+ *  Check whether this time is before old time
+ */
++ (BOOL)time:(nullable NSDate *)thisTime isBefore:(nullable NSDate *)oldTime;
+
+/**
+ *  Check whether this document's time is before old document's time
+ */
++ (BOOL)isExpired:(id<MKMDocument>)thisDoc compareTo:(id<MKMDocument>)oldDoc;
+
+/**
+ *  Select last document matched the type
+ */
++ (nullable id<MKMDocument>)lastDocument:(NSArray<id<MKMDocument>> *)documents
+                                 forType:(nullable NSString *)type;
+
+/**
+ *  Select last visa document
+ */
++ (nullable id<MKMVisa>)lastVisa:(NSArray<id<MKMDocument>> *)documents;
+
+/**
+ *  Select last bulletin document
+ */
++ (nullable id<MKMBulletin>)lastBulletin:(NSArray<id<MKMDocument>> *)documents;
 
 @end
 

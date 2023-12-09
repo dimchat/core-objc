@@ -44,9 +44,18 @@ NS_ASSUME_NONNULL_BEGIN
  *      type : 0x14,
  *      sn   : 123,
  *
- *      URL      : "http://",  // upload to CDN
- *      filename : "...",
- *      data     : "...",      // if (!URL) base64_encode(audio)
+ *      data     : "...",        // base64_encode(fileContent)
+ *      filename : "voice.mp3",
+ *
+ *      URL      : "http://...", // download from CDN
+ *      // before fileContent uploaded to a public CDN,
+ *      // it should be encrypted by a symmetric key
+ *      key      : {             // symmetric key to decrypt file content
+ *          algorithm : "AES",   // "DES", ...
+ *          data      : "{BASE64_ENCODE}",
+ *          ...
+ *      },
+ *
  *      text     : "..."       // Automatic Speech Recognition
  *  }
  */
@@ -58,7 +67,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMAudioContent : DIMFileContent <DKDAudioContent>
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)audio;
+- (instancetype)initWithData:(id<MKMTransportableData>)audio
+                    filename:(NSString *)name;
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key;
 
 @end
 
@@ -66,7 +79,11 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMAudioContent *DIMAudioContentCreate(NSString *filename, NSData *audio);
+DIMAudioContent *DIMAudioContentFromData(NSData *audio,
+                                         NSString *filename);
+
+DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
+                                        _Nullable id<MKMDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

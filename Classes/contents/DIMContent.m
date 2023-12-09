@@ -41,10 +41,7 @@ DIMContent *DIMContentCreate(DKDContentType type) {
     return [[DIMContent alloc] initWithType:type];
 }
 
-@interface DIMContent () {
-    
-    id<MKMID> _group;
-}
+@interface DIMContent ()
 
 @property (nonatomic) DKDContentType type;
 @property (nonatomic) unsigned long serialNumber;
@@ -71,8 +68,6 @@ DIMContent *DIMContentCreate(DKDContentType type) {
         _type = type;
         _serialNumber = sn;
         _time = now;
-        
-        _group = nil;
     }
     return self;
 }
@@ -84,7 +79,6 @@ DIMContent *DIMContentCreate(DKDContentType type) {
         _type = 0;
         _serialNumber = 0;
         _time = nil;
-        _group = nil;
     }
     return self;
 }
@@ -95,7 +89,6 @@ DIMContent *DIMContentCreate(DKDContentType type) {
         content.type = _type;
         content.serialNumber = _serialNumber;
         content.time = _time;
-        //content.group = _group;
     }
     return content;
 }
@@ -104,7 +97,8 @@ DIMContent *DIMContentCreate(DKDContentType type) {
     DKDContentType msgType = _type;
     if (msgType == 0) {
         DKDFactoryManager *man = [DKDFactoryManager sharedManager];
-        msgType = [man.generalFactory contentType:self.dictionary];
+        msgType = [man.generalFactory contentType:self.dictionary
+                                     defaultValue:0];
         _type = msgType;
     }
     return msgType;
@@ -112,28 +106,24 @@ DIMContent *DIMContentCreate(DKDContentType type) {
 
 - (unsigned long)serialNumber {
     if (_serialNumber == 0) {
-        _serialNumber = [self ulongForKey:@"sn"];
+        _serialNumber = [self ulongForKey:@"sn" defaultValue:0];
     }
     return _serialNumber;
 }
 
 - (nullable NSDate *)time {
     if (!_time) {
-        _time = [self dateForKey:@"time"];
+        _time = [self dateForKey:@"time" defaultValue:nil];
     }
     return _time;
 }
 
 - (nullable id<MKMID>)group {
-    if (!_group) {
-        _group = MKMIDParse([self objectForKey:@"group"]);
-    }
-    return _group;
+    return MKMIDParse([self objectForKey:@"group"]);
 }
 
 - (void)setGroup:(nullable id<MKMID>)group {
     [self setString:group forKey:@"group"];
-    _group = group;
 }
 
 @end

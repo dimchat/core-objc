@@ -37,13 +37,18 @@
 
 #import "DIMImageContent.h"
 
-DIMImageContent *DIMImageContentCreate(NSString *filename, NSData *image) {
-    return [[DIMImageContent alloc] initWithFilename:filename data:image];
+DIMImageContent *DIMImageContentFromData(NSData *image, NSString *filename) {
+    id<MKMTransportableData> ted = MKMTransportableDataCreate(image, nil);
+    return [[DIMImageContent alloc] initWithData:ted filename:filename];
+}
+
+DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
+    return [[DIMImageContent alloc] initWithURL:url password:password];
 }
 
 @interface DIMImageContent () {
     
-    NSData *_thumbnail;
+    id<MKMTransportableData> _thumbnail;
 }
 
 @end
@@ -61,35 +66,57 @@ DIMImageContent *DIMImageContentCreate(NSString *filename, NSData *image) {
 
 /* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type
-                    filename:(NSString *)name
-                        data:(nullable NSData *)file {
-    if (self = [super initWithType:type filename:name data:file]) {
+                        data:(nullable id<MKMTransportableData>)file
+                    filename:(nullable NSString *)name
+                         url:(nullable NSURL *)remote
+                    password:(nullable id<MKMDecryptKey>)key {
+    if (self = [super initWithType:type
+                              data:file
+                          filename:name
+                               url:remote
+                          password:key]) {
         _thumbnail = nil;
     }
     return self;
 }
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)image {
-    return [self initWithType:DKDContentType_Image filename:name data:image];
+- (instancetype)initWithData:(id<MKMTransportableData>)image
+                    filename:(NSString *)name {
+    return [self initWithType:DKDContentType_Image
+                         data:image
+                     filename:name
+                          url:nil
+                     password:nil];
+}
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key {
+    return [self initWithType:DKDContentType_Image
+                         data:nil
+                     filename:nil
+                          url:url
+                     password:key];
 }
 
 - (nullable NSData *)thumbnail {
-    if (!_thumbnail) {
-        NSString *small = [self objectForKey:@"thumbnail"];
-        if ([small length] > 0) {
-            _thumbnail = MKMBase64Decode(small);
-        }
+    id<MKMTransportableData> ted = _thumbnail;
+    if (!ted) {
+        id base64 = [self objectForKey:@"thumbnail"];
+        _thumbnail = ted = MKMTransportableDataParse(base64);
     }
-    return _thumbnail;
+    return [ted data];
 }
 
 - (void)setThumbnail:(NSData *)thumbnail {
-    if ([thumbnail length] > 0) {
-        [self setObject:MKMBase64Encode(thumbnail) forKey:@"thumbnail"];
-    } else {
+    id<MKMTransportableData> ted;
+    if ([thumbnail length] == 0) {
+        ted = nil;
         [self removeObjectForKey:@"thumbnail"];
+    } else {
+        ted = MKMTransportableDataCreate(thumbnail, nil);
+        [self setObject:ted.object forKey:@"thumbnail"];
     }
-    _thumbnail = thumbnail;
+    _thumbnail = ted;
 }
 
 @end

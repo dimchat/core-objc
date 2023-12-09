@@ -35,38 +35,38 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DIMDocs.h"
+#import "DIMHelpers.h"
+
 #import "DIMUser.h"
 
 @implementation DIMUser
 
 - (nullable id<MKMVisa>)visa {
-    id<MKMDocument> doc = [self documentWithType:MKMDocument_Visa];
-    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
-        return (id<MKMVisa>)doc;
-    }
-    NSAssert(!doc, @"visa document error: %@", doc);
-    return nil;
+    NSArray<id<MKMDocument>> *docs = [self documents];
+    return [DIMDocumentHelper lastVisa:docs];
 }
 
 - (BOOL)verifyVisa:(id<MKMVisa>)visa {
     // NOTICE: only verify visa with meta.key
+    //         (if meta not exists, user won't be created)
     if (![self.ID isEqual:visa.ID]) {
         // visa ID not match
+        NSAssert(false, @"visa ID not match:%@, %@", self.ID, visa.ID);
         return NO;
     }
     // if meta not exists, user won't be created
     id<MKMMeta> meta = [self meta];
-    id<MKMVerifyKey> PK = [meta key];
+    id<MKMVerifyKey> PK = [meta publicKey];
     NSAssert(PK, @"failed to get verify key for visa: %@", self.ID);
     return [visa verify:PK];
 }
 
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature {
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
-    // NOTICE: I suggest using the private key paired with meta.key to sign message
-    //         so here should return the meta.key
     NSArray<id<MKMVerifyKey>> *keys = [barrack publicKeysForVerification:self.ID];
+    NSAssert([keys count] > 0, @"failed to get verify keys: %@", self.ID);
     for (id<MKMVerifyKey> PK in keys) {
         if ([PK verify:data withSignature:signature]) {
             // matched!
@@ -79,13 +79,13 @@
 }
 
 - (NSData *)encrypt:(NSData *)plaintext {
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
     // NOTICE: meta.key will never changed, so use visa.key to encrypt
     //         is the better way
     id<MKMEncryptKey> PK = [barrack publicKeyForEncryption:self.ID];
     NSAssert(PK, @"failed to get encrypt key for user: %@", self.ID);
-    return [PK encrypt:plaintext];
+    return [PK encrypt:plaintext params:nil];
 }
 
 #pragma mark Local User
@@ -104,7 +104,7 @@
 }
 
 - (NSArray<id<MKMID>> *)contacts {
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
     return [barrack contactsOfUser:self.ID];
 }
@@ -112,27 +112,32 @@
 - (nullable id<MKMVisa>)signVisa:(id<MKMVisa>)visa {
     if (![self.ID isEqual:visa.ID]) {
         // visa ID not match
+        NSAssert(false, @"visa ID not match:%@, %@", self.ID, visa.ID);
         return nil;
     }
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
+    // NOTICE: only sign visa with the private key paired with your meta.key
     id<MKMSignKey> SK = [barrack privateKeyForVisaSignature:self.ID];
     NSAssert(SK, @"failed to get visa sign key for user: %@", self.ID);
-    return !SK || [visa sign:SK].length == 0 ? nil : visa;
+    NSData *sig = [visa sign:SK];
+    if ([sig length] == 0) {
+        NSAssert(false, @"failed to sign visa: %@, %@", self.ID, visa);
+        return nil;
+    }
+    return visa;
 }
 
 - (NSData *)sign:(NSData *)data {
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
-    // NOTICE: I suggest use the private key which paired to visa.key
-    //         to sign message
     id<MKMSignKey> SK = [barrack privateKeyForSignature:self.ID];
     NSAssert(SK, @"failed to get sign key for user: %@", self.ID);
     return [SK sign:data];
 }
 
 - (nullable NSData *)decrypt:(NSData *)ciphertext {
-    id<MKMUserDataSource> barrack = (id<MKMUserDataSource>)[self dataSource];
+    id<MKMUserDataSource> barrack = [self dataSource];
     NSAssert(barrack, @"user data source not set yet");
     // NOTICE: if you provide a public key in visa for encryption
     //         here you should return the private key paired with visa.key
@@ -141,7 +146,7 @@
     NSData *plaintext = nil;
     for (id<MKMDecryptKey> SK in keys) {
         // try decrypting it with each private key
-        plaintext = [SK decrypt:ciphertext];
+        plaintext = [SK decrypt:ciphertext params:nil];
         if ([plaintext length] > 0) {
             // OK!
             return plaintext;

@@ -69,7 +69,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (NSData *)message:(id<DKDInstantMessage>)iMsg
      encryptContent:(NSData *)data
             withKey:(id<MKMSymmetricKey>)password {
-    return [password encrypt:data];
+    return [password encrypt:data params:iMsg.dictionary];
 }
 
 - (NSObject *)message:(id<DKDInstantMessage>)iMsg
@@ -161,7 +161,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
               decryptContent:(NSData *)data
                      withKey:(id<MKMSymmetricKey>)password {
     // TODO: check 'IV' in sMsg for AES decryption
-    return [password decrypt:data];
+    return [password decrypt:data params:sMsg.dictionary];
 }
 
 - (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg

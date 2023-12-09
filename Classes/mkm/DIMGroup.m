@@ -35,10 +35,14 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DIMDocs.h"
+#import "DIMHelpers.h"
+
 #import "DIMGroup.h"
 
 @interface DIMGroup () {
     
+    // once the group founder is set, it will never change
     id<MKMID> _founder;
 }
 
@@ -78,17 +82,13 @@
 }
 
 - (nullable id<MKMBulletin>)bulletin {
-    id<MKMDocument> doc = [self documentWithType:MKMDocument_Bulletin];
-    if ([doc conformsToProtocol:@protocol(MKMBulletin)]) {
-        return (id<MKMBulletin>)doc;
-    }
-    NSAssert(!doc, @"bulletin document error: %@", doc);
-    return nil;
+    NSArray<id<MKMDocument>> *docs = [self documents];
+    return [DIMDocumentHelper lastBulletin:docs];
 }
 
 - (id<MKMID>)founder {
     if (!_founder) {
-        id<MKMGroupDataSource> delegate = (id<MKMGroupDataSource>)[self dataSource];
+        id<MKMGroupDataSource> delegate = [self dataSource];
         NSAssert(delegate, @"group data source not set yet");
         _founder = [delegate founderOfGroup:self.ID];
     }
@@ -96,19 +96,19 @@
 }
 
 - (id<MKMID>)owner {
-    id<MKMGroupDataSource> delegate = (id<MKMGroupDataSource>)[self dataSource];
+    id<MKMGroupDataSource> delegate = [self dataSource];
     NSAssert(delegate, @"group data source not set yet");
     return [delegate ownerOfGroup:self.ID];
 }
 
 - (NSArray<id<MKMID>> *)members {
-    id<MKMGroupDataSource> delegate = (id<MKMGroupDataSource>)[self dataSource];
+    id<MKMGroupDataSource> delegate = [self dataSource];
     NSAssert(delegate, @"group data source not set yet");
     return [delegate membersOfGroup:self.ID];
 }
 
 - (NSArray<id<MKMID>> *)assistants {
-    id<MKMGroupDataSource> delegate = (id<MKMGroupDataSource>)[self dataSource];
+    id<MKMGroupDataSource> delegate = [self dataSource];
     NSAssert(delegate, @"group data source not set yet");
     return [delegate assistantsOfGroup:self.ID];
 }

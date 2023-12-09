@@ -39,6 +39,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Envelope for message
+ *  ~~~~~~~~~~~~~~~~~~~~
+ *  This class is used to create a message envelope
+ *  which contains 'sender', 'receiver' and 'time'
+ *
+ *  data format: {
+ *      sender   : "moki@xxx",
+ *      receiver : "hulk@yyy",
+ *      time     : 123
+ *  }
+ */
 @interface DIMEnvelope : MKMDictionary <DKDEnvelope>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
@@ -48,10 +60,6 @@ NS_DESIGNATED_INITIALIZER;
                       receiver:(id<MKMID>)to
                           time:(nullable NSDate *)when
 NS_DESIGNATED_INITIALIZER;
-
-@end
-
-@interface DIMEnvelopeFactory : NSObject <DKDEnvelopeFactory>
 
 @end
 

@@ -55,7 +55,7 @@ DIMTextContent *DIMTextContentCreate(NSString *text) {
 }
 
 - (NSString *)text {
-    return [self stringForKey:@"text"];
+    return [self stringForKey:@"text" defaultValue:@""];
 }
 
 @end

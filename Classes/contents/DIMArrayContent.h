@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DKDArrayContent <DKDContent>
 
-@property (readonly, nonatomic) NSArray<id<DKDContent>> *contents;
+@property (readonly, atomic) NSArray<id<DKDContent>> *contents;
 
 @end
 
@@ -66,7 +66,7 @@ extern "C" {
 /**
  *  Convert content list from dictionary array
  */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<NSDictionary *> *contents);
+NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents);
 
 /**
  *  Revert content list to dictionary array

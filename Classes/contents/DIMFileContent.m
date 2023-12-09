@@ -35,15 +35,30 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DIMBaseFileWrapper.h"
+
 #import "DIMFileContent.h"
 
-DIMFileContent *DIMFileContentCreate(NSString *filename, NSData *file) {
-    return [[DIMFileContent alloc] initWithFilename:filename data:file];
+DIMFileContent *DIMFileContentFromData(NSData *data, NSString *filename) {
+    id<MKMTransportableData> ted = MKMTransportableDataCreate(data, nil);
+    return [[DIMFileContent alloc] initWithType:DKDContentType_File
+                                           data:ted
+                                       filename:filename
+                                            url:nil
+                                       password:nil];
+}
+
+DIMFileContent *DIMFileContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
+    return [[DIMFileContent alloc] initWithType:DKDContentType_File
+                                           data:nil
+                                       filename:nil
+                                            url:url
+                                       password:password];
 }
 
 @interface DIMFileContent () {
     
-    id _attachment;
+    DIMBaseFileWrapper *_wrapper;
 }
 
 @end
@@ -53,98 +68,77 @@ DIMFileContent *DIMFileContentCreate(NSString *filename, NSData *file) {
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _attachment = nil;
+        dict = [self dictionary];
+        _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
     }
     return self;
 }
 
 - (instancetype)initWithType:(DKDContentType)type {
-    NSString *name = nil;
-    return [self initWithType:type filename:name data:nil];
+    return [self initWithType:type
+                         data:nil
+                     filename:nil
+                          url:nil
+                     password:nil];
 }
 
 /* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type
-                    filename:(NSString *)name
-                        data:(nullable NSData *)file {
+                        data:(nullable id<MKMTransportableData>)file
+                    filename:(nullable NSString *)name
+                         url:(nullable NSURL *)remote
+                    password:(nullable id<MKMDecryptKey>)key {
     if (self = [super initWithType:type]) {
-        // filename
-        if (name) {
-            [self setObject:name forKey:@"filename"];
-        }
-        // file data
+        NSDictionary *dict = [self dictionary];
+        _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
         if (file) {
-            self.data = file;
+            _wrapper.data = file;
+        }
+        if (name) {
+            _wrapper.filename = name;
+        }
+        if (remote) {
+            _wrapper.URL = remote;
+        }
+        if (key) {
+            _wrapper.password = key;
         }
     }
     return self;
 }
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)file {
-    NSAssert([file length] > 0, @"file data cannot be empty");
-    return [self initWithType:DKDContentType_File filename:name data:file];
+#pragma mark file data
+
+- (NSData *)data {
+    return [_wrapper.data data];
 }
 
-//- (id)copyWithZone:(nullable NSZone *)zone {
-//    DIMFileContent *content = [super copyWithZone:zone];
-//    if (content) {
-//        //content.data = _attachment;
-//    }
-//    return content;
-//}
-
-- (nullable NSURL *)URL {
-    NSString *string = [self stringForKey:@"URL"];
-    if (string) {
-        return [NSURL URLWithString:string];
-    }
-    return nil;
-}
-
-- (void)setURL:(nullable NSURL *)URL {
-    NSString *string = [URL absoluteString];
-    if (string) {
-        [self setObject:string forKey:@"URL"];
-    } else {
-        [self removeObjectForKey:@"URL"];
-    }
-}
-
-- (nullable NSData *)data {
-    if (!_attachment) {
-        NSString *base64 = [self stringForKey:@"data"];
-        if (base64) {
-            _attachment = MKMBase64Decode(base64);
-        }
-    }
-    return _attachment;
-}
-
-- (void)setData:(nullable NSData *)fileData {
-    if ([fileData length] > 0) {
-        [self setObject:MKMBase64Encode(fileData) forKey:@"data"];
-    } else {
-        [self removeObjectForKey:@"data"];
-    }
-    _attachment = fileData;
+- (void)setData:(NSData *)data {
+    [_wrapper setBinary:data];
 }
 
 - (NSString *)filename {
-    return [self stringForKey:@"filename"];
+    return _wrapper.filename;
 }
 
-- (void)setPassword:(nullable id<MKMSymmetricKey>)password {
-    if (password) {
-        [self setObject:[password dictionary] forKey:@"password"];
-    } else {
-        [self removeObjectForKey:@"password"];
-    }
+- (void)setFilename:(NSString *)filename {
+    _wrapper.filename = filename;
 }
 
-- (nullable id<MKMSymmetricKey>)password {
-    id pwd = [self objectForKey:@"password"];
-    return MKMSymmetricKeyParse(pwd);
+- (NSURL *)URL {
+    return _wrapper.URL;
+}
+
+- (void)setURL:(NSURL *)URL {
+    _wrapper.URL = URL;
+}
+
+- (id<MKMDecryptKey>)password {
+    return _wrapper.password;
+}
+
+- (void)setPassword:(id<MKMDecryptKey>)password {
+    _wrapper.password = password;
 }
 
 @end

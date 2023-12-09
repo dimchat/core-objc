@@ -35,12 +35,48 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <DIMCore/DIMContent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMNameCard : NSObject
+/**
+ *  Name Card: {
+ *      type : 0x33,
+ *      sn   : 123,
+ *
+ *      ID     : "{ID}",        // contact's ID
+ *      name   : "{nickname}",  // contact's name
+ *      avatar : "{URL}",       // avatar - PNF(URL)
+ *      ...
+ *  }
+ */
+@protocol DKDNameCard <DKDContent>
+
+@property (readonly, strong, nonatomic) id<MKMID> ID;
+
+@property (readonly, strong, nonatomic) NSString *name;
+
+@property (readonly, strong, atomic, nullable) id<MKMPortableNetworkFile> avatar;
 
 @end
+
+@interface DIMNameCard : DIMContent <DKDNameCard>
+
+- (instancetype)initWithID:(id<MKMID>)ID
+                      name:(NSString *)nickname
+                    avatar:(id<MKMPortableNetworkFile>)image;
+
+@end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
+                               _Nullable id<MKMPortableNetworkFile> avatar);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

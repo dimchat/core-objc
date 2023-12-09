@@ -37,6 +37,69 @@
 
 #import "DIMNameCard.h"
 
+DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
+                               _Nullable id<MKMPortableNetworkFile> avatar) {
+    return [[DIMNameCard alloc] initWithID:ID name:name avatar:avatar];
+}
+
+@interface DIMNameCard () {
+    
+    id<MKMPortableNetworkFile> _image;
+}
+
+@end
+
 @implementation DIMNameCard
+
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _image = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy load
+        _image = nil;
+    }
+    return self;
+}
+
+- (instancetype)initWithID:(id<MKMID>)ID
+                      name:(NSString *)nickname
+                    avatar:(id<MKMPortableNetworkFile>)image {
+    if (self = [self initWithType:DKDContentType_NameCard]) {
+        [self setString:ID forKey:@"ID"];
+        [self setObject:nickname forKey:@"name"];
+        if (image) {
+            [self setObject:image.object forKey:@"avatar"];
+        }
+    }
+    return self;
+}
+
+- (id<MKMID>)ID {
+    return MKMIDParse([self objectForKey:@"ID"]);
+}
+
+- (NSString *)name {
+    return [self stringForKey:@"name" defaultValue:@""];
+}
+
+- (id<MKMPortableNetworkFile>)avatar {
+    id<MKMPortableNetworkFile> pnf = _image;
+    if (!pnf) {
+        id url = [self objectForKey:@"avatar"];
+        if ([url length] == 0) {
+            // ignore empty URL
+        } else {
+            _image = pnf = MKMPortableNetworkFileParse(url);
+        }
+    }
+    return pnf;
+}
 
 @end

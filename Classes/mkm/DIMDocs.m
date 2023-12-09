@@ -41,6 +41,9 @@
     
     // public key to encrypt message
     id<MKMEncryptKey> _key;
+    
+    // avatar URL
+    id<MKMPortableNetworkFile> _pnf;
 }
 
 @end
@@ -51,14 +54,18 @@
     if (self = [super initWithDictionary:dict]) {
         // lazy
         _key = nil;
+        _pnf = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig {
-    if (self = [super initWithID:ID data:json signature:sig]) {
+- (instancetype)initWithID:(id<MKMID>)ID
+                      data:(NSString *)json
+                 signature:(id<MKMTransportableData>)CT {
+    if (self = [super initWithID:ID data:json signature:CT]) {
         // lazy
         _key = nil;
+        _pnf = nil;
     }
     return self;
 }
@@ -72,33 +79,42 @@
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocument_Visa];
+    return [self initWithID:ID type:MKMDocumentTypeVisa];
 }
 
-- (nullable id<MKMEncryptKey>)key {
+- (nullable id<MKMEncryptKey>)publicKey {
     if (!_key) {
         id dict = [self propertyForKey:@"key"];
         id pubKey = MKMPublicKeyParse(dict);
         if ([pubKey conformsToProtocol:@protocol(MKMEncryptKey)]) {
             _key = pubKey;
         } else {
-            NSAssert(!pubKey, @"visa key error: %@", pubKey);
+            NSAssert(!dict, @"visa key error: %@", dict);
         }
     }
     return _key;
 }
 
-- (void)setKey:(id<MKMEncryptKey>)key {
+- (void)setPublicKey:(id<MKMEncryptKey>)key {
     [self setProperty:[key dictionary] forKey:@"key"];
     _key = key;
 }
 
-- (nullable NSString *)avatar {
-    return [self propertyForKey:@"avatar"];
+- (id<MKMPortableNetworkFile>)avatar {
+    if (!_pnf) {
+        id url = [self propertyForKey:@"avatar"];
+        if ([url length] == 0) {
+            // ignore empty URL
+        } else {
+            _pnf = MKMPortableNetworkFileParse(url);
+        }
+    }
+    return _pnf;
 }
 
-- (void)setAvatar:(NSString *)avatar {
-    [self setProperty:avatar forKey:@"avatar"];
+- (void)setAvatar:(id<MKMPortableNetworkFile>)avatar {
+    [self setProperty:avatar.object forKey:@"avatar"];
+    _pnf = avatar;
 }
 
 @end
@@ -108,7 +124,7 @@
 @interface DIMBulletin () {
     
     // Bot ID list as group assistants
-    NSArray<id<MKMID>> *_assistants;
+    NSArray<id<MKMID>> *_bots;
 }
 
 @end
@@ -118,15 +134,17 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _assistants = nil;
+        _bots = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID data:(NSString *)json signature:(NSString *)sig {
-    if (self = [super initWithID:ID data:json signature:sig]) {
+- (instancetype)initWithID:(id<MKMID>)ID
+                      data:(NSString *)json
+                 signature:(id<MKMTransportableData>)CT {
+    if (self = [super initWithID:ID data:json signature:CT]) {
         // lazy
-        _assistants = nil;
+        _bots = nil;
     }
     return self;
 }
@@ -134,29 +152,33 @@
 - (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
     if (self = [super initWithID:ID type:type]) {
         // lazy
-        _assistants = nil;
+        _bots = nil;
     }
     return self;
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocument_Bulletin];
+    return [self initWithID:ID type:MKMDocumentTypeBulletin];
+}
+
+- (nullable id<MKMID>)founder {
+    return MKMIDParse([self objectForKey:@"founder"]);
 }
 
 - (nullable NSArray<id<MKMID>> *)assistants {
-    if (!_assistants) {
+    if (!_bots) {
         NSArray *array = [self propertyForKey:@"assistants"];
         if (array.count > 0) {
-            _assistants = MKMIDConvert(array);
+            _bots = MKMIDConvert(array);
         }
     }
-    return _assistants;
+    return _bots;
 }
 
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
     NSAssert([assistants count] > 0, @"bots empty");
     [self setProperty:MKMIDRevert(assistants) forKey:@"assistants"];
-    _assistants = assistants;
+    _bots = assistants;
 }
 
 @end

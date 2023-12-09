@@ -37,6 +37,125 @@
 
 #import "DIMBaseFileWrapper.h"
 
+@interface DIMBaseFileWrapper () {
+    
+    // file data (not encrypted)
+    id<MKMTransportableData> _attachment;
+    
+    // download from CDN
+    NSURL *_remoteURL;
+    
+    // key to decrypt data downloaded from CDN
+    id<MKMDecryptKey> _password;
+}
+
+@end
+
 @implementation DIMBaseFileWrapper
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy load
+        _attachment = nil;
+        _remoteURL = nil;
+        _password = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)init {
+    if (self = [super init]) {
+        _attachment = nil;
+        _remoteURL = nil;
+        _password = nil;
+    }
+    return self;
+}
+
+#pragma mark file data
+
+- (id<MKMTransportableData>)data {
+    id<MKMTransportableData> ted = _attachment;
+    if (!ted) {
+        id base64 = [self objectForKey:@"data"];
+        _attachment = ted = MKMTransportableDataParse(base64);
+    }
+    return ted;
+}
+
+- (void)setData:(id<MKMTransportableData>)ted {
+    if (!ted) {
+        [self removeObjectForKey:@"data"];
+    } else {
+        [self setObject:ted.object forKey:@"data"];
+    }
+    _attachment = ted;
+}
+
+- (void)setBinary:(NSData *)data {
+    id<MKMTransportableData> ted;
+    if ([data length] == 0) {
+        ted = nil;
+        [self removeObjectForKey:@"data"];
+    } else {
+        ted = MKMTransportableDataCreate(data, nil);
+        [self setObject:ted.object forKey:@"data"];
+    }
+    _attachment = ted;
+}
+
+#pragma mark file name
+
+- (NSString *)filename {
+    return [self stringForKey:@"filename" defaultValue:nil];
+}
+
+- (void)setFilename:(NSString *)filename {
+    if ([filename length] == 0) {
+        [self removeObjectForKey:@"filename"];
+    } else {
+        [self setObject:filename forKey:@"filename"];
+    }
+}
+
+#pragma mark download URL
+
+- (NSURL *)URL {
+    NSURL *remote = _remoteURL;
+    if (!remote) {
+        NSString *locator = [self stringForKey:@"URL" defaultValue:nil];
+        if ([locator length] > 0) {
+            _remoteURL = remote = [[NSURL alloc] initWithString:locator];
+        }
+    }
+    return remote;
+}
+
+- (void)setURL:(NSURL *)url {
+    if (!url) {
+        [self removeObjectForKey:@"URL"];
+    } else {
+        [self setObject:url.absoluteString forKey:@"URL"];
+    }
+    _remoteURL = url;
+}
+
+#pragma mark decrypt key
+
+- (id<MKMDecryptKey>)password {
+    id<MKMDecryptKey> key = _password;
+    if (!key) {
+        id info = [self objectForKey:@"password"];
+        _password = key = MKMSymmetricKeyParse(info);
+    }
+    return key;
+}
+
+- (void)setPassword:(id<MKMDecryptKey>)key {
+    [self setDictionary:key forKey:@"password"];
+    _password = key;
+}
 
 @end

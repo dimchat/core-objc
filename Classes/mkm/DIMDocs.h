@@ -47,11 +47,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMVisa <MKMDocument>
 
-// public key for other user to encrypt message
+// Public Key for encryption
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+// For safety considerations, the visa.key which used to encrypt message data
+// should be different with meta.key
 @property (strong, nonatomic, nullable) id<MKMEncryptKey> publicKey;
 
-// avatar URL
-@property (strong, nonatomic, nullable) NSString *avatar;
+// Avatar URL
+@property (strong, nonatomic, nullable) id<MKMPortableNetworkFile> avatar;
 
 @end
 
@@ -61,7 +64,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMBulletin <MKMDocument>
 
-// Bot ID list as group assistants
+// Group Founder
+@property (readonly, strong, nonatomic, nullable) id<MKMID> founder;
+
+// Group assistants (Bots)
 @property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;
 
 @end

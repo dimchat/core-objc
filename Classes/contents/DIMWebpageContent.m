@@ -37,64 +37,164 @@
 
 #import "DIMWebpageContent.h"
 
-DIMPageContent *DIMPageContentCreate(NSURL *url,
-                                     NSString *title,
-                                     NSString *desc,
-                                     NSData *icon) {
+DIMPageContent *DIMPageContentFromURL(NSURL *url,
+                                      NSString *title,
+                                      NSString *desc,
+                                      id<MKMTransportableData> icon) {
     return [[DIMPageContent alloc] initWithURL:url
                                          title:title
                                    description:desc
                                           icon:icon];
 }
 
+DIMPageContent *DIMPageContentFromHTML(NSString *html,
+                                       NSString *title,
+                                       NSString * _Nullable desc,
+                                       _Nullable id<MKMTransportableData> icon) {
+    return [[DIMPageContent alloc] initWithHTML:html
+                                          title:title
+                                    description:desc
+                                           icon:icon];
+}
+
+@interface DIMPageContent () {
+    
+    id<MKMTransportableData> _image;
+    NSURL *_url;
+}
+
+@end
+
 @implementation DIMPageContent
 
+/* designated initializer */
+- (instancetype)initWithType:(DKDContentType)type {
+    if (self = [super initWithType:type]) {
+        _image = nil;
+        _url = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy load
+        _image = nil;
+        _url = nil;
+    }
+    return self;
+}
+
 - (instancetype)initWithURL:(NSURL *)url
-                      title:(nullable NSString *)title
+                      title:(NSString *)title
                 description:(nullable NSString *)desc
-                       icon:(nullable NSData *)icon {
-    NSAssert(url, @"URL cannot be empty");
+                       icon:(nullable id<MKMTransportableData>)icon {
     if (self = [self initWithType:DKDContentType_Page]) {
-        // url
-        if (url) {
-            [self setObject:[url absoluteString] forKey:@"URL"];
-        }
-        
-        // title
-        if (title) {
-            [self setObject:title forKey:@"title"];
-        }
-        
-        // desc
+        self.URL = url;
+        self.title = title;
         if (desc) {
-            [self setObject:desc forKey:@"desc"];
+            self.desc = desc;
         }
-        
-        // icon
         if (icon) {
-            NSString *str = MKMBase64Encode(icon);
-            [self setObject:str forKey:@"icon"];
+            [self _setImage:icon];
         }
     }
     return self;
 }
 
-- (NSURL *)URL {
-    NSString *string = [self stringForKey:@"URL"];
-    return [NSURL URLWithString:string];
+- (instancetype)initWithHTML:(NSString *)html
+                       title:(NSString *)title
+                 description:(nullable NSString *)desc
+                        icon:(nullable id<MKMTransportableData>)icon {
+    if (self = [self initWithType:DKDContentType_Page]) {
+        self.HTML = html;
+        self.title = title;
+        if (desc) {
+            self.desc = desc;
+        }
+        if (icon) {
+            [self _setImage:icon];
+        }
+    }
+    return self;
 }
+
+#pragma mark title
 
 - (NSString *)title {
-    return [self stringForKey:@"title"];
+    return [self stringForKey:@"title" defaultValue:@""];
 }
 
-- (NSString *)desc {
-    return [self stringForKey:@"desc"];
+- (void)setTitle:(NSString *)title {
+    [self setObject:title forKey:@"title"];
 }
+
+#pragma mark favicon.ico
 
 - (NSData *)icon {
-    NSString *str = [self stringForKey:@"icon"];
-    return MKMBase64Decode(str);
+    id<MKMTransportableData> ted = _image;
+    if (!ted) {
+        id base64 = [self objectForKey:@"icon"];
+        _image = ted = MKMTransportableDataParse(base64);
+    }
+    return [ted data];
+}
+
+- (void)setIcon:(NSData *)icon {
+    id<MKMTransportableData> ted;
+    if ([icon length] == 0) {
+        ted = nil;
+    } else {
+        ted = MKMTransportableDataCreate(icon, nil);
+    }
+    [self _setImage:ted];
+}
+
+- (void)_setImage:(id<MKMTransportableData>)ted {
+    if (!ted) {
+        [self removeObjectForKey:@"icon"];
+    } else {
+        [self setObject:ted.object forKey:@"icon"];
+    }
+    _image = ted;
+}
+
+#pragma mark keyword /description
+
+- (NSString *)desc {
+    return [self stringForKey:@"desc" defaultValue:nil];
+}
+
+- (void)setDesc:(NSString *)desc {
+    [self setObject:desc forKey:@"desc"];
+}
+
+#pragma mark URL
+
+- (NSURL *)URL {
+    if (!_url) {
+        NSString *string = [self stringForKey:@"URL" defaultValue:nil];
+        if ([string length] > 0) {
+            _url = [NSURL URLWithString:string];
+        }
+    }
+    return _url;
+}
+
+- (void)setURL:(NSURL *)remote {
+    [self setObject:remote.absoluteString forKey:@"URL"];
+    _url = remote;
+}
+
+#pragma mark HTML
+
+- (NSString *)HTML {
+    return [self stringForKey:@"HTML" defaultValue:nil];
+}
+
+- (void)setHTML:(NSString *)html {
+    [self setObject:html forKey:@"HTML"];
 }
 
 @end

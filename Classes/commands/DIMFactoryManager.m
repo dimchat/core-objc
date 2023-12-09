@@ -88,8 +88,10 @@ static DIMCommandFactoryManager *s_manager = nil;
     return [_commandFactories objectForKey:cmd];
 }
 
-- (nullable NSString *)getCmd:(NSDictionary<NSString *,id> *)content {
-    return [content objectForKey:@"command"];
+- (nullable NSString *)getCmd:(NSDictionary<NSString *,id> *)content
+                 defaultValue:(nullable NSString *)aValue {
+    id cmd = [content objectForKey:@"command"];
+    return MKMConverterGetString(cmd, aValue);
 }
 
 - (nullable id<DKDCommand>)parseCommand:(id)content {
@@ -99,18 +101,20 @@ static DIMCommandFactoryManager *s_manager = nil;
         return (id<DKDCommand>)content;
     }
     NSDictionary<NSString *, id> *info = MKMGetMap(content);
-    NSAssert([info isKindOfClass:[NSDictionary class]], @"command error: %@", content);
+    if (!info) {
+        NSAssert(false, @"command error: %@", content);
+        return nil;
+    }
     // get factory by command name
-    NSString *cmd = [self getCmd:info];
-    NSAssert(cmd, @"command name not found: %@", content);
-
+    NSString *cmd = [self getCmd:info defaultValue:@""];
+    NSAssert([cmd length] > 0, @"command name not found: %@", content);
     // get factory by command name
-    id<DKDCommandFactory> factory = cmd.length == 0 ? nil : [self commandFactoryForName:cmd];
+    id<DKDCommandFactory> factory = [self commandFactoryForName:cmd];
     if (!factory) {
         // unknown command name, get base command factory
         DKDFactoryManager *man = [DKDFactoryManager sharedManager];
         DKDGeneralFactory *gf = [man generalFactory];
-        DKDContentType type = [gf contentType:info];
+        DKDContentType type = [gf contentType:info defaultValue:0];
         NSAssert(type > 0, @"content type error: %@", content);
         id<DKDContentFactory> fact = [gf contentFactoryForType:type];
         if ([fact conformsToProtocol:@protocol(DKDCommandFactory)]) {

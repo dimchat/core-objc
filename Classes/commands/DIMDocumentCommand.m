@@ -43,8 +43,9 @@ DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
     return [[DIMDocumentCommand alloc] initWithID:ID meta:meta document:doc];
 }
 
-DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID) {
-    return [[DIMDocumentCommand alloc] initWithID:ID];
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
+                                            NSDate *lastTime) {
+    return [[DIMDocumentCommand alloc] initWithID:ID time:lastTime];
 }
 
 @interface DIMDocumentCommand ()
@@ -76,28 +77,25 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID) {
     return [self initWithID:ID meta:nil document:nil];
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID signature:(NSString *)signature {
-    if (self = [self initWithID:ID meta:nil document:nil]) {
-        if (signature) {
-            [self setObject:signature forKey:@"signature"];
+- (instancetype)initWithID:(id<MKMID>)ID
+                      meta:(id<MKMMeta>)meta
+                  document:(id<MKMDocument>)doc {
+    if (self = [self initWithCommandName:DIMCommand_Document ID:ID meta:meta]) {
+        // document
+        if (doc) {
+            [self setDictionary:doc forKey:@"document"];
         }
+        _document = doc;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID document:(id<MKMDocument>)doc {
-    return [self initWithID:ID meta:nil document:doc];
-}
-
 - (instancetype)initWithID:(id<MKMID>)ID
-                      meta:(nullable id<MKMMeta>)meta
-                  document:(nullable id<MKMDocument>)doc {
-    if (self = [self initWithCommandName:DIMCommand_Document ID:ID meta:meta]) {
-        // document
-        if (doc) {
-            [self setObject:[doc dictionary] forKey:@"document"];
+                      time:(NSDate *)lastTime {
+    if (self = [self initWithID:ID meta:nil document:nil]) {
+        if (lastTime) {
+            [self setDate:lastTime forKey:@"last_time"];
         }
-        _document = doc;
     }
     return self;
 }
@@ -110,7 +108,7 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID) {
     return content;
 }
 
-- (nullable id<MKMDocument>)document {
+- (id<MKMDocument>)document {
     if (!_document) {
         id dict = [self objectForKey:@"document"];
         _document = MKMDocumentParse(dict);
@@ -118,8 +116,8 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID) {
     return _document;
 }
 
-- (nullable NSString *)signature {
-    return [self objectForKey:@"signature"];
+- (NSDate *)lastTime {
+    return [self dateForKey:@"last_time" defaultValue:nil];
 }
 
 @end

@@ -114,9 +114,9 @@
     return [_dataSource metaForID:_ID];
 }
 
-- (nullable id<MKMDocument>)documentWithType:(nullable NSString *)type {
+- (NSArray<id<MKMDocument>> *)documents {
     NSAssert(_dataSource, @"entity data source not set yet");
-    return [_dataSource documentForID:_ID type:type];
+    return [_dataSource documentsForID:_ID];
 }
 
 @end

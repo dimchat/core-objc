@@ -37,18 +37,39 @@
 
 #import "DIMAudioContent.h"
 
-DIMAudioContent *DIMAudioContentCreate(NSString *filename, NSData *audio) {
-    return [[DIMAudioContent alloc] initWithFilename:filename data:audio];
+DIMAudioContent *DIMAudioContentFromData(NSData *audio,
+                                         NSString *filename) {
+    id<MKMTransportableData> ted = MKMTransportableDataCreate(audio, nil);
+    return [[DIMAudioContent alloc] initWithData:ted filename:filename];
+}
+
+DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
+                                        _Nullable id<MKMDecryptKey> password) {
+    return [[DIMAudioContent alloc] initWithURL:url password:password];
 }
 
 @implementation DIMAudioContent
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)audio {
-    return [self initWithType:DKDContentType_Audio filename:name data:audio];
+- (instancetype)initWithData:(id<MKMTransportableData>)audio
+                    filename:(NSString *)name {
+    return [self initWithType:DKDContentType_Audio
+                         data:audio
+                     filename:name
+                          url:nil
+                     password:nil];
+}
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key {
+    return [self initWithType:DKDContentType_Audio
+                         data:nil
+                     filename:nil
+                          url:url
+                     password:key];
 }
 
 - (nullable NSString *)text {
-    return [self stringForKey:@"text"];
+    return [self stringForKey:@"text" defaultValue:nil];
 }
 
 - (void)setText:(nullable NSString *)text {

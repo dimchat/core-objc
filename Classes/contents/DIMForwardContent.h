@@ -51,10 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDForwardContent <DKDContent>
 
 // forward message
-@property (readonly, nonatomic) id<DKDReliableMessage> forward;
+@property (readonly, atomic, nullable) id<DKDReliableMessage> forward;
 
 // secret messages
-@property (readonly, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
+@property (readonly, atomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 
@@ -72,7 +72,7 @@ extern "C" {
 /**
  *  Convert message list from dictionary array
  */
-NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<NSDictionary *> *messages);
+NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<id> *messages);
 
 /**
  *  Revert message list to dictionary array

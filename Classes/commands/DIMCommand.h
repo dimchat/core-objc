@@ -82,6 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 // command names
 #define DIMCommand_Meta      @"meta"
 #define DIMCommand_Document  @"document"
+#define DIMCommand_Receipt   @"receipt"
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,7 +91,7 @@ extern "C" {
 _Nullable id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
-_Nullable id<DKDCommand> DKDCommandParse(id content);
+_Nullable id<DKDCommand> DKDCommandParse(_Nullable id content);
 
 DIMCommand *DIMCommandCreate(NSString *cmd);
 

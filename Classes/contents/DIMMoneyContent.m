@@ -80,13 +80,11 @@ DIMMoneyContent *DIMMoneyContentCreate(NSString *currency, float value) {
 }
 
 - (NSString *)currency {
-    return [self stringForKey:@"currency"];
+    return [self stringForKey:@"currency" defaultValue:@""];
 }
 
 - (float)amount {
-    NSNumber *number = [self objectForKey:@"amount"];
-    NSAssert(number, @"amount of money not found: %@", self);
-    return [number floatValue];
+    return [self floatForKey:@"amount" defaultValue:0];
 }
 
 - (void)setAmount:(float)amount {

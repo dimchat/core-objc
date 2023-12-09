@@ -39,6 +39,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Group Data Source
+ *  ~~~~~~~~~~~~~~~~~
+ *
+ *      1. founder has the same public key with the group's meta.key
+ *      2. owner and members should be set complying with the consensus algorithm
+ */
 @protocol MKMGroupDataSource <MKMEntityDataSource>
 
 /**
@@ -75,8 +82,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol MKMBulletin;
+
+/**
+ *  Group for organizing users
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *  roles:
+ *      founder
+ *      owner
+ *      members
+ *      administrators - Optional
+ *      assistants     - group bots
+ */
 @protocol MKMGroup <MKMEntity>
 
+// group document
 @property (readonly, strong, nonatomic, nullable) id<MKMBulletin> bulletin;
 
 @property (readonly, strong, nonatomic) id<MKMID> founder;

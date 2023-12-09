@@ -35,11 +35,48 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMBaseDataWrapper : NSObject
+/**
+ *  Transportable Data MixIn: {
+ *
+ *      algorithm : "base64",
+ *      data      : "...",     // base64_encode(data)
+ *      ...
+ *  }
+ *
+ *  data format:
+ *      0. "{BASE64_ENCODE}"
+ *      1. "base64,{BASE64_ENCODE}"
+ *      2. "data:image/png;base64,{BASE64_ENCODE}"
+ */
+@interface DIMBaseDataWrapper : MKMDictionary
+
+- (BOOL)isEmpty;
+
+/**
+ *  toString()
+ */
+- (NSString *)encode;
+
+/**
+ *  Encode with 'Content-Type'
+ *
+ *  toString()
+ */
+- (NSString *)encode:(NSString *)mimeType;
+
+/**
+ *  encode algorithm
+ */
+@property (strong, nonatomic) NSString *algorithm;
+
+/**
+ *  binary data
+ */
+@property (strong, atomic, nullable) NSData *data;
 
 @end
 

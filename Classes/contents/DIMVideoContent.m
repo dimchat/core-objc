@@ -37,13 +37,20 @@
 
 #import "DIMVideoContent.h"
 
-DIMVideoContent *DIMVideoContentCreate(NSString *filename, NSData *video) {
-    return [[DIMVideoContent alloc] initWithFilename:filename data:video];
+DIMVideoContent *DIMVideoContentFromData(NSData *video,
+                                         NSString *filename) {
+    id<MKMTransportableData> ted = MKMTransportableDataCreate(video, nil);
+    return [[DIMVideoContent alloc] initWithData:ted filename:filename];
+}
+
+DIMVideoContent *DIMVideoContentFromURL(NSURL *url,
+                                        _Nullable id<MKMDecryptKey> password) {
+    return [[DIMVideoContent alloc] initWithURL:url password:password];
 }
 
 @interface DIMVideoContent () {
     
-    NSData *_snapshot;
+    id<MKMTransportableData> _snapshot;
 }
 
 @end
@@ -61,35 +68,57 @@ DIMVideoContent *DIMVideoContentCreate(NSString *filename, NSData *video) {
 
 /* designated initializer */
 - (instancetype)initWithType:(DKDContentType)type
-                    filename:(NSString *)name
-                        data:(nullable NSData *)file {
-    if (self = [super initWithType:type filename:name data:file]) {
+                        data:(nullable id<MKMTransportableData>)file
+                    filename:(nullable NSString *)name
+                         url:(nullable NSURL *)remote
+                    password:(nullable id<MKMDecryptKey>)key {
+    if (self = [super initWithType:type
+                              data:file
+                          filename:name
+                               url:remote
+                          password:key]) {
         _snapshot = nil;
     }
     return self;
 }
 
-- (instancetype)initWithFilename:(NSString *)name data:(nullable NSData *)video {
-    return [self initWithType:DKDContentType_Video filename:name data:video];
+- (instancetype)initWithData:(id<MKMTransportableData>)video
+                    filename:(NSString *)name {
+    return [self initWithType:DKDContentType_Video
+                         data:video
+                     filename:name
+                          url:nil
+                     password:nil];
+}
+
+- (instancetype)initWithURL:(NSURL *)url
+                   password:(nullable id<MKMDecryptKey>)key {
+    return [self initWithType:DKDContentType_Video
+                         data:nil
+                     filename:nil
+                          url:url
+                     password:key];
 }
 
 - (nullable NSData *)snapshot {
-    if (!_snapshot) {
-        NSString *ss = [self objectForKey:@"snapshot"];
-        if ([ss length] > 0) {
-            _snapshot = MKMBase64Decode(ss);
-        }
+    id<MKMTransportableData> ted = _snapshot;
+    if (!ted) {
+        id base64 = [self objectForKey:@"snapshot"];
+        _snapshot = ted = MKMTransportableDataParse(base64);
     }
-    return _snapshot;
+    return [ted data];
 }
 
 - (void)setSnapshot:(NSData *)snapshot {
-    if ([snapshot length] > 0) {
-        [self setObject:MKMBase64Encode(snapshot) forKey:@"snapshot"];
-    } else {
+    id<MKMTransportableData> ted;
+    if ([snapshot length] == 0) {
+        ted = nil;
         [self removeObjectForKey:@"snapshot"];
+    } else {
+        ted = MKMTransportableDataCreate(snapshot, nil);
+        [self setObject:ted.object forKey:@"snapshot"];
     }
-    _snapshot = snapshot;
+    _snapshot = ted;
 }
 
 @end
