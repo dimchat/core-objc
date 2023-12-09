@@ -71,8 +71,8 @@ DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
                                                members:members];
 }
 
-DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group) {
-    return [[DIMQueryGroupCommand alloc] initWithGroup:group];
+DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
+    return [[DIMQueryGroupCommand alloc] initWithGroup:group lastTime:lastTime];
 }
 
 #pragma mark -
@@ -193,8 +193,17 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group) {
 
 @implementation DIMQueryGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommandName:DIMGroupCommand_Query group:groupID];
+- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time {
+    if (self = [self initWithCommandName:DIMGroupCommand_Query group:groupID]) {
+        if (time) {
+            [self setDate:time forKey:@"last_time"];
+        }
+    }
+    return self;
+}
+
+- (NSDate *)lastTime {
+    return [self dateForKey:@"last_time" defaultValue:nil];
 }
 
 @end

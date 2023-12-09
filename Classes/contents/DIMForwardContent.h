@@ -51,10 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDForwardContent <DKDContent>
 
 // forward message
-@property (readonly, atomic, nullable) id<DKDReliableMessage> forward;
+@property (readonly, nonatomic, nullable) id<DKDReliableMessage> forward;
 
 // secret messages
-@property (readonly, atomic) NSArray<id<DKDReliableMessage>> *secrets;
+@property (readonly, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 

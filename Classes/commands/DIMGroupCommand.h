@@ -107,8 +107,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-#pragma mark Expel group command
+#pragma mark Expel group command - Deprecated
 
+// Deprecated (use 'reset' instead)
 @protocol DKDExpelGroupCommand <DKDGroupCommand> @end
 
 @interface DIMExpelGroupCommand : DIMGroupCommand <DKDExpelGroupCommand>
@@ -154,11 +155,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Query group command
 
-@protocol DKDQueryGroupCommand <DKDGroupCommand> @end
+/**
+ *  History command: {
+ *      type : 0x88,
+ *      sn   : 123,
+ *
+ *      command : "query",
+ *      time    : 123.456,
+ *
+ *      group     : "{GROUP_ID}",
+ *      last_time : 0
+ *  }
+ */
+@protocol DKDQueryGroupCommand <DKDGroupCommand>
+
+// Last group history time for querying
+@property (readonly, strong, nonatomic, nullable) NSDate *lastTime;
+
+@end
 
 @interface DIMQueryGroupCommand : DIMGroupCommand <DKDQueryGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
+- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time;
 
 @end
 
@@ -183,7 +201,8 @@ DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group);
 DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
                                            NSArray<id<MKMID>> *members);
 
-DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group);
+DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group,
+                                           NSDate * _Nullable lastTime);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

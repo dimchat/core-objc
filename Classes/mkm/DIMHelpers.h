@@ -39,17 +39,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Thanos can kill half lives of a world with a snap of the finger
-NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
 @interface DIMBroadcastHelper : NSObject
 
 + (id<MKMID>)broadcastFounder:(id<MKMID>)group;

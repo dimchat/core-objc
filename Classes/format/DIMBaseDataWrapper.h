@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface DIMBaseDataWrapper : MKMDictionary
 
-- (BOOL)isEmpty;
+//- (BOOL)isEmpty;
 
 /**
  *  toString()

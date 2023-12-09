@@ -45,11 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  Converting message format between InstantMessage & ReliableMessage
  */
-@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate, DKDReliableMessageDelegate>
+@interface DIMTransceiver : NSObject <DKDInstantMessageDelegate,
+                                      DKDSecureMessageDelegate,
+                                      DKDReliableMessageDelegate>
 
-/**
- *  Delegate for getting entity
- */
+// protected
 @property(nonatomic, weak, readonly) id<MKMEntityDelegate> barrack;
 
 @end
@@ -60,30 +60,60 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMPacker <NSObject>
 
-/**
- *  Get group ID which should be exposed to public network
- *
- * @param content - message content
- * @return exposed group ID
- */
-- (nullable id<MKMID>)overtGroupForContent:(id<DKDContent>)content;
-
 //
 //  InstantMessage -> SecureMessage -> ReliableMessage -> Data
 //
+
+/**
+ *  Encrypt message content
+ *
+ * @param iMsg - plain message
+ * @return encrypted message
+ */
 - (nullable id<DKDSecureMessage>)encryptMessage:(id<DKDInstantMessage>)iMsg;
 
+/**
+ *  Sign content data
+ *
+ * @param sMsg - encrypted message
+ * @return network message
+ */
 - (nullable id<DKDReliableMessage>)signMessage:(id<DKDSecureMessage>)sMsg;
 
+/**
+ *  Serialize network message
+ *
+ * @param rMsg - network message
+ * @return data package
+ */
 - (nullable NSData *)serializeMessage:(id<DKDReliableMessage>)rMsg;
 
 //
 //  Data -> ReliableMessage -> SecureMessage -> InstantMessage
 //
+
+/**
+ *  Deserialize network message
+ *
+ * @param data - data package
+ * @return network message
+ */
 - (nullable id<DKDReliableMessage>)deserializeMessage:(NSData *)data;
 
+/**
+ *  Verify encrypted content data
+ *
+ * @param rMsg - network message
+ * @return encrypted message
+ */
 - (nullable id<DKDSecureMessage>)verifyMessage:(id<DKDReliableMessage>)rMsg;
 
+/**
+ *  Decrypt message content
+ *
+ * @param sMsg - encrypted message
+ * @return plain message
+ */
 - (nullable id<DKDInstantMessage>)decryptMessage:(id<DKDSecureMessage>)sMsg;
 
 @end
@@ -95,25 +125,50 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DIMProcessor <NSObject>
 
 /**
- *  Process received data package
+ *  Process data package
  *
- * @param data - package from network connection
+ * @param data - data to be processed
  * @return responses
  */
-- (NSArray<NSData *> *)processData:(NSData *)data;
+- (NSArray<NSData *> *)processPackage:(NSData *)data;
 
-// NOTICE: override to check broadcast message before calling it
-// NOTICE: override to deliver to the receiver when catch exception "ReceiverError"
-- (NSArray<id<DKDReliableMessage>> *)processMessage:(id<DKDReliableMessage>)rMsg;
+/**
+ *  Process network message
+ *
+ * @param rMsg - message to be processed
+ * @return response messages
+ */
+- (NSArray<id<DKDReliableMessage>> *)processReliableMessage:(id<DKDReliableMessage>)rMsg;
 
-- (NSArray<id<DKDSecureMessage>> *)processSecure:(id<DKDSecureMessage>)sMsg withMessage:(id<DKDReliableMessage>)rMsg;
+/**
+ *  Process encrypted message
+ *
+ * @param sMsg - message to be processed
+ * @param rMsg - message received
+ * @return response messages
+ */
+- (NSArray<id<DKDSecureMessage>> *)processSecureMessage:(id<DKDSecureMessage>)sMsg
+                             withReliableMessageMessage:(id<DKDReliableMessage>)rMsg;
 
-// NOTICE: override to save the received instant message
-- (NSArray<id<DKDInstantMessage>> *)processInstant:(id<DKDInstantMessage>)iMsg withMessage:(id<DKDReliableMessage>)rMsg;
+/**
+ *  Process plain message
+ *
+ * @param iMsg - message to be processed
+ * @param rMsg - message received
+ * @return response messages
+ */
+- (NSArray<id<DKDInstantMessage>> *)processInstantMessage:(id<DKDInstantMessage>)iMsg
+                               withReliableMessageMessage:(id<DKDReliableMessage>)rMsg;
 
-// NOTICE: override to check group
-// NOTICE: override to filter the response
-- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content withMessage:(id<DKDReliableMessage>)rMsg;
+/**
+ *  Process message content
+ *
+ * @param content - content to be processed
+ * @param rMsg - message received
+ * @return response contents
+ */
+- (NSArray<id<DKDContent>> *)processContent:(id<DKDContent>)content
+                 withReliableMessageMessage:(id<DKDReliableMessage>)rMsg;
 
 @end
 

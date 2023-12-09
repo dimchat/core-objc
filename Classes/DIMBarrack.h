@@ -61,13 +61,72 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
+ *  Entity Database
+ *  ~~~~~~~~~~~~~~~
  *  Entity pool to manage User/Contact/Group/Member instances
+ *  Manage meta/document for all entities
  *
  *      1st, get instance here to avoid create same instance,
  *      2nd, if they were updated, we can refresh them immediately here
  */
 @interface DIMBarrack : NSObject <MKMEntityDelegate, MKMUserDataSource, MKMGroupDataSource>
 
+- (id<MKMVisa>)visaForID:(id<MKMID>)ID;
+
+- (id<MKMBulletin>)bulletinForID:(id<MKMID>)ID;
+
 @end
+
+// protected
+@interface DIMBarrack (facebook)
+
+- (void)cacheUser:(id<MKMUser>)user;
+
+- (void)cacheGroup:(id<MKMGroup>)group;
+
+/**
+ *  Create user when visa.key exists
+ *
+ * @param ID - user ID
+ * @return user, null on not ready
+ */
+- (nullable id<MKMUser>)createUser:(id<MKMID>)ID;
+
+/**
+ *  Create group when members exist
+ *
+ * @param ID - group ID
+ * @return group, null on not ready
+ */
+- (nullable id<MKMGroup>)createGroup:(id<MKMID>)ID;
+
+- (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user;
+
+- (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user;
+
+@end
+
+@interface DIMBarrack (thanos)
+
+/**
+ * Call it when received 'UIApplicationDidReceiveMemoryWarningNotification',
+ * this will remove 50% of cached objects
+ *
+ * @return number of survivors
+ */
+- (NSInteger)reduceMemory;
+
+@end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Thanos can kill half lives of a world with a snap of the finger
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

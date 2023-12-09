@@ -45,7 +45,7 @@ DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
 
 DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
                                             NSDate *lastTime) {
-    return [[DIMDocumentCommand alloc] initWithID:ID time:lastTime];
+    return [[DIMDocumentCommand alloc] initWithID:ID lastTime:lastTime];
 }
 
 @interface DIMDocumentCommand ()
@@ -91,10 +91,10 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID
-                      time:(NSDate *)lastTime {
+                  lastTime:(NSDate *)time {
     if (self = [self initWithID:ID meta:nil document:nil]) {
-        if (lastTime) {
-            [self setDate:lastTime forKey:@"last_time"];
+        if (time) {
+            [self setDate:time forKey:@"last_time"];
         }
     }
     return self;

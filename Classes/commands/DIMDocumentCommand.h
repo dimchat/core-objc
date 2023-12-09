@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // query document for updating with last document time
 - (instancetype)initWithID:(id<MKMID>)ID
-                      time:(nullable NSDate *)lastTime;
+                  lastTime:(nullable NSDate *)time;
 
 @end
 

@@ -36,16 +36,9 @@
 //
 
 #import "DIMBarrack.h"
+#import "DIMMessage.h"
 
 #import "DIMTransceiver.h"
-
-static inline BOOL isBroadcast(id<DKDMessage> msg) {
-    id<MKMID> receiver = msg.group;
-    if (!receiver) {
-        receiver = msg.receiver;
-    }
-    return MKMIDIsBroadcast(receiver);
-}
 
 @implementation DIMTransceiver
 
@@ -61,30 +54,31 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
             withKey:(id<MKMSymmetricKey>)password {
     // NOTICE: check attachment for File/Image/Audio/Video message content
     //         before serialize content, this job should be do in subclass
-    
-    NSAssert(content == iMsg.content, @"message content not match: %@", content);
     return MKMUTF8Encode(MKMJSONEncode(content.dictionary));
 }
 
 - (NSData *)message:(id<DKDInstantMessage>)iMsg
      encryptContent:(NSData *)data
             withKey:(id<MKMSymmetricKey>)password {
+    // store 'IV' in iMsg for AES decryption
     return [password encrypt:data params:iMsg.dictionary];
 }
 
-- (NSObject *)message:(id<DKDInstantMessage>)iMsg
-           encodeData:(NSData *)data {
-    if (isBroadcast(iMsg)) {
-        // broadcast message content will not be encrypted (just encoded to JsON),
-        // so no need to encode to Base64 here
-        return MKMUTF8Decode(data);
-    }
-    return MKMBase64Encode(data);
-}
+//- (NSObject *)message:(id<DKDInstantMessage>)iMsg
+//           encodeData:(NSData *)data {
+//    if ([DIMMessage isBroadcast:iMsg]) {
+//        // broadcast message content will not be encrypted (just encoded to JsON),
+//        // so no need to encode to Base64 here
+//        return MKMUTF8Decode(data);
+//    }
+//    // message content had been encrypted by a symmetric key,
+//    // so the data should be encoded here (with algorithm 'base64' as default).
+//    return MKMTransportableDataEncode(data);
+//}
 
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
                 serializeKey:(id<MKMSymmetricKey>)password {
-    if (isBroadcast(iMsg)) {
+    if ([DIMMessage isBroadcast:iMsg]) {
         // broadcast message has no key
         return nil;
     }
@@ -94,7 +88,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable NSData *)message:(id<DKDInstantMessage>)iMsg
                   encryptKey:(NSData *)data
                  forReceiver:(id<MKMID>)receiver {
-    NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
+    NSAssert(![DIMMessage isBroadcast:iMsg], @"broadcast message has no key: %@", iMsg);
     // TODO: make sure the receiver's public key exists
     id<MKMUser> contact = [self.barrack userWithID:receiver];
     NSAssert(contact, @"failed to get encrypt key for receiver: %@", receiver);
@@ -102,40 +96,41 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     return [contact encrypt:data];
 }
 
-- (NSObject *)message:(id<DKDInstantMessage>)iMsg
-            encodeKey:(NSData *)data {
-    NSAssert(!isBroadcast(iMsg), @"broadcast message has no key: %@", iMsg);
-    return MKMBase64Encode(data);
-}
+//- (NSObject *)message:(id<DKDInstantMessage>)iMsg
+//            encodeKey:(NSData *)data {
+//    NSAssert(![DIMMessage isBroadcast:iMsg], @"broadcast message has no key: %@", iMsg);
+//    return MKMTransportableDataEncode(data);
+//}
 
 #pragma mark DKDSecureMessageDelegate
 
-- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
-                   decodeKey:(NSObject *)dataString {
-    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
-    return MKMBase64Decode((NSString *)dataString);
-}
+//- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
+//                   decodeKey:(NSObject *)dataString {
+//    NSAssert(![DIMMessage isBroadcast:sMsg], @"broadcast message has no key: %@", sMsg);
+//    return MKMTransportableDataDecode(dataString);
+//}
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
                   decryptKey:(NSData *)key
-                        from:(id<MKMID>)sender
-                          to:(id<MKMID>)receiver {
-    // NOTICE: the receiver will be group ID in a group message here
-    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
-    // decrypt key data with the receiver/group member's private key
-    id<MKMID> ID = sMsg.receiver;
-    id<MKMUser> user = [self.barrack userWithID:ID];
-    NSAssert(user, @"failed to get decrypt keys: %@", ID);
+                 forReceiver:(id<MKMID>)receiver {
+    // NOTICE: the receiver must be a member ID
+    //         if it's a group message
+    NSAssert(![DIMMessage isBroadcast:sMsg], @"broadcast message has no key: %@", sMsg);
+    NSAssert([receiver isUser], @"receiver error: %@", receiver);
+    id<MKMUser> user = [self.barrack userWithID:receiver];
+    NSAssert(user, @"failed to get decrypt keys: %@", receiver);
+    // decrypt with private key of the receiver (or group member)
     return [user decrypt:key];
 }
 
 - (nullable id<MKMSymmetricKey>)message:(id<DKDSecureMessage>)sMsg
-                       deserializeKey:(nullable NSData *)data
-                                 from:(id<MKMID>)sender
-                                   to:(id<MKMID>)receiver {
-    // NOTICE: the receiver will be group ID in a group message here
-    NSAssert(!isBroadcast(sMsg), @"broadcast message has no key: %@", sMsg);
-    NSAssert([data length] > 0, @"check key data by sub-class: %@", sMsg);
+                         deserializeKey:(nullable NSData *)data {
+    NSAssert(![DIMMessage isBroadcast:sMsg], @"broadcast message has no key: %@", sMsg);
+    if ([data length] == 0) {
+        NSAssert(false, @"reused key? get it from cache: %@ => %@, %@",
+                 sMsg.sender, sMsg.receiver, sMsg.group);
+        return nil;
+    }
     id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'A' -> 'algorithm'
@@ -146,16 +141,22 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
     return MKMSymmetricKeyParse(dict);
 }
 
-- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
-                  decodeData:(NSObject *)dataString {
-    if (isBroadcast(sMsg)) {
-        // broadcast message content will not be encrypted (just encoded to JsON),
-        // so return the string data directly
-        NSString *string = (NSString *)dataString;
-        return MKMUTF8Encode(string);
-    }
-    return MKMBase64Decode((NSString *)dataString);
-}
+//- (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
+//                  decodeData:(NSObject *)dataString {
+//    if ([DIMMessage isBroadcast:sMsg]) {
+//        // broadcast message content will not be encrypted (just encoded to JsON),
+//        // so return the string data directly
+//        if ([dataString isKindOfClass:[NSString class]]) {
+//            NSString *string = (NSString *)dataString;
+//            return MKMUTF8Encode(string);
+//        }
+//        NSAssert(false, @"content data error: %@", dataString);
+//        return nil;
+//    }
+//    // message content had been encrypted by a symmetric key,
+//    // so the data should be encoded here (with algorithm 'base64' as default).
+//    return MKMTransportableDataDecode(dataString);
+//}
 
 - (nullable NSData *)message:(id<DKDSecureMessage>)sMsg
               decryptContent:(NSData *)data
@@ -167,7 +168,7 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 - (nullable id<DKDContent>)message:(id<DKDSecureMessage>)sMsg
                 deserializeContent:(NSData *)data
                            withKey:(id<MKMSymmetricKey>)password {
-    NSAssert([data length] > 0, @"content data should not be empty: %@", sMsg);
+    //NSAssert([sMsg.data length] > 0, @"message data empty");
     id dict = MKMJSONDecode(MKMUTF8Decode(data));
     // TODO: translate short keys
     //       'T' -> 'type'
@@ -178,29 +179,29 @@ static inline BOOL isBroadcast(id<DKDMessage> msg) {
 }
 
 - (NSData *)message:(id<DKDSecureMessage>)sMsg
-           signData:(NSData *)data
-          forSender:(id<MKMID>)sender {
+           signData:(NSData *)data {
+    id<MKMID> sender = sMsg.sender;
     id<MKMUser> user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get sign key for sender: %@", sender);
     return [user sign:data];
 }
 
-- (NSObject *)message:(id<DKDSecureMessage>)sMsg
-      encodeSignature:(NSData *)signature {
-    return MKMBase64Encode(signature);
-}
+//- (NSObject *)message:(id<DKDSecureMessage>)sMsg
+//      encodeSignature:(NSData *)signature {
+//    return MKMTransportableDataEncode(signature);
+//}
 
 #pragma mark DKDReliableMessageDelegate
 
-- (nullable NSData *)message:(id<DKDReliableMessage>)rMsg
-             decodeSignature:(NSObject *)signatureString {
-    return MKMBase64Decode((NSString *)signatureString);
-}
+//- (nullable NSData *)message:(id<DKDReliableMessage>)rMsg
+//             decodeSignature:(NSObject *)signatureString {
+//    return MKMTransportableDataDecode(signatureString);
+//}
 
 - (BOOL)message:(id<DKDReliableMessage>)rMsg
      verifyData:(NSData *)data
-  withSignature:(NSData *)signature
-      forSender:(id<MKMID>)sender {
+  withSignature:(NSData *)signature {
+    id<MKMID> sender = rMsg.sender;
     id<MKMUser> user = [self.barrack userWithID:sender];
     NSAssert(user, @"failed to get verify key for sender: %@", sender);
     return [user verify:data withSignature:signature];

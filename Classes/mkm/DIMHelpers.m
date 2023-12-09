@@ -39,20 +39,6 @@
 
 #import "DIMHelpers.h"
 
-NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger) {
-    NSArray *people = [planet allKeys];
-    // if ++finger is odd, remove it,
-    // else, let it go
-    for (id key in people) {
-        if ((++finger & 1) == 1) {
-            // kill it
-            [planet removeObjectForKey:key];
-        }
-        // let it go
-    }
-    return finger;
-}
-
 @implementation DIMBroadcastHelper
 
 + (NSString *)groupSeed:(id<MKMID>)group {

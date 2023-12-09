@@ -44,9 +44,9 @@ DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
     if (!head) {
         info = nil;
     } else if (!body) {
-        info = DIMReceiptCommandPurify(head);
+        info = DKDEnvelopePurify(head);
     } else {
-        info = DIMReceiptCommandPurify(head);
+        info = DKDEnvelopePurify(head);
         [info setObject:@(body.serialNumber) forKey:@"sn"];
     }
     DIMReceiptCommand *command = [[DIMReceiptCommand alloc] initWithText:text
@@ -61,7 +61,7 @@ DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
     return command;
 }
 
-NSMutableDictionary *DIMReceiptCommandPurify(id<DKDEnvelope> envelope) {
+NSMutableDictionary *DKDEnvelopePurify(id<DKDEnvelope> envelope) {
     NSMutableDictionary *info = [envelope dictionary:NO];
     if ([info objectForKey:@"data"]) {
         [info removeObjectForKey:@"data"];

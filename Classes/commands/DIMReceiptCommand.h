@@ -84,7 +84,7 @@ DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
                                            _Nullable id<DKDEnvelope> head,
                                            _Nullable id<DKDContent> body);
 
-NSMutableDictionary *DIMReceiptCommandPurify(id<DKDEnvelope> envelope);
+NSMutableDictionary *DKDEnvelopePurify(id<DKDEnvelope> envelope);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

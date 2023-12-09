@@ -40,37 +40,62 @@
 
 #import "DIMBarrack.h"
 
-@implementation DIMBarrack
-
-// private
-- (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user {
-    id<MKMDocument> doc = [self documentForID:user type:MKMDocumentTypeVisa];
-    if ([doc conformsToProtocol:@protocol(MKMVisa)]) {
-        id<MKMVisa> visa = (id<MKMVisa>) doc;
-        if ([visa isValid]) {
-            return visa.publicKey;
-        }
-    }
-    return nil;
+@interface DIMBarrack () {
+    
+    NSMutableDictionary<id<MKMID>, id<MKMUser>> *_userTable;
+    NSMutableDictionary<id<MKMID>, id<MKMGroup>> *_groupTable;
 }
 
-// private
-- (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user {
-    id<MKMMeta> meta = [self metaForID:user];
-    //NSAssert(meta, @"failed to get meta for ID: %@", user);
-    return meta.publicKey;
+@end
+
+@implementation DIMBarrack
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _userTable = [[NSMutableDictionary alloc] init];
+        _groupTable = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+- (id<MKMVisa>)visaForID:(id<MKMID>)ID {
+    NSArray<id<MKMDocument>> *docs = [self documentsForID:ID];
+    return [DIMDocumentHelper lastVisa:docs];
+}
+
+- (id<MKMBulletin>)bulletinForID:(id<MKMID>)ID {
+    NSArray<id<MKMDocument>> *docs = [self documentsForID:ID];
+    return [DIMDocumentHelper lastBulletin:docs];
 }
 
 #pragma mark MKMEntityDelegate
 
 - (nullable id<MKMUser>)userWithID:(id<MKMID>)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
+    NSAssert([ID isUser], @"user ID error: %@", ID);
+    // get from user cache
+    id<MKMUser> user = [_userTable objectForKey:ID];
+    if (!user) {
+        // 2. create user and cache it
+        user = [self createUser:ID];
+        if (user) {
+            [self cacheUser:user];
+        }
+    }
+    return user;
 }
 
 - (nullable id<MKMGroup>)groupWithID:(id<MKMID>)ID {
-    NSAssert(false, @"implement me!");
-    return nil;
+    NSAssert([ID isGroup], @"group ID error: %@", ID);
+    // 1. get from group cache
+    id<MKMGroup> group = [_groupTable objectForKey:ID];
+    if (!group) {
+        // 2. create group and cache it
+        group = [self createGroup:ID];
+        if (group) {
+            [self cacheGroup:group];
+        }
+    }
+    return group;
 }
 
 #pragma mark MKMEntityDataSource
@@ -80,7 +105,7 @@
     return nil;
 }
 
-- (nullable id<MKMDocument>)documentForID:(id<MKMID>)ID type:(nullable NSString *)type {
+- (NSArray<id<MKMDocument>> *)documentsForID:(id<MKMID>)ID {
     NSAssert(false, @"implement me!");
     return nil;
 }
@@ -93,6 +118,7 @@
 }
 
 - (nullable id<MKMEncryptKey>)publicKeyForEncryption:(id<MKMID>)user {
+    NSAssert([user isUser], @"user ID error: %@", user);
     // 1. get key from visa
     id<MKMEncryptKey> visaKey = [self visaKeyForID:user];
     if (visaKey) {
@@ -108,20 +134,21 @@
 }
 
 - (NSArray<id<MKMVerifyKey>> *)publicKeysForVerification:(id<MKMID>)user {
-    NSMutableArray *mArray = [[NSMutableArray alloc] init];
-    // 1. get key from visa
-    id visaKey = [self visaKeyForID:user];
-    if ([visaKey conformsToProtocol:@protocol(MKMVerifyKey)]) {
-        // the sender may use communication key to sign message.data,
-        // so try to verify it with visa.key here
-        [mArray addObject:visaKey];
-    }
-    // 2. get key from meta
+    // NSAssert([user isUser], @"user ID error: %@", user);
+    NSMutableArray<id<MKMVerifyKey>> *mArray = [[NSMutableArray alloc] init];
+    // 1. get key from meta
     id<MKMVerifyKey> metaKey = [self metaKeyForID:user];
     if (metaKey) {
         // the sender may use identity key to sign message.data,
         // try to verify it with meta.key
         [mArray addObject:metaKey];
+    }
+    // 2. get key from visa
+    id visaKey = [self visaKeyForID:user];
+    if ([visaKey conformsToProtocol:@protocol(MKMVerifyKey)]) {
+        // the sender may use communication key to sign message.data,
+        // so try to verify it with visa.key here
+        [mArray addObject:visaKey];
     }
     NSAssert(mArray.count > 0, @"failed to get verify key for user: %@", user);
     return mArray;
@@ -145,78 +172,122 @@
 #pragma mark MKMGroupDataSource
 
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // founder of broadcast group
         return [DIMBroadcastHelper broadcastFounder:group];
     }
-    
-    // check each member's public key with group meta
-    id<MKMMeta> gMeta = [self metaForID:group];
-    if (!gMeta) {
-        // FIXME: when group profile was arrived but the meta still on the way,
-        //        here will cause founder not found.
-        
-        //NSAssert(false, @"failed to get group meta");
-        return nil;
+    // get from document
+    id<MKMBulletin> doc = [self bulletinForID:group];
+    if (doc/* && [doc isValid]*/) {
+        return [doc founder];
     }
-    NSArray<id<MKMID>> *members = [self membersOfGroup:group];
-    id<MKMMeta> mMeta;
-    for (id<MKMID> item in members) {
-        mMeta = [self metaForID:item];
-        if (!mMeta) {
-            // failed to get member meta
-            continue;
-        }
-        //if (MKMMetaMatchKey(mMeta.key, gMeta)) {
-        if ([gMeta matchPublicKey:mMeta.publicKey]) {
-            // if the member's public key matches with the group's meta,
-            // it means this meta was generated by the member's private key
-            return item;
-        }
-    }
-    
-    // NOTICE: let sub-class to load founder from database
+    // TODO: load founder from database
     return nil;
 }
 
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group {
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // owner of broadcast group
         return [DIMBroadcastHelper broadcastOwner:group];
     }
-    
     // check group type
     if (group.type == MKMEntityType_Group) {
         // Polylogue's owner is its founder
         return [self founderOfGroup:group];
     }
-    
-    // NOTICE: let sub-class to load owner from database
+    // TODO: load owner from database
     return nil;
 }
 
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
+    NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
     if (MKMIDIsBroadcast(group)) {
         // members of broadcast group
         return [DIMBroadcastHelper broadcastMembers:group];
     }
-    
-    // NOTICE: let sub-class to load members from database
+    // TODO: load members from database
     return @[];
 }
 
 - (NSArray<id<MKMID>> *)assistantsOfGroup:(id<MKMID>)group {
-    id<MKMDocument> doc = [self documentForID:group type:MKMDocumentTypeBulletin];
-    if ([doc conformsToProtocol:@protocol(MKMBulletin)]) {
-        if ([doc isValid]) {
-            return [(id<MKMBulletin>) doc assistants];
-        }
+    NSAssert([group isGroup], @"group ID error: %@", group);
+    // get from document
+    id<MKMBulletin> doc = [self bulletinForID:group];
+    if (doc/* && [doc isValid]*/) {
+        return [doc assistants];
     }
     // TODO: get group bots from SP configuration
     return @[];
 }
 
 @end
+
+@implementation DIMBarrack (facebook)
+
+- (void)cacheUser:(id<MKMUser>)user {
+    if (user.dataSource == nil) {
+        user.dataSource = self;
+    }
+    [_userTable setObject:user forKey:user.ID];
+}
+
+- (void)cacheGroup:(id<MKMGroup>)group {
+    if (group.dataSource == nil) {
+        group.dataSource = self;
+    }
+    [_groupTable setObject:group forKey:group.ID];
+}
+
+- (nullable id<MKMUser>)createUser:(id<MKMID>)ID {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (nullable id<MKMGroup>)createGroup:(id<MKMID>)ID {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user {
+    id<MKMVisa> doc = [self visaForID:user];
+    NSAssert(doc, @"failed to get visa for: %@", user);
+    return [doc publicKey];
+}
+
+- (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user {
+    id<MKMMeta> meta = [self metaForID:user];
+    NSAssert(meta, @"failed to get meta for: %@", user);
+    return [meta publicKey];
+}
+
+@end
+
+@implementation DIMBarrack (thanos)
+
+- (NSInteger)reduceMemory {
+    NSUInteger snap = 0;
+    snap = DIMThanos(_userTable, snap);
+    snap = DIMThanos(_groupTable, snap);
+    return snap;
+}
+
+@end
+
+NSUInteger DIMThanos(NSMutableDictionary *planet, NSUInteger finger) {
+    NSArray *people = [planet allKeys];
+    // if ++finger is odd, remove it,
+    // else, let it go
+    for (id key in people) {
+        if ((++finger & 1) == 1) {
+            // kill it
+            [planet removeObjectForKey:key];
+        }
+        // let it go
+    }
+    return finger;
+}
