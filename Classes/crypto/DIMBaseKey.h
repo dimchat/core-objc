@@ -35,12 +35,30 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMBaseKey : NSObject
+@interface DIMBaseKey : MKMDictionary <MKMCryptographyKey>
 
 @end
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+NSString *DIMCryptoGetKeyAlgorithm(NSDictionary *key);
+
+BOOL DIMCryptoMatchEncryptKey(id<MKMEncryptKey> pKey, id<MKMDecryptKey> sKey);
+
+BOOL DIMCryptoMatchSignKey(id<MKMSignKey> sKey, id<MKMVerifyKey> pKey);
+
+BOOL DIMSymmetricKeysEqual(id<MKMSymmetricKey> a, id<MKMSymmetricKey> b);
+
+BOOL DIMPrivateKeysEqual(id<MKMPrivateKey> a, id<MKMPrivateKey> b);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

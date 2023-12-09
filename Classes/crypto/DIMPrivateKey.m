@@ -35,8 +35,36 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DIMBaseKey.h"
+
 #import "DIMPrivateKey.h"
 
 @implementation DIMPrivateKey
+
+- (NSString *)algorithm {
+    return DIMCryptoGetKeyAlgorithm([self dictionary]);
+}
+
+- (NSData *)data {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (BOOL)isEqual:(id)other {
+    if ([other conformsToProtocol:@protocol(MKMPrivateKey)]) {
+        return DIMPrivateKeysEqual(other, self);
+    }
+    return NO;
+}
+
+- (id<MKMPublicKey>)publicKey {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (NSData *)sign:(NSData *)data {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
 
 @end

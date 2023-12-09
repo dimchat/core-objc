@@ -39,4 +39,46 @@
 
 @implementation DIMBaseKey
 
+- (NSString *)algorithm {
+    return DIMCryptoGetKeyAlgorithm([self dictionary]);
+}
+
+- (NSData *)data {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
 @end
+
+
+NSString *DIMCryptoGetKeyAlgorithm(NSDictionary *key) {
+    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
+    return [man.generalFactory algorithm:key defaultValue:@""];
+}
+
+BOOL DIMCryptoMatchEncryptKey(id<MKMEncryptKey> pKey, id<MKMDecryptKey> sKey) {
+    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
+    return [man.generalFactory encryptKey:pKey matchDecryptKey:sKey];
+}
+
+BOOL DIMCryptoMatchSignKey(id<MKMSignKey> sKey, id<MKMVerifyKey> pKey) {
+    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
+    return [man.generalFactory signKey:sKey matchVerifyKey:pKey];
+}
+
+BOOL DIMSymmetricKeysEqual(id<MKMSymmetricKey> a, id<MKMSymmetricKey> b) {
+    if (a == b) {
+        // same object
+        return YES;
+    }
+    // compare with encryption
+    return DIMCryptoMatchEncryptKey(a, b);
+}
+
+BOOL DIMPrivateKeysEqual(id<MKMPrivateKey> a, id<MKMPrivateKey> b) {
+    if (a == b) {
+        // same object
+        return YES;
+    }
+    return DIMCryptoMatchSignKey(a, b.publicKey);
+}

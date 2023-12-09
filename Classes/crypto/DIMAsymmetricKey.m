@@ -35,8 +35,19 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DIMBaseKey.h"
+
 #import "DIMAsymmetricKey.h"
 
 @implementation DIMAsymmetricKey
+
+- (NSString *)algorithm {
+    return DIMCryptoGetKeyAlgorithm([self dictionary]);
+}
+
+- (NSData *)data {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
 
 @end

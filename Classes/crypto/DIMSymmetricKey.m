@@ -35,8 +35,44 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DIMBaseKey.h"
+
 #import "DIMSymmetricKey.h"
 
 @implementation DIMSymmetricKey
+
+- (NSString *)algorithm {
+    return DIMCryptoGetKeyAlgorithm([self dictionary]);
+}
+
+- (NSData *)data {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (BOOL)isEqual:(id)other {
+    if ([other conformsToProtocol:@protocol(MKMSymmetricKey)]) {
+        return DIMSymmetricKeysEqual(other, self);
+    }
+    return NO;
+}
+
+- (NSData *)encrypt:(NSData *)plaintext
+             params:(nullable NSMutableDictionary<NSString *, id> *)extra {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (nullable NSData *)decrypt:(NSData *)ciphertext
+                      params:(nullable NSDictionary<NSString *, id> *)extra {
+    NSAssert(false, @"implement me!");
+    return nil;
+}
+
+- (BOOL)matchEncryptKey:(id<MKMEncryptKey>)pKey {
+    return DIMCryptoMatchEncryptKey(pKey, self);
+}
+
+
 
 @end

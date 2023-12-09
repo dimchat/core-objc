@@ -54,9 +54,19 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #if !defined(__DIM_CORE__)
 #define __DIM_CORE__ 1
 
+// Format
+#import <DIMCore/DIMBaseDataWrapper.h>
+#import <DIMCore/DIMBaseFileWrapper.h>
+
+// Crypto
+#import <DIMCore/DIMBaseKey.h>
+#import <DIMCore/DIMSymmetricKey.h>
+#import <DIMCore/DIMAsymmetricKey.h>
+#import <DIMCore/DIMPrivateKey.h>
+#import <DIMCore/DIMPublicKey.h>
+
 // Account
-#import <DIMCore/DIMAddressFactory.h>
-#import <DIMCore/DIMIDFactory.h>
+#import <DIMCore/DIMHelpers.h>
 #import <DIMCore/DIMMeta.h>
 #import <DIMCore/DIMDocument.h>
 #import <DIMCore/DIMDocs.h>
@@ -80,6 +90,7 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMAudioContent.h>
 #import <DIMCore/DIMVideoContent.h>
 #import <DIMCore/DIMWebpageContent.h>
+#import <DIMCore/DIMNameCard.h>
 #import <DIMCore/DIMMoneyContent.h>
 #import <DIMCore/DIMTransferContent.h>
 #import <DIMCore/DIMArrayContent.h>
@@ -90,6 +101,7 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMCommand.h>
 #import <DIMCore/DIMMetaCommand.h>
 #import <DIMCore/DIMDocumentCommand.h>
+#import <DIMCore/DIMReceiptCommand.h>
 #import <DIMCore/DIMHistoryCommand.h>
 #import <DIMCore/DIMGroupCommand.h>
 #import <DIMCore/DIMFactoryManager.h>
