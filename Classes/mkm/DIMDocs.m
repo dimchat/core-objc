@@ -79,7 +79,7 @@
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocumentTypeVisa];
+    return [self initWithID:ID type:MKMDocumentType_Visa];
 }
 
 - (nullable id<MKMEncryptKey>)publicKey {
@@ -158,7 +158,7 @@
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocumentTypeBulletin];
+    return [self initWithID:ID type:MKMDocumentType_Bulletin];
 }
 
 - (nullable id<MKMID>)founder {

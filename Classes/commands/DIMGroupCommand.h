@@ -180,6 +180,50 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Administrators, Assistants
+
+@protocol DKDHireGroupCommand <DKDGroupCommand>
+
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
+
+@end
+
+@interface DIMHireGroupCommand : DIMGroupCommand <DKDHireGroupCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+               administrators:(NSArray<id<MKMID>> *)users;
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                   assistants:(NSArray<id<MKMID>> *)bots;
+
+@end
+
+@protocol DKDFireGroupCommand <DKDGroupCommand>
+
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
+
+@end
+
+@interface DIMFireGroupCommand : DIMGroupCommand <DKDFireGroupCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+               administrators:(NSArray<id<MKMID>> *)users;
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                   assistants:(NSArray<id<MKMID>> *)bots;
+
+@end
+
+@protocol DKDResignGroupCommand <DKDGroupCommand> @end
+
+@interface DIMResignGroupCommand : DIMGroupCommand <DKDResignGroupCommand>
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID;
+
+@end
+
 #ifdef __cplusplus
 extern "C" {
 #endif

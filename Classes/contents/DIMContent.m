@@ -44,7 +44,7 @@ DIMContent *DIMContentCreate(DKDContentType type) {
 @interface DIMContent ()
 
 @property (nonatomic) DKDContentType type;
-@property (nonatomic) unsigned long serialNumber;
+@property (nonatomic) DKDSerialNumber serialNumber;
 @property (strong, nonatomic, nullable) NSDate *time;
 
 @end

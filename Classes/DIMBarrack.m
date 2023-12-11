@@ -174,7 +174,7 @@
 - (nullable id<MKMID>)founderOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
-    if (MKMIDIsBroadcast(group)) {
+    if ([group isBroadcast]) {
         // founder of broadcast group
         return [DIMBroadcastHelper broadcastFounder:group];
     }
@@ -190,7 +190,7 @@
 - (nullable id<MKMID>)ownerOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
-    if (MKMIDIsBroadcast(group)) {
+    if ([group isBroadcast]) {
         // owner of broadcast group
         return [DIMBroadcastHelper broadcastOwner:group];
     }
@@ -206,7 +206,7 @@
 - (NSArray<id<MKMID>> *)membersOfGroup:(id<MKMID>)group {
     NSAssert([group isGroup], @"group ID error: %@", group);
     // check broadcast group
-    if (MKMIDIsBroadcast(group)) {
+    if ([group isBroadcast]) {
         // members of broadcast group
         return [DIMBroadcastHelper broadcastMembers:group];
     }

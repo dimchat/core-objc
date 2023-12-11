@@ -137,7 +137,7 @@
 }
 
 - (nullable NSString *)seed {
-    if (!_seed && MKMMeta_HasSeed(self.type)) {
+    if (!_seed && MKMMetaHasSeed(self.type)) {
         _seed = [self stringForKey:@"seed" defaultValue:nil];
         NSAssert([_seed length] > 0, @"meta.seed should not be empty: %@", self);
     }
@@ -146,7 +146,7 @@
 
 - (nullable NSData *)fingerprint {
     id<MKMTransportableData> ted = _ct;
-    if (!ted && MKMMeta_HasSeed(self.type)) {
+    if (!ted && MKMMetaHasSeed(self.type)) {
         id text = [self objectForKey:@"fingerprint"];
         NSAssert(text, @"meta.fingerprint should not be empty: %@", self);
         _ct = ted = MKMTransportableDataParse(text);

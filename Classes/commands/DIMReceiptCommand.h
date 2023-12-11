@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong, nonatomic) NSString *text;
 
 @property (readonly, strong, nonatomic, nullable) id<DKDEnvelope> originalEnvelope;
-@property (readonly, nonatomic) unsigned long originalSerialNumber;
+@property (readonly, nonatomic) DKDSerialNumber originalSerialNumber;
 @property (readonly, strong, nonatomic, nullable) NSString *originalSignature;
 
 @end

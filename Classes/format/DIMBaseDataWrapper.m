@@ -78,7 +78,7 @@
         return text;
     }
     NSString *algo = [self stringForKey:@"algorithm" defaultValue:@""];
-    if ([algo isEqualToString:MKMAlgorithmTransportableDefault]) {
+    if ([algo isEqualToString:MKMAlgorithm_TransportableDefault]) {
         algo = @"";
     }
     if ([algo length] == 0) {
@@ -105,7 +105,7 @@
 - (NSString *)algorithm {
     NSString *algo = [self stringForKey:@"algorithm" defaultValue:@""];
     if ([algo length] == 0) {
-        algo = MKMAlgorithmTransportableDefault;
+        algo = MKMAlgorithm_TransportableDefault;
     }
     return algo;
 }
@@ -125,11 +125,11 @@
         NSString *text = [self stringForKey:@"data" defaultValue:@""];
         if ([text length] > 0) {
             NSString *algo = [self algorithm];
-            if ([algo isEqualToString:MKMAlgorithmBase64]) {
+            if ([algo isEqualToString:MKMAlgorithm_Base64]) {
                 _data = bin = MKMBase64Decode(text);
-            } else if ([algo isEqualToString:MKMAlgorithmBase58]) {
+            } else if ([algo isEqualToString:MKMAlgorithm_Base58]) {
                 _data = bin = MKMBase58Decode(text);
-            } else if ([algo isEqualToString:MKMAlgorithmHex]) {
+            } else if ([algo isEqualToString:MKMAlgorithm_Hex]) {
                 _data = bin = MKMHexDecode(text);
             } else {
                 NSAssert(false, @"data algorithm not support: %@", algo);
@@ -145,11 +145,11 @@
     } else {
         NSString *text = @"";
         NSString *algo = [self algorithm];
-        if ([algo isEqual:MKMAlgorithmBase64]) {
+        if ([algo isEqual:MKMAlgorithm_Base64]) {
             text = MKMBase64Encode(bin);
-        } else if ([algo isEqualToString:MKMAlgorithmBase58]) {
+        } else if ([algo isEqualToString:MKMAlgorithm_Base58]) {
             text = MKMBase58Encode(bin);
-        } else if ([algo isEqualToString:MKMAlgorithmHex]) {
+        } else if ([algo isEqualToString:MKMAlgorithm_Hex]) {
             text = MKMHexEncode(bin);
         } else {
             NSAssert(false, @"data algorithm not support: %@", algo);

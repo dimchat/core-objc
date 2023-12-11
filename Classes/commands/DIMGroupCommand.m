@@ -181,8 +181,6 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 @end
 
-#pragma mark -
-
 @implementation DIMResetGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
@@ -204,6 +202,111 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 - (NSDate *)lastTime {
     return [self dateForKey:@"last_time" defaultValue:nil];
+}
+
+@end
+
+#pragma mark - Administrators, Assistants
+
+@implementation DIMHireGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+               administrators:(NSArray<id<MKMID>> *)users {
+    if (self = [self initWithCommandName:DIMGroupCommand_Hire group:groupID]) {
+        self.administrators = users;
+    }
+    return self;
+}
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                   assistants:(NSArray<id<MKMID>> *)bots {
+    if (self = [self initWithCommandName:DIMGroupCommand_Hire group:groupID]) {
+        self.assistants = bots;
+    }
+    return self;
+}
+
+- (NSArray<id<MKMID>> *)administrators {
+    NSArray *array = [self objectForKey:@"administrators"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+- (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
+    NSArray *array = MKMIDRevert(administrators);
+    [self setObject:array forKey:@"administrators"];
+}
+
+- (NSArray<id<MKMID>> *)assistants {
+    NSArray *array = [self objectForKey:@"assistants"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
+    NSArray *array = MKMIDRevert(assistants);
+    [self setObject:array forKey:@"assistants"];
+}
+
+@end
+
+@implementation DIMFireGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+               administrators:(NSArray<id<MKMID>> *)users {
+    if (self = [self initWithCommandName:DIMGroupCommand_Fire group:groupID]) {
+        self.administrators = users;
+    }
+    return self;
+}
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID
+                   assistants:(NSArray<id<MKMID>> *)bots {
+    if (self = [self initWithCommandName:DIMGroupCommand_Fire group:groupID]) {
+        self.assistants = bots;
+    }
+    return self;
+}
+
+- (NSArray<id<MKMID>> *)administrators {
+    NSArray *array = [self objectForKey:@"administrators"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+- (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
+    NSArray *array = MKMIDRevert(administrators);
+    [self setObject:array forKey:@"administrators"];
+}
+
+- (NSArray<id<MKMID>> *)assistants {
+    NSArray *array = [self objectForKey:@"assistants"];
+    if (array.count == 0) {
+        return nil;
+    }
+    return MKMIDConvert(array);
+}
+
+- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
+    NSArray *array = MKMIDRevert(assistants);
+    [self setObject:array forKey:@"assistants"];
+}
+
+@end
+
+@implementation DIMResignGroupCommand
+
+- (instancetype)initWithGroup:(id<MKMID>)groupID {
+    if (self = [self initWithCommandName:DIMGroupCommand_Resign group:groupID]) {
+        //
+    }
+    return self;
 }
 
 @end

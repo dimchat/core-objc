@@ -113,7 +113,7 @@
     BOOL noSeed = [seed length] == 0;
     BOOL noSig = [fingerprint length] == 0;
     // check meta version
-    if (!MKMMeta_HasSeed(meta.type)) {
+    if (!MKMMetaHasSeed(meta.type)) {
         // this meta has no seed, so no fingerprint too
         return noSeed && noSig;
     } else if (noSeed || noSig) {
@@ -146,7 +146,7 @@
         return YES;
     }
     // check with seed & fingerprint
-    if (MKMMeta_HasSeed(meta.type)) {
+    if (MKMMetaHasSeed(meta.type)) {
         // check whether keys equal by verifying signature
         return [PK verify:MKMUTF8Encode(meta.seed)
             withSignature:meta.fingerprint];
