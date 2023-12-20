@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDPageContent <DKDContent>
 
 @property (strong, nonatomic) NSString *title;
-@property (strong, atomic, nullable) NSData *icon;
+@property (strong, nonatomic, nullable) NSData *icon;
 @property (strong, nonatomic, nullable) NSString *desc;
 
 @property (strong, nonatomic, nullable) NSURL *URL;

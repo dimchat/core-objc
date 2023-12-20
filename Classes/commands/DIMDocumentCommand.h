@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DKDDocumentCommand <DKDMetaCommand>
 
-@property (readonly, strong, nonatomic, nullable) id<MKMDocument> document;
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMDocument> document;
 
 // Last document time for querying
 @property (readonly, strong, nonatomic, nullable) NSDate *lastTime;

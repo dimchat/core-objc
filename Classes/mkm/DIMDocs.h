@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 // For safety considerations, the visa.key which used to encrypt message data
 // should be different with meta.key
-@property (strong, nonatomic, nullable) id<MKMEncryptKey> publicKey;
+@property (strong, nonatomic, nullable) __kindof id<MKMEncryptKey> publicKey;
 
 // Avatar URL
 @property (strong, nonatomic, nullable) id<MKMPortableNetworkFile> avatar;

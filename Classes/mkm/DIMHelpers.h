@@ -77,18 +77,18 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Select last document matched the type
  */
-+ (nullable id<MKMDocument>)lastDocument:(NSArray<id<MKMDocument>> *)documents
-                                 forType:(nullable NSString *)type;
++ (nullable __kindof id<MKMDocument>)lastDocument:(NSArray<id<MKMDocument>> *)documents
+                                          forType:(nullable NSString *)type;
 
 /**
  *  Select last visa document
  */
-+ (nullable id<MKMVisa>)lastVisa:(NSArray<id<MKMDocument>> *)documents;
++ (nullable __kindof id<MKMVisa>)lastVisa:(NSArray<id<MKMDocument>> *)documents;
 
 /**
  *  Select last bulletin document
  */
-+ (nullable id<MKMBulletin>)lastBulletin:(NSArray<id<MKMDocument>> *)documents;
++ (nullable __kindof id<MKMBulletin>)lastBulletin:(NSArray<id<MKMDocument>> *)documents;
 
 @end
 

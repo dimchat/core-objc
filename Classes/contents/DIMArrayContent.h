@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DKDArrayContent <DKDContent>
 
-@property (readonly, atomic) NSArray<id<DKDContent>> *contents;
+@property (readonly, nonatomic) NSArray<id<DKDContent>> *contents;
 
 @end
 

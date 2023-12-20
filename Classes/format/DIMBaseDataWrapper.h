@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  binary data
  */
-@property (strong, atomic, nullable) NSData *data;
+@property (strong, nonatomic, nullable) NSData *data;
 
 @end
 

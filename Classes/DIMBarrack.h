@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user
  */
-- (nullable id<MKMUser>)userWithID:(id<MKMID>)ID;
+- (nullable __kindof id<MKMUser>)userWithID:(id<MKMID>)ID;
 
 /**
  *  Create group with ID
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group
  */
-- (nullable id<MKMGroup>)groupWithID:(id<MKMID>)ID;
+- (nullable __kindof id<MKMGroup>)groupWithID:(id<MKMID>)ID;
 
 @end
 
@@ -71,9 +71,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface DIMBarrack : NSObject <MKMEntityDelegate, MKMUserDataSource, MKMGroupDataSource>
 
-- (id<MKMVisa>)visaForID:(id<MKMID>)ID;
+- (nullable __kindof id<MKMVisa>)visaForID:(id<MKMID>)ID;
 
-- (id<MKMBulletin>)bulletinForID:(id<MKMID>)ID;
+- (nullable __kindof id<MKMBulletin>)bulletinForID:(id<MKMID>)ID;
 
 @end
 
@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - user ID
  * @return user, null on not ready
  */
-- (nullable id<MKMUser>)createUser:(id<MKMID>)ID;
+- (nullable __kindof id<MKMUser>)createUser:(id<MKMID>)ID;
 
 /**
  *  Create group when members exist
@@ -98,11 +98,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @param ID - group ID
  * @return group, null on not ready
  */
-- (nullable id<MKMGroup>)createGroup:(id<MKMID>)ID;
+- (nullable __kindof id<MKMGroup>)createGroup:(id<MKMID>)ID;
 
-- (id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user;
+- (nullable __kindof id<MKMEncryptKey>)visaKeyForID:(id<MKMID>)user;
 
-- (id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user;
+- (nullable __kindof id<MKMVerifyKey>)metaKeyForID:(id<MKMID>)user;
 
 @end
 

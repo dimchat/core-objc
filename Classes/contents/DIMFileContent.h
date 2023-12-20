@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
 // symmetric key to decrypt the downloaded data from URL
-@property (strong, nonatomic, nullable) id<MKMDecryptKey> password;
+@property (strong, nonatomic, nullable) __kindof id<MKMDecryptKey> password;
 
 @end
 

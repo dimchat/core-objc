@@ -41,14 +41,13 @@
  *  Convert message list from dictionary array
  */
 NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<id> *messages) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
-    id<DKDMessage> msg;
-    for (id item in messages) {
-        msg = DKDReliableMessageParse(item);
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:messages.count];
+    [messages enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        id<DKDMessage> msg = DKDReliableMessageParse(obj);
         if (msg) {
             [mArray addObject:msg];
         }
-    }
+    }];
     return mArray;
 }
 
@@ -56,10 +55,10 @@ NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<id> *messages
  *  Revert message list to dictionary array
  */
 NSArray<NSDictionary *> *DKDReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[messages count]];
-    for (id<DKDMessage> msg in messages) {
-        [mArray addObject:[msg dictionary]];
-    }
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:messages.count];
+    [messages enumerateObjectsUsingBlock:^(id<DKDReliableMessage> obj, NSUInteger idx, BOOL *stop) {
+        [mArray addObject:obj.dictionary];
+    }];
     return mArray;
 }
 

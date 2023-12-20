@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic) NSString *name;
 
-@property (readonly, strong, atomic, nullable) id<MKMPortableNetworkFile> avatar;
+@property (readonly, strong, nonatomic, nullable) id<MKMPortableNetworkFile> avatar;
 
 @end
 

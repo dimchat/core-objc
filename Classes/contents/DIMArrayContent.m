@@ -41,14 +41,13 @@
  *  Convert content list from dictionary array
  */
 NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[contents count]];
-    id<DKDContent> ctx;
-    for (id item in contents) {
-        ctx = DKDContentParse(item);
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:contents.count];
+    [contents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        id<DKDContent> ctx = DKDContentParse(obj);
         if (ctx) {
             [mArray addObject:ctx];
         }
-    }
+    }];
     return mArray;
 }
 
@@ -56,10 +55,10 @@ NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents) {
  *  Revert content list to dictionary array
  */
 NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:[contents count]];
-    for (id<DKDContent> item in contents) {
-        [mArray addObject:[item dictionary]];
-    }
+    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:contents.count];
+    [contents enumerateObjectsUsingBlock:^(id<DKDContent> obj, NSUInteger idx, BOOL *stop) {
+        [mArray addObject:obj.dictionary];
+    }];
     return mArray;
 }
 

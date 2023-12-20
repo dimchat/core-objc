@@ -98,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol MKMGroup <MKMEntity>
 
 // group document
-@property (readonly, strong, nonatomic, nullable) id<MKMBulletin> bulletin;
+@property (readonly, strong, nonatomic, nullable) __kindof id<MKMBulletin> bulletin;
 
 @property (readonly, strong, nonatomic) id<MKMID> founder;
 @property (readonly, strong, nonatomic) id<MKMID> owner;

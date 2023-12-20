@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DIMBaseFileWrapper : MKMDictionary
 
 // file data
-@property (strong, atomic, nullable) id<MKMTransportableData> data;
+@property (strong, nonatomic, nullable) id<MKMTransportableData> data;
 
 // set binary data
 - (void)setBinary:(NSData *)data;

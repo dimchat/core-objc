@@ -99,7 +99,8 @@
 }
 
 - (NSDate *)time {
-    NSDate *when = [self.content time];
+    id<DKDContent> content = [self content];
+    NSDate *when = [content time];
     if (when) {
         return when;
     }
@@ -107,11 +108,13 @@
 }
 
 - (id<MKMID>)group {
-    return [self.content group];
+    id<DKDContent> content = [self content];
+    return [content group];
 }
 
 - (DKDContentType)type {
-    return [self.content type];
+    id<DKDContent> content = [self content];
+    return [content type];
 }
 
 @end
