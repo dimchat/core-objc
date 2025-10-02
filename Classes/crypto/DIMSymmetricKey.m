@@ -51,14 +51,23 @@
 }
 
 - (BOOL)isEqual:(id)other {
-    if ([other conformsToProtocol:@protocol(MKMSymmetricKey)]) {
-        return DIMSymmetricKeysEqual(other, self);
+    if ([other conformsToProtocol:@protocol(MKDictionary)]) {
+        if (self == other) {
+            // same object
+            return YES;
+        } else if ([other conformsToProtocol:@protocol(MKSymmetricKey)]) {
+            return DIMCryptoSymmetricKeysEqual(other, self);
+        }
+        other = [other dictionary];
+    }
+    if ([other isKindOfClass:[NSDictionary class]]) {
+        return [self.dictionary isEqualToDictionary:other];
     }
     return NO;
 }
 
 - (NSData *)encrypt:(NSData *)plaintext
-             params:(nullable NSMutableDictionary<NSString *, id> *)extra {
+              extra:(nullable NSMutableDictionary<NSString *, id> *)params {
     NSAssert(false, @"implement me!");
     return nil;
 }
@@ -69,10 +78,8 @@
     return nil;
 }
 
-- (BOOL)matchEncryptKey:(id<MKMEncryptKey>)pKey {
+- (BOOL)matchEncryptKey:(id<MKEncryptKey>)pKey {
     return DIMCryptoMatchEncryptKey(pKey, self);
 }
-
-
 
 @end

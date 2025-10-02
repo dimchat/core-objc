@@ -37,6 +37,11 @@
 
 #import "DIMBaseDataWrapper.h"
 
+NSString * const MKEncodeAlgorithm_Default = @"base64";
+NSString * const MKEncodeAlgorithm_BASE64  = @"base64";
+NSString * const MKEncodeAlgorithm_BASE58  = @"base58";
+NSString * const MKEncodeAlgorithm_HEX     = @"hex";
+
 @interface DIMBaseDataWrapper () {
     
     // binary data
@@ -64,24 +69,21 @@
     return self;
 }
 
-- (BOOL)isEmpty {
-    if ([self count] == 0) {
-        return YES;
-    }
-    NSData *binary = [self data];
-    return [binary length] == 0;
-}
+//- (BOOL)isEmpty {
+//    if ([self count] == 0) {
+//        return YES;
+//    }
+//    NSData *binary = [self data];
+//    return [binary length] == 0;
+//}
 
 - (NSString *)encode {
-    NSString *text = [self stringForKey:@"data" defaultValue:@""];
+    NSString *text = [self stringForKey:@"data" defaultValue:nil];
     if ([text length] == 0) {
-        return text;
+        return @"";
     }
-    NSString *algo = [self stringForKey:@"algorithm" defaultValue:@""];
-    if ([algo isEqualToString:MKMAlgorithm_TransportableDefault]) {
-        algo = @"";
-    }
-    if ([algo length] == 0) {
+    NSString *algo = [self stringForKey:@"algorithm" defaultValue:nil];
+    if (algo == nil || [algo isEqualToString:MKEncodeAlgorithm_Default]) {
         // 0. "{BASE64_ENCODE}"
         return text;
     } else {
@@ -93,9 +95,9 @@
 - (NSString *)encode:(NSString *)mimeType {
     NSAssert(![mimeType containsString:@" "], @"content-type error: %@", mimeType);
     // get encoded data
-    NSString *text = [self stringForKey:@"data" defaultValue:@""];
+    NSString *text = [self stringForKey:@"data" defaultValue:nil];
     if ([text length] == 0) {
-        return text;
+        return @"";
     }
     NSString *algo = [self algorithm];
     // 2. "data:image/png;base64,{BASE64_ENCODE}"
@@ -103,16 +105,16 @@
 }
 
 - (NSString *)algorithm {
-    NSString *algo = [self stringForKey:@"algorithm" defaultValue:@""];
+    NSString *algo = [self stringForKey:@"algorithm" defaultValue:nil];
     if ([algo length] == 0) {
-        algo = MKMAlgorithm_TransportableDefault;
+        algo = MKEncodeAlgorithm_Default;
     }
     return algo;
 }
 
 - (void)setAlgorithm:(NSString *)algorithm {
     if ([algorithm length] == 0/* ||
-        [algorithm isEqualToString:MKMAlgorithmTransportableDefault]*/) {
+        [algorithm isEqualToString:MKEncodeAlgorithm_Default]*/) {
         [self removeObjectForKey:@"algorithm"];
     } else {
         [self setObject:algorithm forKey:@"algorithm"];
@@ -120,43 +122,46 @@
 }
 
 - (NSData *)data {
-    NSData *bin = _data;
-    if (bin == nil) {
-        NSString *text = [self stringForKey:@"data" defaultValue:@""];
-        if ([text length] > 0) {
+    NSData *binary = _data;
+    if (binary == nil) {
+        NSString *text = [self stringForKey:@"data" defaultValue:nil];
+        if ([text length] == 0) {
+            NSAssert(false, @"TED data empty: %@", [self dictionary]);
+        } else {
             NSString *algo = [self algorithm];
-            if ([algo isEqualToString:MKMAlgorithm_Base64]) {
-                _data = bin = MKMBase64Decode(text);
-            } else if ([algo isEqualToString:MKMAlgorithm_Base58]) {
-                _data = bin = MKMBase58Decode(text);
-            } else if ([algo isEqualToString:MKMAlgorithm_Hex]) {
-                _data = bin = MKMHexDecode(text);
+            if ([algo isEqualToString:MKEncodeAlgorithm_BASE64]) {
+                binary = MKBase64Decode(text);
+            } else if ([algo isEqualToString:MKEncodeAlgorithm_BASE58]) {
+                binary = MKBase58Decode(text);
+            } else if ([algo isEqualToString:MKEncodeAlgorithm_HEX]) {
+                binary = MKHexDecode(text);
             } else {
                 NSAssert(false, @"data algorithm not support: %@", algo);
             }
         }
+        _data = binary;
     }
-    return bin;
+    return binary;
 }
 
-- (void)setData:(NSData *)bin {
-    if ([bin length] == 0) {
+- (void)setData:(NSData *)binary {
+    if ([binary length] == 0) {
         [self removeObjectForKey:@"data"];
     } else {
         NSString *text = @"";
         NSString *algo = [self algorithm];
-        if ([algo isEqual:MKMAlgorithm_Base64]) {
-            text = MKMBase64Encode(bin);
-        } else if ([algo isEqualToString:MKMAlgorithm_Base58]) {
-            text = MKMBase58Encode(bin);
-        } else if ([algo isEqualToString:MKMAlgorithm_Hex]) {
-            text = MKMHexEncode(bin);
+        if ([algo isEqualToString:MKEncodeAlgorithm_BASE64]) {
+            text = MKBase64Encode(binary);
+        } else if ([algo isEqualToString:MKEncodeAlgorithm_BASE58]) {
+            text = MKBase58Encode(binary);
+        } else if ([algo isEqualToString:MKEncodeAlgorithm_HEX]) {
+            text = MKHexEncode(binary);
         } else {
             NSAssert(false, @"data algorithm not support: %@", algo);
         }
         [self setObject:text forKey:@"data"];
     }
-    _data = bin;
+    _data = binary;
 }
 
 @end

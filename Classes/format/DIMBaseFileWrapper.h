@@ -55,10 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
  *      }
  *  }
  */
-@interface DIMBaseFileWrapper : MKMDictionary
+@interface DIMBaseFileWrapper : MKDictionary
 
 // file data
-@property (strong, nonatomic, nullable) id<MKMTransportableData> data;
+@property (strong, nonatomic, nullable) id<MKTransportableData> data;
 
 // set binary data
 - (void)setBinary:(NSData *)data;
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
 // decrypt key
-@property (strong, nonatomic, nullable) id<MKMDecryptKey> password;
+@property (strong, nonatomic, nullable) id<MKDecryptKey> password;
 
 @end
 

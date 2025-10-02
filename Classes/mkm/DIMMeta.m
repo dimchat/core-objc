@@ -41,11 +41,37 @@
 
 @interface DIMMeta ()
 
-@property (nonatomic) MKMMetaType type;
-@property (strong, nonatomic) id<MKMVerifyKey> publicKey;
+/**
+ *  Meta algorithm version
+ *
+ *      1 = MKM : username@address (default)
+ *      2 = BTC : btc_address
+ *      4 = ETH : eth_address
+ *      ...
+ */
+@property (strong, nonatomic, nullable) NSString *type;
+
+/**
+ *  Public key (used for signature)
+ *
+ *      RSA / ECC
+ */
+@property (strong, nonatomic) id<MKVerifyKey> publicKey;
+
+/**
+ *  Seed to generate fingerprint
+ *
+ *      Username / Group-X
+ */
 @property (strong, nonatomic, nullable) NSString *seed;
 
-@property (strong, nonatomic, nullable) id<MKMTransportableData> ct;
+/**
+ *  Fingerprint to verify ID and public key
+ *
+ *      Build: fingerprint = sign(seed, privateKey)
+ *      Check: verify(seed, fingerprint, publicKey)
+ */
+@property (strong, nonatomic, nullable) id<MKTransportableData> ct;
 
 // 1 for valid, -1 for invalid
 @property (nonatomic) NSInteger status;
@@ -74,26 +100,26 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(MKMMetaType)version
-                         key:(id<MKMVerifyKey>)publicKey
+- (instancetype)initWithType:(NSString *)type
+                         key:(id<MKVerifyKey>)publicKey
                         seed:(nullable NSString *)seed
-                 fingerprint:(nullable id<MKMTransportableData>)CT {
+                 fingerprint:(nullable id<MKTransportableData>)CT {
     NSDictionary *dict;
     if (seed && CT) {
         dict = @{
-            @"type": @(version),
+            @"type": type,
             @"key": [publicKey dictionary],
             @"seed": seed,
             @"fingerprint": [CT object],
         };
     } else {
         dict = @{
-            @"type": @(version),
+            @"type": type,
             @"key": [publicKey dictionary],
         };
     }
     if (self = [super initWithDictionary:dict]) {
-        _type = version;
+        _type = type;
         _publicKey = publicKey;
         _seed = seed;
         _ct = CT;
@@ -116,41 +142,48 @@
     return meta;
 }
 
-- (MKMMetaType)type {
-    MKMMetaType version = _type;
-    if (version == 0) {
-        MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-        version = [man.generalFactory metaType:self.dictionary
-                                  defaultValue:0];
+- (NSString *)type {
+    NSString *version = _type;
+    if ([version length] == 0) {
+        MKMSharedAccountExtensions *ext = [MKMSharedAccountExtensions sharedInstance];
+        version = [ext.helper getMetaType:self.dictionary defaultValue:nil];
         _type = version;
     }
     return version;
 }
 
-- (id<MKMVerifyKey>)publicKey {
+- (id<MKVerifyKey>)publicKey {
     if (!_publicKey) {
         id dict = [self objectForKey:@"key"];
-        NSAssert(dict, @"meta key not found: %@", self);
-        _publicKey = MKMPublicKeyParse(dict);
+        NSAssert(dict, @"meta key not found: %@", [self dictionary]);
+        _publicKey = MKPublicKeyParse(dict);
     }
     return _publicKey;
 }
 
+- (BOOL)hasSeed {
+    //NSString *algorithm = [self type];
+    //return [algorithm isEqualToString:@"1"] || [algorithm isEqualToString:@"MKM"];
+    return NO;
+}
+
 - (nullable NSString *)seed {
-    if (!_seed && MKMMetaHasSeed(self.type)) {
-        _seed = [self stringForKey:@"seed" defaultValue:nil];
-        NSAssert([_seed length] > 0, @"meta.seed should not be empty: %@", self);
+    NSString *name = _seed;
+    if (!name && [self hasSeed]) {
+        name = [self stringForKey:@"seed" defaultValue:nil];
+        NSAssert([name length] > 0, @"meta.seed should not be empty: %@", [self dictionary]);
+        _seed = name;
     }
-    return _seed;
+    return name;
 }
 
 - (nullable NSData *)fingerprint {
-    id<MKMTransportableData> ted = _ct;
-    if (!ted && MKMMetaHasSeed(self.type)) {
-        id text = [self objectForKey:@"fingerprint"];
-        NSAssert(text, @"meta.fingerprint should not be empty: %@", self);
-        _ct = ted = MKMTransportableDataParse(text);
-        NSAssert(ted, @"meta.fingerprint error: %@", text);
+    id<MKTransportableData> ted = _ct;
+    if (ted == nil && [self hasSeed]) {
+        id base64 = [self objectForKey:@"fingerprint"];
+        NSAssert(base64, @"meta.fingerprint should not be empty: %@", [self dictionary]);
+        _ct = ted = MKTransportableDataParse(base64);
+        NSAssert(ted, @"meta.fingerprint error: %@", base64);
     }
     return [ted data];
 }
@@ -165,7 +198,7 @@
 - (BOOL)isValid {
     if (_status == 0) {
         // meta from network, try to verify
-        if ([DIMMetaHelper checkMeta:self]) {
+        if ([self checkValid]) {
             // correct
             _status = 1;
         } else {
@@ -176,12 +209,32 @@
     return _status > 0;
 }
 
-- (BOOL)matchIdentifier:(id<MKMID>)ID {
-    return [DIMMetaHelper meta:self matchIdentifier:ID];
-}
-
-- (BOOL)matchPublicKey:(id<MKMVerifyKey>)PK {
-    return [DIMMetaHelper meta:self matchPublicKeyu:PK];
+// private
+- (BOOL)checkValid {
+    id<MKVerifyKey> key = [self publicKey];
+     NSAssert(key, @"meta.key should not be empty: %@", [self dictionary]);
+    if ([self hasSeed]) {
+        // check 'seed' & 'fingerprint'
+    } else if ([self objectForKey:@"seed"] || [self objectForKey:@"fingerprint"]) {
+        // this meta has no seed, so
+        // it should not contains 'seed' or 'fingerprint'
+        return NO;
+    } else {
+        // this meta has no seed, so it's always valid
+        // when the public key exists
+        return true;
+    }
+    NSString *name = [self seed];
+    NSData *signature = [self fingerprint];
+    // check meta seed & signature
+    if ([signature length] == 0 || [name length] == 0) {
+        // seed and fingerprint should not be empty
+        NSAssert(false, @"meta error: %@", [self dictionary]);
+        return NO;
+    }
+    // verify fingerprint
+    NSData *data = MKUTF8Encode(name);
+    return [key verify:data withSignature:signature];
 }
 
 @end

@@ -40,6 +40,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
+ *  Encode Algorithms
+ *  ~~~~~~~~~~~~~~~~~
+ *  Algorithms for Encoding Data
+ */
+FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_Default; // base64
+FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_BASE64;  // base64
+FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_BASE58;  // base58
+FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_HEX;     // hex
+
+/**
  *  Transportable Data MixIn: {
  *
  *      algorithm : "base64",
@@ -52,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      1. "base64,{BASE64_ENCODE}"
  *      2. "data:image/png;base64,{BASE64_ENCODE}"
  */
-@interface DIMBaseDataWrapper : MKMDictionary
+@interface DIMBaseDataWrapper : MKDictionary
 
 //- (BOOL)isEmpty;
 

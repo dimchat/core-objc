@@ -51,13 +51,22 @@
 }
 
 - (BOOL)isEqual:(id)other {
-    if ([other conformsToProtocol:@protocol(MKMPrivateKey)]) {
-        return DIMPrivateKeysEqual(other, self);
+    if ([other conformsToProtocol:@protocol(MKDictionary)]) {
+        if (self == other) {
+            // same object
+            return YES;
+        } else if ([other conformsToProtocol:@protocol(MKPrivateKey)]) {
+            return DIMCryptoPrivateKeysEqual(other, self);
+        }
+        other = [other dictionary];
+    }
+    if ([other isKindOfClass:[NSDictionary class]]) {
+        return [self.dictionary isEqualToDictionary:other];
     }
     return NO;
 }
 
-- (id<MKMPublicKey>)publicKey {
+- (id<MKPublicKey>)publicKey {
     NSAssert(false, @"implement me!");
     return nil;
 }

@@ -50,23 +50,14 @@
 
 @end
 
+#pragma mark - Conveniences
 
 NSString *DIMCryptoGetKeyAlgorithm(NSDictionary *key) {
-    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
-    return [man.generalFactory algorithm:key defaultValue:@""];
+    MKSharedCryptoExtensions *ext = [MKSharedCryptoExtensions sharedInstance];
+    return [ext.helper getKeyAlgorithm:key defaultValue:@""];
 }
 
-BOOL DIMCryptoMatchEncryptKey(id<MKMEncryptKey> pKey, id<MKMDecryptKey> sKey) {
-    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
-    return [man.generalFactory encryptKey:pKey matchDecryptKey:sKey];
-}
-
-BOOL DIMCryptoMatchSignKey(id<MKMSignKey> sKey, id<MKMVerifyKey> pKey) {
-    MKMKeyFactoryManager *man = [MKMKeyFactoryManager sharedManager];
-    return [man.generalFactory signKey:sKey matchVerifyKey:pKey];
-}
-
-BOOL DIMSymmetricKeysEqual(id<MKMSymmetricKey> a, id<MKMSymmetricKey> b) {
+BOOL DIMCryptoSymmetricKeysEqual(id<MKSymmetricKey> a, id<MKSymmetricKey> b) {
     if (a == b) {
         // same object
         return YES;
@@ -75,7 +66,7 @@ BOOL DIMSymmetricKeysEqual(id<MKMSymmetricKey> a, id<MKMSymmetricKey> b) {
     return DIMCryptoMatchEncryptKey(a, b);
 }
 
-BOOL DIMPrivateKeysEqual(id<MKMPrivateKey> a, id<MKMPrivateKey> b) {
+BOOL DIMCryptoPrivateKeysEqual(id<MKPrivateKey> a, id<MKPrivateKey> b) {
     if (a == b) {
         // same object
         return YES;

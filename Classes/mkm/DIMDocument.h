@@ -39,14 +39,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMDocument : MKMDictionary <MKMDocument>
+FOUNDATION_EXPORT NSString * const MKMDocumentType_Visa;     // for user info (communicate key)
+FOUNDATION_EXPORT NSString * const MKMDocumentType_Profile;  // for user profile (reserved)
+FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (owner, administrators and assistants)
+
+@interface DIMDocument : MKDictionary <MKMDocument>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       data:(NSString *)json
-                 signature:(id<MKMTransportableData>)CT
+                 signature:(id<MKTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 // create a new empty document with entity ID & document type

@@ -40,13 +40,13 @@
 @interface DIMBaseFileWrapper () {
     
     // file data (not encrypted)
-    id<MKMTransportableData> _attachment;
+    id<MKTransportableData> _attachment;
     
     // download from CDN
     NSURL *_remoteURL;
     
     // key to decrypt data downloaded from CDN
-    id<MKMDecryptKey> _password;
+    id<MKDecryptKey> _password;
 }
 
 @end
@@ -76,16 +76,16 @@
 
 #pragma mark file data
 
-- (id<MKMTransportableData>)data {
-    id<MKMTransportableData> ted = _attachment;
+- (id<MKTransportableData>)data {
+    id<MKTransportableData> ted = _attachment;
     if (!ted) {
         id base64 = [self objectForKey:@"data"];
-        _attachment = ted = MKMTransportableDataParse(base64);
+        _attachment = ted = MKTransportableDataParse(base64);
     }
     return ted;
 }
 
-- (void)setData:(id<MKMTransportableData>)ted {
+- (void)setData:(id<MKTransportableData>)ted {
     if (!ted) {
         [self removeObjectForKey:@"data"];
     } else {
@@ -95,12 +95,12 @@
 }
 
 - (void)setBinary:(NSData *)data {
-    id<MKMTransportableData> ted;
+    id<MKTransportableData> ted;
     if ([data length] == 0) {
         ted = nil;
         [self removeObjectForKey:@"data"];
     } else {
-        ted = MKMTransportableDataCreate(data, nil);
+        ted = MKTransportableDataCreate(data, nil);
         [self setObject:ted.object forKey:@"data"];
     }
     _attachment = ted;
@@ -133,28 +133,28 @@
     return remote;
 }
 
-- (void)setURL:(NSURL *)url {
-    if (!url) {
+- (void)setURL:(NSURL *)remote {
+    if (!remote) {
         [self removeObjectForKey:@"URL"];
     } else {
-        [self setObject:url.absoluteString forKey:@"URL"];
+        [self setObject:remote.absoluteString forKey:@"URL"];
     }
-    _remoteURL = url;
+    _remoteURL = remote;
 }
 
 #pragma mark decrypt key
 
-- (id<MKMDecryptKey>)password {
-    id<MKMDecryptKey> key = _password;
+- (id<MKDecryptKey>)password {
+    id<MKDecryptKey> key = _password;
     if (!key) {
-        id info = [self objectForKey:@"password"];
-        _password = key = MKMSymmetricKeyParse(info);
+        id info = [self objectForKey:@"key"];
+        _password = key = MKSymmetricKeyParse(info);
     }
     return key;
 }
 
-- (void)setPassword:(id<MKMDecryptKey>)key {
-    [self setDictionary:key forKey:@"password"];
+- (void)setPassword:(id<MKDecryptKey>)key {
+    [self setDictionary:key forKey:@"key"];
     _password = key;
 }
 

@@ -40,10 +40,10 @@
 @interface DIMVisa () {
     
     // public key to encrypt message
-    id<MKMEncryptKey> _key;
+    id<MKEncryptKey> _key;
     
     // avatar URL
-    id<MKMPortableNetworkFile> _pnf;
+    id<MKPortableNetworkFile> _pnf;
 }
 
 @end
@@ -61,7 +61,7 @@
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       data:(NSString *)json
-                 signature:(id<MKMTransportableData>)CT {
+                 signature:(id<MKTransportableData>)CT {
     if (self = [super initWithID:ID data:json signature:CT]) {
         // lazy
         _key = nil;
@@ -82,37 +82,41 @@
     return [self initWithID:ID type:MKMDocumentType_Visa];
 }
 
-- (nullable id<MKMEncryptKey>)publicKey {
-    if (!_key) {
+- (nullable id<MKEncryptKey>)publicKey {
+    id<MKEncryptKey> visaKey = _key;
+    if (!visaKey) {
         id dict = [self propertyForKey:@"key"];
-        id pubKey = MKMPublicKeyParse(dict);
-        if ([pubKey conformsToProtocol:@protocol(MKMEncryptKey)]) {
-            _key = pubKey;
+        id pubKey = MKPublicKeyParse(dict);
+        if ([pubKey conformsToProtocol:@protocol(MKEncryptKey)]) {
+            visaKey = pubKey;
+            _key = visaKey;
         } else {
             NSAssert(!dict, @"visa key error: %@", dict);
         }
     }
-    return _key;
+    return visaKey;
 }
 
-- (void)setPublicKey:(id<MKMEncryptKey>)key {
+- (void)setPublicKey:(id<MKEncryptKey>)key {
     [self setProperty:[key dictionary] forKey:@"key"];
     _key = key;
 }
 
-- (id<MKMPortableNetworkFile>)avatar {
-    if (!_pnf) {
+- (id<MKPortableNetworkFile>)avatar {
+    id<MKPortableNetworkFile> img = _pnf;
+    if (!img) {
         id url = [self propertyForKey:@"avatar"];
         if ([url length] == 0) {
             // ignore empty URL
         } else {
-            _pnf = MKMPortableNetworkFileParse(url);
+            img = MKPortableNetworkFileParse(url);
+            _pnf = img;
         }
     }
-    return _pnf;
+    return img;
 }
 
-- (void)setAvatar:(id<MKMPortableNetworkFile>)avatar {
+- (void)setAvatar:(id<MKPortableNetworkFile>)avatar {
     [self setProperty:avatar.object forKey:@"avatar"];
     _pnf = avatar;
 }
@@ -141,7 +145,7 @@
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       data:(NSString *)json
-                 signature:(id<MKMTransportableData>)CT {
+                 signature:(id<MKTransportableData>)CT {
     if (self = [super initWithID:ID data:json signature:CT]) {
         // lazy
         _bots = nil;
@@ -167,17 +171,27 @@
 
 - (nullable NSArray<id<MKMID>> *)assistants {
     if (!_bots) {
-        NSArray *array = [self propertyForKey:@"assistants"];
-        if (array.count > 0) {
-            _bots = MKMIDConvert(array);
+        id bots = [self propertyForKey:@"assistants"];
+        if ([bots isKindOfClass:[NSArray class]]) {
+            _bots = MKMIDConvert(bots);
+        } else {
+            NSMutableArray *array = [[NSMutableArray alloc] init];
+            // get from 'assistant'
+            id single = [self propertyForKey:@"assistant"];
+            single = MKMIDParse(single);
+            if (single != nil) {
+                [array addObject:single];
+            }
+            _bots = array;
         }
     }
     return _bots;
 }
 
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
-    NSAssert([assistants count] > 0, @"bots empty");
-    [self setProperty:MKMIDRevert(assistants) forKey:@"assistants"];
+    id array = [assistants count] == 0 ? nil : MKMIDRevert(assistants);
+    [self setProperty:array forKey:@"assistants"];
+    [self setProperty:nil forKey:@"assistant"];
     _bots = assistants;
 }
 

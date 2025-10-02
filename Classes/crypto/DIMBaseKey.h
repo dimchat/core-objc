@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMBaseKey : MKMDictionary <MKMCryptographyKey>
+@interface DIMBaseKey : MKDictionary <MKCryptographyKey>
 
 @end
 
@@ -47,15 +47,17 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
+#pragma mark - Conveniences
+
 NSString *DIMCryptoGetKeyAlgorithm(NSDictionary *key);
 
-BOOL DIMCryptoMatchEncryptKey(id<MKMEncryptKey> pKey, id<MKMDecryptKey> sKey);
+BOOL DIMCryptoSymmetricKeysEqual(id<MKSymmetricKey> a, id<MKSymmetricKey> b);
 
-BOOL DIMCryptoMatchSignKey(id<MKMSignKey> sKey, id<MKMVerifyKey> pKey);
+BOOL DIMCryptoPrivateKeysEqual(id<MKPrivateKey> a, id<MKPrivateKey> b);
 
-BOOL DIMSymmetricKeysEqual(id<MKMSymmetricKey> a, id<MKMSymmetricKey> b);
+#define DIMCryptoMatchEncryptKey(PK, SK) MKMatchSymmetricKeys(PK, SK)
 
-BOOL DIMPrivateKeysEqual(id<MKMPrivateKey> a, id<MKMPrivateKey> b);
+#define DIMCryptoMatchSignKey(SK, PK)    MKMatchAsymmetricKeys(SK, PK)
 
 #ifdef __cplusplus
 } /* end of extern "C" */

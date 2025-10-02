@@ -55,7 +55,7 @@
     return NO;
 }
 
-- (BOOL)matchSignKey:(id<MKMSignKey>)sKey {
+- (BOOL)matchSignKey:(id<MKSignKey>)sKey {
     return DIMCryptoMatchSignKey(sKey, self);
 }
 

@@ -39,14 +39,18 @@
 
 #import "DIMDocument.h"
 
+NSString * const MKMDocumentType_Visa     = @"visa";
+NSString * const MKMDocumentType_Profile  = @"profile";
+NSString * const MKMDocumentType_Bulletin = @"bulletin";
+
 @interface DIMDocument ()
 
-@property (strong, nonatomic) id<MKMID> ID;
+@property (strong, nonatomic) id<MKMID> identifier;
 
 // JsON.encode(properties)
 @property (strong, nonatomic) NSString *data;
 // User(ID).sign(data)
-@property (strong, nonatomic) id<MKMTransportableData> CT;
+@property (strong, nonatomic) id<MKTransportableData> CT;
 
 @property (strong, nonatomic) NSMutableDictionary *properties;
 
@@ -67,7 +71,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _ID = nil;
+        _identifier = nil;
         
         _data = nil;
         _CT = nil;
@@ -82,14 +86,14 @@
 /* designated initializer */
 - (instancetype)initWithID:(id<MKMID>)ID
                       data:(NSString *)json
-                 signature:(id<MKMTransportableData>)CT {
+                 signature:(id<MKTransportableData>)CT {
     NSDictionary *dict = @{
-        @"ID": [ID string],
+        @"did": [ID string],
         @"data": json,
         @"signature": [CT object],
     };
     if (self = [super initWithDictionary:dict]) {
-        _ID = ID;
+        _identifier = ID;
 
         _data = json;
         _CT = CT;
@@ -105,10 +109,10 @@
 /* designated initializer */
 - (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
     NSDictionary *dict = @{
-        @"ID": [ID string],
+        @"did": [ID string],
     };
     if (self = [super initWithDictionary:dict]) {
-        _ID = ID;
+        _identifier = ID;
         
         _data = nil;
         _CT = nil;
@@ -128,7 +132,7 @@
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMDocument *doc = [super copyWithZone:zone];
     if (doc) {
-        doc.ID = _ID;
+        doc.identifier = _identifier;
         doc.data = _data;
         doc.CT = _CT;
         doc.properties = _properties;
@@ -141,23 +145,14 @@
     return _status > 0;
 }
 
-- (NSString *)type {
-    NSString *docType = [self propertyForKey:@"type"];  // deprecated
-    if (!docType) {
-        MKMFactoryManager *man = [MKMFactoryManager sharedManager];
-        docType = [man.generalFactory documentType:self.dictionary
-                                      defaultValue:nil];
+- (id<MKMID>)identifier {
+    if (!_identifier) {
+        _identifier = MKMIDParse([self objectForKey:@"did"]);
     }
-    return docType;
+    return _identifier;
 }
 
-- (id<MKMID>)ID {
-    if (!_ID) {
-        _ID = MKMIDParse([self objectForKey:@"ID"]);
-    }
-    return _ID;
-}
-
+// Get serialized properties
 - (NSString *)data {
     if (!_data) {
         _data = [self stringForKey:@"data" defaultValue:nil];
@@ -165,11 +160,12 @@
     return _data;
 }
 
+// Get signature for serialized properties
 - (NSData *)signature {
-    id<MKMTransportableData> ted = _CT;
+    id<MKTransportableData> ted = _CT;
     if (!ted) {
         id text = [self objectForKey:@"signature"];
-        _CT = ted = MKMTransportableDataParse(text);
+        _CT = ted = MKTransportableDataParse(text);
     }
     return [ted data];
 }
@@ -182,7 +178,7 @@
     if (!_properties) {
         NSString *data = [self data];
         if ([data length] > 0) {
-            NSDictionary *dict = MKMJSONMapDecode(data);
+            NSDictionary *dict = MKJsonMapDecode(data);
             NSAssert(dict, @"document data error: %@", data);
             if ([dict isKindOfClass:[NSMutableDictionary class]]) {
                 _properties = (NSMutableDictionary *)dict;
@@ -230,7 +226,7 @@
     _CT = nil;
 }
 
-- (BOOL)verify:(id<MKMVerifyKey>)PK {
+- (BOOL)verify:(id<MKVerifyKey>)PK {
     if (_status > 0) {
         // already verify OK
         return YES;
@@ -249,7 +245,7 @@
     } else if ([signature length] == 0) {
         // signature error
         _status = -1;
-    } else if ([PK verify:MKMUTF8Encode(data) withSignature:signature]) {
+    } else if ([PK verify:MKUTF8Encode(data) withSignature:signature]) {
         // signature matched
         _status = 1;
     }
@@ -258,7 +254,7 @@
     return _status == 1;
 }
 
-- (NSData *)sign:(id<MKMSignKey>)SK {
+- (NSData *)sign:(id<MKSignKey>)SK {
     NSData *sig;
     if (_status > 0) {
         // already signed/verified
@@ -276,17 +272,17 @@
         NSAssert(false, @"document invalid: %@", self.dictionary);
         return nil;
     }
-    NSString *data = MKMJSONEncode(info);
+    NSString *data = MKJsonEncode(info);
     if ([data length] == 0) {
         NSAssert(false, @"should not happen: %@", info);
         return nil;
     }
-    sig = [SK sign:MKMUTF8Encode(data)];
+    sig = [SK sign:MKUTF8Encode(data)];
     if ([sig length] == 0) {
         NSAssert(false, @"should not happen");
         return nil;
     }
-    id<MKMTransportableData> ted = MKMTransportableDataCreate(sig, nil);
+    id<MKTransportableData> ted = MKTransportableDataCreate(sig, nil);
     // 3. update 'data' & 'signature' fields
     [self setObject:data forKey:@"data"];
     [self setObject:ted.object forKey:@"signature"];
@@ -302,12 +298,12 @@
 - (NSDate *)time {
     // timestamp
     id seconds = [self propertyForKey:@"time"];
-    return MKMConverterGetDate(seconds, nil);
+    return MKConvertDate(seconds, nil);
 }
 
 - (NSString *)name {
-    id name = [self propertyForKey:@"name"];
-    return MKMConverterGetString(name, nil);
+    id text = [self propertyForKey:@"name"];
+    return MKConvertString(text, nil);
 }
 
 - (void)setName:(NSString *)name {

@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMPublicKey : MKMDictionary <MKMPublicKey>
+@interface DIMPublicKey : MKDictionary <MKPublicKey>
 
 @end
 

@@ -39,7 +39,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMSymmetricKey : MKMDictionary <MKMSymmetricKey>
+@interface DIMSymmetricKey : MKDictionary <MKSymmetricKey>
 
 @end
 

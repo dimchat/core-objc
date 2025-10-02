@@ -45,10 +45,10 @@ NS_ASSUME_NONNULL_BEGIN
  *  This class is used to generate entity ID
  *
  *      data format: {
- *          type: 1,             // algorithm version
- *          seed: "moKy",        // user/group name
- *          key: "{public key}", // PK = secp256k1(SK);
- *          fingerprint: "..."   // CT = sign(seed, SK);
+ *          type        : 1,              // algorithm version
+ *          key         : "{public key}", // PK = secp256k1(SK);
+ *          seed        : "moKy",         // user/group name
+ *          fingerprint : "..."           // CT = sign(seed, SK);
  *      }
  *
  *      algorithm:
@@ -57,7 +57,10 @@ NS_ASSUME_NONNULL_BEGIN
  *  abstract method:
  *      - Address generateAddress(int network);
  */
-@interface DIMMeta : MKMDictionary <MKMMeta>
+@interface DIMMeta : MKDictionary <MKMMeta>
+
+// protected
+@property (nonatomic, readonly) BOOL hasSeed;
 
 /**
  *  Create meta with dictionary
@@ -65,10 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithType:(MKMMetaType)version
-                         key:(id<MKMVerifyKey>)PK
+- (instancetype)initWithType:(NSString *)type
+                         key:(id<MKVerifyKey>)PK
                         seed:(nullable NSString *)name
-                 fingerprint:(nullable id<MKMTransportableData>)CT
+                 fingerprint:(nullable id<MKTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 @end
