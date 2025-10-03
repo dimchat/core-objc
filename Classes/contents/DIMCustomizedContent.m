@@ -47,23 +47,14 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
 
 @implementation DIMCustomizedContent
 
-- (instancetype)initWithType:(DKDContentType)type
+- (instancetype)initWithType:(NSString *)type
                  application:(NSString *)app
                   moduleName:(NSString *)mod
                   actionName:(NSString *)act {
     if (self = [self initWithType:type]) {
-        // App ID
-        if (app) {
-            [self setObject:app forKey:@"app"];
-        }
-        // Module
-        if (mod) {
-            [self setObject:mod forKey:@"mod"];
-        }
-        // Action
-        if (act) {
-            [self setObject:act forKey:@"act"];
-        }
+        [self setObject:app forKey:@"app"];
+        [self setObject:mod forKey:@"mod"];
+        [self setObject:act forKey:@"act"];
     }
     return self;
 }

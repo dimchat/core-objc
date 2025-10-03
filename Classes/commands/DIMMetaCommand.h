@@ -41,31 +41,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Command message: {
- *      type : 0x88,
+ *      type : i2s(0x88),
  *      sn   : 123,
  *
  *      command : "meta", // command name
- *      ID      : "{ID}", // contact's ID
+ *      did     : "{ID}", // contact's ID
  *      meta    : {...}   // When meta is empty, means query meta for ID
  *  }
  */
 @protocol DKDMetaCommand <DKDCommand>
 
-@property (readonly, strong, nonatomic) id<MKMID> ID;
+@property (readonly, strong, nonatomic) id<MKMID> identifier;
 @property (readonly, strong, nonatomic, nullable) id<MKMMeta> meta;
 
 @end
 
 @interface DIMMetaCommand : DIMCommand <DKDMetaCommand>
 
-- (instancetype)initWithCommandName:(NSString *)name
-                                 ID:(id<MKMID>)ID
-                               meta:(nullable id<MKMMeta>)meta;
+- (instancetype)initWithCMD:(NSString *)name
+                         ID:(id<MKMID>)ID
+                       meta:(nullable id<MKMMeta>)meta;
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {

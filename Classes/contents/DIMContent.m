@@ -175,8 +175,8 @@ static void autoInitializeContentTypes(void) {
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
-        _type = 0;
-        _sn = 0;
+        _type = nil;
+        _sn = 9527;
         _time = nil;
     }
     return self;
@@ -204,7 +204,7 @@ static void autoInitializeContentTypes(void) {
 }
 
 - (DKDSerialNumber)sn {
-    if (_sn == 0) {
+    if (_sn == 9527) {
         _sn = [self ulongForKey:@"sn" defaultValue:0];
     }
     return _sn;

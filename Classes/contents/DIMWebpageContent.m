@@ -37,29 +37,9 @@
 
 #import "DIMWebpageContent.h"
 
-DIMPageContent *DIMPageContentFromURL(NSURL *url,
-                                      NSString *title,
-                                      NSString *desc,
-                                      id<MKMTransportableData> icon) {
-    return [[DIMPageContent alloc] initWithURL:url
-                                         title:title
-                                   description:desc
-                                          icon:icon];
-}
-
-DIMPageContent *DIMPageContentFromHTML(NSString *html,
-                                       NSString *title,
-                                       NSString * _Nullable desc,
-                                       _Nullable id<MKMTransportableData> icon) {
-    return [[DIMPageContent alloc] initWithHTML:html
-                                          title:title
-                                    description:desc
-                                           icon:icon];
-}
-
 @interface DIMPageContent () {
     
-    id<MKMTransportableData> _image;
+    id<MKTransportableData> _image;
     NSURL *_url;
 }
 
@@ -68,7 +48,7 @@ DIMPageContent *DIMPageContentFromHTML(NSString *html,
 @implementation DIMPageContent
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
         _image = nil;
         _url = nil;
@@ -89,7 +69,7 @@ DIMPageContent *DIMPageContentFromHTML(NSString *html,
 - (instancetype)initWithURL:(NSURL *)url
                       title:(NSString *)title
                 description:(nullable NSString *)desc
-                       icon:(nullable id<MKMTransportableData>)icon {
+                       icon:(nullable id<MKTransportableData>)icon {
     if (self = [self initWithType:DKDContentType_Page]) {
         self.URL = url;
         self.title = title;
@@ -106,7 +86,7 @@ DIMPageContent *DIMPageContentFromHTML(NSString *html,
 - (instancetype)initWithHTML:(NSString *)html
                        title:(NSString *)title
                  description:(nullable NSString *)desc
-                        icon:(nullable id<MKMTransportableData>)icon {
+                        icon:(nullable id<MKTransportableData>)icon {
     if (self = [self initWithType:DKDContentType_Page]) {
         self.HTML = html;
         self.title = title;
@@ -133,25 +113,25 @@ DIMPageContent *DIMPageContentFromHTML(NSString *html,
 #pragma mark favicon.ico
 
 - (NSData *)icon {
-    id<MKMTransportableData> ted = _image;
+    id<MKTransportableData> ted = _image;
     if (!ted) {
         id base64 = [self objectForKey:@"icon"];
-        _image = ted = MKMTransportableDataParse(base64);
+        _image = ted = MKTransportableDataParse(base64);
     }
     return [ted data];
 }
 
 - (void)setIcon:(NSData *)icon {
-    id<MKMTransportableData> ted;
+    id<MKTransportableData> ted;
     if ([icon length] == 0) {
         ted = nil;
     } else {
-        ted = MKMTransportableDataCreate(icon, nil);
+        ted = MKTransportableDataCreate(icon, nil);
     }
     [self _setImage:ted];
 }
 
-- (void)_setImage:(id<MKMTransportableData>)ted {
+- (void)_setImage:(id<MKTransportableData>)ted {
     if (!ted) {
         [self removeObjectForKey:@"icon"];
     } else {
@@ -198,3 +178,25 @@ DIMPageContent *DIMPageContentFromHTML(NSString *html,
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMPageContent *DIMPageContentFromURL(NSURL *url,
+                                      NSString *title,
+                                      NSString *desc,
+                                      id<MKTransportableData> icon) {
+    return [[DIMPageContent alloc] initWithURL:url
+                                         title:title
+                                   description:desc
+                                          icon:icon];
+}
+
+DIMPageContent *DIMPageContentFromHTML(NSString *html,
+                                       NSString *title,
+                                       NSString * _Nullable desc,
+                                       _Nullable id<MKTransportableData> icon) {
+    return [[DIMPageContent alloc] initWithHTML:html
+                                          title:title
+                                    description:desc
+                                           icon:icon];
+}

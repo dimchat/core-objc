@@ -40,6 +40,21 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*
+ *  Content for Application 0nly: {
+ *      type : i2s(0xA0),
+ *      sn   : 123,
+ *
+ *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      extra : info         // others
+ *  }
+ */
+@protocol DKDAppContent <DKDContent>
+
+@property (readonly, strong, nonatomic) NSString *application;
+
+@end
+
+/*
  *  Application Customized message: {
  *      type : 0xCC,
  *      sn   : 123,
@@ -50,9 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
  *      extra : info         // action parameters
  *  }
  */
-@protocol DKDCustomizedContent <DKDContent>
+@protocol DKDCustomizedContent <DKDAppContent>
 
-@property (readonly, strong, nonatomic) NSString *application;
 @property (readonly, strong, nonatomic) NSString *moduleName;
 @property (readonly, strong, nonatomic) NSString *actionName;
 
@@ -60,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMCustomizedContent : DIMContent <DKDCustomizedContent>
 
-- (instancetype)initWithType:(DKDContentType)type
+- (instancetype)initWithType:(NSString *)type
                  application:(NSString *)app
                   moduleName:(NSString *)mod
                   actionName:(NSString *)act;

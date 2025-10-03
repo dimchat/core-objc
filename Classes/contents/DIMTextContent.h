@@ -36,12 +36,13 @@
 //
 
 #import <DIMCore/DIMContent.h>
+#import <DIMCore/DIMCommand.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Text message: {
- *      type : 0x01,
+ *      type : i2s(0x01),
  *      sn   : 123,
  *
  *      text : "..."
@@ -59,11 +60,64 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Conveniences
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 DIMTextContent *DIMTextContentCreate(NSString *text);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
+#pragma mark -
+
+/*
+ *  Quote message: {
+ *      type : i2s(0x37),
+ *      sn   : 123,
+ *
+ *      text    : "...",  // text message
+ *      origin  : {       // original message envelope
+ *          sender    : "...",
+ *          receiver  : "...",
+ *
+ *          type      : 0x01,
+ *          sn        : 123,
+ *      }
+ *  }
+ */
+@protocol DKDQuoteContent <DKDContent>
+
+@property (readonly, strong, nonatomic) NSString *text;
+
+@property (readonly, strong, nonatomic, nullable) id<DKDEnvelope> originalEnvelope;
+@property (readonly, nonatomic) DKDSerialNumber originalSerialNumber;
+
+@end
+
+@interface DIMQuoteContent : DIMContent <DKDQuoteContent>
+
+- (instancetype)initWithText:(NSString *)text origin:(NSDictionary *)env;
+
+@end
+
+#pragma mark - Conveniences
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ *  Create quote content with text & original message info
+ */
+DIMQuoteContent *DIMQuoteContentCreate(NSString *text,
+                                       id<DKDEnvelope> head,
+                                       id<DKDContent> body);
+
+NSMutableDictionary<NSString *, id> *DIMQuoteContentPurify(id<DKDEnvelope> env);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

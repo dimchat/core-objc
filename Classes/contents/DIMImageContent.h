@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Image message: {
- *      type : 0x12,
+ *      type : i2s(0x12),
  *      sn   : 123,
  *
  *      data     : "...",        // base64_encode(fileContent)
@@ -56,35 +56,37 @@ NS_ASSUME_NONNULL_BEGIN
  *          ...
  *      },
  *
- *      thumbnail : "..."       // base64_encode(smallImage)
+ *      thumbnail : "data:image/jpeg;base64,..."
  *  }
  */
 @protocol DKDImageContent <DKDFileContent>
 
 // small image
-@property (strong, nonatomic, nullable) NSData *thumbnail;
+@property (strong, nonatomic, nullable) id<MKPortableNetworkFile> thumbnail;
 
 @end
 
 @interface DIMImageContent : DIMFileContent <DKDImageContent>
 
-- (instancetype)initWithData:(id<MKMTransportableData>)image
+- (instancetype)initWithData:(id<MKTransportableData>)image
                     filename:(NSString *)name;
 
 - (instancetype)initWithURL:(NSURL *)url
-                   password:(nullable id<MKMDecryptKey>)key;
+                   password:(nullable id<MKDecryptKey>)key;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DIMImageContent *DIMImageContentFromData(NSData *image,
+DIMImageContent *DIMImageContentFromData(id<MKTransportableData> image,
                                          NSString *filename);
 
 DIMImageContent *DIMImageContentFromURL(NSURL *url,
-                                        _Nullable id<MKMDecryptKey> password);
+                                        _Nullable id<MKDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

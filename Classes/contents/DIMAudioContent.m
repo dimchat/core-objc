@@ -37,20 +37,9 @@
 
 #import "DIMAudioContent.h"
 
-DIMAudioContent *DIMAudioContentFromData(NSData *audio,
-                                         NSString *filename) {
-    id<MKMTransportableData> ted = MKMTransportableDataCreate(audio, nil);
-    return [[DIMAudioContent alloc] initWithData:ted filename:filename];
-}
-
-DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
-                                        _Nullable id<MKMDecryptKey> password) {
-    return [[DIMAudioContent alloc] initWithURL:url password:password];
-}
-
 @implementation DIMAudioContent
 
-- (instancetype)initWithData:(id<MKMTransportableData>)audio
+- (instancetype)initWithData:(id<MKTransportableData>)audio
                     filename:(NSString *)name {
     return [self initWithType:DKDContentType_Audio
                          data:audio
@@ -60,7 +49,7 @@ DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
 }
 
 - (instancetype)initWithURL:(NSURL *)url
-                   password:(nullable id<MKMDecryptKey>)key {
+                   password:(nullable id<MKDecryptKey>)key {
     return [self initWithType:DKDContentType_Audio
                          data:nil
                      filename:nil
@@ -81,3 +70,15 @@ DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMAudioContent *DIMAudioContentFromData(id<MKTransportableData> audio,
+                                         NSString *filename) {
+    return [[DIMAudioContent alloc] initWithData:audio filename:filename];
+}
+
+DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
+                                        _Nullable id<MKDecryptKey> password) {
+    return [[DIMAudioContent alloc] initWithURL:url password:password];
+}

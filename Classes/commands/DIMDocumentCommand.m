@@ -37,20 +37,9 @@
 
 #import "DIMDocumentCommand.h"
 
-DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
-                                               id<MKMMeta> meta,
-                                               id<MKMDocument> doc) {
-    return [[DIMDocumentCommand alloc] initWithID:ID meta:meta document:doc];
-}
-
-DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
-                                            NSDate *lastTime) {
-    return [[DIMDocumentCommand alloc] initWithID:ID lastTime:lastTime];
-}
-
 @interface DIMDocumentCommand ()
 
-@property (strong, nonatomic, nullable) id<MKMDocument> document;
+@property (strong, nonatomic, nullable) NSArray<id<MKMDocument>> *documents;
 
 @end
 
@@ -60,39 +49,42 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _document = nil;
+        _documents = nil;
     }
     return self;
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
-        _document = nil;
+        _documents = nil;
     }
     return self;
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID meta:nil document:nil];
+    NSArray<id<MKMDocument>> *docs = @[];
+    return [self initWithID:ID meta:nil documents:docs];
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(id<MKMMeta>)meta
-                  document:(id<MKMDocument>)doc {
-    if (self = [self initWithCommandName:DIMCommand_Document ID:ID meta:meta]) {
+                 documents:(NSArray<id<MKMDocument>> *)docs {
+    if (self = [self initWithCMD:DKDCommand_Documents ID:ID meta:meta]) {
         // document
-        if (doc) {
-            [self setDictionary:doc forKey:@"document"];
+        if ([docs count] > 0) {
+            [self setObject:MKMDocumentRevert(docs) forKey:@"documents"];
         }
-        _document = doc;
+        _documents = docs;
     }
     return self;
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID
                   lastTime:(NSDate *)time {
-    if (self = [self initWithID:ID meta:nil document:nil]) {
+    NSArray<id<MKMDocument>> *docs = @[];
+    if (self = [self initWithID:ID meta:nil documents:docs]) {
+        // last document time
         if (time) {
             [self setDate:time forKey:@"last_time"];
         }
@@ -103,17 +95,22 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMDocumentCommand *content = [super copyWithZone:zone];
     if (content) {
-        content.document = _document;
+        content.documents = _documents;
     }
     return content;
 }
 
-- (id<MKMDocument>)document {
-    if (!_document) {
-        id dict = [self objectForKey:@"document"];
-        _document = MKMDocumentParse(dict);
+- (NSArray<id<MKMDocument>> *)documents {
+    if (!_documents) {
+        id array = [self objectForKey:@"documents"];
+        if ([array isKindOfClass:[NSArray class]]) {
+            _documents = MKMDocumentConvert(array);
+        } else {
+            NSAssert(array == nil, @"documents error: %@", array);
+            _documents = @[];
+        }
     }
-    return _document;
+    return _documents;
 }
 
 - (NSDate *)lastTime {
@@ -121,3 +118,16 @@ DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
+                                               id<MKMMeta> meta,
+                                               NSArray<id<MKMDocument>> *docs) {
+    return [[DIMDocumentCommand alloc] initWithID:ID meta:meta documents:docs];
+}
+
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
+                                            NSDate *lastTime) {
+    return [[DIMDocumentCommand alloc] initWithID:ID lastTime:lastTime];
+}

@@ -41,10 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  Name Card: {
- *      type : 0x33,
+ *      type : i2s(0x33),
  *      sn   : 123,
  *
- *      ID     : "{ID}",        // contact's ID
+ *      did    : "{ID}",        // contact's ID
  *      name   : "{nickname}",  // contact's name
  *      avatar : "{URL}",       // avatar - PNF(URL)
  *      ...
@@ -52,11 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DKDNameCard <DKDContent>
 
-@property (readonly, strong, nonatomic) id<MKMID> ID;
+@property (readonly, strong, nonatomic) id<MKMID> identifier;
 
 @property (readonly, strong, nonatomic) NSString *name;
 
-@property (readonly, strong, nonatomic, nullable) id<MKMPortableNetworkFile> avatar;
+@property (readonly, strong, nonatomic, nullable) id<MKPortableNetworkFile> avatar;
 
 @end
 
@@ -64,16 +64,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       name:(NSString *)nickname
-                    avatar:(id<MKMPortableNetworkFile>)image;
+                    avatar:(id<MKPortableNetworkFile>)image;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
-                               _Nullable id<MKMPortableNetworkFile> avatar);
+                               _Nullable id<MKPortableNetworkFile> avatar);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

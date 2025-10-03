@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Top-Secret message: {
- *      type : 0xFF,
+ *      type : i2s(0xFF),
  *      sn   : 456,
  *
  *      forward : {...}  // reliable (secure + certified) message
@@ -51,10 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDForwardContent <DKDContent>
 
 // forward message
-@property (readonly, nonatomic, nullable) id<DKDReliableMessage> forward;
+@property (readonly, strong, nonatomic, nullable) id<DKDReliableMessage> forward;
 
 // secret messages
-@property (readonly, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
+@property (readonly, strong, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 
@@ -65,19 +65,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Conveniences
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- *  Convert message list from dictionary array
- */
-NSArray<id<DKDReliableMessage>> *DKDReliableMessageConvert(NSArray<id> *messages);
-
-/**
- *  Revert message list to dictionary array
- */
-NSArray<NSDictionary *> *DKDReliableMessageRevert(NSArray<id<DKDReliableMessage>> *messages);
 
 DIMForwardContent *DIMForwardContentCreate(NSArray<id<DKDReliableMessage>> *secrets);
 

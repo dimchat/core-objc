@@ -39,23 +39,6 @@
 
 #import "DIMFileContent.h"
 
-DIMFileContent *DIMFileContentFromData(NSData *data, NSString *filename) {
-    id<MKMTransportableData> ted = MKMTransportableDataCreate(data, nil);
-    return [[DIMFileContent alloc] initWithType:DKDContentType_File
-                                           data:ted
-                                       filename:filename
-                                            url:nil
-                                       password:nil];
-}
-
-DIMFileContent *DIMFileContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
-    return [[DIMFileContent alloc] initWithType:DKDContentType_File
-                                           data:nil
-                                       filename:nil
-                                            url:url
-                                       password:password];
-}
-
 @interface DIMFileContent () {
     
     DIMBaseFileWrapper *_wrapper;
@@ -74,7 +57,7 @@ DIMFileContent *DIMFileContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
     return self;
 }
 
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     return [self initWithType:type
                          data:nil
                      filename:nil
@@ -83,11 +66,11 @@ DIMFileContent *DIMFileContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type
-                        data:(nullable id<MKMTransportableData>)file
+- (instancetype)initWithType:(NSString *)type
+                        data:(nullable id<MKTransportableData>)file
                     filename:(nullable NSString *)name
                          url:(nullable NSURL *)remote
-                    password:(nullable id<MKMDecryptKey>)key {
+                    password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type]) {
         NSDictionary *dict = [self dictionary];
         _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
@@ -133,12 +116,32 @@ DIMFileContent *DIMFileContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
     _wrapper.URL = URL;
 }
 
-- (id<MKMDecryptKey>)password {
+- (id<MKDecryptKey>)password {
     return _wrapper.password;
 }
 
-- (void)setPassword:(id<MKMDecryptKey>)password {
+- (void)setPassword:(id<MKDecryptKey>)password {
     _wrapper.password = password;
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMFileContent *DIMFileContentFromData(id<MKTransportableData> data,
+                                       NSString *filename) {
+    return [[DIMFileContent alloc] initWithType:DKDContentType_File
+                                           data:data
+                                       filename:filename
+                                            url:nil
+                                       password:nil];
+}
+
+DIMFileContent *DIMFileContentFromURL(NSURL *url,
+                                      id<MKDecryptKey> password) {
+    return [[DIMFileContent alloc] initWithType:DKDContentType_File
+                                           data:nil
+                                       filename:nil
+                                            url:url
+                                       password:password];
+}

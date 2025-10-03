@@ -37,29 +37,28 @@
 
 #import "DIMHistoryCommand.h"
 
-DIMHistoryCommand *DIMHistoryCommandCreate(NSString *cmd) {
-    return [[DIMHistoryCommand alloc] initWithCommandName:cmd];
-}
+NSString * const DKDHistoryCommand_Register = @"register";
+NSString * const DKDHistoryCommand_Suicide  = @"suicide";
 
 @implementation DIMHistoryCommand
 
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-    }
-    return self;
-}
+///* designated initializer */
+//- (instancetype)initWithDictionary:(NSDictionary *)dict {
+//    if (self = [super initWithDictionary:dict]) {
+//    }
+//    return self;
+//}
+//
+///* designated initializer */
+//- (instancetype)initWithType:(NSString *)type {
+//    if (self = [super initWithType:type]) {
+//    }
+//    return self;
+//}
 
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-    }
-    return self;
-}
-
-- (instancetype)initWithHistoryName:(NSString *)cmd {
-    NSAssert(cmd.length > 0, @"command name cannot be empty");
-    if (self = [self initWithType:DKDContentType_History commandName:cmd]) {
+- (instancetype)initWithCMD:(NSString *)name {
+    NSAssert(name.length > 0, @"command name cannot be empty");
+    if (self = [self initWithType:DKDContentType_History cmd:name]) {
         //
     }
     return self;

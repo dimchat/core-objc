@@ -37,35 +37,6 @@
 
 #import "DIMArrayContent.h"
 
-/**
- *  Convert content list from dictionary array
- */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:contents.count];
-    [contents enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        id<DKDContent> ctx = DKDContentParse(obj);
-        if (ctx) {
-            [mArray addObject:ctx];
-        }
-    }];
-    return mArray;
-}
-
-/**
- *  Revert content list to dictionary array
- */
-NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents) {
-    NSMutableArray *mArray = [[NSMutableArray alloc] initWithCapacity:contents.count];
-    [contents enumerateObjectsUsingBlock:^(id<DKDContent> obj, NSUInteger idx, BOOL *stop) {
-        [mArray addObject:obj.dictionary];
-    }];
-    return mArray;
-}
-
-DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
-    return [[DIMArrayContent alloc] initWithContents:contents];
-}
-
 @interface DIMArrayContent () {
     
     NSArray<id<DKDContent>> *_contents;
@@ -93,6 +64,15 @@ DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
     return self;
 }
 
+/* designated initializer */
+- (instancetype)initWithType:(NSString *)type {
+    if (self = [super initWithType:type]) {
+        // lazy
+        _contents = nil;
+    }
+    return self;
+}
+
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMArrayContent *content = [super copyWithZone:zone];
     if (content) {
@@ -103,8 +83,13 @@ DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
 
 - (NSArray<id<DKDContent>> *)contents {
     if (!_contents) {
-        id info = [self objectForKey:@"contents"];
-        _contents = DKDContentConvert(info);
+        id array = [self objectForKey:@"contents"];
+        if ([array isKindOfClass:[NSArray class]]) {
+            _contents = DKDContentConvert(array);
+        } else {
+            NSAssert(array == nil, @"contents error: %@", array);
+            _contents = @[];
+        }
     }
     return _contents;
 }
@@ -119,3 +104,92 @@ DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
+    return [[DIMArrayContent alloc] initWithContents:contents];
+}
+
+#pragma mark -
+
+@interface DIMCombineContent () {
+    
+    NSArray<id<DKDInstantMessage>> *_history;
+}
+
+@end
+
+@implementation DIMCombineContent
+
+- (instancetype)initWithTitle:(NSString *)title
+                     messages:(NSArray<id<DKDInstantMessage>> *)history {
+    NSAssert(title.length > 0, @"chat title empty");
+    NSAssert(history.count > 0, @"chat history empty");
+    if (self = [self initWithType:DKDContentType_CombineForward]) {
+        _history = history;
+        [self setObject:DKDInstantMessageRevert(history) forKey:@"messages"];
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy
+        _history = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithType:(NSString *)type {
+    if (self = [super initWithType:type]) {
+        // lazy
+        _history = nil;
+    }
+    return self;
+}
+
+- (id)copyWithZone:(nullable NSZone *)zone {
+    DIMCombineContent *content = [super copyWithZone:zone];
+    if (content) {
+        content.messages = _history;
+    }
+    return content;
+}
+
+- (NSString *)title {
+    return [self stringForKey:@"title" defaultValue:@""];
+}
+
+- (NSArray<id<DKDInstantMessage>> *)messages {
+    if (!_history) {
+        id array = [self objectForKey:@"messages"];
+        if ([array isKindOfClass:[NSArray class]]) {
+            _history = DKDInstantMessageConvert(array);
+        } else {
+            NSAssert(array == nil, @"messages error: %@", array);
+            _history = @[];
+        }
+    }
+    return _history;
+}
+
+- (void)setMessages:(NSArray<id<DKDInstantMessage>> *)messages {
+    if ([messages count] > 0) {
+        [self setObject:DKDInstantMessageRevert(messages) forKey:@"messages"];
+    } else {
+        [self removeObjectForKey:@"messages"];
+    }
+    _history = messages;
+}
+
+@end
+
+#pragma mark - Conveniences
+
+DIMCombineContent *DIMCombineContentCreate(NSString *title,
+                                           NSArray<id<DKDInstantMessage>> *messages) {
+    return [[DIMCombineContent alloc] initWithTitle:title messages:messages];
+}

@@ -38,7 +38,7 @@
 #import "DIMMoneyContent.h"
 
 DIMMoneyContent *DIMMoneyContentCreate(NSString *currency, float value) {
-    return [[DIMMoneyContent alloc] initWithCurrency:currency amount:value];
+    return [[DIMMoneyContent alloc] initWithCurrency:currency amount:@(value)];
 }
 
 @implementation DIMMoneyContent
@@ -51,30 +51,22 @@ DIMMoneyContent *DIMMoneyContentCreate(NSString *currency, float value) {
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
     }
     return self;
 }
 
-- (instancetype)initWithType:(DKDContentType)type
-                    currency:(NSString *)currency amount:(float)value {
+- (instancetype)initWithType:(NSString *)type
+                    currency:(NSString *)currency amount:(NSNumber *)value {
     if (self = [self initWithType:type]) {
-        
-        // currency
-        if (currency) {
-            [self setObject:currency forKey:@"currency"];
-        }
-        
-        // value
-        if (value > 0) {
-            [self setObject:@(value) forKey:@"value"];
-        }
+        [self setObject:currency forKey:@"currency"];
+        [self setObject:value forKey:@"value"];
     }
     return self;
 }
 
-- (instancetype)initWithCurrency:(NSString *)currency amount:(float)value {
+- (instancetype)initWithCurrency:(NSString *)currency amount:(NSNumber *)value {
     return [self initWithType:DKDContentType_Money
                      currency:currency amount:value];
 }
@@ -83,12 +75,12 @@ DIMMoneyContent *DIMMoneyContentCreate(NSString *currency, float value) {
     return [self stringForKey:@"currency" defaultValue:@""];
 }
 
-- (float)amount {
-    return [self floatForKey:@"amount" defaultValue:0];
+- (NSNumber *)amount {
+    return [self numberForKey:@"amount" defaultValue:nil];
 }
 
-- (void)setAmount:(float)amount {
-    [self setObject:@(amount) forKey:@"amount"];
+- (void)setAmount:(NSNumber *)amount {
+    [self setObject:amount forKey:@"amount"];
 }
 
 @end

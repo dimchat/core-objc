@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  File message: {
- *      type : 0x10,
+ *      type : i2s(0x10),
  *      sn   : 123,
  *
  *      data     : "...",        // base64_encode(fileContent)
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSURL *URL;
 
 // symmetric key to decrypt the downloaded data from URL
-@property (strong, nonatomic, nullable) __kindof id<MKMDecryptKey> password;
+@property (strong, nonatomic, nullable) __kindof id<MKDecryptKey> password;
 
 @end
 
@@ -75,24 +75,26 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithType:(DKDContentType)type
-                        data:(nullable id<MKMTransportableData>)file
+- (instancetype)initWithType:(NSString *)type
+                        data:(nullable id<MKTransportableData>)file
                     filename:(nullable NSString *)name
                          url:(nullable NSURL *)remote
-                    password:(nullable id<MKMDecryptKey>)key
+                    password:(nullable id<MKDecryptKey>)key
 NS_DESIGNATED_INITIALIZER;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DIMFileContent *DIMFileContentFromData(NSData *data,
+DIMFileContent *DIMFileContentFromData(id<MKTransportableData> data,
                                        NSString *filename);
 
 DIMFileContent *DIMFileContentFromURL(NSURL *url,
-                                      _Nullable id<MKMDecryptKey> password);
+                                      _Nullable id<MKDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

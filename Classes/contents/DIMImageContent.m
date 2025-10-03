@@ -37,18 +37,9 @@
 
 #import "DIMImageContent.h"
 
-DIMImageContent *DIMImageContentFromData(NSData *image, NSString *filename) {
-    id<MKMTransportableData> ted = MKMTransportableDataCreate(image, nil);
-    return [[DIMImageContent alloc] initWithData:ted filename:filename];
-}
-
-DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) {
-    return [[DIMImageContent alloc] initWithURL:url password:password];
-}
-
 @interface DIMImageContent () {
     
-    id<MKMTransportableData> _thumbnail;
+    id<MKTransportableData> _thumbnail;
 }
 
 @end
@@ -65,11 +56,11 @@ DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) 
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type
-                        data:(nullable id<MKMTransportableData>)file
+- (instancetype)initWithType:(NSString *)type
+                        data:(nullable id<MKTransportableData>)file
                     filename:(nullable NSString *)name
                          url:(nullable NSURL *)remote
-                    password:(nullable id<MKMDecryptKey>)key {
+                    password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type
                               data:file
                           filename:name
@@ -80,7 +71,7 @@ DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) 
     return self;
 }
 
-- (instancetype)initWithData:(id<MKMTransportableData>)image
+- (instancetype)initWithData:(id<MKTransportableData>)image
                     filename:(NSString *)name {
     return [self initWithType:DKDContentType_Image
                          data:image
@@ -90,7 +81,7 @@ DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) 
 }
 
 - (instancetype)initWithURL:(NSURL *)url
-                   password:(nullable id<MKMDecryptKey>)key {
+                   password:(nullable id<MKDecryptKey>)key {
     return [self initWithType:DKDContentType_Image
                          data:nil
                      filename:nil
@@ -99,24 +90,35 @@ DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKMDecryptKey> password) 
 }
 
 - (nullable NSData *)thumbnail {
-    id<MKMTransportableData> ted = _thumbnail;
+    id<MKTransportableData> ted = _thumbnail;
     if (!ted) {
         id base64 = [self objectForKey:@"thumbnail"];
-        _thumbnail = ted = MKMTransportableDataParse(base64);
+        _thumbnail = ted = MKTransportableDataParse(base64);
     }
     return [ted data];
 }
 
 - (void)setThumbnail:(NSData *)thumbnail {
-    id<MKMTransportableData> ted;
+    id<MKTransportableData> ted;
     if ([thumbnail length] == 0) {
         ted = nil;
         [self removeObjectForKey:@"thumbnail"];
     } else {
-        ted = MKMTransportableDataCreate(thumbnail, nil);
+        ted = MKTransportableDataCreate(thumbnail, nil);
         [self setObject:ted.object forKey:@"thumbnail"];
     }
     _thumbnail = ted;
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMImageContent *DIMImageContentFromData(id<MKTransportableData> image,
+                                         NSString *filename) {
+    return [[DIMImageContent alloc] initWithData:image filename:filename];
+}
+
+DIMImageContent *DIMImageContentFromURL(NSURL *url, id<MKDecryptKey> password) {
+    return [[DIMImageContent alloc] initWithURL:url password:password];
+}

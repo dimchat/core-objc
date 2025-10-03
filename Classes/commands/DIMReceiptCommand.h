@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Command message: {
- *      type : 0x88,
+ *      type : i2s(0x88),
  *      sn   : 456,
  *
  *      command : "receipt",
@@ -68,23 +68,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMReceiptCommand : DIMCommand <DKDReceiptCommand>
 
-// protected
-@property (readonly, strong, nonatomic, nullable) NSDictionary *origin;
-
-- (instancetype)initWithText:(NSString *)text origin:(nullable NSDictionary *)info;
+- (instancetype)initWithText:(NSString *)text origin:(nullable NSDictionary *)env;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Create base receipt command with text & original message info
+/**
+ *  Create base receipt command with text & original message info
+ */
 DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
                                            _Nullable id<DKDEnvelope> head,
                                            _Nullable id<DKDContent> body);
 
-NSMutableDictionary *DKDEnvelopePurify(id<DKDEnvelope> envelope);
+NSMutableDictionary<NSString *, id> *DIMReceiptCommandPurify(id<DKDEnvelope> env);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

@@ -39,9 +39,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+//-------- command names begin --------
+FOUNDATION_EXPORT NSString * const DKDCommand_Meta;      // "meta"
+FOUNDATION_EXPORT NSString * const DKDCommand_Documents; // "documents"
+FOUNDATION_EXPORT NSString * const DKDCommand_Receipt;   // "receipt"
+//-------- command names end --------
+
 /*
  *  Command message: {
- *      type : 0x88,
+ *      type : i2s(0x88),
  *      sn   : 123,
  *
  *      command : "...", // command name
@@ -71,18 +77,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMCommand : DIMContent <DKDCommand>
 
-- (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd;
+- (instancetype)initWithType:(NSString *)type cmd:(NSString *)name;
 
-- (instancetype)initWithCommandName:(NSString *)cmd;
+- (instancetype)initWithCMD:(NSString *)name;
 
 @end
 
-#pragma mark System Command
-
-// command names
-#define DIMCommand_Meta      @"meta"
-#define DIMCommand_Document  @"document"
-#define DIMCommand_Receipt   @"receipt"
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,8 +93,6 @@ _Nullable id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
 _Nullable id<DKDCommand> DKDCommandParse(_Nullable id content);
-
-DIMCommand *DIMCommandCreate(NSString *cmd);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

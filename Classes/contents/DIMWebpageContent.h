@@ -41,12 +41,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Web Page message: {
- *      type : 0x20,
+ *      type : i2s(0x20),
  *      sn   : 123,
  *
  *      title : "...",                // Web title
- *      icon  : "...",                // base64_encode(icon)
  *      desc  : "...",
+ *      icon  : "data:image/x-icon;base64,...",
  *
  *      URL   : "https://github.com/moky/dimp",
  *
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol DKDPageContent <DKDContent>
 
 @property (strong, nonatomic) NSString *title;
-@property (strong, nonatomic, nullable) NSData *icon;
+@property (strong, nonatomic, nullable) id<MKPortableNetworkFile> icon;
 @property (strong, nonatomic, nullable) NSString *desc;
 
 @property (strong, nonatomic, nullable) NSURL *URL;
@@ -73,14 +73,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithURL:(NSURL *)url
                       title:(NSString *)title
                 description:(nullable NSString *)desc
-                       icon:(nullable id<MKMTransportableData>)icon;
+                       icon:(nullable id<MKTransportableData>)icon;
 
 - (instancetype)initWithHTML:(NSString *)html
                        title:(NSString *)title
                  description:(nullable NSString *)desc
-                        icon:(nullable id<MKMTransportableData>)icon;
+                        icon:(nullable id<MKTransportableData>)icon;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,13 +92,13 @@ extern "C" {
 DIMPageContent *DIMPageContentFromURL(NSURL *url,
                                       NSString *title,
                                       NSString * _Nullable desc,
-                                      _Nullable id<MKMTransportableData> icon);
+                                      _Nullable id<MKTransportableData> icon);
 
 // create from HTML
 DIMPageContent *DIMPageContentFromHTML(NSString *html,
                                        NSString *title,
                                        NSString * _Nullable desc,
-                                       _Nullable id<MKMTransportableData> icon);
+                                       _Nullable id<MKTransportableData> icon);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

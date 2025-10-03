@@ -39,9 +39,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// account history
+FOUNDATION_EXPORT NSString * const DKDHistoryCommand_Register; // "register"
+FOUNDATION_EXPORT NSString * const DKDHistoryCommand_Suicide;  // "suicide"
+
 /*
  *  History command: {
- *      type : 0x89,
+ *      type : i2s(0x89),
  *      sn   : 123,
  *
  *      command : "...", // command name
@@ -55,41 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMHistoryCommand : DIMCommand <DKDHistoryCommand>
 
-- (instancetype)initWithHistoryName:(NSString *)cmd;
+- (instancetype)initWithCMD:(NSString *)name;
 
 @end
-
-#pragma mark Account history command
-
-// account
-#define DIMHistoryCommand_Register  @"register"
-#define DIMHistoryCommand_Suicide   @"suicide"
-
-#pragma mark Group history command
-
-// group: founder/owner
-#define DIMGroupCommand_Found      @"found"
-#define DIMGroupCommand_Abdicate   @"abdicate"
-// group: member
-#define DIMGroupCommand_Invite     @"invite"
-#define DIMGroupCommand_Expel      @"expel"  /* Deprecated (use 'reset' instead) */
-#define DIMGroupCommand_Join       @"join"
-#define DIMGroupCommand_Quit       @"quit"
-#define DIMGroupCommand_Query      @"query"
-#define DIMGroupCommand_Reset      @"reset"
-// group: administrator/assistant
-#define DIMGroupCommand_Hire       @"hire"
-#define DIMGroupCommand_Fire       @"fire"
-#define DIMGroupCommand_Resign     @"resign"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DIMHistoryCommand *DIMHistoryCommandCreate(NSString *cmd);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
 
 NS_ASSUME_NONNULL_END

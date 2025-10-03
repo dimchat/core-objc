@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Money message: {
- *      type : 0x40,
+ *      type : i2s(0x40),
  *      sn   : 123,
  *
  *      currency : "RMB", // USD, USDT, ...
@@ -52,15 +52,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, strong, nonatomic) NSString *currency;
 
-@property (nonatomic) float amount;
+@property (strong, nonatomic) NSNumber *amount;
 
 @end
 
 @interface DIMMoneyContent : DIMContent <DKDMoneyContent>
 
-- (instancetype)initWithType:(DKDContentType)type currency:(NSString *)currency amount:(float)value;
+- (instancetype)initWithType:(NSString *)type
+                    currency:(NSString *)currency
+                      amount:(NSNumber *)value;
 
-- (instancetype)initWithCurrency:(NSString *)currency amount:(float)value;
+- (instancetype)initWithCurrency:(NSString *)currency
+                          amount:(NSNumber *)value;
 
 @end
 

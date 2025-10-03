@@ -37,14 +37,9 @@
 
 #import "DIMNameCard.h"
 
-DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
-                               _Nullable id<MKMPortableNetworkFile> avatar) {
-    return [[DIMNameCard alloc] initWithID:ID name:name avatar:avatar];
-}
-
 @interface DIMNameCard () {
     
-    id<MKMPortableNetworkFile> _image;
+    id<MKPortableNetworkFile> _image;
 }
 
 @end
@@ -52,7 +47,7 @@ DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
 @implementation DIMNameCard
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
         _image = nil;
     }
@@ -70,9 +65,9 @@ DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       name:(NSString *)nickname
-                    avatar:(id<MKMPortableNetworkFile>)image {
+                    avatar:(id<MKPortableNetworkFile>)image {
     if (self = [self initWithType:DKDContentType_NameCard]) {
-        [self setString:ID forKey:@"ID"];
+        [self setString:ID forKey:@"did"];
         [self setObject:nickname forKey:@"name"];
         if (image) {
             [self setObject:image.object forKey:@"avatar"];
@@ -81,25 +76,32 @@ DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
     return self;
 }
 
-- (id<MKMID>)ID {
-    return MKMIDParse([self objectForKey:@"ID"]);
+- (id<MKMID>)identifier {
+    return MKMIDParse([self objectForKey:@"did"]);
 }
 
 - (NSString *)name {
     return [self stringForKey:@"name" defaultValue:@""];
 }
 
-- (id<MKMPortableNetworkFile>)avatar {
-    id<MKMPortableNetworkFile> pnf = _image;
+- (id<MKPortableNetworkFile>)avatar {
+    id<MKPortableNetworkFile> pnf = _image;
     if (!pnf) {
         id url = [self objectForKey:@"avatar"];
         if ([url length] == 0) {
             // ignore empty URL
         } else {
-            _image = pnf = MKMPortableNetworkFileParse(url);
+            _image = pnf = MKPortableNetworkFileParse(url);
         }
     }
     return pnf;
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
+                               _Nullable id<MKPortableNetworkFile> avatar) {
+    return [[DIMNameCard alloc] initWithID:ID name:name avatar:avatar];
+}

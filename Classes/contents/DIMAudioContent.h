@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Audio message: {
- *      type : 0x14,
+ *      type : i2s(0x14),
  *      sn   : 123,
  *
  *      data     : "...",        // base64_encode(fileContent)
@@ -67,23 +67,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMAudioContent : DIMFileContent <DKDAudioContent>
 
-- (instancetype)initWithData:(id<MKMTransportableData>)audio
+- (instancetype)initWithData:(id<MKTransportableData>)audio
                     filename:(NSString *)name;
 
 - (instancetype)initWithURL:(NSURL *)url
-                   password:(nullable id<MKMDecryptKey>)key;
+                   password:(nullable id<MKDecryptKey>)key;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DIMAudioContent *DIMAudioContentFromData(NSData *audio,
+DIMAudioContent *DIMAudioContentFromData(id<MKTransportableData> audio,
                                          NSString *filename);
 
 DIMAudioContent *DIMAudioContentFromURL(NSURL *url,
-                                        _Nullable id<MKMDecryptKey> password);
+                                        _Nullable id<MKDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

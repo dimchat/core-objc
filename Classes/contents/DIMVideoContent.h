@@ -56,35 +56,37 @@ NS_ASSUME_NONNULL_BEGIN
  *          ...
  *      },
  *
- *      snapshot : "..."       // base64_encode(smallImage)
+ *      snapshot : "data:image/jpeg;base64,..."
  *  }
  */
 @protocol DKDVideoContent <DKDFileContent>
 
 // small image
-@property (strong, nonatomic, nullable) NSData *snapshot;
+@property (strong, nonatomic, nullable) id<MKPortableNetworkFile> snapshot;
 
 @end
 
 @interface DIMVideoContent : DIMFileContent <DKDVideoContent>
 
-- (instancetype)initWithData:(id<MKMTransportableData>)video
+- (instancetype)initWithData:(id<MKTransportableData>)video
                     filename:(NSString *)name;
 
 - (instancetype)initWithURL:(NSURL *)url
-                   password:(nullable id<MKMDecryptKey>)key;
+                   password:(nullable id<MKDecryptKey>)key;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DIMVideoContent *DIMVideoContentFromData(NSData *video,
+DIMVideoContent *DIMVideoContentFromData(id<MKTransportableData> video,
                                          NSString *filename);
 
 DIMVideoContent *DIMVideoContentFromURL(NSURL *url,
-                                        _Nullable id<MKMDecryptKey> password);
+                                        _Nullable id<MKDecryptKey> password);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

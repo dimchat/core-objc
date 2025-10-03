@@ -41,19 +41,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Command message: {
- *      type : 0x88,
+ *      type : i2s(0x88),
  *      sn   : 123,
  *
- *      command   : "document", // command name
- *      ID        : "{ID}",     // entity ID
- *      meta      : {...},      // only for handshaking with new friend
- *      document  : {...},      // when document is empty, means query for ID
- *      last_time : 12345       // old document time for querying
+ *      command   : "documents", // command name
+ *      did       : "{ID}",      // entity ID
+ *      meta      : {...},       // only for handshaking with new friend
+ *      documents : [...],       // when this is null, means to query
+ *      last_time : 12345        // old document time for querying
  *  }
  */
 @protocol DKDDocumentCommand <DKDMetaCommand>
 
-@property (readonly, strong, nonatomic, nullable) __kindof id<MKMDocument> document;
+@property (readonly, strong, nonatomic, nullable) NSArray<id<MKMDocument>> *documents;
 
 // Last document time for querying
 @property (readonly, strong, nonatomic, nullable) NSDate *lastTime;
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(nullable id<MKMMeta>)meta
-                  document:(nullable id<MKMDocument>)doc;
+                 documents:(NSArray<id<MKMDocument>> *)docs;
 
 // query document for updating with last document time
 - (instancetype)initWithID:(id<MKMID>)ID
@@ -72,13 +72,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Conveniences
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
                                                _Nullable id<MKMMeta> meta,
-                                               id<MKMDocument> doc);
+                                               NSArray<id<MKMDocument>> *docs);
 
 DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
                                             NSDate * _Nullable lastTime);

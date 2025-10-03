@@ -39,6 +39,38 @@
 
 #import "DIMCommand.h"
 
+NSString * const DKDCommand_Meta      = @"meta";
+NSString * const DKDCommand_Documents = @"documents";
+NSString * const DKDCommand_Receipt   = @"receipt";
+
+#pragma mark - Base Command
+
+@implementation DIMCommand
+
+- (instancetype)initWithType:(NSString *)type cmd:(NSString *)name {
+    if (self = [self initWithType:type]) {
+        NSAssert(name.length > 0, @"command name cannot be empty");
+        [self setObject:name forKey:@"command"];
+    }
+    return self;
+}
+
+- (instancetype)initWithCMD:(NSString *)name {
+    if (self = [self initWithType:DKDContentType_Command cmd:name]) {
+        //
+    }
+    return self;
+}
+
+- (NSString *)cmd {
+    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
+    return [man.generalFactory getCmd:self.dictionary defaultValue:@""];
+}
+
+@end
+
+#pragma mark - Conveniences
+
 id<DKDCommandFactory> DIMCommandGetFactory(NSString *cmd) {
     DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
     return [man.generalFactory commandFactoryForName:cmd];
@@ -53,33 +85,3 @@ id<DKDCommand> DKDCommandParse(id content) {
     DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
     return [man.generalFactory parseCommand:content];
 }
-
-DIMCommand *DIMCommandCreate(NSString *cmd) {
-    return [[DIMCommand alloc] initWithCommandName:cmd];
-}
-
-#pragma mark - Base Command
-
-@implementation DIMCommand
-
-- (instancetype)initWithType:(DKDContentType)type commandName:(NSString *)cmd {
-    if (self = [self initWithType:type]) {
-        NSAssert(cmd.length > 0, @"command name cannot be empty");
-        [self setObject:cmd forKey:@"command"];
-    }
-    return self;
-}
-
-- (instancetype)initWithCommandName:(NSString *)cmd {
-    if (self = [self initWithType:DKDContentType_Command commandName:cmd]) {
-        //
-    }
-    return self;
-}
-
-- (NSString *)cmd {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory getCmd:self.dictionary defaultValue:@""];
-}
-
-@end

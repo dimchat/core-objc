@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  *  Content Array message: {
- *      type : 0xCA,
+ *      type : i2s(0xCA),
  *      sn   : 123,
  *
  *      contents : [...]  // content array
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DKDArrayContent <DKDContent>
 
-@property (readonly, nonatomic) NSArray<id<DKDContent>> *contents;
+@property (readonly, strong, nonatomic) NSArray<id<DKDContent>> *contents;
 
 @end
 
@@ -59,21 +59,52 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Conveniences
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- *  Convert content list from dictionary array
- */
-NSArray<id<DKDContent>> *DKDContentConvert(NSArray<id> *contents);
-
-/**
- *  Revert content list to dictionary array
- */
-NSArray<NSDictionary *> *DKDContentRevert(NSArray<id<DKDContent>> *contents);
-
 DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
+
+#pragma mark -
+
+/*
+ *  Combine Forward message: {
+ *      type : i2s(0xCF),
+ *      sn   : 123,
+ *
+ *      title    : "...",  // chat title
+ *      messages : [...]   // chat history
+ *  }
+ */
+@protocol DKDCombineContent <DKDContent>
+
+@property (readonly, strong, nonatomic) NSString *title;
+
+@property (readonly, strong, nonatomic) NSArray<id<DKDInstantMessage>> *messages;
+
+@end
+
+@interface DIMCombineContent : DIMContent <DKDCombineContent>
+
+- (instancetype)initWithTitle:(NSString *)title
+                     messages:(NSArray<id<DKDInstantMessage>> *)history;
+
+@end
+
+#pragma mark - Conveniences
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMCombineContent *DIMCombineContentCreate(NSString *title,
+                                           NSArray<id<DKDInstantMessage>> *messages);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

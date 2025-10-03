@@ -38,17 +38,20 @@
 #import "DIMTransferContent.h"
 
 DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
-    return [[DIMTransferContent alloc] initWithCurrency:currency amount:value];
+    return [[DIMTransferContent alloc] initWithCurrency:currency amount:@(value)];
 }
 
 @implementation DIMTransferContent
 
-- (instancetype)initWithCurrency:(NSString *)currency amount:(float)value {
-    return [self initWithType:DKDContentType_Transfer currency:currency amount:value];
+- (instancetype)initWithCurrency:(NSString *)currency amount:(NSNumber *)value {
+    return [self initWithType:DKDContentType_Transfer
+                     currency:currency
+                       amount:value];
 }
 
 - (nullable id<MKMID>)remitter {
-    return MKMIDParse([self objectForKey:@"remitter"]);
+    id sender = [self objectForKey:@"remitter"];
+    return MKMIDParse(sender);
 }
 
 - (void)setRemitter:(id<MKMID>)sender {
@@ -56,7 +59,8 @@ DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
 }
 
 - (nullable id<MKMID>)remittee {
-    return MKMIDParse([self objectForKey:@"remittee"]);
+    id receiver = [self objectForKey:@"remittee"];
+    return MKMIDParse(receiver);
 }
 
 - (void)setRemittee:(id<MKMID>)receiver {

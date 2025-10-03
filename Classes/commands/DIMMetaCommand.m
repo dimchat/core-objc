@@ -37,15 +37,6 @@
 
 #import "DIMMetaCommand.h"
 
-DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
-                                       id<MKMMeta> meta) {
-    return [[DIMMetaCommand alloc] initWithID:ID meta:meta];
-}
-
-DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
-    return [[DIMMetaCommand alloc] initWithID:ID meta:nil];
-}
-
 @interface DIMMetaCommand ()
 
 @property (strong, nonatomic, nullable) id<MKMMeta> meta;
@@ -64,7 +55,7 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
 }
 
 /* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
+- (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
         _meta = nil;
     }
@@ -75,12 +66,12 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
     return [self initWithID:ID meta:nil];
 }
 
-- (instancetype)initWithCommandName:(NSString *)name
-                                 ID:(id<MKMID>)ID
-                               meta:(id<MKMMeta>)meta {
-    if (self = [self initWithCommandName:name]) {
+- (instancetype)initWithCMD:(NSString *)name
+                         ID:(id<MKMID>)ID
+                       meta:(id<MKMMeta>)meta {
+    if (self = [self initWithCMD:name]) {
         // ID
-        [self setString:ID forKey:@"ID"];
+        [self setString:ID forKey:@"did"];
         
         // meta
         if (meta) {
@@ -92,7 +83,7 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
-    return [self initWithCommandName:DIMCommand_Meta ID:ID meta:meta];
+    return [self initWithCMD:DKDCommand_Meta ID:ID meta:meta];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
@@ -103,8 +94,8 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
     return content;
 }
 
-- (id<MKMID>)ID {
-    id string = [self objectForKey:@"ID"];
+- (id<MKMID>)identifier {
+    id string = [self objectForKey:@"did"];
     return MKMIDParse(string);
 }
 
@@ -117,3 +108,14 @@ DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
+                                       id<MKMMeta> meta) {
+    return [[DIMMetaCommand alloc] initWithID:ID meta:meta];
+}
+
+DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
+    return [[DIMMetaCommand alloc] initWithID:ID meta:nil];
+}

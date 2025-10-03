@@ -37,20 +37,105 @@
 
 #import "DIMReceiptCommand.h"
 
+@interface DIMReceiptCommand () {
+    
+    id<DKDEnvelope> _env;
+}
+
+@end
+
+@implementation DIMReceiptCommand
+
+/* designated initializer */
+- (instancetype)initWithType:(NSString *)type {
+    if (self = [super initWithType:type]) {
+        // lazy load
+        _env = nil;
+    }
+    return self;
+}
+
+/* designated initializer */
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super initWithDictionary:dict]) {
+        // lazy load
+        _env = nil;
+    }
+    return self;
+}
+
+- (instancetype)initWithText:(NSString *)text origin:(nullable NSDictionary *)env {
+    if (self = [self initWithCMD:DKDCommand_Receipt]) {
+        // text message
+        [self setObject:text forKey:@"text"];
+        // original envelope of message quote with,
+        // includes 'sender', 'receiver', 'type' and 'sn'
+        if (env) {
+            NSAssert(!([env count] == 0 ||
+                       [env objectForKey:@"data"] ||
+                       [env objectForKey:@"key"] ||
+                       [env objectForKey:@"keys"] ||
+                       [env objectForKey:@"meta"] ||
+                       [env objectForKey:@"visa"]), @"impure envelope: %@", env);
+            [self setObject:env forKey:@"origin"];
+        }
+    }
+    return self;
+}
+
+- (NSString *)text {
+    return [self stringForKey:@"text" defaultValue:@""];
+}
+
+// protected
+- (NSDictionary *)origin {
+    id info = [self objectForKey:@"origin"];
+    if ([info isKindOfClass:[NSDictionary class]]) {
+        return info;
+    }
+    NSAssert(info == nil, @"origin error: %@", info);
+    return nil;
+}
+
+- (id<DKDEnvelope>) originalEnvelope {
+    id<DKDEnvelope> env = _env;
+    if (!env) {
+        env = DKDEnvelopeParse([self origin]);
+        _env = env;
+    }
+    return env;
+}
+
+- (DKDSerialNumber)originalSerialNumber {
+    NSDictionary *env = [self origin];
+    id sn = [env objectForKey:@"sn"];
+    return MKConvertUnsignedLong(sn, 0);
+}
+
+- (NSString *)originalSignature {
+    NSDictionary *env = [self origin];
+    id signature = [env objectForKey:@"signature"];
+    return MKConvertString(signature, nil);
+}
+
+@end
+
+#pragma mark - Conveniences
+
 DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
                                            _Nullable id<DKDEnvelope> head,
                                            _Nullable id<DKDContent> body) {
-    NSMutableDictionary *info;
+    NSMutableDictionary *origin;
     if (!head) {
-        info = nil;
+        origin = nil;
     } else if (!body) {
-        info = DKDEnvelopePurify(head);
+        origin = DIMReceiptCommandPurify(head);
     } else {
-        info = DKDEnvelopePurify(head);
-        [info setObject:@(body.serialNumber) forKey:@"sn"];
+        origin = DIMReceiptCommandPurify(head);
+        [origin setObject:@(body.sn) forKey:@"sn"];
     }
     DIMReceiptCommand *command = [[DIMReceiptCommand alloc] initWithText:text
-                                                                  origin:info];
+                                                                  origin:origin];
     if (body) {
         // check group
         id<MKMID> group = [body group];
@@ -61,95 +146,14 @@ DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
     return command;
 }
 
-NSMutableDictionary *DKDEnvelopePurify(id<DKDEnvelope> envelope) {
-    NSMutableDictionary *info = [envelope dictionary:NO];
-    if ([info objectForKey:@"data"]) {
-        [info removeObjectForKey:@"data"];
-        [info removeObjectForKey:@"key"];
-        [info removeObjectForKey:@"keys"];
-        [info removeObjectForKey:@"meta"];
-        [info removeObjectForKey:@"visa"];
+NSMutableDictionary<NSString *, id> *DIMReceiptCommandPurify(id<DKDEnvelope> env) {
+    NSMutableDictionary *origin = [env dictionary:NO];
+    if ([origin objectForKey:@"data"]) {
+        [origin removeObjectForKey:@"data"];
+        [origin removeObjectForKey:@"key"];
+        [origin removeObjectForKey:@"keys"];
+        [origin removeObjectForKey:@"meta"];
+        [origin removeObjectForKey:@"visa"];
     }
-    return info;
+    return origin;
 }
-
-@interface DIMReceiptCommand () {
-    
-    // original message envelope
-    id<DKDEnvelope> _env;
-}
-
-@end
-
-@implementation DIMReceiptCommand
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _env = nil;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithType:(DKDContentType)type {
-    if (self = [super initWithType:type]) {
-        _env = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithText:(NSString *)text origin:(NSDictionary *)info {
-    if (self = [self initWithCommandName:DIMCommand_Receipt]) {
-        // text message
-        [self setObject:text forKey:@"text"];
-        // original envelope of message responding to,
-        // includes 'sn' and 'signature'
-        if (info) {
-            NSAssert([info count] > 0 ||
-                     [info objectForKey:@"data"] ||
-                     [info objectForKey:@"key"] ||
-                     [info objectForKey:@"keys"] ||
-                     [info objectForKey:@"meta"] ||
-                     [info objectForKey:@"visa"],
-                     @"impure envelope: %@", info);
-            [self setObject:info forKey:@"origin"];
-        }
-
-    }
-    return self;
-}
-
-- (NSString *)text {
-    return [self stringForKey:@"text" defaultValue:@""];
-}
-
-- (NSDictionary *)origin {
-    id info = [self objectForKey:@"origin"];
-    if ([info isKindOfClass:[NSDictionary class]]) {
-        return info;
-    }
-    NSAssert(!info, @"origin info error: %@", info);
-    return nil;
-}
-
-- (id<DKDEnvelope>)originalEnvelope {
-    if (!_env) {
-        // origin: { sender: "...", receiver: "...", time: 0 }
-        _env = DKDEnvelopeParse([self origin]);
-    }
-    return _env;
-}
-
-- (unsigned long)originalSerialNumber {
-    id sn = [self.origin objectForKey:@"sn"];
-    return MKMConverterGetUnsignedLong(sn, 0);
-}
-
-- (NSString *)originalSignature {
-    id signature = [self.origin objectForKey:@"signature"];
-    return MKMConverterGetString(signature, nil);
-}
-
-@end

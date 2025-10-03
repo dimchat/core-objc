@@ -39,6 +39,36 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+//-------- group command names begin --------
+/// group: founder/owner
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Found;    // "found"
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Abdicate; // "abdicate"
+/// group: member
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Invite;   // "invite"
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Expel;    // Deprecated (use "reset" instead)
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Join;     // "join"
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Quit;     // "quit"
+//FOUNDATION_EXPORT NSString * const DIMGroupCommand_Query;  // Deprecated
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Reset;    // "reset"
+/// group: administrator/assistant
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Hire;     // "hire"
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Fire;     // "fire"
+FOUNDATION_EXPORT NSString * const DIMGroupCommand_Resign;   // "resign"
+//-------- group command names end --------
+
+/*
+ *  Group history command: {
+ *      type : i2s(0x89),
+ *      sn   : 123,
+ *
+ *      command : "reset",   // "invite", "quit", "query", ...
+ *      time    : 123.456,   // command timestamp
+ *
+ *      group   : "{GROUP_ID}",
+ *      member  : "{MEMBER_ID}",
+ *      members : ["{MEMBER_ID}",]
+ *  }
+ */
 @protocol DKDGroupCommand <DKDHistoryCommand>
 
 // Group ID for group message already defined in DKDContent
@@ -51,45 +81,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMGroupCommand : DIMHistoryCommand <DKDGroupCommand>
 
-/*
- *  Group history command: {
- *      type : 0x89,
- *      sn   : 123,
- *
- *      command : "join",      // or quit
- *      group   : "{GROUP_ID}",
- *  }
- */
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID;
+- (instancetype)initWithCMD:(NSString *)name
+                      group:(id<MKMID>)gid;
 
-/*
- *  Group history command: {
- *      type : 0x89,
- *      sn   : 123,
- *
- *      command : "invite",      // or expel
- *      group   : "{GROUP_ID}",
- *      member  : "{MEMBER_ID}",
- *  }
- */
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID
-                             member:(id<MKMID>)memberID;
+- (instancetype)initWithCMD:(NSString *)name
+                      group:(id<MKMID>)gid
+                     member:(id<MKMID>)uid;
 
-/*
- *  Group history command: {
- *      type : 0x89,
- *      sn   : 123,
- *
- *      command : "invite",      // or expel
- *      group   : "{GROUP_ID}",
- *      members : ["{MEMBER_ID}", ],
- *  }
- */
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID
-                            members:(NSArray<id<MKMID>> *)list;
+- (instancetype)initWithCMD:(NSString *)name
+                      group:(id<MKMID>)gid
+                    members:(NSArray<id<MKMID>> *)list;
 
 @end
 
@@ -99,10 +100,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMInviteGroupCommand : DIMGroupCommand <DKDInviteGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
-                       member:(id<MKMID>)memberID;
+- (instancetype)initWithGroup:(id<MKMID>)gid
+                       member:(id<MKMID>)uid;
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                       members:(NSArray<id<MKMID>> *)list;
 
 @end
@@ -114,8 +115,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMExpelGroupCommand : DIMGroupCommand <DKDExpelGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
-                       member:(id<MKMID>)memberID;
+- (instancetype)initWithGroup:(id<MKMID>)gid
+                       member:(id<MKMID>)uid;
 
 - (instancetype)initWithGroup:(id<MKMID>)groupID
                       members:(NSArray<id<MKMID>> *)list;
@@ -128,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMJoinGroupCommand : DIMGroupCommand <DKDJoinGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
+- (instancetype)initWithGroup:(id<MKMID>)gid;
 
 @end
 
@@ -138,7 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMQuitGroupCommand : DIMGroupCommand <DKDQuitGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
+- (instancetype)initWithGroup:(id<MKMID>)gid;
 
 @end
 
@@ -148,35 +149,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMResetGroupCommand : DIMGroupCommand <DKDResetGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                       members:(NSArray<id<MKMID>> *)list;
-
-@end
-
-#pragma mark Query group command
-
-/**
- *  History command: {
- *      type : 0x88,
- *      sn   : 123,
- *
- *      command : "query",
- *      time    : 123.456,
- *
- *      group     : "{GROUP_ID}",
- *      last_time : 0
- *  }
- */
-@protocol DKDQueryGroupCommand <DKDGroupCommand>
-
-// Last group history time for querying
-@property (readonly, strong, nonatomic, nullable) NSDate *lastTime;
-
-@end
-
-@interface DIMQueryGroupCommand : DIMGroupCommand <DKDQueryGroupCommand>
-
-- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time;
 
 @end
 
@@ -191,10 +165,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMHireGroupCommand : DIMGroupCommand <DKDHireGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users;
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots;
 
 @end
@@ -208,10 +182,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMFireGroupCommand : DIMGroupCommand <DKDFireGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users;
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots;
 
 @end
@@ -220,15 +194,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMResignGroupCommand : DIMGroupCommand <DKDResignGroupCommand>
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID;
+- (instancetype)initWithGroup:(id<MKMID>)gid;
 
 @end
+
+#pragma mark - Conveniences
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-DIMGroupCommand *DIMGroupCommandCreate(NSString *name,
+DIMGroupCommand *DIMGroupCommandCreate(NSString *cmd,
                                        id<MKMID> group,
                                        NSArray<id<MKMID>> *members);
 
@@ -245,8 +221,19 @@ DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group);
 DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
                                            NSArray<id<MKMID>> *members);
 
-DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group,
-                                           NSDate * _Nullable lastTime);
+#pragma mark Administrators, Assistants
+
+DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins);
+DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots);
+
+DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins);
+DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots);
+
+DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

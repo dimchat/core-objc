@@ -37,96 +37,58 @@
 
 #import "DIMGroupCommand.h"
 
-DIMGroupCommand *DIMGroupCommandCreate(NSString *name,
-                                       id<MKMID> group,
-                                       NSArray<id<MKMID>> *members) {
-    return [[DIMGroupCommand alloc] initWithCommandName:name
-                                                  group:group
-                                                members:members];
-}
+NSString * const DIMGroupCommand_Found    = @"found";
+NSString * const DIMGroupCommand_Abdicate = @"abdicate";
 
-DIMInviteGroupCommand *DIMGroupCommandInvite(id<MKMID> group,
-                                             NSArray<id<MKMID>> *members) {
-    return [[DIMInviteGroupCommand alloc] initWithGroup:group
-                                                members:members];
-}
+NSString * const DIMGroupCommand_Invite   = @"invite";
+NSString * const DIMGroupCommand_Expel    = @"expel"; // Deprecated
+NSString * const DIMGroupCommand_Join     = @"join";
+NSString * const DIMGroupCommand_Quit     = @"quit";
+//NSString * const DIMGroupCommand_Query  = @"query"; // Deprecated
+NSString * const DIMGroupCommand_Reset    = @"reset";
 
-DIMExpelGroupCommand *DIMGroupCommandExpel(id<MKMID> group,
-                                           NSArray<id<MKMID>> *members) {
-    return [[DIMExpelGroupCommand alloc] initWithGroup:group
-                                               members:members];
-}
-
-DIMJoinGroupCommand *DIMGroupCommandJoin(id<MKMID> group) {
-    return [[DIMJoinGroupCommand alloc] initWithGroup:group];
-}
-
-DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group) {
-    return [[DIMQuitGroupCommand alloc] initWithGroup:group];
-}
-
-DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
-                                           NSArray<id<MKMID>> *members) {
-    return [[DIMResetGroupCommand alloc] initWithGroup:group
-                                               members:members];
-}
-
-DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
-    return [[DIMQueryGroupCommand alloc] initWithGroup:group lastTime:lastTime];
-}
+NSString * const DIMGroupCommand_Hire     = @"hire";
+NSString * const DIMGroupCommand_Fire     = @"fire";
+NSString * const DIMGroupCommand_Resign   = @"resign";
 
 #pragma mark -
 
 @implementation DIMGroupCommand
 
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID {
+- (instancetype)initWithCMD:(NSString *)cmd
+                      group:(id<MKMID>)gid {
     
-    if (self = [self initWithHistoryName:cmd]) {
-        // Group ID
-        if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
-        }
+    if (self = [self initWithCMD:cmd]) {
+        [self setString:gid forKey:@"group"];
     }
     return self;
 }
 
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID
-                             member:(id<MKMID>)memberID {
+- (instancetype)initWithCMD:(NSString *)cmd
+                      group:(id<MKMID>)gid
+                     member:(id<MKMID>)uid {
     
-    if (self = [self initWithHistoryName:cmd]) {
-        // Group ID
-        if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
-        }
-        // Member ID
-        if (memberID) {
-            [self setObject:[memberID string] forKey:@"member"];
-        }
+    if (self = [self initWithCMD:cmd]) {
+        [self setString:gid forKey:@"group"];
+        [self setString:uid forKey:@"member"];
     }
     return self;
 }
 
-- (instancetype)initWithCommandName:(NSString *)cmd
-                              group:(id<MKMID>)groupID
-                            members:(NSArray<id<MKMID>> *)list {
+- (instancetype)initWithCMD:(NSString *)cmd
+                      group:(id<MKMID>)gid
+                    members:(NSArray<id<MKMID>> *)list {
     
-    if (self = [self initWithHistoryName:cmd]) {
-        // Group ID
-        if (groupID) {
-            [self setObject:[groupID string] forKey:@"group"];
-        }
-        // Members
-        if (list.count > 0) {
-            [self setObject:MKMIDRevert(list) forKey:@"members"];
-        }
+    if (self = [self initWithCMD:cmd]) {
+        [self setString:gid forKey:@"group"];
+        [self setObject:MKMIDRevert(list) forKey:@"members"];
     }
     return self;
 }
 
 - (nullable id<MKMID>)member {
-    return MKMIDParse([self objectForKey:@"member"]);
+    id user = [self objectForKey:@"member"];
+    return MKMIDParse(user);
 }
 
 - (nullable NSArray<id<MKMID>> *)members {
@@ -143,65 +105,48 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 @implementation DIMInviteGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
-    return [self initWithCommandName:DIMGroupCommand_Invite group:groupID member:memberID];
+- (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
+    return [self initWithCMD:DIMGroupCommand_Invite group:gid member:uid];
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommandName:DIMGroupCommand_Invite group:groupID members:list];
+- (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
+    return [self initWithCMD:DIMGroupCommand_Invite group:gid members:list];
 }
 
 @end
 
 @implementation DIMExpelGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID member:(id<MKMID>)memberID {
-    return [self initWithCommandName:DIMGroupCommand_Expel group:groupID member:memberID];
+- (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
+    return [self initWithCMD:DIMGroupCommand_Expel group:gid member:uid];
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommandName:DIMGroupCommand_Expel group:groupID members:list];
+- (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
+    return [self initWithCMD:DIMGroupCommand_Expel group:gid members:list];
 }
 
 @end
 
 @implementation DIMJoinGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommandName:DIMGroupCommand_Join group:groupID];
+- (instancetype)initWithGroup:(id<MKMID>)gid {
+    return [self initWithCMD:DIMGroupCommand_Join group:gid];
 }
 
 @end
 
 @implementation DIMQuitGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID {
-    return [self initWithCommandName:DIMGroupCommand_Quit group:groupID];
+- (instancetype)initWithGroup:(id<MKMID>)gid {
+    return [self initWithCMD:DIMGroupCommand_Quit group:gid];
 }
 
 @end
 
 @implementation DIMResetGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCommandName:DIMGroupCommand_Reset group:groupID members:list];
-}
-
-@end
-
-@implementation DIMQueryGroupCommand
-
-- (instancetype)initWithGroup:(id<MKMID>)groupID lastTime:(nullable NSDate *)time {
-    if (self = [self initWithCommandName:DIMGroupCommand_Query group:groupID]) {
-        if (time) {
-            [self setDate:time forKey:@"last_time"];
-        }
-    }
-    return self;
-}
-
-- (NSDate *)lastTime {
-    return [self dateForKey:@"last_time" defaultValue:nil];
+- (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
+    return [self initWithCMD:DIMGroupCommand_Reset group:gid members:list];
 }
 
 @end
@@ -210,17 +155,17 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 @implementation DIMHireGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users {
-    if (self = [self initWithCommandName:DIMGroupCommand_Hire group:groupID]) {
+    if (self = [self initWithCMD:DIMGroupCommand_Hire group:gid]) {
         self.administrators = users;
     }
     return self;
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCommandName:DIMGroupCommand_Hire group:groupID]) {
+    if (self = [self initWithCMD:DIMGroupCommand_Hire group:gid]) {
         self.assistants = bots;
     }
     return self;
@@ -256,17 +201,17 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 @implementation DIMFireGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users {
-    if (self = [self initWithCommandName:DIMGroupCommand_Fire group:groupID]) {
+    if (self = [self initWithCMD:DIMGroupCommand_Fire group:gid]) {
         self.administrators = users;
     }
     return self;
 }
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCommandName:DIMGroupCommand_Fire group:groupID]) {
+    if (self = [self initWithCMD:DIMGroupCommand_Fire group:gid]) {
         self.assistants = bots;
     }
     return self;
@@ -302,11 +247,68 @@ DIMQueryGroupCommand *DIMGroupCommandQuery(id<MKMID> group, NSDate *lastTime) {
 
 @implementation DIMResignGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID {
-    if (self = [self initWithCommandName:DIMGroupCommand_Resign group:groupID]) {
+- (instancetype)initWithGroup:(id<MKMID>)gid {
+    if (self = [self initWithCMD:DIMGroupCommand_Resign group:gid]) {
         //
     }
     return self;
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMGroupCommand *DIMGroupCommandCreate(NSString *cmd,
+                                       id<MKMID> group,
+                                       NSArray<id<MKMID>> *members) {
+    return [[DIMGroupCommand alloc] initWithCMD:cmd group:group members:members];
+}
+
+DIMInviteGroupCommand *DIMGroupCommandInvite(id<MKMID> group,
+                                             NSArray<id<MKMID>> *members) {
+    return [[DIMInviteGroupCommand alloc] initWithGroup:group members:members];
+}
+
+DIMExpelGroupCommand *DIMGroupCommandExpel(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members) {
+    return [[DIMExpelGroupCommand alloc] initWithGroup:group members:members];
+}
+
+DIMJoinGroupCommand *DIMGroupCommandJoin(id<MKMID> group) {
+    return [[DIMJoinGroupCommand alloc] initWithGroup:group];
+}
+
+DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group) {
+    return [[DIMQuitGroupCommand alloc] initWithGroup:group];
+}
+
+DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
+                                           NSArray<id<MKMID>> *members) {
+    return [[DIMResetGroupCommand alloc] initWithGroup:group members:members];
+}
+
+#pragma mark Administrators, Assistants
+
+DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins) {
+    return [[DIMHireGroupCommand alloc] initWithGroup:group administrators:admins];
+}
+
+DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots) {
+    return [[DIMHireGroupCommand alloc] initWithGroup:group assistants:bots];
+}
+
+DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
+                                                       NSArray<id<MKMID>> *admins) {
+    return [[DIMFireGroupCommand alloc] initWithGroup:group administrators:admins];
+}
+
+DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
+                                                   NSArray<id<MKMID>> *bots) {
+    return [[DIMFireGroupCommand alloc] initWithGroup:group assistants:bots];
+}
+
+DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group) {
+    return [[DIMResignGroupCommand alloc] initWithGroup:group];
+}
