@@ -36,6 +36,7 @@
 //
 
 #import "DKDContentType.h"
+#import "DIMSharedExtensions.h"
 
 #import "DIMCommand.h"
 
@@ -57,8 +58,8 @@
 }
 
 - (NSString *)cmd {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory getCmd:self.dictionary defaultValue:@""];
+    DIMSharedCommandExtensions *ext = [DIMSharedCommandExtensions sharedInstance];
+    return [ext.helper getCmd:self.dictionary defaultValue:@""];
 }
 
 @end

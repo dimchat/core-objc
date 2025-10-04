@@ -35,6 +35,8 @@
 //  Copyright © 2025 DIM Group. All rights reserved.
 //
 
+#import "DIMSharedExtensions.h"
+
 #import "DKDCommand.h"
 
 NSString * const DKDCommand_Meta      = @"meta";
@@ -44,16 +46,16 @@ NSString * const DKDCommand_Receipt   = @"receipt";
 #pragma mark - Conveniences
 
 id<DKDCommandFactory> DIMCommandGetFactory(NSString *cmd) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory commandFactoryForName:cmd];
+    DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
+    return [ext.cmdHelper getCommandFactory:cmd];
 }
 
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    [man.generalFactory setCommandFactory:factory forName:cmd];
+    DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
+    [ext.cmdHelper setCommandFactory:factory forCMD:cmd];
 }
 
 id<DKDCommand> DKDCommandParse(id content) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory parseCommand:content];
+    DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
+    return [ext.cmdHelper parseCommand:content];
 }

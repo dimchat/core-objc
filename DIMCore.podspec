@@ -28,5 +28,5 @@ Pod::Spec.new do |s|
     # s.requires_arc        = true
 
     s.dependency 'DaoKeDao', '~> 1.0.2'
-    s.dependency 'MingKeMing', '~> 1.0.0'
+    s.dependency 'MingKeMing', '~> 1.0.3'
 end

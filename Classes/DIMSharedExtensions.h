@@ -39,7 +39,48 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DIMSharedExtensions : NSObject
+@protocol DKDCommand;
+@protocol DKDCommandFactory;
+
+@protocol DKDCommandHelper <NSObject>
+
+- (void)setCommandFactory:(id<DKDCommandFactory>)factory
+                   forCMD:(NSString *)cmd;
+- (nullable id<DKDCommandFactory>)getCommandFactory:(NSString *)cmd;
+
+- (nullable id<DKDCommand>)parseCommand:(nullable id)content;
+
+@end
+
+@interface DKDCommandExtensions : NSObject
+
++ (instancetype)sharedInstance;
+
+@property (strong, nonatomic, nullable) id<DKDCommandHelper> cmdHelper;
+
+@end
+
+#pragma mark -
+
+@protocol DIMGeneralCommandHelper <NSObject/*,
+                                            DKDCommandHelper
+                                            */>
+
+//
+//  CMD - Command, Method, Declaration
+//
+- (nullable NSString *)getCmd:(NSDictionary<NSString *, id> *)content
+                 defaultValue:(nullable NSString *)aValue;
+
+@end
+
+@interface DIMSharedCommandExtensions : NSObject
+
++ (instancetype)sharedInstance;
+
+@property (strong, nonatomic, nullable) id<DKDCommandHelper> cmdHelper;
+
+@property (strong, nonatomic, nullable) id<DIMGeneralCommandHelper> helper;
 
 @end
 

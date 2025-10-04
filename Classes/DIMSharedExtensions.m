@@ -37,6 +37,40 @@
 
 #import "DIMSharedExtensions.h"
 
-@implementation DIMSharedExtensions
+@implementation DKDCommandExtensions
+
+static DKDCommandExtensions *s_cmd_ext = nil;
+
++ (instancetype)sharedInstance {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_cmd_ext = [[self alloc] init];
+    });
+    return s_cmd_ext;
+}
+
+@end
+
+@implementation DIMSharedCommandExtensions
+
+static DIMSharedCommandExtensions *s_cmd_extension = nil;
+
++ (instancetype)sharedInstance {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_cmd_extension = [[self alloc] init];
+    });
+    return s_cmd_extension;
+}
+
+- (id<DKDCommandHelper>)cmdHelper {
+    DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
+    return [ext cmdHelper];
+}
+
+- (void)setCmdHelper:(id<DKDCommandHelper>)cmdHelper {
+    DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
+    [ext setCmdHelper:cmdHelper];
+}
 
 @end
