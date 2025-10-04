@@ -71,43 +71,4 @@ DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents);
 } /* end of extern "C" */
 #endif
 
-#pragma mark -
-
-/*
- *  Combine Forward message: {
- *      type : i2s(0xCF),
- *      sn   : 123,
- *
- *      title    : "...",  // chat title
- *      messages : [...]   // chat history
- *  }
- */
-@protocol DKDCombineContent <DKDContent>
-
-@property (readonly, strong, nonatomic) NSString *title;
-
-@property (readonly, strong, nonatomic) NSArray<id<DKDInstantMessage>> *messages;
-
-@end
-
-@interface DIMCombineContent : DIMContent <DKDCombineContent>
-
-- (instancetype)initWithTitle:(NSString *)title
-                     messages:(NSArray<id<DKDInstantMessage>> *)history;
-
-@end
-
-#pragma mark - Conveniences
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DIMCombineContent *DIMCombineContentCreate(NSString *title,
-                                           NSArray<id<DKDInstantMessage>> *messages);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
 NS_ASSUME_NONNULL_END

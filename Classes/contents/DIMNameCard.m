@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import "DKDContentType.h"
+
 #import "DIMNameCard.h"
 
 @interface DIMNameCard () {

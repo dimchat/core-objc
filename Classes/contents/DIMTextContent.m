@@ -35,6 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DKDContentType.h"
+
 #import "DIMTextContent.h"
 
 @implementation DIMTextContent
@@ -58,104 +60,4 @@
 
 DIMTextContent *DIMTextContentCreate(NSString *text) {
     return [[DIMTextContent alloc] initWithText:text];
-}
-
-#pragma mark -
-
-@interface DIMQuoteContent () {
-    
-    id<DKDEnvelope> _env;
-}
-
-@end
-
-@implementation DIMQuoteContent
-
-/* designated initializer */
-- (instancetype)initWithType:(NSString *)type {
-    if (self = [super initWithType:type]) {
-        // lazy load
-        _env = nil;
-    }
-    return self;
-}
-
-/* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super initWithDictionary:dict]) {
-        // lazy load
-        _env = nil;
-    }
-    return self;
-}
-
-- (instancetype)initWithText:(NSString *)text origin:(NSDictionary *)env {
-    if (self = [self initWithType:DKDContentType_Quote]) {
-        // text message
-        [self setObject:text forKey:@"text"];
-        // original envelope of message quote with,
-        // includes 'sender', 'receiver', 'type' and 'sn'
-        [self setObject:env forKey:@"origin"];
-    }
-    return self;
-}
-
-- (NSString *)text {
-    return [self stringForKey:@"text" defaultValue:@""];
-}
-
-// protected
-- (NSDictionary *)origin {
-    id info = [self objectForKey:@"origin"];
-    if ([info isKindOfClass:[NSDictionary class]]) {
-        return info;
-    }
-    NSAssert(info == nil, @"origin error: %@", info);
-    return nil;
-}
-
-- (id<DKDEnvelope>) originalEnvelope {
-    id<DKDEnvelope> env = _env;
-    if (!env) {
-        env = DKDEnvelopeParse([self origin]);
-        _env = env;
-    }
-    return env;
-}
-
-- (DKDSerialNumber)originalSerialNumber {
-    NSDictionary *env = [self origin];
-    id sn = [env objectForKey:@"sn"];
-    return MKConvertUnsignedLong(sn, 0);
-}
-
-@end
-
-#pragma mark - Conveniences
-
-DIMQuoteContent *DIMQuoteContentCreate(NSString *text,
-                                       id<DKDEnvelope> head,
-                                       id<DKDContent> body) {
-    NSMutableDictionary *origin = DIMQuoteContentPurify(head);
-    [origin setObject:body.type forKey:@"type"];
-    [origin setObject:@(body.sn) forKey:@"sn"];
-    // update: receiver -> group
-    id<MKMID> group = [body group];
-    if (group) {
-        [origin setObject:[group string] forKey:@"receiver"];
-    }
-    return [[DIMQuoteContent alloc] initWithText:text origin:origin];
-}
-
-NSMutableDictionary<NSString *, id> *DIMQuoteContentPurify(id<DKDEnvelope> env) {
-    id<MKMID> from = [env sender];
-    id<MKMID> to = [env group];
-    if (!to) {
-        to = [env receiver];
-    }
-    // build origin info
-    NSMutableDictionary *origin = [[NSMutableDictionary alloc] initWithCapacity:2];
-    [origin setObject:[from string] forKey:@"sender"];
-    [origin setObject:[to string] forKey:@"receiver"];
-    return origin;
 }

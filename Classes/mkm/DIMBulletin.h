@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  DIMP : Decentralized Instant Messaging Protocol
+//  Ming-Ke-Ming : Decentralized User Identity Authentication
 //
-//                               Written in 2020 by Moky <albert.moky@gmail.com>
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Albert Moky
+// Copyright (c) 2018 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,36 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMContent.h
+//  DIMBulletin.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2020/12/8.
-//  Copyright © 2020 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2018/9/30.
+//  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import <DIMCore/DIMDocument.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- *  Base Content
+ *  Group Document
+ *  ~~~~~~~~~~~~~~
  */
-@interface DIMContent : MKDictionary <DKDContent>
+@protocol MKMBulletin <MKMDocument>
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict NS_DESIGNATED_INITIALIZER;
+// Group Founder
+@property (readonly, strong, nonatomic, nullable) id<MKMID> founder;
 
-- (instancetype)initWithType:(NSString *)type NS_DESIGNATED_INITIALIZER;
+// Group assistants (Bots)
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;
+
+@end
+
+#pragma mark -
+
+@interface DIMBulletin : DIMDocument <MKMBulletin>
+
+- (instancetype)initWithID:(id<MKMID>)ID;
 
 @end
 

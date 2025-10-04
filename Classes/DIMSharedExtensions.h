@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2020 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,18 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMContent.h
+//  DIMSharedExtensions.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2020/12/8.
-//  Copyright © 2020 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2025/10/5.
+//  Copyright © 2025 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  Base Content
- */
-@interface DIMContent : MKDictionary <DKDContent>
-
-- (instancetype)initWithDictionary:(NSDictionary *)dict NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)initWithType:(NSString *)type NS_DESIGNATED_INITIALIZER;
+@interface DIMSharedExtensions : NSObject
 
 @end
 

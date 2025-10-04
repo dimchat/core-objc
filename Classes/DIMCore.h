@@ -66,14 +66,10 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMPublicKey.h>
 
 // Account
-#import <DIMCore/DIMHelpers.h>
 #import <DIMCore/DIMMeta.h>
 #import <DIMCore/DIMDocument.h>
-#import <DIMCore/DIMDocs.h>
-
-#import <DIMCore/DIMEntity.h>
-#import <DIMCore/DIMUser.h>
-#import <DIMCore/DIMGroup.h>
+#import <DIMCore/DIMVisa.h>
+#import <DIMCore/DIMBulletin.h>
 
 // Message
 #import <DIMCore/DIMEnvelope.h>
@@ -83,8 +79,10 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMReliableMessage.h>
 
 // Content
+#import <DIMCore/DKDContentType.h>
 #import <DIMCore/DIMContent.h>
 #import <DIMCore/DIMTextContent.h>
+#import <DIMCore/DIMQuoteContent.h>
 #import <DIMCore/DIMFileContent.h>
 #import <DIMCore/DIMImageContent.h>
 #import <DIMCore/DIMAudioContent.h>
@@ -93,21 +91,20 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMNameCard.h>
 #import <DIMCore/DIMMoneyContent.h>
 #import <DIMCore/DIMTransferContent.h>
-#import <DIMCore/DIMArrayContent.h>
-#import <DIMCore/DIMCustomizedContent.h>
 #import <DIMCore/DIMForwardContent.h>
+#import <DIMCore/DIMArrayContent.h>
+#import <DIMCore/DIMCombineContent.h>
+#import <DIMCore/DIMCustomizedContent.h>
 
 // Commands
+#import <DIMCore/DKDCommand.h>
 #import <DIMCore/DIMCommand.h>
 #import <DIMCore/DIMMetaCommand.h>
 #import <DIMCore/DIMDocumentCommand.h>
 #import <DIMCore/DIMReceiptCommand.h>
 #import <DIMCore/DIMHistoryCommand.h>
 #import <DIMCore/DIMGroupCommand.h>
-#import <DIMCore/DIMFactoryManager.h>
 
-// Core
-#import <DIMCore/DIMBarrack.h>
-#import <DIMCore/DIMTransceiver.h>
+#import <DIMCore/DIMSharedExtensions.h>
 
 #endif /* ! __DIM_CORE__ */

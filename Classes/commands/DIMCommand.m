@@ -35,15 +35,9 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
-#import "DIMFactoryManager.h"
+#import "DKDContentType.h"
 
 #import "DIMCommand.h"
-
-NSString * const DKDCommand_Meta      = @"meta";
-NSString * const DKDCommand_Documents = @"documents";
-NSString * const DKDCommand_Receipt   = @"receipt";
-
-#pragma mark - Base Command
 
 @implementation DIMCommand
 
@@ -68,20 +62,3 @@ NSString * const DKDCommand_Receipt   = @"receipt";
 }
 
 @end
-
-#pragma mark - Conveniences
-
-id<DKDCommandFactory> DIMCommandGetFactory(NSString *cmd) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory commandFactoryForName:cmd];
-}
-
-void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    [man.generalFactory setCommandFactory:factory forName:cmd];
-}
-
-id<DKDCommand> DKDCommandParse(id content) {
-    DIMCommandFactoryManager *man = [DIMCommandFactoryManager sharedManager];
-    return [man.generalFactory parseCommand:content];
-}

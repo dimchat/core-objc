@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2022 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2022 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,48 +28,52 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMFactoryManager.h
+//  DIMCombineContent.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2023/2/2.
-//  Copyright © 2023 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2022/8/8.
+//  Copyright © 2022 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMCommand.h>
+#import <DIMCore/DIMContent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  General Factory for Commands
- *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
+ *  Combine Forward message: {
+ *      type : i2s(0xCF),
+ *      sn   : 123,
+ *
+ *      title    : "...",  // chat title
+ *      messages : [...]   // chat history
+ *  }
  */
-@protocol DIMGeneralCommandFactory
+@protocol DKDCombineContent <DKDContent>
 
-#pragma mark Command
+@property (readonly, strong, nonatomic) NSString *title;
 
-- (void)setCommandFactory:(id<DKDCommandFactory>)factory forName:(NSString *)cmd;
-- (nullable id<DKDCommandFactory>)commandFactoryForName:(NSString *)cmd;
-
-// get command name
-- (nullable NSString *)getCmd:(NSDictionary<NSString *, id> *)content
-                 defaultValue:(nullable NSString *)aValue;
-
-- (nullable id<DKDCommand>)parseCommand:(nullable id)content;
+@property (readonly, strong, nonatomic) NSArray<id<DKDInstantMessage>> *messages;
 
 @end
 
-#pragma mark -
+@interface DIMCombineContent : DIMContent <DKDCombineContent>
 
-@interface DIMGeneralCommandFactory : NSObject <DIMGeneralCommandFactory>
-
-@end
-
-@interface DIMCommandFactoryManager : NSObject
-
-@property(strong, nonatomic) id<DIMGeneralCommandFactory> generalFactory;
-
-+ (instancetype)sharedManager;
+- (instancetype)initWithTitle:(NSString *)title
+                     messages:(NSArray<id<DKDInstantMessage>> *)history;
 
 @end
+
+#pragma mark - Conveniences
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+DIMCombineContent *DIMCombineContentCreate(NSString *title,
+                                           NSArray<id<DKDInstantMessage>> *messages);
+
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

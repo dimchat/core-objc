@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  Ming-Ke-Ming : Decentralized User Identity Authentication
+//  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2018 by Moky <albert.moky@gmail.com>
+//                               Written in 2025 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2018 Albert Moky
+// Copyright (c) 2025 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,62 +28,64 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMDocs.h
+//  DKDCommand.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2018/9/30.
-//  Copyright © 2018 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2025/10/5.
+//  Copyright © 2025 DIM Group. All rights reserved.
 //
 
-#import <DIMCore/DIMDocument.h>
+#import <DaoKeDao/DaoKeDao.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  User Document
- *  ~~~~~~~~~~~~~
- *  This interface is defined for authorizing other apps to login,
- *  which can generate a temporary asymmetric key pair for messaging.
+//-------- command names begin --------
+FOUNDATION_EXPORT NSString * const DKDCommand_Meta;      // "meta"
+FOUNDATION_EXPORT NSString * const DKDCommand_Documents; // "documents"
+FOUNDATION_EXPORT NSString * const DKDCommand_Receipt;   // "receipt"
+//-------- command names end --------
+
+/*
+ *  Command message: {
+ *      type : i2s(0x88),
+ *      sn   : 123,
+ *
+ *      command : "...", // command name
+ *      extra   : info   // command parameters
+ *  }
  */
-@protocol MKMVisa <MKMDocument>
+@protocol DKDCommand <DKDContent>
 
-// Public Key for encryption
-// ~~~~~~~~~~~~~~~~~~~~~~~~~
-// For safety considerations, the visa.key which used to encrypt message data
-// should be different with meta.key
-@property (strong, nonatomic, nullable) __kindof id<MKEncryptKey> publicKey;
-
-// Avatar URL
-@property (strong, nonatomic, nullable) id<MKPortableNetworkFile> avatar;
+// command name
+@property (readonly, strong, nonatomic) NSString *cmd;
 
 @end
+
+@protocol DKDCommandFactory <NSObject>
 
 /**
- *  Group Document
- *  ~~~~~~~~~~~~~~
+ *  Parse map object to command
+ *
+ * @param content - command content
+ * @return Command
  */
-@protocol MKMBulletin <MKMDocument>
-
-// Group Founder
-@property (readonly, strong, nonatomic, nullable) id<MKMID> founder;
-
-// Group assistants (Bots)
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;
+- (nullable id<DKDCommand>)parseCommand:(NSDictionary *)content;
 
 @end
 
-#pragma mark -
+#pragma mark - Conveniences
 
-@interface DIMVisa : DIMDocument <MKMVisa>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-- (instancetype)initWithID:(id<MKMID>)ID;
+_Nullable id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
+void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
 
-@end
+_Nullable id<DKDCommand> DKDCommandParse(_Nullable id content);
 
-@interface DIMBulletin : DIMDocument <MKMBulletin>
-
-- (instancetype)initWithID:(id<MKMID>)ID;
-
-@end
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 NS_ASSUME_NONNULL_END

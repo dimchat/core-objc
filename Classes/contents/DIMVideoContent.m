@@ -35,6 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import "DKDContentType.h"
+
 #import "DIMVideoContent.h"
 
 @interface DIMVideoContent () {

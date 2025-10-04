@@ -35,6 +35,8 @@
 //  Copyright © 2022 DIM Group. All rights reserved.
 //
 
+#import "DKDContentType.h"
+
 #import "DIMCustomizedContent.h"
 
 DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,

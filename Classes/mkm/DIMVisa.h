@@ -1,13 +1,13 @@
 // license: https://mit-license.org
 //
-//  DIMP : Decentralized Instant Messaging Protocol
+//  Ming-Ke-Ming : Decentralized User Identity Authentication
 //
-//                               Written in 2020 by Moky <albert.moky@gmail.com>
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Albert Moky
+// Copyright (c) 2018 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,41 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMContent.h
+//  DIMVisa.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2020/12/8.
-//  Copyright © 2020 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2018/9/30.
+//  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <DaoKeDao/DaoKeDao.h>
+#import <DIMCore/DIMDocument.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- *  Base Content
+ *  User Document
+ *  ~~~~~~~~~~~~~
+ *  This interface is defined for authorizing other apps to login,
+ *  which can generate a temporary asymmetric key pair for messaging.
  */
-@interface DIMContent : MKDictionary <DKDContent>
+@protocol MKMVisa <MKMDocument>
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict NS_DESIGNATED_INITIALIZER;
+// Public Key for encryption
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+// For safety considerations, the visa.key which used to encrypt message data
+// should be different with meta.key
+@property (strong, nonatomic, nullable) __kindof id<MKEncryptKey> publicKey;
 
-- (instancetype)initWithType:(NSString *)type NS_DESIGNATED_INITIALIZER;
+// Avatar URL
+@property (strong, nonatomic, nullable) id<MKPortableNetworkFile> avatar;
+
+@end
+
+#pragma mark -
+
+@interface DIMVisa : DIMDocument <MKMVisa>
+
+- (instancetype)initWithID:(id<MKMID>)ID;
 
 @end
 

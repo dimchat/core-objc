@@ -35,11 +35,9 @@
 //  Copyright © 2021 DIM Group. All rights reserved.
 //
 
-#import "DIMTransferContent.h"
+#import "DKDContentType.h"
 
-DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
-    return [[DIMTransferContent alloc] initWithCurrency:currency amount:@(value)];
-}
+#import "DIMTransferContent.h"
 
 @implementation DIMTransferContent
 
@@ -68,3 +66,9 @@ DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
 }
 
 @end
+
+#pragma mark - Conveniences
+
+DIMTransferContent *DIMTransferContentCreate(NSString *currency, float value) {
+    return [[DIMTransferContent alloc] initWithCurrency:currency amount:@(value)];
+}

@@ -35,46 +35,14 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import <DIMCore/DKDCommand.h>
 #import <DIMCore/DIMContent.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-//-------- command names begin --------
-FOUNDATION_EXPORT NSString * const DKDCommand_Meta;      // "meta"
-FOUNDATION_EXPORT NSString * const DKDCommand_Documents; // "documents"
-FOUNDATION_EXPORT NSString * const DKDCommand_Receipt;   // "receipt"
-//-------- command names end --------
-
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 123,
- *
- *      command : "...", // command name
- *      extra   : info   // command parameters
- *  }
- */
-@protocol DKDCommand <DKDContent>
-
-// command name
-@property (readonly, strong, nonatomic) NSString *cmd;
-
-@end
-
-@protocol DKDCommandFactory <NSObject>
-
 /**
- *  Parse map object to command
- *
- * @param content - command content
- * @return Command
+ *  Base Command
  */
-- (nullable id<DKDCommand>)parseCommand:(NSDictionary *)content;
-
-@end
-
-#pragma mark - Base Command
-
 @interface DIMCommand : DIMContent <DKDCommand>
 
 - (instancetype)initWithType:(NSString *)type cmd:(NSString *)name;
@@ -82,20 +50,5 @@ FOUNDATION_EXPORT NSString * const DKDCommand_Receipt;   // "receipt"
 - (instancetype)initWithCMD:(NSString *)name;
 
 @end
-
-#pragma mark - Conveniences
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-_Nullable id<DKDCommandFactory> DKDCommandGetFactory(NSString *cmd);
-void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory);
-
-_Nullable id<DKDCommand> DKDCommandParse(_Nullable id content);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
 
 NS_ASSUME_NONNULL_END

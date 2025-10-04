@@ -28,7 +28,7 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMArrayContent.m
+//  DIMCombineContent.m
 //  DIMCore
 //
 //  Created by Albert Moky on 2022/8/8.
@@ -37,22 +37,24 @@
 
 #import "DKDContentType.h"
 
-#import "DIMArrayContent.h"
+#import "DIMCombineContent.h"
 
-@interface DIMArrayContent () {
+@interface DIMCombineContent () {
     
-    NSArray<id<DKDContent>> *_contents;
+    NSArray<id<DKDInstantMessage>> *_history;
 }
 
 @end
 
-@implementation DIMArrayContent
+@implementation DIMCombineContent
 
-- (instancetype)initWithContents:(NSArray<id<DKDContent>> *)array {
-    NSAssert(array, @"contents cannot be empty");
-    if (self = [self initWithType:DKDContentType_Array]) {
-        _contents = array;
-        [self setObject:DKDContentRevert(array) forKey:@"contents"];
+- (instancetype)initWithTitle:(NSString *)title
+                     messages:(NSArray<id<DKDInstantMessage>> *)history {
+    NSAssert(title.length > 0, @"chat title empty");
+    NSAssert(history.count > 0, @"chat history empty");
+    if (self = [self initWithType:DKDContentType_CombineForward]) {
+        _history = history;
+        [self setObject:DKDInstantMessageRevert(history) forKey:@"messages"];
     }
     return self;
 }
@@ -61,7 +63,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy
-        _contents = nil;
+        _history = nil;
     }
     return self;
 }
@@ -70,45 +72,50 @@
 - (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
         // lazy
-        _contents = nil;
+        _history = nil;
     }
     return self;
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
-    DIMArrayContent *content = [super copyWithZone:zone];
+    DIMCombineContent *content = [super copyWithZone:zone];
     if (content) {
-        content.contents = _contents;
+        content.messages = _history;
     }
     return content;
 }
 
-- (NSArray<id<DKDContent>> *)contents {
-    if (!_contents) {
-        id array = [self objectForKey:@"contents"];
-        if ([array isKindOfClass:[NSArray class]]) {
-            _contents = DKDContentConvert(array);
-        } else {
-            NSAssert(array == nil, @"contents error: %@", array);
-            _contents = @[];
-        }
-    }
-    return _contents;
+- (NSString *)title {
+    return [self stringForKey:@"title" defaultValue:@""];
 }
 
-- (void)setContents:(NSArray<id<DKDContent>> *)contents {
-    if ([contents count] > 0) {
-        [self setObject:DKDContentRevert(contents) forKey:@"contents"];
-    } else {
-        [self removeObjectForKey:@"contents"];
+- (NSArray<id<DKDInstantMessage>> *)messages {
+    if (!_history) {
+        id array = [self objectForKey:@"messages"];
+        if ([array isKindOfClass:[NSArray class]]) {
+            _history = DKDInstantMessageConvert(array);
+        } else {
+            NSAssert(array == nil, @"messages error: %@", array);
+            _history = @[];
+        }
     }
-    _contents = contents;
+    return _history;
+}
+
+- (void)setMessages:(NSArray<id<DKDInstantMessage>> *)messages {
+    if ([messages count] > 0) {
+        [self setObject:DKDInstantMessageRevert(messages) forKey:@"messages"];
+    } else {
+        [self removeObjectForKey:@"messages"];
+    }
+    _history = messages;
 }
 
 @end
 
 #pragma mark - Conveniences
 
-DIMArrayContent *DIMArrayContentCreate(NSArray<id<DKDContent>> *contents) {
-    return [[DIMArrayContent alloc] initWithContents:contents];
+DIMCombineContent *DIMCombineContentCreate(NSString *title,
+                                           NSArray<id<DKDInstantMessage>> *messages) {
+    return [[DIMCombineContent alloc] initWithTitle:title messages:messages];
 }

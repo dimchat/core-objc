@@ -61,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#pragma mark - Conveniences
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -35,6 +35,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import "DKDContentType.h"
+
 #import "DIMHistoryCommand.h"
 
 NSString * const DKDHistoryCommand_Register = @"register";
