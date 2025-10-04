@@ -39,6 +39,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Symmetric Algorithms
+ *  ~~~~~~~~~~~~~~~~~~~~
+ *  Algorithms for Symmetric Key
+ */
+FOUNDATION_EXPORT NSString * const MKSymmetricAlgorithm_AES;   // "AES"
+FOUNDATION_EXPORT NSString * const MKSymmetricAlgorithm_DES;   // "DES"
+
+// Symmetric key algorithm for broadcast message,
+// which will do nothing when en/decoding message data
+FOUNDATION_EXPORT NSString * const MKSymmetricAlgorithm_Plain; // "PLAIN"
+
 @interface DIMSymmetricKey : MKDictionary <MKSymmetricKey>
 
 @end

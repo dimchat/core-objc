@@ -39,6 +39,9 @@
 
 #import "DIMAsymmetricKey.h"
 
+NSString * const MKAsymmetricAlgorithm_RSA   = @"RSA";
+NSString * const MKAsymmetricAlgorithm_ECC   = @"ECC";
+
 @implementation DIMAsymmetricKey
 
 - (NSString *)algorithm {

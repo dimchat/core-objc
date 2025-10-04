@@ -39,6 +39,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  Asymmetric Algorithms
+ *  ~~~~~~~~~~~~~~~~~~~~~
+ *  Algorithms for Asymmetric Key
+ */
+FOUNDATION_EXPORT NSString * const MKAsymmetricAlgorithm_RSA;   // "RSA"
+FOUNDATION_EXPORT NSString * const MKAsymmetricAlgorithm_ECC;   // "ECC"
+
 @interface DIMAsymmetricKey : MKDictionary <MKAsymmetricKey>
 
 @end

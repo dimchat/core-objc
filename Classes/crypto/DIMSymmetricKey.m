@@ -39,6 +39,10 @@
 
 #import "DIMSymmetricKey.h"
 
+NSString * const MKSymmetricAlgorithm_AES   = @"AES";
+NSString * const MKSymmetricAlgorithm_DES   = @"DES";
+NSString * const MKSymmetricAlgorithm_Plain = @"PLAIN";
+
 @implementation DIMSymmetricKey
 
 - (NSString *)algorithm {
