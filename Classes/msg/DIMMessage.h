@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      ...
  *  }
  */
-@interface DIMMessage : MKMDictionary <DKDMessage>
+@interface DIMMessage : MKDictionary <DKDMessage>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;

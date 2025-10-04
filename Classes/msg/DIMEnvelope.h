@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
  *      time     : 123
  *  }
  */
-@interface DIMEnvelope : MKMDictionary <DKDEnvelope>
+@interface DIMEnvelope : MKDictionary <DKDEnvelope>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;

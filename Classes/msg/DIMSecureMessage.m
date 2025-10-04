@@ -43,7 +43,7 @@
 
 @property (strong, nonatomic) NSData *data;
 
-@property (strong, nonatomic, nullable) id<MKMTransportableData> encKey;
+@property (strong, nonatomic, nullable) id<MKTransportableData> encKey;
 @property (strong, nonatomic, nullable) NSDictionary *encryptedKeys;
 
 @end
@@ -85,11 +85,11 @@
         } else if (![DIMMessage isBroadcast:self]) {
             // message content had been encrypted by a symmetric key,
             // so the data should be encoded here (with algorithm 'base64' as default).
-            _data = MKMTransportableDataDecode(text);
+            _data = MKTransportableDataDecode(text);
         } else if ([text isKindOfClass:[NSString class]]) {
             // broadcast message content will not be encrypted (just encoded to JsON),
             // so return the string data directly
-            _data = MKMUTF8Encode(text);  // JsON
+            _data = MKUTF8Encode(text);  // JsON
         } else {
             NSAssert(false, @"content data error: %@", text);
         }
@@ -98,22 +98,30 @@
 }
 
 - (NSData *)encryptedKey {
-    id<MKMTransportableData> ted = _encKey;
+    id<MKTransportableData> ted = _encKey;
     if (!ted) {
-        id text = [self objectForKey:@"key"];
-        if (!text) {
+        id base64 = [self objectForKey:@"key"];
+        if (!base64) {
             // check 'keys'
             NSDictionary *keys = self.encryptedKeys;
-            text = [keys objectForKey:self.receiver.string];
+            if (keys) {
+                NSString *member = [self.receiver string];
+                base64 = [keys objectForKey:member];
+            }
         }
-        _encKey = ted = MKMTransportableDataParse(text);
+        _encKey = ted = MKTransportableDataParse(base64);
     }
     return [ted data];
 }
 
 - (NSDictionary *)encryptedKeys {
     if (!_encryptedKeys) {
-        _encryptedKeys = [self objectForKey:@"keys"];
+        id keys = [self objectForKey:@"keys"];
+        if ([keys isKindOfClass:[NSDictionary class]]) {
+            _encryptedKeys = keys;
+        } else {
+            NSAssert(keys == nil, @"message keys error: %@", keys);
+        }
     }
     return _encryptedKeys;
 }

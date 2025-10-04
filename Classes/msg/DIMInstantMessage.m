@@ -56,15 +56,15 @@
 }
 
 /* designated initializer */
-- (instancetype)initWithEnvelope:(id<DKDEnvelope>)env
-                         content:(id<DKDContent>)content {
-    NSAssert(content, @"content cannot be empty");
-    NSAssert(env, @"envelope cannot be empty");
+- (instancetype)initWithEnvelope:(id<DKDEnvelope>)head
+                         content:(id<DKDContent>)body {
+    NSAssert(head, @"message envelope cannot be empty");
+    NSAssert(body, @"message content cannot be empty");
     
-    if (self = [super initWithEnvelope:env]) {
+    if (self = [super initWithEnvelope:head]) {
         // content
-        [self setDictionary:content forKey:@"content"];
-        _content = content;
+        [self setDictionary:body forKey:@"content"];
+        _content = body;
     }
     return self;
 }
@@ -112,7 +112,7 @@
     return [content group];
 }
 
-- (DKDContentType)type {
+- (NSString *)type {
     id<DKDContent> content = [self content];
     return [content type];
 }

@@ -57,8 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithEnvelope:(id<DKDEnvelope>)env
-                         content:(id<DKDContent>)content
+- (instancetype)initWithEnvelope:(id<DKDEnvelope>)head
+                         content:(id<DKDContent>)body
 NS_DESIGNATED_INITIALIZER;
 
 @end

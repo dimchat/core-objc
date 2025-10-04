@@ -127,12 +127,12 @@
     [self setString:group forKey:@"group"];
 }
 
-- (DKDContentType)type {
-    return [self uint8ForKey:@"type" defaultValue:0];
+- (NSString *)type {
+    return [self stringForKey:@"type" defaultValue:nil];
 }
 
-- (void)setType:(DKDContentType)type {
-    [self setObject:@(type) forKey:@"type"];
+- (void)setType:(NSString *)type {
+    [self setObject:type forKey:@"type"];
 }
 
 @end

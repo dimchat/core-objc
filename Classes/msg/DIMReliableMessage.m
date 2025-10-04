@@ -39,7 +39,7 @@
 
 @interface DIMReliableMessage ()
 
-@property (strong, nonatomic) id<MKMTransportableData> ct;
+@property (strong, nonatomic) id<MKTransportableData> ct;
 
 @end
 
@@ -63,12 +63,12 @@
 }
 
 - (NSData *)signature {
-    id<MKMTransportableData> ted = _ct;
+    id<MKTransportableData> ted = _ct;
     if (!ted) {
-        id text = [self objectForKey:@"signature"];
-        NSAssert(text, @"signature cannot be empty");
-        _ct = ted = MKMTransportableDataParse(text);
-        NSAssert(ted, @"failed to decode message signature: %@", text);
+        id base64 = [self objectForKey:@"signature"];
+        NSAssert(base64, @"signature cannot be empty");
+        _ct = ted = MKTransportableDataParse(base64);
+        NSAssert(ted, @"failed to decode message signature: %@", base64);
     }
     return [ted data];
 }

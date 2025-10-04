@@ -39,6 +39,15 @@
 
 #import "DIMMeta.h"
 
+NSString * const MKMMetaType_Default = @"1";
+NSString * const MKMMetaType_MKM     = @"1";
+
+NSString * const MKMMetaType_BTC     = @"2";
+NSString * const MKMMetaType_ExBTC   = @"3";
+
+NSString * const MKMMetaType_ETH     = @"4";
+NSString * const MKMMetaType_ExETH   = @"5";
+
 @interface DIMMeta ()
 
 /**

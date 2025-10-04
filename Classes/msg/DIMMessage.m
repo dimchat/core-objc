@@ -100,7 +100,7 @@
     return [self.envelope group];
 }
 
-- (DKDContentType)type {
+- (NSString *)type {
     return [self.envelope type];
 }
 
