@@ -147,8 +147,16 @@
 - (id<MKDecryptKey>)password {
     id<MKDecryptKey> key = _password;
     if (!key) {
-        id info = [self objectForKey:@"key"];
-        _password = key = MKSymmetricKeyParse(info);
+        id dict = [self objectForKey:@"key"];
+        if ([dict isKindOfClass:[NSMutableDictionary class]]) {
+            key = MKSymmetricKeyParse(dict);
+        } else if ([dict isKindOfClass:[NSDictionary class]]) {
+            key = MKSymmetricKeyParse(dict);
+            [self setObject:key.dictionary forKey:@"key"];
+        } else {
+            NSAssert(dict == nil, @"decrypt key error: %@, %@", dict, self);
+        }
+        _password = key;
     }
     return key;
 }

@@ -160,12 +160,20 @@ NSString * const MKMMetaType_ExETH   = @"5";
 }
 
 - (id<MKVerifyKey>)publicKey {
-    if (!_publicKey) {
+    id<MKVerifyKey> key = _publicKey;
+    if (!key) {
         id dict = [self objectForKey:@"key"];
-        NSAssert(dict, @"meta key not found: %@", [self dictionary]);
-        _publicKey = MKPublicKeyParse(dict);
+        if ([dict isKindOfClass:[NSMutableDictionary class]]) {
+            key = MKPublicKeyParse(dict);
+        } else if ([dict isKindOfClass:[NSDictionary class]]) {
+            key = MKPublicKeyParse(dict);
+            [self setObject:key.dictionary forKey:@"key"];
+        } else {
+            NSAssert(false, @"meta key error: %@, %@", dict, self);
+        }
+        _publicKey = key;
     }
-    return _publicKey;
+    return key;
 }
 
 - (BOOL)hasSeed {

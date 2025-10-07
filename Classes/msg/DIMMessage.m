@@ -78,10 +78,12 @@
 }
 
 - (id<DKDEnvelope>)envelope {
-    if (!_envelope) {
-        _envelope = DKDEnvelopeParse(self.dictionary);
+    id<DKDEnvelope> head = _envelope;
+    if (!head) {
+        head = DKDEnvelopeParse([self dictionary]);
+        _envelope = head;
     }
-    return _envelope;
+    return head;
 }
 
 - (id<MKMID>)sender {

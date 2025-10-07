@@ -100,7 +100,15 @@
 - (id<DKDEnvelope>) originalEnvelope {
     id<DKDEnvelope> env = _env;
     if (!env) {
-        env = DKDEnvelopeParse([self origin]);
+        id dict = [self origin];
+        if ([dict isKindOfClass:[NSMutableDictionary class]]) {
+            env = DKDEnvelopeParse([self origin]);
+        } else if ([dict isKindOfClass:[NSDictionary class]]) {
+            env = DKDEnvelopeParse([self origin]);
+            [self setObject:env.dictionary forKey:@"origin"];
+        } else {
+            NSAssert(dict == nil, @"original envelope error: %@, %@", dict, self);
+        }
         _env = env;
     }
     return env;

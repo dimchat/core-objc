@@ -37,45 +37,45 @@
 
 #import "DKDContentType.h"
 
-NSString * DKDContentType_Any;
+NSString * DKDContentType_Any   = nil;
 
-NSString * DKDContentType_Text;
+NSString * DKDContentType_Text  = nil;
 
-NSString * DKDContentType_File;
-NSString * DKDContentType_Image;
-NSString * DKDContentType_Audio;
-NSString * DKDContentType_Video;
+NSString * DKDContentType_File  = nil;
+NSString * DKDContentType_Image = nil;
+NSString * DKDContentType_Audio = nil;
+NSString * DKDContentType_Video = nil;
 
-NSString * DKDContentType_Page;
+NSString * DKDContentType_Page     = nil;
 
-NSString * DKDContentType_NameCard;
+NSString * DKDContentType_NameCard = nil;
 
-NSString * DKDContentType_Quote;
+NSString * DKDContentType_Quote    = nil;
 
-NSString * DKDContentType_Money;
-NSString * DKDContentType_Transfer;
-NSString * DKDContentType_LuckyMoney;
-NSString * DKDContentType_ClaimPayment;
-NSString * DKDContentType_SplitBill;
+NSString * DKDContentType_Money        = nil;
+NSString * DKDContentType_Transfer     = nil;
+NSString * DKDContentType_LuckyMoney   = nil;
+NSString * DKDContentType_ClaimPayment = nil;
+NSString * DKDContentType_SplitBill    = nil;
 
-NSString * DKDContentType_Command;
-NSString * DKDContentType_History;
+NSString * DKDContentType_Command      = nil;
+NSString * DKDContentType_History      = nil;
 
-NSString * DKDContentType_Application;
-//NSString * DKDContentType_Application_1;
+NSString * DKDContentType_Application      = nil;
+//NSString * DKDContentType_Application_1  = nil;
 //           ...
-//NSString * DKDContentType_Application_15;
+//NSString * DKDContentType_Application_15 = nil;
 
-//NSString * DKDContentType_Customized_0;
-//NSString * DKDContentType_Customized_1;
+//NSString * DKDContentType_Customized_0   = nil;
+//NSString * DKDContentType_Customized_1   = nil;
 //         .....
-NSString * DKDContentType_Array;
+NSString * DKDContentType_Array            = nil;
 //         ...
-NSString * DKDContentType_Customized;
+NSString * DKDContentType_Customized       = nil;
 //         ...
-NSString * DKDContentType_CombineForward;
+NSString * DKDContentType_CombineForward   = nil;
 
-NSString * DKDContentType_Forward;
+NSString * DKDContentType_Forward          = nil;
 
 static inline NSString *i2s(UInt8 value) {
     return [NSString stringWithFormat:@"%u", value];

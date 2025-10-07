@@ -84,11 +84,20 @@
 }
 
 - (id<DKDContent>)content {
-    if (!_content) {
+    id<DKDContent> body = _content;
+    if (!body) {
         id dict = [self objectForKey:@"content"];
-        _content = DKDContentParse(dict);
+        if ([dict isKindOfClass:[NSMutableDictionary class]]) {
+            body = DKDContentParse(dict);
+        } else if ([dict isKindOfClass:[NSDictionary class]]) {
+            body = DKDContentParse(dict);
+            [self setObject:body.dictionary forKey:@"content"];
+        } else {
+            NSAssert(false, @"message content error: %@, %@", dict, self);
+        }
+        _content = body;
     }
-    return _content;
+    return body;
 }
 - (void)setContent:(id<DKDContent>)content {
     [self setDictionary:content forKey:@"content"];

@@ -106,7 +106,7 @@
     if (!_receiver) {
         _receiver = MKMIDParse([self objectForKey:@"receiver"]);
         if (!_receiver) {
-            _receiver = MKMAnyone();
+            _receiver = MKMAnyone;
         }
     }
     return _receiver;
