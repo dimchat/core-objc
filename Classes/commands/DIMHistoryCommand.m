@@ -58,7 +58,7 @@ NSString * const DKDHistoryCommand_Suicide  = @"suicide";
 //    return self;
 //}
 
-- (instancetype)initWithCMD:(NSString *)name {
+- (instancetype)initWithCmd:(NSString *)name {
     NSAssert(name.length > 0, @"command name cannot be empty");
     if (self = [self initWithType:DKDContentType_History cmd:name]) {
         //

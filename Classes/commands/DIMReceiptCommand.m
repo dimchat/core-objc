@@ -65,7 +65,7 @@
 }
 
 - (instancetype)initWithText:(NSString *)text origin:(nullable NSDictionary *)env {
-    if (self = [self initWithCMD:DKDCommand_Receipt]) {
+    if (self = [self initWithCmd:DKDCommand_Receipt]) {
         // text message
         [self setObject:text forKey:@"text"];
         // original envelope of message quote with,

@@ -66,10 +66,10 @@
     return [self initWithID:ID meta:nil];
 }
 
-- (instancetype)initWithCMD:(NSString *)name
+- (instancetype)initWithCmd:(NSString *)name
                          ID:(id<MKMID>)ID
                        meta:(id<MKMMeta>)meta {
-    if (self = [self initWithCMD:name]) {
+    if (self = [self initWithCmd:name]) {
         // ID
         [self setString:ID forKey:@"did"];
         
@@ -83,7 +83,7 @@
 }
 
 - (instancetype)initWithID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
-    return [self initWithCMD:DKDCommand_Meta ID:ID meta:meta];
+    return [self initWithCmd:DKDCommand_Meta ID:ID meta:meta];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {

@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithType:(NSString *)type cmd:(NSString *)name;
 
-- (instancetype)initWithCMD:(NSString *)name;
+- (instancetype)initWithCmd:(NSString *)name;
 
 @end
 

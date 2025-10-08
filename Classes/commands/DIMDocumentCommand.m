@@ -70,7 +70,7 @@
 - (instancetype)initWithID:(id<MKMID>)ID
                       meta:(id<MKMMeta>)meta
                  documents:(NSArray<id<MKMDocument>> *)docs {
-    if (self = [self initWithCMD:DKDCommand_Documents ID:ID meta:meta]) {
+    if (self = [self initWithCmd:DKDCommand_Documents ID:ID meta:meta]) {
         // document
         if ([docs count] > 0) {
             [self setObject:MKMDocumentRevert(docs) forKey:@"documents"];

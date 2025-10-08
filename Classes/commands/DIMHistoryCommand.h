@@ -59,7 +59,7 @@ FOUNDATION_EXPORT NSString * const DKDHistoryCommand_Suicide;  // "suicide"
 
 @interface DIMHistoryCommand : DIMCommand <DKDHistoryCommand>
 
-- (instancetype)initWithCMD:(NSString *)name;
+- (instancetype)initWithCmd:(NSString *)name;
 
 @end
 

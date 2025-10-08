@@ -50,7 +50,7 @@
     return self;
 }
 
-- (instancetype)initWithCMD:(NSString *)name {
+- (instancetype)initWithCmd:(NSString *)name {
     if (self = [self initWithType:DKDContentType_Command cmd:name]) {
         //
     }
@@ -58,7 +58,7 @@
 }
 
 - (NSString *)cmd {
-    DIMSharedCommandExtensions *ext = [DIMSharedCommandExtensions sharedInstance];
+    DKDSharedCommandExtensions *ext = [DKDSharedCommandExtensions sharedInstance];
     return [ext.helper getCmd:self.dictionary defaultValue:@""];
 }
 

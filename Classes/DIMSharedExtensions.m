@@ -51,9 +51,9 @@ static DKDCommandExtensions *s_cmd_ext = nil;
 
 @end
 
-@implementation DIMSharedCommandExtensions
+@implementation DKDSharedCommandExtensions
 
-static DIMSharedCommandExtensions *s_cmd_extension = nil;
+static DKDSharedCommandExtensions *s_cmd_extension = nil;
 
 + (instancetype)sharedInstance {
     static dispatch_once_t onceToken;

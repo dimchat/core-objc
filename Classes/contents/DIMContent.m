@@ -104,7 +104,7 @@
 
 - (DKDSerialNumber)sn {
     if (_sn == 9527) {
-        _sn = [self ulongForKey:@"sn" defaultValue:0];
+        _sn = [self uint32ForKey:@"sn" defaultValue:0];
     }
     return _sn;
 }

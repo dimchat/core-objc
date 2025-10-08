@@ -81,14 +81,14 @@ FOUNDATION_EXPORT NSString * const DIMGroupCommand_Resign;   // "resign"
 
 @interface DIMGroupCommand : DIMHistoryCommand <DKDGroupCommand>
 
-- (instancetype)initWithCMD:(NSString *)name
+- (instancetype)initWithCmd:(NSString *)name
                       group:(id<MKMID>)gid;
 
-- (instancetype)initWithCMD:(NSString *)name
+- (instancetype)initWithCmd:(NSString *)name
                       group:(id<MKMID>)gid
                      member:(id<MKMID>)uid;
 
-- (instancetype)initWithCMD:(NSString *)name
+- (instancetype)initWithCmd:(NSString *)name
                       group:(id<MKMID>)gid
                     members:(NSArray<id<MKMID>> *)list;
 

@@ -52,7 +52,7 @@ id<DKDCommandFactory> DIMCommandGetFactory(NSString *cmd) {
 
 void DKDCommandSetFactory(NSString *cmd, id<DKDCommandFactory> factory) {
     DKDCommandExtensions *ext = [DKDCommandExtensions sharedInstance];
-    [ext.cmdHelper setCommandFactory:factory forCMD:cmd];
+    [ext.cmdHelper setCommandFactory:factory cmd:cmd];
 }
 
 id<DKDCommand> DKDCommandParse(id content) {
