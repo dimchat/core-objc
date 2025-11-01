@@ -35,6 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Crypto.h>
+
 #import <DIMCore/DIMContent.h>
 
 NS_ASSUME_NONNULL_BEGIN

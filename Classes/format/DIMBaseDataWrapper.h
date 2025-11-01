@@ -35,7 +35,7 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/MingKeMing.h>
+#import <MingKeMing/Format.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

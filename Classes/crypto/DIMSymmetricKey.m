@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Ext.h>
+
 #import "DIMBaseKey.h"
 
 #import "DIMSymmetricKey.h"

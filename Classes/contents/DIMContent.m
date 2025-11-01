@@ -35,6 +35,8 @@
 //  Copyright © 2020 DIM Group. All rights reserved.
 //
 
+#import <DaoKeDao/Ext.h>
+
 #import "DKDContentType.h"
 
 #import "DIMContent.h"
@@ -57,7 +59,7 @@
 /* designated initializer */
 - (instancetype)initWithType:(NSString *)type {
     NSDate *now = [[NSDate alloc] init];
-    NSUInteger sn = DKDInstantMessageGenerateSerialNumber(type, now);
+    DKDSerialNumber sn = DKDInstantMessageGenerateSerialNumber(type, now);
     NSDictionary *dict = @{@"type":type,
                            @"sn"  :@(sn),
                            @"time":@([now timeIntervalSince1970]),

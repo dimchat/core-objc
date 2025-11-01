@@ -2,12 +2,12 @@
 //
 //  DIMP : Decentralized Instant Messaging Protocol
 //
-//                               Written in 2023 by Moky <albert.moky@gmail.com>
+//                               Written in 2018 by Moky <albert.moky@gmail.com>
 //
 // =============================================================================
 // The MIT License (MIT)
 //
-// Copyright (c) 2023 Albert Moky
+// Copyright (c) 2018 Albert Moky
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,59 +28,31 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMNameCard.h
+//  Crypto.h
 //  DIMCore
 //
-//  Created by Albert Moky on 2023/12/7.
-//  Copyright © 2023 DIM Group. All rights reserved.
+//  Created by Albert Moky on 2018/10/12.
+//  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+// MingKeMing
+#import <MingKeMing/Type.h>
 #import <MingKeMing/Format.h>
+#import <MingKeMing/Digest.h>
+#import <MingKeMing/Crypto.h>
 
-#import <DIMCore/DIMContent.h>
+#if !defined(__CORE_CRYPTO__)
+#define __CORE_CRYPTO__ 1
 
-NS_ASSUME_NONNULL_BEGIN
+// Format
+#import <DIMCore/DIMBaseDataWrapper.h>
+#import <DIMCore/DIMBaseFileWrapper.h>
 
-/**
- *  Name Card: {
- *      type : i2s(0x33),
- *      sn   : 123,
- *
- *      did    : "{ID}",        // contact's ID
- *      name   : "{nickname}",  // contact's name
- *      avatar : "{URL}",       // avatar - PNF(URL)
- *      ...
- *  }
- */
-@protocol DKDNameCard <DKDContent>
+// Crypto
+#import <DIMCore/DIMBaseKey.h>
+#import <DIMCore/DIMSymmetricKey.h>
+#import <DIMCore/DIMAsymmetricKey.h>
+#import <DIMCore/DIMPrivateKey.h>
+#import <DIMCore/DIMPublicKey.h>
 
-@property (readonly, strong, nonatomic) id<MKMID> identifier;
-
-@property (readonly, strong, nonatomic) NSString *name;
-
-@property (readonly, strong, nonatomic, nullable) id<MKPortableNetworkFile> avatar;
-
-@end
-
-@interface DIMNameCard : DIMContent <DKDNameCard>
-
-- (instancetype)initWithID:(id<MKMID>)ID
-                      name:(NSString *)nickname
-                    avatar:(id<MKPortableNetworkFile>)image;
-
-@end
-
-#pragma mark - Conveniences
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
-                               _Nullable id<MKPortableNetworkFile> avatar);
-
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
-NS_ASSUME_NONNULL_END
+#endif /* ! __CORE_CRYPTO__ */

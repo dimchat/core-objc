@@ -28,48 +28,18 @@
 // SOFTWARE.
 // =============================================================================
 //
-//  DIMCore.h
+//  DaoKeDao.h
 //  DIMCore
 //
 //  Created by Albert Moky on 2018/10/12.
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+// DaoKeDao
+#import <DaoKeDao/DaoKeDao.h>
 
-//! Project version number for DIMCore.
-FOUNDATION_EXPORT double DIMCoreVersionNumber;
-
-//! Project version string for DIMCore.
-FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <DIMCore/PublicHeader.h>
-
-// MKM
-//#import <MingKeMing/MingKeMing.h>
-
-// DKD
-//#import <DaoKeDao/DaoKeDao.h>
-
-#if !defined(__DIM_CORE__)
-#define __DIM_CORE__ 1
-
-// Format
-#import <DIMCore/DIMBaseDataWrapper.h>
-#import <DIMCore/DIMBaseFileWrapper.h>
-
-// Crypto
-#import <DIMCore/DIMBaseKey.h>
-#import <DIMCore/DIMSymmetricKey.h>
-#import <DIMCore/DIMAsymmetricKey.h>
-#import <DIMCore/DIMPrivateKey.h>
-#import <DIMCore/DIMPublicKey.h>
-
-// Account
-#import <DIMCore/DIMMeta.h>
-#import <DIMCore/DIMDocument.h>
-#import <DIMCore/DIMVisa.h>
-#import <DIMCore/DIMBulletin.h>
+#if !defined(__CORE_DKD__)
+#define __CORE_DKD__ 1
 
 // Message
 #import <DIMCore/DIMEnvelope.h>
@@ -105,6 +75,4 @@ FOUNDATION_EXPORT const unsigned char DIMCoreVersionString[];
 #import <DIMCore/DIMHistoryCommand.h>
 #import <DIMCore/DIMGroupCommand.h>
 
-#import <DIMCore/DIMSharedExtensions.h>
-
-#endif /* ! __DIM_CORE__ */
+#endif /* ! __CORE_DKD__ */

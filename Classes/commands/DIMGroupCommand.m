@@ -37,19 +37,19 @@
 
 #import "DIMGroupCommand.h"
 
-NSString * const DIMGroupCommand_Found    = @"found";
-NSString * const DIMGroupCommand_Abdicate = @"abdicate";
+NSString * const DKDGroupCommand_Found    = @"found";
+NSString * const DKDGroupCommand_Abdicate = @"abdicate";
 
-NSString * const DIMGroupCommand_Invite   = @"invite";
-NSString * const DIMGroupCommand_Expel    = @"expel"; // Deprecated
-NSString * const DIMGroupCommand_Join     = @"join";
-NSString * const DIMGroupCommand_Quit     = @"quit";
-//NSString * const DIMGroupCommand_Query  = @"query"; // Deprecated
-NSString * const DIMGroupCommand_Reset    = @"reset";
+NSString * const DKDGroupCommand_Invite   = @"invite";
+NSString * const DKDGroupCommand_Expel    = @"expel"; // Deprecated
+NSString * const DKDGroupCommand_Join     = @"join";
+NSString * const DKDGroupCommand_Quit     = @"quit";
+//NSString * const DKDGroupCommand_Query  = @"query"; // Deprecated
+NSString * const DKDGroupCommand_Reset    = @"reset";
 
-NSString * const DIMGroupCommand_Hire     = @"hire";
-NSString * const DIMGroupCommand_Fire     = @"fire";
-NSString * const DIMGroupCommand_Resign   = @"resign";
+NSString * const DKDGroupCommand_Hire     = @"hire";
+NSString * const DKDGroupCommand_Fire     = @"fire";
+NSString * const DKDGroupCommand_Resign   = @"resign";
 
 #pragma mark -
 
@@ -106,11 +106,11 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMInviteGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
-    return [self initWithCmd:DIMGroupCommand_Invite group:gid member:uid];
+    return [self initWithCmd:DKDGroupCommand_Invite group:gid member:uid];
 }
 
 - (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCmd:DIMGroupCommand_Invite group:gid members:list];
+    return [self initWithCmd:DKDGroupCommand_Invite group:gid members:list];
 }
 
 @end
@@ -118,11 +118,11 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMExpelGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
-    return [self initWithCmd:DIMGroupCommand_Expel group:gid member:uid];
+    return [self initWithCmd:DKDGroupCommand_Expel group:gid member:uid];
 }
 
 - (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCmd:DIMGroupCommand_Expel group:gid members:list];
+    return [self initWithCmd:DKDGroupCommand_Expel group:gid members:list];
 }
 
 @end
@@ -130,7 +130,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMJoinGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid {
-    return [self initWithCmd:DIMGroupCommand_Join group:gid];
+    return [self initWithCmd:DKDGroupCommand_Join group:gid];
 }
 
 @end
@@ -138,7 +138,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMQuitGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid {
-    return [self initWithCmd:DIMGroupCommand_Quit group:gid];
+    return [self initWithCmd:DKDGroupCommand_Quit group:gid];
 }
 
 @end
@@ -146,7 +146,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMResetGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
-    return [self initWithCmd:DIMGroupCommand_Reset group:gid members:list];
+    return [self initWithCmd:DKDGroupCommand_Reset group:gid members:list];
 }
 
 @end
@@ -157,7 +157,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users {
-    if (self = [self initWithCmd:DIMGroupCommand_Hire group:gid]) {
+    if (self = [self initWithCmd:DKDGroupCommand_Hire group:gid]) {
         self.administrators = users;
     }
     return self;
@@ -165,7 +165,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCmd:DIMGroupCommand_Hire group:gid]) {
+    if (self = [self initWithCmd:DKDGroupCommand_Hire group:gid]) {
         self.assistants = bots;
     }
     return self;
@@ -203,7 +203,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                administrators:(NSArray<id<MKMID>> *)users {
-    if (self = [self initWithCmd:DIMGroupCommand_Fire group:gid]) {
+    if (self = [self initWithCmd:DKDGroupCommand_Fire group:gid]) {
         self.administrators = users;
     }
     return self;
@@ -211,7 +211,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                    assistants:(NSArray<id<MKMID>> *)bots {
-    if (self = [self initWithCmd:DIMGroupCommand_Fire group:gid]) {
+    if (self = [self initWithCmd:DKDGroupCommand_Fire group:gid]) {
         self.assistants = bots;
     }
     return self;
@@ -248,7 +248,7 @@ NSString * const DIMGroupCommand_Resign   = @"resign";
 @implementation DIMResignGroupCommand
 
 - (instancetype)initWithGroup:(id<MKMID>)gid {
-    if (self = [self initWithCmd:DIMGroupCommand_Resign group:gid]) {
+    if (self = [self initWithCmd:DKDGroupCommand_Resign group:gid]) {
         //
     }
     return self;

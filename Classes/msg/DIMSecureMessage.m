@@ -35,6 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Format.h>
+
 #import "DIMReliableMessage.h"
 
 #import "DIMSecureMessage.h"

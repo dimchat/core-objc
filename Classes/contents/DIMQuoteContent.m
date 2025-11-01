@@ -35,6 +35,8 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Type.h>
+
 #import "DKDContentType.h"
 
 #import "DIMQuoteContent.h"
@@ -111,7 +113,7 @@
 - (DKDSerialNumber)originalSerialNumber {
     NSDictionary *env = [self origin];
     id sn = [env objectForKey:@"sn"];
-    return MKConvertUnsignedLong(sn, 0);
+    return MKConvertUnsignedInt(sn, 0);
 }
 
 @end

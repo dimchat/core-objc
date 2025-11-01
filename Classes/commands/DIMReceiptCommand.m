@@ -35,6 +35,8 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Type.h>
+
 #import "DIMReceiptCommand.h"
 
 @interface DIMReceiptCommand () {
@@ -117,7 +119,7 @@
 - (DKDSerialNumber)originalSerialNumber {
     NSDictionary *env = [self origin];
     id sn = [env objectForKey:@"sn"];
-    return MKConvertUnsignedLong(sn, 0);
+    return MKConvertUnsignedInt(sn, 0);
 }
 
 - (NSString *)originalSignature {
@@ -155,7 +157,7 @@ DIMReceiptCommand *DIMReceiptCommandCreate(NSString *text,
 }
 
 NSMutableDictionary<NSString *, id> *DIMReceiptCommandPurify(id<DKDEnvelope> env) {
-    NSMutableDictionary *origin = [env dictionary:NO];
+    NSMutableDictionary *origin = [env copyDictionary:NO];
     if ([origin objectForKey:@"data"]) {
         [origin removeObjectForKey:@"data"];
         [origin removeObjectForKey:@"key"];

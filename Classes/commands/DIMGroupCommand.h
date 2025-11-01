@@ -41,19 +41,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 //-------- group command names begin --------
 /// group: founder/owner
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Found;    // "found"
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Abdicate; // "abdicate"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Found;    // "found"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Abdicate; // "abdicate"
 /// group: member
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Invite;   // "invite"
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Expel;    // Deprecated (use "reset" instead)
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Join;     // "join"
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Quit;     // "quit"
-//FOUNDATION_EXPORT NSString * const DIMGroupCommand_Query;  // Deprecated
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Reset;    // "reset"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Invite;   // "invite"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Expel;    // Deprecated (use "reset" instead)
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Join;     // "join"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Quit;     // "quit"
+//FOUNDATION_EXPORT NSString * const DKDGroupCommand_Query;  // Deprecated
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Reset;    // "reset"
 /// group: administrator/assistant
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Hire;     // "hire"
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Fire;     // "fire"
-FOUNDATION_EXPORT NSString * const DIMGroupCommand_Resign;   // "resign"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Hire;     // "hire"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Fire;     // "fire"
+FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 //-------- group command names end --------
 
 /*
