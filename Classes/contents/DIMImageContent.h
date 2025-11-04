@@ -36,6 +36,7 @@
 //
 
 #import <MingKeMing/Format.h>
+#import <MingKeMing/Crypto.h>
 
 #import <DIMCore/DIMFileContent.h>
 

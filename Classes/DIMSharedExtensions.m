@@ -35,6 +35,8 @@
 //  Copyright © 2025 DIM Group. All rights reserved.
 //
 
+#import "DIMCommand.h"
+
 #import "DIMSharedExtensions.h"
 
 @implementation DKDCommandExtensions

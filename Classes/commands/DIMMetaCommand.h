@@ -35,6 +35,8 @@
 //  Copyright © 2019 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/MingKeMing.h>
+
 #import <DIMCore/DIMCommand.h>
 
 NS_ASSUME_NONNULL_BEGIN
