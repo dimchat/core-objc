@@ -41,8 +41,8 @@
 
 @interface DIMForwardContent ()
 
-@property (nonatomic) id<DKDReliableMessage> forward;
-@property (nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
+@property (strong, nonatomic, nullable) id<DKDReliableMessage> forward;
+@property (strong, nonatomic) NSArray<id<DKDReliableMessage>> *secrets;
 
 @end
 
@@ -87,6 +87,7 @@
     return content;
 }
 
+// Override
 - (id<DKDReliableMessage>)forward {
     if (!_forward) {
         id info = [self objectForKey:@"forward"];
@@ -95,6 +96,7 @@
     return _forward;
 }
 
+// Override
 - (NSArray<id<DKDReliableMessage>> *)secrets {
     if (!_secrets) {
         id info = [self objectForKey:@"secrets"];

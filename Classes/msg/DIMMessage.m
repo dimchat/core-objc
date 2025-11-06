@@ -77,6 +77,7 @@
     return self;
 }
 
+// Override
 - (id<DKDEnvelope>)envelope {
     id<DKDEnvelope> head = _envelope;
     if (!head) {
@@ -86,22 +87,27 @@
     return head;
 }
 
+// Override
 - (id<MKMID>)sender {
     return [self.envelope sender];
 }
 
+// Override
 - (id<MKMID>)receiver {
     return [self.envelope receiver];
 }
 
+// Override
 - (NSDate *)time {
     return [self.envelope time];
 }
 
+// Override
 - (id<MKMID>)group {
     return [self.envelope group];
 }
 
+// Override
 - (NSString *)type {
     return [self.envelope type];
 }

@@ -35,8 +35,6 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/Crypto.h>
-
 #import "DIMBaseFileWrapper.h"
 
 @interface DIMBaseFileWrapper () {

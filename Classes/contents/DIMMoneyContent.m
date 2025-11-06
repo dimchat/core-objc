@@ -69,14 +69,17 @@
                      currency:currency amount:value];
 }
 
+// Override
 - (NSString *)currency {
     return [self stringForKey:@"currency" defaultValue:@""];
 }
 
+// Override
 - (NSNumber *)amount {
     return [self numberForKey:@"amount" defaultValue:nil];
 }
 
+// Override
 - (void)setAmount:(NSNumber *)amount {
     [self setObject:amount forKey:@"amount"];
 }

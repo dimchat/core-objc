@@ -47,20 +47,24 @@
                        amount:value];
 }
 
+// Override
 - (nullable id<MKMID>)remitter {
     id sender = [self objectForKey:@"remitter"];
     return MKMIDParse(sender);
 }
 
+// Override
 - (void)setRemitter:(id<MKMID>)sender {
     [self setString:sender forKey:@"remitter"];
 }
 
+// Override
 - (nullable id<MKMID>)remittee {
     id receiver = [self objectForKey:@"remittee"];
     return MKMIDParse(receiver);
 }
 
+// Override
 - (void)setRemittee:(id<MKMID>)receiver {
     [self setString:receiver forKey:@"remittee"];
 }

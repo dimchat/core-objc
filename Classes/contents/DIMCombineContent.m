@@ -85,10 +85,12 @@
     return content;
 }
 
+// Override
 - (NSString *)title {
     return [self stringForKey:@"title" defaultValue:@""];
 }
 
+// Override
 - (NSArray<id<DKDInstantMessage>> *)messages {
     if (!_history) {
         id array = [self objectForKey:@"messages"];

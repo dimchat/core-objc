@@ -94,6 +94,7 @@
     return envelope;
 }
 
+// Override
 - (id<MKMID>)sender {
     if (!_sender) {
         _sender = MKMIDParse([self objectForKey:@"sender"]);
@@ -102,6 +103,7 @@
     return _sender;
 }
 
+// Override
 - (id<MKMID>)receiver {
     if (!_receiver) {
         _receiver = MKMIDParse([self objectForKey:@"receiver"]);
@@ -112,6 +114,7 @@
     return _receiver;
 }
 
+// Override
 - (NSDate *)time {
     if (!_time) {
         _time = [self dateForKey:@"time" defaultValue:nil];
@@ -119,18 +122,22 @@
     return _time;
 }
 
+// Override
 - (nullable id<MKMID>)group {
     return MKMIDParse([self objectForKey:@"group"]);
 }
 
+// Override
 - (void)setGroup:(nullable id<MKMID>)group {
     [self setString:group forKey:@"group"];
 }
 
+// Override
 - (NSString *)type {
     return [self stringForKey:@"type" defaultValue:nil];
 }
 
+// Override
 - (void)setType:(NSString *)type {
     [self setObject:type forKey:@"type"];
 }

@@ -58,7 +58,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
  *      4 = ETH : eth_address
  *      ...
  */
-@property (strong, nonatomic, nullable) NSString *type;
+@property (strong, nonatomic) NSString *type;
 
 /**
  *  Public key (used for signature)
@@ -151,6 +151,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
     return meta;
 }
 
+// Override
 - (NSString *)type {
     NSString *version = _type;
     if ([version length] == 0) {
@@ -161,6 +162,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
     return version;
 }
 
+// Override
 - (id<MKVerifyKey>)publicKey {
     id<MKVerifyKey> key = _publicKey;
     if (!key) {
@@ -184,6 +186,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
     return NO;
 }
 
+// Override
 - (nullable NSString *)seed {
     NSString *name = _seed;
     if (!name && [self hasSeed]) {
@@ -194,6 +197,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
     return name;
 }
 
+// Override
 - (nullable NSData *)fingerprint {
     id<MKTransportableData> ted = _ct;
     if (ted == nil && [self hasSeed]) {
@@ -205,6 +209,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
     return [ted data];
 }
 
+// Override
 - (id<MKMAddress>)generateAddress:(MKMEntityType)network {
     NSAssert(false, @"implement me!");
     return nil;
@@ -212,6 +217,7 @@ NSString * const MKMMetaType_ExETH   = @"5";
 
 #pragma mark Validation
 
+// Override
 - (BOOL)isValid {
     if (_status == 0) {
         // meta from network, try to verify

@@ -93,6 +93,7 @@
     return content;
 }
 
+// Override
 - (NSString *)type {
     NSString *msgType = _type;
     if (msgType == nil) {
@@ -104,6 +105,7 @@
     return msgType;
 }
 
+// Override
 - (DKDSerialNumber)sn {
     if (_sn == 9527) {
         _sn = [self uint32ForKey:@"sn" defaultValue:0];
@@ -111,6 +113,7 @@
     return _sn;
 }
 
+// Override
 - (nullable NSDate *)time {
     if (!_time) {
         _time = [self dateForKey:@"time" defaultValue:nil];
@@ -118,11 +121,13 @@
     return _time;
 }
 
+// Override
 - (nullable id<MKMID>)group {
     id gid = [self objectForKey:@"group"];
     return MKMIDParse(gid);
 }
 
+// Override
 - (void)setGroup:(nullable id<MKMID>)group {
     [self setString:group forKey:@"group"];
 }

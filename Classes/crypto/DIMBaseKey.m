@@ -41,10 +41,12 @@
 
 @implementation DIMBaseKey
 
+// Override
 - (NSString *)algorithm {
     return DIMCryptoGetKeyAlgorithm([self dictionary]);
 }
 
+// Override
 - (NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;

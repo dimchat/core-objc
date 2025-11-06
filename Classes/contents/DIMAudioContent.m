@@ -59,10 +59,12 @@
                      password:key];
 }
 
+// Override
 - (nullable NSString *)text {
     return [self stringForKey:@"text" defaultValue:nil];
 }
 
+// Override
 - (void)setText:(nullable NSString *)text {
     if (text) {
         [self setObject:text forKey:@"text"];

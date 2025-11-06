@@ -41,10 +41,12 @@
 
 @implementation DIMPrivateKey
 
+// Override
 - (NSString *)algorithm {
     return DIMCryptoGetKeyAlgorithm([self dictionary]);
 }
 
+// Override
 - (NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;
@@ -66,11 +68,13 @@
     return NO;
 }
 
+// Override
 - (id<MKPublicKey>)publicKey {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
+// Override
 - (NSData *)sign:(NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;

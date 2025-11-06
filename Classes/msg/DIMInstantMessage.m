@@ -83,6 +83,7 @@
     return iMsg;
 }
 
+// Override
 - (id<DKDContent>)content {
     id<DKDContent> body = _content;
     if (!body) {
@@ -107,6 +108,7 @@
     _content = content;
 }
 
+// Override
 - (NSDate *)time {
     id<DKDContent> content = [self content];
     NSDate *when = [content time];
@@ -116,11 +118,13 @@
     return [super time];
 }
 
+// Override
 - (id<MKMID>)group {
     id<DKDContent> content = [self content];
     return [content group];
 }
 
+// Override
 - (NSString *)type {
     id<DKDContent> content = [self content];
     return [content type];

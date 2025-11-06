@@ -44,10 +44,12 @@ NSString * const MKAsymmetricAlgorithm_ECC   = @"ECC";
 
 @implementation DIMAsymmetricKey
 
+// Override
 - (NSString *)algorithm {
     return DIMCryptoGetKeyAlgorithm([self dictionary]);
 }
 
+// Override
 - (NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;

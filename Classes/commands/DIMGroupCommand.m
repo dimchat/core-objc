@@ -86,11 +86,13 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return self;
 }
 
+// Override
 - (nullable id<MKMID>)member {
     id user = [self objectForKey:@"member"];
     return MKMIDParse(user);
 }
 
+// Override
 - (nullable NSArray<id<MKMID>> *)members {
     NSArray *array = [self objectForKey:@"members"];
     if (array.count == 0) {
@@ -171,6 +173,7 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return self;
 }
 
+// Override
 - (NSArray<id<MKMID>> *)administrators {
     NSArray *array = [self objectForKey:@"administrators"];
     if (array.count == 0) {
@@ -179,11 +182,13 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return MKMIDConvert(array);
 }
 
+// Override
 - (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
     NSArray *array = MKMIDRevert(administrators);
     [self setObject:array forKey:@"administrators"];
 }
 
+// Override
 - (NSArray<id<MKMID>> *)assistants {
     NSArray *array = [self objectForKey:@"assistants"];
     if (array.count == 0) {
@@ -192,6 +197,7 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return MKMIDConvert(array);
 }
 
+// Override
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
     NSArray *array = MKMIDRevert(assistants);
     [self setObject:array forKey:@"assistants"];
@@ -217,6 +223,7 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return self;
 }
 
+// Override
 - (NSArray<id<MKMID>> *)administrators {
     NSArray *array = [self objectForKey:@"administrators"];
     if (array.count == 0) {
@@ -225,11 +232,13 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return MKMIDConvert(array);
 }
 
+// Override
 - (void)setAdministrators:(NSArray<id<MKMID>> *)administrators {
     NSArray *array = MKMIDRevert(administrators);
     [self setObject:array forKey:@"administrators"];
 }
 
+// Override
 - (NSArray<id<MKMID>> *)assistants {
     NSArray *array = [self objectForKey:@"assistants"];
     if (array.count == 0) {
@@ -238,6 +247,7 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
     return MKMIDConvert(array);
 }
 
+// Override
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
     NSArray *array = MKMIDRevert(assistants);
     [self setObject:array forKey:@"assistants"];

@@ -104,16 +104,19 @@
 
 #pragma mark title
 
+// Override
 - (NSString *)title {
     return [self stringForKey:@"title" defaultValue:@""];
 }
 
+// Override
 - (void)setTitle:(NSString *)title {
     [self setObject:title forKey:@"title"];
 }
 
 #pragma mark favicon.ico
 
+// Override
 - (NSData *)icon {
     id<MKTransportableData> ted = _image;
     if (!ted) {
@@ -123,6 +126,7 @@
     return [ted data];
 }
 
+// Override
 - (void)setIcon:(NSData *)icon {
     id<MKTransportableData> ted;
     if ([icon length] == 0) {
@@ -144,16 +148,19 @@
 
 #pragma mark keyword /description
 
+// Override
 - (NSString *)desc {
     return [self stringForKey:@"desc" defaultValue:nil];
 }
 
+// Override
 - (void)setDesc:(NSString *)desc {
     [self setObject:desc forKey:@"desc"];
 }
 
 #pragma mark URL
 
+// Override
 - (NSURL *)URL {
     if (!_url) {
         NSString *string = [self stringForKey:@"URL" defaultValue:nil];
@@ -164,6 +171,7 @@
     return _url;
 }
 
+// Override
 - (void)setURL:(NSURL *)remote {
     [self setObject:remote.absoluteString forKey:@"URL"];
     _url = remote;
@@ -171,10 +179,12 @@
 
 #pragma mark HTML
 
+// Override
 - (NSString *)HTML {
     return [self stringForKey:@"HTML" defaultValue:nil];
 }
 
+// Override
 - (void)setHTML:(NSString *)html {
     [self setObject:html forKey:@"HTML"];
 }

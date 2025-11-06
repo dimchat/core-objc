@@ -79,6 +79,7 @@
     return sMsg;
 }
 
+// Override
 - (NSData *)data {
     if (!_data) {
         id text = [self objectForKey:@"data"];
@@ -99,6 +100,7 @@
     return _data;
 }
 
+// Override
 - (NSData *)encryptedKey {
     id<MKTransportableData> ted = _encKey;
     if (!ted) {
@@ -116,6 +118,7 @@
     return [ted data];
 }
 
+// Override
 - (NSDictionary *)encryptedKeys {
     if (!_encryptedKeys) {
         id keys = [self objectForKey:@"keys"];

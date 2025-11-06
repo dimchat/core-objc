@@ -91,6 +91,7 @@
                      password:key];
 }
 
+// Override
 - (nullable NSData *)snapshot {
     id<MKTransportableData> ted = _snapshot;
     if (!ted) {
@@ -100,6 +101,7 @@
     return [ted data];
 }
 
+// Override
 - (void)setSnapshot:(NSData *)snapshot {
     id<MKTransportableData> ted;
     if ([snapshot length] == 0) {

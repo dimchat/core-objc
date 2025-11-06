@@ -36,6 +36,7 @@
 //
 
 #import <MingKeMing/Format.h>
+#import <MingKeMing/Crypto.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

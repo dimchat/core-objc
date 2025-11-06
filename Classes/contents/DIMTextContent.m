@@ -50,6 +50,7 @@
     return self;
 }
 
+// Override
 - (NSString *)text {
     return [self stringForKey:@"text" defaultValue:@""];
 }

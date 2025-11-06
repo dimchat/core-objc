@@ -85,6 +85,7 @@
     return self;
 }
 
+// Override
 - (NSString *)text {
     return [self stringForKey:@"text" defaultValue:@""];
 }
@@ -99,6 +100,7 @@
     return nil;
 }
 
+// Override
 - (id<DKDEnvelope>) originalEnvelope {
     id<DKDEnvelope> env = _env;
     if (!env) {
@@ -116,12 +118,14 @@
     return env;
 }
 
+// Override
 - (DKDSerialNumber)originalSerialNumber {
     NSDictionary *env = [self origin];
     id sn = [env objectForKey:@"sn"];
     return MKConvertUnsignedInt(sn, 0);
 }
 
+// Override
 - (NSString *)originalSignature {
     NSDictionary *env = [self origin];
     id signature = [env objectForKey:@"signature"];

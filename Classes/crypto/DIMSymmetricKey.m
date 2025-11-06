@@ -47,10 +47,12 @@ NSString * const MKSymmetricAlgorithm_Plain = @"PLAIN";
 
 @implementation DIMSymmetricKey
 
+// Override
 - (NSString *)algorithm {
     return DIMCryptoGetKeyAlgorithm([self dictionary]);
 }
 
+// Override
 - (NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;
@@ -72,18 +74,21 @@ NSString * const MKSymmetricAlgorithm_Plain = @"PLAIN";
     return NO;
 }
 
+// Override
 - (NSData *)encrypt:(NSData *)plaintext
               extra:(nullable NSMutableDictionary<NSString *, id> *)params {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
+// Override
 - (nullable NSData *)decrypt:(NSData *)ciphertext
                       params:(nullable NSDictionary<NSString *, id> *)extra {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
+// Override
 - (BOOL)matchEncryptKey:(id<MKEncryptKey>)pKey {
     return DIMCryptoMatchEncryptKey(pKey, self);
 }

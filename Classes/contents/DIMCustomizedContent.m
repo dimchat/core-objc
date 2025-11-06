@@ -73,14 +73,17 @@ DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
     return self;
 }
 
+// Override
 - (NSString *)application {
     return [self stringForKey:@"app" defaultValue:@""];
 }
 
+// Override
 - (NSString *)moduleName {
     return [self stringForKey:@"mod" defaultValue:@""];
 }
 
+// Override
 - (NSString *)actionName {
     return [self stringForKey:@"act" defaultValue:@""];
 }

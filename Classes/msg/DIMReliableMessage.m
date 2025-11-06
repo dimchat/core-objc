@@ -64,6 +64,7 @@
     return rMsg;
 }
 
+// Override
 - (NSData *)signature {
     id<MKTransportableData> ted = _ct;
     if (!ted) {

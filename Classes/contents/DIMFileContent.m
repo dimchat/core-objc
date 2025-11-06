@@ -93,34 +93,42 @@
 
 #pragma mark file data
 
+// Override
 - (NSData *)data {
     return [_wrapper.data data];
 }
 
+// Override
 - (void)setData:(NSData *)data {
     [_wrapper setBinary:data];
 }
 
+// Override
 - (NSString *)filename {
     return _wrapper.filename;
 }
 
+// Override
 - (void)setFilename:(NSString *)filename {
     _wrapper.filename = filename;
 }
 
+// Override
 - (NSURL *)URL {
     return _wrapper.URL;
 }
 
+// Override
 - (void)setURL:(NSURL *)URL {
     _wrapper.URL = URL;
 }
 
+// Override
 - (id<MKDecryptKey>)password {
     return _wrapper.password;
 }
 
+// Override
 - (void)setPassword:(id<MKDecryptKey>)password {
     _wrapper.password = password;
 }

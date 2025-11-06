@@ -91,6 +91,7 @@
                      password:key];
 }
 
+// Override
 - (nullable NSData *)thumbnail {
     id<MKTransportableData> ted = _thumbnail;
     if (!ted) {
@@ -100,6 +101,7 @@
     return [ted data];
 }
 
+// Override
 - (void)setThumbnail:(NSData *)thumbnail {
     id<MKTransportableData> ted;
     if ([thumbnail length] == 0) {

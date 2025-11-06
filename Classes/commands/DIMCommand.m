@@ -57,6 +57,7 @@
     return self;
 }
 
+// Override
 - (NSString *)cmd {
     DKDSharedCommandExtensions *ext = [DKDSharedCommandExtensions sharedInstance];
     return [ext.helper getCmd:self.dictionary defaultValue:@""];

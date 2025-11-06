@@ -43,20 +43,24 @@
 
 @implementation DIMPublicKey
 
+// Override
 - (NSString *)algorithm {
     return DIMCryptoGetKeyAlgorithm([self dictionary]);
 }
 
+// Override
 - (NSData *)data {
     NSAssert(false, @"implement me!");
     return nil;
 }
 
+// Override
 - (BOOL)verify:(NSData *)data withSignature:(NSData *)signature {
     NSAssert(false, @"implement me!");
     return NO;
 }
 
+// Override
 - (BOOL)matchSignKey:(id<MKSignKey>)sKey {
     return DIMCryptoMatchSignKey(sKey, self);
 }
