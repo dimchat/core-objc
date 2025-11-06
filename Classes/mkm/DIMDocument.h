@@ -35,6 +35,7 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
+#import <MingKeMing/Type.h>
 #import <MingKeMing/MingKeMing.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,14 +49,14 @@ FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              data:(NSString *)json
+                         signature:(id<MKTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 // create a new empty document with entity ID & document type
-- (instancetype)initWithID:(id<MKMID>)ID
-                      type:(NSString *)type
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              type:(NSString *)type
 NS_DESIGNATED_INITIALIZER;
 
 @end

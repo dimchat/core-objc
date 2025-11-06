@@ -35,8 +35,6 @@
 //  Copyright © 2018 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/Type.h>
-
 #import "DIMVisa.h"
 #import "DIMBulletin.h"
 
@@ -87,9 +85,9 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithID:(id<MKMID>)ID
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              data:(NSString *)json
+                         signature:(id<MKTransportableData>)CT {
     NSDictionary *dict = @{
         @"did": [ID string],
         @"data": json,
@@ -110,7 +108,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID type:(NSString *)type {
     NSDictionary *dict = @{
         @"did": [ID string],
     };
@@ -144,10 +142,12 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     return doc;
 }
 
+// Override
 - (BOOL)isValid {
     return _status > 0;
 }
 
+// Override
 - (id<MKMID>)identifier {
     if (!_identifier) {
         _identifier = MKMIDParse([self objectForKey:@"did"]);
@@ -173,6 +173,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     return [ted data];
 }
 
+// Override
 - (NSMutableDictionary *)properties {
     if (_status < 0) {
         // document invalid
@@ -196,10 +197,12 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     return _properties;
 }
 
+// Override
 - (NSArray *)propertyKeys {
     return [self.properties allKeys];
 }
 
+// Override
 - (nullable id)propertyForKey:(NSString *)key {
     NSObject *property = [self.properties objectForKey:key];
     if (property == [NSNull null]) {
@@ -208,6 +211,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     return property;
 }
 
+// Override
 - (void)setProperty:(nullable id)value forKey:(NSString *)key {
     // 1. reset status
     NSAssert(_status >= 0, @"status error: %@", self);
@@ -229,6 +233,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     _CT = nil;
 }
 
+// Override
 - (BOOL)verify:(id<MKVerifyKey>)PK {
     if (_status > 0) {
         // already verify OK
@@ -257,6 +262,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     return _status == 1;
 }
 
+// Override
 - (NSData *)sign:(id<MKSignKey>)SK {
     NSData *sig;
     if (_status > 0) {
@@ -298,17 +304,20 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 
 #pragma mark properties getter/setter
 
+// Override
 - (NSDate *)time {
     // timestamp
     id seconds = [self propertyForKey:@"time"];
     return MKConvertDate(seconds, nil);
 }
 
+// Override
 - (NSString *)name {
     id text = [self propertyForKey:@"name"];
     return MKConvertString(text, nil);
 }
 
+// Override
 - (void)setName:(NSString *)name {
     [self setProperty:name forKey:@"name"];
 }

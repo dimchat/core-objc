@@ -62,15 +62,15 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID {
     NSArray<id<MKMDocument>> *docs = @[];
-    return [self initWithID:ID meta:nil documents:docs];
+    return [self initWithIdentifier:ID meta:nil documents:docs];
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      meta:(id<MKMMeta>)meta
-                 documents:(NSArray<id<MKMDocument>> *)docs {
-    if (self = [self initWithCmd:DKDCommand_Documents ID:ID meta:meta]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              meta:(id<MKMMeta>)meta
+                         documents:(NSArray<id<MKMDocument>> *)docs {
+    if (self = [self initWithCmd:DKDCommand_Documents identifier:ID meta:meta]) {
         // document
         if ([docs count] > 0) {
             [self setObject:MKMDocumentRevert(docs) forKey:@"documents"];
@@ -80,10 +80,10 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
                   lastTime:(NSDate *)time {
     NSArray<id<MKMDocument>> *docs = @[];
-    if (self = [self initWithID:ID meta:nil documents:docs]) {
+    if (self = [self initWithIdentifier:ID meta:nil documents:docs]) {
         // last document time
         if (time) {
             [self setDate:time forKey:@"last_time"];
@@ -100,6 +100,7 @@
     return content;
 }
 
+// Override
 - (NSArray<id<MKMDocument>> *)documents {
     if (!_documents) {
         id array = [self objectForKey:@"documents"];
@@ -113,6 +114,7 @@
     return _documents;
 }
 
+// Override
 - (NSDate *)lastTime {
     return [self dateForKey:@"last_time" defaultValue:nil];
 }
@@ -124,10 +126,10 @@
 DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
                                                id<MKMMeta> meta,
                                                NSArray<id<MKMDocument>> *docs) {
-    return [[DIMDocumentCommand alloc] initWithID:ID meta:meta documents:docs];
+    return [[DIMDocumentCommand alloc] initWithIdentifier:ID meta:meta documents:docs];
 }
 
 DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
                                             NSDate *lastTime) {
-    return [[DIMDocumentCommand alloc] initWithID:ID lastTime:lastTime];
+    return [[DIMDocumentCommand alloc] initWithIdentifier:ID lastTime:lastTime];
 }

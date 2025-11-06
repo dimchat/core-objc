@@ -59,10 +59,10 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithID:ID data:json signature:CT]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              data:(NSString *)json
+                         signature:(id<MKTransportableData>)CT {
+    if (self = [super initWithIdentifier:ID data:json signature:CT]) {
         // lazy
         _key = nil;
         _pnf = nil;
@@ -70,18 +70,19 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
-    if (self = [super initWithID:ID type:type]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID type:(NSString *)type {
+    if (self = [super initWithIdentifier:ID type:type]) {
         // lazy
         _key = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocumentType_Visa];
+- (instancetype)initWithIdentifier:(id<MKMID>)ID {
+    return [self initWithIdentifier:ID type:MKMDocumentType_Visa];
 }
 
+// Override
 - (nullable id<MKEncryptKey>)publicKey {
     id<MKEncryptKey> visaKey = _key;
     if (!visaKey) {
@@ -97,11 +98,13 @@
     return visaKey;
 }
 
+// Override
 - (void)setPublicKey:(id<MKEncryptKey>)key {
     [self setProperty:[key dictionary] forKey:@"key"];
     _key = key;
 }
 
+// Override
 - (id<MKPortableNetworkFile>)avatar {
     id<MKPortableNetworkFile> img = _pnf;
     if (!img) {
@@ -116,6 +119,7 @@
     return img;
 }
 
+// Override
 - (void)setAvatar:(id<MKPortableNetworkFile>)avatar {
     [self setProperty:avatar.object forKey:@"avatar"];
     _pnf = avatar;

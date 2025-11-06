@@ -55,32 +55,34 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithID:ID data:json signature:CT]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              data:(NSString *)json
+                         signature:(id<MKTransportableData>)CT {
+    if (self = [super initWithIdentifier:ID data:json signature:CT]) {
         // lazy
         _bots = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID type:(NSString *)type {
-    if (self = [super initWithID:ID type:type]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID type:(NSString *)type {
+    if (self = [super initWithIdentifier:ID type:type]) {
         // lazy
         _bots = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID type:MKMDocumentType_Bulletin];
+- (instancetype)initWithIdentifier:(id<MKMID>)ID {
+    return [self initWithIdentifier:ID type:MKMDocumentType_Bulletin];
 }
 
+// Override
 - (nullable id<MKMID>)founder {
     return MKMIDParse([self objectForKey:@"founder"]);
 }
 
+// Override
 - (nullable NSArray<id<MKMID>> *)assistants {
     if (!_bots) {
         id bots = [self propertyForKey:@"assistants"];
@@ -100,6 +102,7 @@
     return _bots;
 }
 
+// Override
 - (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
     id array = [assistants count] == 0 ? nil : MKMIDRevert(assistants);
     [self setProperty:array forKey:@"assistants"];

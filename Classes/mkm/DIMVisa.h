@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMVisa : DIMDocument <MKMVisa>
 
-- (instancetype)initWithID:(id<MKMID>)ID;
+- (instancetype)initWithIdentifier:(id<MKMID>)ID;
 
 @end
 

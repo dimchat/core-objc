@@ -65,9 +65,9 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID
-                      name:(NSString *)nickname
-                    avatar:(id<MKPortableNetworkFile>)image {
+- (instancetype)initWithIdentifier:(id<MKMID>)ID
+                              name:(NSString *)nickname
+                            avatar:(id<MKPortableNetworkFile>)image {
     if (self = [self initWithType:DKDContentType_NameCard]) {
         [self setString:ID forKey:@"did"];
         [self setObject:nickname forKey:@"name"];
@@ -78,14 +78,17 @@
     return self;
 }
 
+// Override
 - (id<MKMID>)identifier {
     return MKMIDParse([self objectForKey:@"did"]);
 }
 
+// Override
 - (NSString *)name {
     return [self stringForKey:@"name" defaultValue:@""];
 }
 
+// Override
 - (id<MKPortableNetworkFile>)avatar {
     id<MKPortableNetworkFile> pnf = _image;
     if (!pnf) {
@@ -105,5 +108,5 @@
 
 DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
                                _Nullable id<MKPortableNetworkFile> avatar) {
-    return [[DIMNameCard alloc] initWithID:ID name:name avatar:avatar];
+    return [[DIMNameCard alloc] initWithIdentifier:ID name:name avatar:avatar];
 }

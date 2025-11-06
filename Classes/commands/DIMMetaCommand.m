@@ -62,12 +62,12 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID {
-    return [self initWithID:ID meta:nil];
+- (instancetype)initWithIdentifier:(id<MKMID>)ID {
+    return [self initWithIdentifier:ID meta:nil];
 }
 
 - (instancetype)initWithCmd:(NSString *)name
-                         ID:(id<MKMID>)ID
+                 identifier:(id<MKMID>)ID
                        meta:(id<MKMMeta>)meta {
     if (self = [self initWithCmd:name]) {
         // ID
@@ -82,8 +82,8 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
-    return [self initWithCmd:DKDCommand_Meta ID:ID meta:meta];
+- (instancetype)initWithIdentifier:(id<MKMID>)ID meta:(id<MKMMeta>)meta {
+    return [self initWithCmd:DKDCommand_Meta identifier:ID meta:meta];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
@@ -94,11 +94,13 @@
     return content;
 }
 
+// Override
 - (id<MKMID>)identifier {
     id string = [self objectForKey:@"did"];
     return MKMIDParse(string);
 }
 
+// Override
 - (id<MKMMeta>)meta {
     if (!_meta) {
         id dict = [self objectForKey:@"meta"];
@@ -113,9 +115,9 @@
 
 DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> ID,
                                        id<MKMMeta> meta) {
-    return [[DIMMetaCommand alloc] initWithID:ID meta:meta];
+    return [[DIMMetaCommand alloc] initWithIdentifier:ID meta:meta];
 }
 
 DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> ID) {
-    return [[DIMMetaCommand alloc] initWithID:ID meta:nil];
+    return [[DIMMetaCommand alloc] initWithIdentifier:ID meta:nil];
 }
