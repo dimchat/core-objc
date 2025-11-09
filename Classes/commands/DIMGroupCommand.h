@@ -120,7 +120,7 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 - (instancetype)initWithGroup:(id<MKMID>)gid
                        member:(id<MKMID>)uid;
 
-- (instancetype)initWithGroup:(id<MKMID>)groupID
+- (instancetype)initWithGroup:(id<MKMID>)gid
                       members:(NSArray<id<MKMID>> *)list;
 
 @end

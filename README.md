@@ -16,6 +16,8 @@
 
 ## Dependencies
 
+* Latest Versions
+
 | Name | Version | Description |
 |------|---------|-------------|
 | [Ming Ke Ming (名可名)](https://github.com/dimchat/mkm-objc) | [![Version](https://img.shields.io/cocoapods/v/MingKeMing)](https://cocoapods.org/pods/MingKeMing) | Decentralized User Identity Authentication |
@@ -168,6 +170,7 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
     return content;
 }
 
+// Override
 - (NSString *)title {
     if (!_title) {
         _title = [self objectForKey:@"title"];
@@ -175,6 +178,7 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
     return _title;
 }
 
+// Override
 - (nullable NSString *)sessionKey {
     if (!_sessionKey) {
         _sessionKey = [self objectForKey:@"session"];
@@ -182,6 +186,7 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
     return _sessionKey;
 }
 
+// Override
 - (DKDHandshakeState)state {
     if (_state == DKDHandshake_Init) {
         _state = DKDHandshakeCheckState(self.title, self.sessionKey);
@@ -229,6 +234,7 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
+// Override
 - (NSString *)application {
     return [self stringForKey:@"app" defaultValue:@""];
 }

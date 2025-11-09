@@ -55,26 +55,26 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               data:(NSString *)json
                          signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithIdentifier:ID data:json signature:CT]) {
+    if (self = [super initWithIdentifier:did data:json signature:CT]) {
         // lazy
         _bots = nil;
     }
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID type:(NSString *)type {
-    if (self = [super initWithIdentifier:ID type:type]) {
+- (instancetype)initWithIdentifier:(id<MKMID>)did type:(NSString *)type {
+    if (self = [super initWithIdentifier:did type:type]) {
         // lazy
         _bots = nil;
     }
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID {
-    return [self initWithIdentifier:ID type:MKMDocumentType_Bulletin];
+- (instancetype)initWithIdentifier:(id<MKMID>)did {
+    return [self initWithIdentifier:did type:MKMDocumentType_Bulletin];
 }
 
 // Override

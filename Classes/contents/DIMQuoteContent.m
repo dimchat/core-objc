@@ -100,9 +100,9 @@
     if (!env) {
         id dict = [self origin];
         if ([dict isKindOfClass:[NSMutableDictionary class]]) {
-            env = DKDEnvelopeParse([self origin]);
+            env = DKDEnvelopeParse(dict);
         } else if ([dict isKindOfClass:[NSDictionary class]]) {
-            env = DKDEnvelopeParse([self origin]);
+            env = DKDEnvelopeParse(dict);
             [self setObject:env.dictionary forKey:@"origin"];
         } else {
             NSAssert(dict == nil, @"original envelope error: %@, %@", dict, self);

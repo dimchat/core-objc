@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMNameCard : DIMContent <DKDNameCard>
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               name:(NSString *)nickname
                             avatar:(id<MKPortableNetworkFile>)image;
 
@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
+DIMNameCard *DIMNameCardCreate(id<MKMID> did, NSString *name,
                                _Nullable id<MKPortableNetworkFile> avatar);
 
 #ifdef __cplusplus

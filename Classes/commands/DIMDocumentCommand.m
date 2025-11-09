@@ -62,15 +62,15 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID {
+- (instancetype)initWithIdentifier:(id<MKMID>)did {
     NSArray<id<MKMDocument>> *docs = @[];
-    return [self initWithIdentifier:ID meta:nil documents:docs];
+    return [self initWithIdentifier:did meta:nil documents:docs];
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               meta:(id<MKMMeta>)meta
                          documents:(NSArray<id<MKMDocument>> *)docs {
-    if (self = [self initWithCmd:DKDCommand_Documents identifier:ID meta:meta]) {
+    if (self = [self initWithCmd:DKDCommand_Documents identifier:did meta:meta]) {
         // document
         if ([docs count] > 0) {
             [self setObject:MKMDocumentRevert(docs) forKey:@"documents"];
@@ -80,10 +80,10 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                   lastTime:(NSDate *)time {
     NSArray<id<MKMDocument>> *docs = @[];
-    if (self = [self initWithIdentifier:ID meta:nil documents:docs]) {
+    if (self = [self initWithIdentifier:did meta:nil documents:docs]) {
         // last document time
         if (time) {
             [self setDate:time forKey:@"last_time"];
@@ -123,13 +123,13 @@
 
 #pragma mark - Conveniences
 
-DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> ID,
+DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> did,
                                                id<MKMMeta> meta,
                                                NSArray<id<MKMDocument>> *docs) {
-    return [[DIMDocumentCommand alloc] initWithIdentifier:ID meta:meta documents:docs];
+    return [[DIMDocumentCommand alloc] initWithIdentifier:did meta:meta documents:docs];
 }
 
-DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> ID,
+DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> did,
                                             NSDate *lastTime) {
-    return [[DIMDocumentCommand alloc] initWithIdentifier:ID lastTime:lastTime];
+    return [[DIMDocumentCommand alloc] initWithIdentifier:did lastTime:lastTime];
 }

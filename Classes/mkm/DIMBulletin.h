@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMBulletin : DIMDocument <MKMBulletin>
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID;
+- (instancetype)initWithIdentifier:(id<MKMID>)did;
 
 @end
 

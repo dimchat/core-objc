@@ -59,11 +59,7 @@
 }
 
 - (instancetype)initWithType:(NSString *)type {
-    return [self initWithType:type
-                         data:nil
-                     filename:nil
-                          url:nil
-                     password:nil];
+    return [self initWithType:type data:nil filename:nil url:nil password:nil];
 }
 
 /* designated initializer */
@@ -73,19 +69,19 @@
                          url:(nullable NSURL *)remote
                     password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type]) {
-        NSDictionary *dict = [self dictionary];
+        NSMutableDictionary *dict = [self dictionary];
         _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
         if (file) {
-            _wrapper.data = file;
+            [_wrapper setData:file];
         }
         if (name) {
-            _wrapper.filename = name;
+            [_wrapper setFilename:name];
         }
         if (remote) {
-            _wrapper.URL = remote;
+            [_wrapper setURL:remote];
         }
         if (key) {
-            _wrapper.password = key;
+            [_wrapper setPassword:key];
         }
     }
     return self;
@@ -95,7 +91,8 @@
 
 // Override
 - (NSData *)data {
-    return [_wrapper.data data];
+    id<MKTransportableData> ted = [_wrapper data];
+    return [ted data];
 }
 
 // Override
@@ -105,32 +102,32 @@
 
 // Override
 - (NSString *)filename {
-    return _wrapper.filename;
+    return [_wrapper filename];
 }
 
 // Override
 - (void)setFilename:(NSString *)filename {
-    _wrapper.filename = filename;
+    [_wrapper setFilename:filename];
 }
 
 // Override
 - (NSURL *)URL {
-    return _wrapper.URL;
+    return [_wrapper URL];
 }
 
 // Override
 - (void)setURL:(NSURL *)URL {
-    _wrapper.URL = URL;
+    [_wrapper setURL:URL];
 }
 
 // Override
 - (id<MKDecryptKey>)password {
-    return _wrapper.password;
+    return [_wrapper password];
 }
 
 // Override
 - (void)setPassword:(id<MKDecryptKey>)password {
-    _wrapper.password = password;
+    [_wrapper setPassword:password];
 }
 
 @end

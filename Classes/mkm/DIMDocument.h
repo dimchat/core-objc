@@ -49,13 +49,13 @@ FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (
 - (instancetype)initWithDictionary:(NSDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               data:(NSString *)json
                          signature:(id<MKTransportableData>)CT
 NS_DESIGNATED_INITIALIZER;
 
 // create a new empty document with entity ID & document type
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               type:(NSString *)type
 NS_DESIGNATED_INITIALIZER;
 

@@ -65,11 +65,11 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)ID
+- (instancetype)initWithIdentifier:(id<MKMID>)did
                               name:(NSString *)nickname
                             avatar:(id<MKPortableNetworkFile>)image {
     if (self = [self initWithType:DKDContentType_NameCard]) {
-        [self setString:ID forKey:@"did"];
+        [self setString:did forKey:@"did"];
         [self setObject:nickname forKey:@"name"];
         if (image) {
             [self setObject:image.object forKey:@"avatar"];
@@ -106,7 +106,7 @@
 
 #pragma mark - Conveniences
 
-DIMNameCard *DIMNameCardCreate(id<MKMID> ID, NSString *name,
+DIMNameCard *DIMNameCardCreate(id<MKMID> did, NSString *name,
                                _Nullable id<MKPortableNetworkFile> avatar) {
-    return [[DIMNameCard alloc] initWithIdentifier:ID name:name avatar:avatar];
+    return [[DIMNameCard alloc] initWithIdentifier:did name:name avatar:avatar];
 }
