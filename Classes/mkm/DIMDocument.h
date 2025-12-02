@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString * const MKMDocumentType_Visa;     // for user info (communicate key)
 FOUNDATION_EXPORT NSString * const MKMDocumentType_Profile;  // for user profile (reserved)
-FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (owner, administrators and assistants)
+FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (owner, administrators, ...)
 
 @interface DIMDocument : MKDictionary <MKMDocument>
 

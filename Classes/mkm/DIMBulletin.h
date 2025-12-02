@@ -45,11 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMBulletin <MKMDocument>
 
+// Group Title
+@property (strong, nonatomic, nullable) NSString *name;
+
 // Group Founder
 @property (readonly, strong, nonatomic, nullable) id<MKMID> founder;
-
-// Group assistants (Bots)
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;
 
 @end
 

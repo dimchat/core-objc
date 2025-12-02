@@ -83,6 +83,17 @@
 }
 
 // Override
+- (NSString *)name {
+    id nickname = [self propertyForKey:@"name"];
+    return MKConvertString(nickname, nil);
+}
+
+// Override
+- (void)setName:(NSString *)nickname {
+    [self setProperty:nickname forKey:@"name"];
+}
+
+// Override
 - (nullable id<MKEncryptKey>)publicKey {
     id<MKEncryptKey> visaKey = _key;
     if (!visaKey) {

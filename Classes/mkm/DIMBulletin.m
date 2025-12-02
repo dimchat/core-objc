@@ -37,20 +37,11 @@
 
 #import "DIMBulletin.h"
 
-@interface DIMBulletin () {
-    
-    // Bot ID list as group assistants
-    NSArray<id<MKMID>> *_bots;
-}
-
-@end
-
 @implementation DIMBulletin
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _bots = nil;
+        //
     }
     return self;
 }
@@ -59,16 +50,14 @@
                               data:(NSString *)json
                          signature:(id<MKTransportableData>)CT {
     if (self = [super initWithIdentifier:did data:json signature:CT]) {
-        // lazy
-        _bots = nil;
+        //
     }
     return self;
 }
 
 - (instancetype)initWithIdentifier:(id<MKMID>)did type:(NSString *)type {
     if (self = [super initWithIdentifier:did type:type]) {
-        // lazy
-        _bots = nil;
+        //
     }
     return self;
 }
@@ -78,36 +67,19 @@
 }
 
 // Override
+- (NSString *)name {
+    id title = [self propertyForKey:@"name"];
+    return MKConvertString(title, nil);
+}
+
+// Override
+- (void)setName:(NSString *)title {
+    [self setProperty:title forKey:@"name"];
+}
+
+// Override
 - (nullable id<MKMID>)founder {
     return MKMIDParse([self objectForKey:@"founder"]);
-}
-
-// Override
-- (nullable NSArray<id<MKMID>> *)assistants {
-    if (!_bots) {
-        id bots = [self propertyForKey:@"assistants"];
-        if ([bots isKindOfClass:[NSArray class]]) {
-            _bots = MKMIDConvert(bots);
-        } else {
-            NSMutableArray *array = [[NSMutableArray alloc] init];
-            // get from 'assistant'
-            id single = [self propertyForKey:@"assistant"];
-            single = MKMIDParse(single);
-            if (single != nil) {
-                [array addObject:single];
-            }
-            _bots = array;
-        }
-    }
-    return _bots;
-}
-
-// Override
-- (void)setAssistants:(NSArray<id<MKMID>> *)assistants {
-    id array = [assistants count] == 0 ? nil : MKMIDRevert(assistants);
-    [self setProperty:array forKey:@"assistants"];
-    [self setProperty:nil forKey:@"assistant"];
-    _bots = assistants;
 }
 
 @end

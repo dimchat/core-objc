@@ -50,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMVisa <MKMDocument>
 
+// Nickname
+@property (strong, nonatomic, nullable) NSString *name;
+
 // Public Key for encryption
 // ~~~~~~~~~~~~~~~~~~~~~~~~~
 // For safety considerations, the visa.key which used to encrypt message data

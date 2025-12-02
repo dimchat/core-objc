@@ -156,50 +156,6 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 
 @end
 
-#pragma mark - Administrators, Assistants
-
-@protocol DKDHireGroupCommand <DKDGroupCommand>
-
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
-
-@end
-
-@interface DIMHireGroupCommand : DIMGroupCommand <DKDHireGroupCommand>
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-               administrators:(NSArray<id<MKMID>> *)users;
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots;
-
-@end
-
-@protocol DKDFireGroupCommand <DKDGroupCommand>
-
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *administrators;
-@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *assistants;  // bots
-
-@end
-
-@interface DIMFireGroupCommand : DIMGroupCommand <DKDFireGroupCommand>
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-               administrators:(NSArray<id<MKMID>> *)users;
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                   assistants:(NSArray<id<MKMID>> *)bots;
-
-@end
-
-@protocol DKDResignGroupCommand <DKDGroupCommand> @end
-
-@interface DIMResignGroupCommand : DIMGroupCommand <DKDResignGroupCommand>
-
-- (instancetype)initWithGroup:(id<MKMID>)gid;
-
-@end
-
 #pragma mark - Conveniences
 
 #ifdef __cplusplus
@@ -222,20 +178,6 @@ DIMQuitGroupCommand *DIMGroupCommandQuit(id<MKMID> group);
 
 DIMResetGroupCommand *DIMGroupCommandReset(id<MKMID> group,
                                            NSArray<id<MKMID>> *members);
-
-#pragma mark Administrators, Assistants
-
-DIMHireGroupCommand *DIMGroupCommandHireAdministrators(id<MKMID> group,
-                                                       NSArray<id<MKMID>> *admins);
-DIMHireGroupCommand *DIMGroupCommandHireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots);
-
-DIMFireGroupCommand *DIMGroupCommandFireAdministrators(id<MKMID> group,
-                                                       NSArray<id<MKMID>> *admins);
-DIMFireGroupCommand *DIMGroupCommandFireAssistants(id<MKMID> group,
-                                                   NSArray<id<MKMID>> *bots);
-
-DIMResignGroupCommand *DIMGroupCommandResign(id<MKMID> group);
 
 #ifdef __cplusplus
 } /* end of extern "C" */

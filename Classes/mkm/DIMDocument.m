@@ -198,11 +198,6 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 // Override
-- (NSArray *)propertyKeys {
-    return [self.properties allKeys];
-}
-
-// Override
 - (nullable id)propertyForKey:(NSString *)key {
     NSObject *property = [self.properties objectForKey:key];
     if (property == [NSNull null]) {
@@ -309,17 +304,6 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     // timestamp
     id seconds = [self propertyForKey:@"time"];
     return MKConvertDate(seconds, nil);
-}
-
-// Override
-- (NSString *)name {
-    id text = [self propertyForKey:@"name"];
-    return MKConvertString(text, nil);
-}
-
-// Override
-- (void)setName:(NSString *)name {
-    [self setProperty:name forKey:@"name"];
 }
 
 @end
