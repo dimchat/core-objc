@@ -60,7 +60,7 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
 
 /*
  *  Command message: {
- *      type : 0x88,
+ *      type : i2s(0x88),
  *      sn   : 123,
  *
  *      command : "handshake",    // command name

@@ -85,9 +85,9 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                              data:(NSString *)json
-                         signature:(id<MKTransportableData>)CT {
+- (instancetype)initWithID:(id<MKMID>)did
+                      data:(NSString *)json
+                 signature:(id<MKTransportableData>)CT {
     NSDictionary *dict = @{
         @"did": [did string],
         @"data": json,
@@ -108,7 +108,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithIdentifier:(id<MKMID>)did type:(NSString *)type {
+- (instancetype)initWithID:(id<MKMID>)did type:(NSString *)type {
     NSDictionary *dict = @{
         @"did": [did string],
     };

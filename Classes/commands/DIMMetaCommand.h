@@ -60,12 +60,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMMetaCommand : DIMCommand <DKDMetaCommand>
 
-- (instancetype)initWithCmd:(NSString *)name
-                 identifier:(id<MKMID>)did
-                       meta:(nullable id<MKMMeta>)meta;
+- (instancetype)initWithID:(id<MKMID>)did
+                      meta:(nullable id<MKMMeta>)meta
+                       cmd:(NSString *)name;
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                              meta:(nullable id<MKMMeta>)meta;
+- (instancetype)initWithID:(id<MKMID>)did
+                      meta:(nullable id<MKMMeta>)meta;
 
 @end
 

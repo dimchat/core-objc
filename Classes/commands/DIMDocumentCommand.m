@@ -62,15 +62,15 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did {
+- (instancetype)initWithID:(id<MKMID>)did {
     NSArray<id<MKMDocument>> *docs = @[];
-    return [self initWithIdentifier:did meta:nil documents:docs];
+    return [self initWithID:did meta:nil documents:docs];
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                              meta:(id<MKMMeta>)meta
-                         documents:(NSArray<id<MKMDocument>> *)docs {
-    if (self = [self initWithCmd:DKDCommand_Documents identifier:did meta:meta]) {
+- (instancetype)initWithID:(id<MKMID>)did
+                      meta:(id<MKMMeta>)meta
+                 documents:(NSArray<id<MKMDocument>> *)docs {
+    if (self = [self initWithID:did meta:meta cmd:DKDCommand_Documents]) {
         // document
         if ([docs count] > 0) {
             [self setObject:MKMDocumentRevert(docs) forKey:@"documents"];
@@ -80,10 +80,10 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did
+- (instancetype)initWithID:(id<MKMID>)did
                   lastTime:(NSDate *)time {
     NSArray<id<MKMDocument>> *docs = @[];
-    if (self = [self initWithIdentifier:did meta:nil documents:docs]) {
+    if (self = [self initWithID:did meta:nil documents:docs]) {
         // last document time
         if (time) {
             [self setDate:time forKey:@"last_time"];
@@ -126,10 +126,10 @@
 DIMDocumentCommand *DIMDocumentCommandResponse(id<MKMID> did,
                                                id<MKMMeta> meta,
                                                NSArray<id<MKMDocument>> *docs) {
-    return [[DIMDocumentCommand alloc] initWithIdentifier:did meta:meta documents:docs];
+    return [[DIMDocumentCommand alloc] initWithID:did meta:meta documents:docs];
 }
 
 DIMDocumentCommand *DIMDocumentCommandQuery(id<MKMID> did,
                                             NSDate *lastTime) {
-    return [[DIMDocumentCommand alloc] initWithIdentifier:did lastTime:lastTime];
+    return [[DIMDocumentCommand alloc] initWithID:did lastTime:lastTime];
 }

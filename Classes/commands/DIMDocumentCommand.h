@@ -64,13 +64,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMDocumentCommand : DIMMetaCommand <DKDDocumentCommand>
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                              meta:(nullable id<MKMMeta>)meta
-                         documents:(NSArray<id<MKMDocument>> *)docs;
+- (instancetype)initWithID:(id<MKMID>)did
+                      meta:(nullable id<MKMMeta>)meta
+                 documents:(NSArray<id<MKMDocument>> *)docs;
 
 // query document for updating with last document time
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                          lastTime:(nullable NSDate *)time;
+- (instancetype)initWithID:(id<MKMID>)did
+                  lastTime:(nullable NSDate *)time;
 
 @end
 

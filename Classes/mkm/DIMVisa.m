@@ -59,10 +59,10 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did
-                              data:(NSString *)json
-                         signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithIdentifier:did data:json signature:CT]) {
+- (instancetype)initWithID:(id<MKMID>)did
+                      data:(NSString *)json
+                 signature:(id<MKTransportableData>)CT {
+    if (self = [super initWithID:did data:json signature:CT]) {
         // lazy
         _key = nil;
         _pnf = nil;
@@ -70,16 +70,16 @@
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did type:(NSString *)type {
-    if (self = [super initWithIdentifier:did type:type]) {
+- (instancetype)initWithID:(id<MKMID>)did type:(NSString *)type {
+    if (self = [super initWithID:did type:type]) {
         // lazy
         _key = nil;
     }
     return self;
 }
 
-- (instancetype)initWithIdentifier:(id<MKMID>)did {
-    return [self initWithIdentifier:did type:MKMDocumentType_Visa];
+- (instancetype)initWithID:(id<MKMID>)did {
+    return [self initWithID:did type:MKMDocumentType_Visa];
 }
 
 // Override
