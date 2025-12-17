@@ -57,20 +57,8 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
 
 - (instancetype)initWithCmd:(NSString *)cmd
                       group:(id<MKMID>)gid {
-    
     if (self = [self initWithCmd:cmd]) {
         [self setString:gid forKey:@"group"];
-    }
-    return self;
-}
-
-- (instancetype)initWithCmd:(NSString *)cmd
-                      group:(id<MKMID>)gid
-                     member:(id<MKMID>)uid {
-    
-    if (self = [self initWithCmd:cmd]) {
-        [self setString:gid forKey:@"group"];
-        [self setString:uid forKey:@"member"];
     }
     return self;
 }
@@ -78,7 +66,6 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
 - (instancetype)initWithCmd:(NSString *)cmd
                       group:(id<MKMID>)gid
                     members:(NSArray<id<MKMID>> *)list {
-    
     if (self = [self initWithCmd:cmd]) {
         [self setString:gid forKey:@"group"];
         [self setObject:MKMIDRevert(list) forKey:@"members"];
@@ -87,18 +74,28 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
 }
 
 // Override
-- (nullable id<MKMID>)member {
-    id user = [self objectForKey:@"member"];
-    return MKMIDParse(user);
+- (nullable NSArray<id<MKMID>> *)members {
+    NSArray *array = [self objectForKey:@"members"];
+    if (array) {
+        return MKMIDConvert(array);
+    }
+    // get from 'member'
+    id<MKMID> single = MKMIDParse([self objectForKey:@"member"]);
+    if (single) {
+        return @[single];
+    }
+    NSAssert(false, @"failed to get group members");
+    return nil;
 }
 
 // Override
-- (nullable NSArray<id<MKMID>> *)members {
-    NSArray *array = [self objectForKey:@"members"];
-    if (array.count == 0) {
-        return nil;
+- (void)setMembers:(NSArray<id<MKMID>> *)members {
+    if (members) {
+        [self setObject:MKMIDRevert(members) forKey:@"members"];
+    } else {
+        [self removeObjectForKey:@"members"];
     }
-    return MKMIDConvert(array);
+    [self removeObjectForKey:@"member"];
 }
 
 @end
@@ -107,10 +104,6 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
 
 @implementation DIMInviteGroupCommand
 
-- (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
-    return [self initWithCmd:DKDGroupCommand_Invite group:gid member:uid];
-}
-
 - (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
     return [self initWithCmd:DKDGroupCommand_Invite group:gid members:list];
 }
@@ -118,10 +111,6 @@ NSString * const DKDGroupCommand_Resign   = @"resign";
 @end
 
 @implementation DIMExpelGroupCommand
-
-- (instancetype)initWithGroup:(id<MKMID>)gid member:(id<MKMID>)uid {
-    return [self initWithCmd:DKDGroupCommand_Expel group:gid member:uid];
-}
 
 - (instancetype)initWithGroup:(id<MKMID>)gid members:(NSArray<id<MKMID>> *)list {
     return [self initWithCmd:DKDGroupCommand_Expel group:gid members:list];

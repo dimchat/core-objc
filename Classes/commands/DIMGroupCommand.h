@@ -52,7 +52,7 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Join;     // "join"
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Quit;     // "quit"
 //FOUNDATION_EXPORT NSString * const DKDGroupCommand_Query;  // Deprecated
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Reset;    // "reset"
-/// group: administrator/assistant
+/// group: administrator
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Hire;     // "hire"
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Fire;     // "fire"
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
@@ -60,15 +60,14 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 
 /*
  *  Group history command: {
- *      type : i2s(0x89),
- *      sn   : 123,
+ *      "type" : i2s(0x89),
+ *      "sn"   : 123,
  *
- *      command : "reset",   // "invite", "quit", ...
- *      time    : 123.456,   // command timestamp
+ *      "command" : "reset",   // "invite", "quit", ...
+ *      "time"    : 123.456,   // command timestamp
  *
- *      group   : "{GROUP_ID}",
- *      member  : "{MEMBER_ID}",
- *      members : ["{MEMBER_ID}",]
+ *      "group"   : "{GROUP_ID}",
+ *      "members" : ["{MEMBER_ID}",]
  *  }
  */
 @protocol DKDGroupCommand <DKDHistoryCommand>
@@ -76,8 +75,10 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 // Group ID for group message already defined in DKDContent
 //@property (strong, nonatomic, nullable) id<MKMID> group;
 
-@property (readonly, strong, nonatomic, nullable) id<MKMID> member;
-@property (readonly, strong, nonatomic, nullable) NSArray<id<MKMID>> *members;
+/**
+ *  Member ID list
+ */
+@property (strong, nonatomic, nullable) NSArray<id<MKMID>> *members;
 
 @end
 
@@ -85,10 +86,6 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 
 - (instancetype)initWithCmd:(NSString *)name
                       group:(id<MKMID>)gid;
-
-- (instancetype)initWithCmd:(NSString *)name
-                      group:(id<MKMID>)gid
-                     member:(id<MKMID>)uid;
 
 - (instancetype)initWithCmd:(NSString *)name
                       group:(id<MKMID>)gid
@@ -103,9 +100,6 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 @interface DIMInviteGroupCommand : DIMGroupCommand <DKDInviteGroupCommand>
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
-                       member:(id<MKMID>)uid;
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
                       members:(NSArray<id<MKMID>> *)list;
 
 @end
@@ -116,9 +110,6 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 @protocol DKDExpelGroupCommand <DKDGroupCommand> @end
 
 @interface DIMExpelGroupCommand : DIMGroupCommand <DKDExpelGroupCommand>
-
-- (instancetype)initWithGroup:(id<MKMID>)gid
-                       member:(id<MKMID>)uid;
 
 - (instancetype)initWithGroup:(id<MKMID>)gid
                       members:(NSArray<id<MKMID>> *)list;
