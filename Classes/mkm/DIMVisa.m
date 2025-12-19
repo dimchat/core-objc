@@ -46,6 +46,8 @@
     id<MKPortableNetworkFile> _pnf;
 }
 
+@property (readonly, strong, nonatomic) id<MKMID> identifier;
+
 @end
 
 @implementation DIMVisa
@@ -59,10 +61,10 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithID:did data:json signature:CT]) {
+- (instancetype)initWithType:(NSString *)type
+                        data:(NSString *)json
+                   signature:(id<MKTransportableData>)CT {
+    if (self = [super initWithType:type data:json signature:CT]) {
         // lazy
         _key = nil;
         _pnf = nil;
@@ -70,16 +72,37 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did type:(NSString *)type {
-    if (self = [super initWithID:did type:type]) {
+- (instancetype)initWithType:(NSString *)type {
+    if (self = [super initWithType:type]) {
         // lazy
         _key = nil;
+        _pnf = nil;
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did {
-    return [self initWithID:did type:MKMDocumentType_Visa];
+- (instancetype)init {
+    return [self initWithType:MKMDocumentType_Visa];
+}
+
+- (instancetype)initWithData:(NSString *)json
+                   signature:(id<MKTransportableData>)CT {
+    return [self initWithType:MKMDocumentType_Visa data:json signature:CT];
+}
+
+- (id<MKMID>)identifier {
+    return MKMIDParse([self objectForKey:@"did"]);
+}
+
+// Override
+- (NSString *)terminal {
+    NSString *location = [self stringForKey:@"terminal" defaultValue:nil];
+    if (!location) {
+        id<MKMID> did = [self identifier];
+        NSAssert(did, @"visa ID not found: %@", self.dictionary);
+        location = [did terminal];
+    }
+    return location;
 }
 
 // Override

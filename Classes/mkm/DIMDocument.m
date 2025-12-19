@@ -46,8 +46,6 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 
 @interface DIMDocument ()
 
-@property (strong, nonatomic) id<MKMID> identifier;
-
 // JsON.encode(properties)
 @property (strong, nonatomic) NSString *data;
 // User(ID).sign(data)
@@ -71,9 +69,8 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 /* designated initializer */
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
-        // lazy
-        _identifier = nil;
         
+        // lazy
         _data = nil;
         _CT = nil;
         
@@ -85,16 +82,15 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithID:(id<MKMID>)did
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
+- (instancetype)initWithType:(NSString *)type
+                        data:(NSString *)json
+                   signature:(id<MKTransportableData>)CT {
     NSDictionary *dict = @{
-        @"did": [did string],
+        @"type": type,
         @"data": json,
         @"signature": [CT object],
     };
     if (self = [super initWithDictionary:dict]) {
-        _identifier = did;
 
         _data = json;
         _CT = CT;
@@ -108,12 +104,11 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 }
 
 /* designated initializer */
-- (instancetype)initWithID:(id<MKMID>)did type:(NSString *)type {
+- (instancetype)initWithType:(NSString *)type {
     NSDictionary *dict = @{
-        @"did": [did string],
+        @"type": type,
     };
     if (self = [super initWithDictionary:dict]) {
-        _identifier = did;
         
         _data = nil;
         _CT = nil;
@@ -133,7 +128,6 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 - (id)copyWithZone:(nullable NSZone *)zone {
     DIMDocument *doc = [super copyWithZone:zone];
     if (doc) {
-        doc.identifier = _identifier;
         doc.data = _data;
         doc.CT = _CT;
         doc.properties = _properties;
@@ -145,14 +139,6 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 // Override
 - (BOOL)isValid {
     return _status > 0;
-}
-
-// Override
-- (id<MKMID>)identifier {
-    if (!_identifier) {
-        _identifier = MKMIDParse([self objectForKey:@"did"]);
-    }
-    return _identifier;
 }
 
 // Get serialized properties
@@ -230,10 +216,12 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 
 // Override
 - (BOOL)verify:(id<MKVerifyKey>)PK {
+    /*/
     if (_status > 0) {
         // already verify OK
         return YES;
     }
+    /*/
     NSString *data = self.data;
     NSData *signature = self.signature;
     if ([data length] == 0) {
@@ -251,6 +239,10 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
     } else if ([PK verify:MKUTF8Encode(data) withSignature:signature]) {
         // signature matched
         _status = 1;
+    } else {
+        // public key not matched,
+        // no need to affect the status here
+        return NO;
     }
     // NOTICE: if status is 0, it doesn't mean the document is invalid,
     //         try another key
@@ -260,6 +252,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
 // Override
 - (NSData *)sign:(id<MKSignKey>)SK {
     NSData *sig;
+    /*/
     if (_status > 0) {
         // already signed/verified
         NSAssert([_data length] > 0, @"document data error");
@@ -267,6 +260,7 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
         NSAssert([sig length] > 0, @"document signature error");
         return sig;
     }
+    /*/
     // 1. update sign time
     NSTimeInterval now = [[[NSDate alloc] init] timeIntervalSince1970];
     [self setProperty:@(now) forKey:@"time"];

@@ -57,7 +57,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMBulletin : DIMDocument <MKMBulletin>
 
-- (instancetype)initWithID:(id<MKMID>)did;
+- (instancetype)init;
+
+- (instancetype)initWithData:(NSString *)json
+                   signature:(id<MKTransportableData>)CT;
 
 @end
 

@@ -50,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMVisa <MKMDocument>
 
+// Login Point
+@property (readonly, strong, nonatomic, nullable) NSString *terminal;
+
 // Nickname
 @property (strong, nonatomic, nullable) NSString *name;
 
@@ -68,7 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMVisa : DIMDocument <MKMVisa>
 
-- (instancetype)initWithID:(id<MKMID>)did;
+- (instancetype)init;
+
+- (instancetype)initWithData:(NSString *)json
+                   signature:(id<MKTransportableData>)CT;
 
 @end
 

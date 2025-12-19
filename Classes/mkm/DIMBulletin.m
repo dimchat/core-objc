@@ -46,24 +46,29 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did
-                      data:(NSString *)json
-                 signature:(id<MKTransportableData>)CT {
-    if (self = [super initWithID:did data:json signature:CT]) {
+- (instancetype)initWithType:(NSString *)type
+                        data:(NSString *)json
+                   signature:(id<MKTransportableData>)CT {
+    if (self = [super initWithType:type data:json signature:CT]) {
         //
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did type:(NSString *)type {
-    if (self = [super initWithID:did type:type]) {
+- (instancetype)initWithType:(NSString *)type {
+    if (self = [super initWithType:type]) {
         //
     }
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did {
-    return [self initWithID:did type:MKMDocumentType_Bulletin];
+- (instancetype)init {
+    return [self initWithType:MKMDocumentType_Bulletin];
+}
+
+- (instancetype)initWithData:(NSString *)json
+                   signature:(id<MKTransportableData>)CT {
+    return [self initWithType:MKMDocumentType_Bulletin data:json signature:CT];
 }
 
 // Override
