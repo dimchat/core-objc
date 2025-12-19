@@ -60,10 +60,11 @@
 - (instancetype)initWithType:(NSString *)type {
     NSDate *now = [[NSDate alloc] init];
     DKDSerialNumber sn = DKDInstantMessageGenerateSerialNumber(type, now);
-    NSDictionary *dict = @{@"type":type,
-                           @"sn"  :@(sn),
-                           @"time":@([now timeIntervalSince1970]),
-                           };
+    NSDictionary *dict = @{
+        @"type" : type,
+        @"sn"   : @(sn),
+        @"time" : @([now timeIntervalSince1970]),
+    };
     if (self = [super initWithDictionary:dict]) {
         _type = type;
         _sn = sn;

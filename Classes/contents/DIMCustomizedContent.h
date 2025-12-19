@@ -39,13 +39,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
+/**
  *  Content for Application 0nly: {
- *      type : i2s(0xA0),
- *      sn   : 123,
  *
- *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
- *      extra : info         // others
+ *      "type" : i2s(0xA0),
+ *      "sn"   : 123,
+ *
+ *      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      "extra" : info         // others
  *  }
  */
 @protocol DKDAppContent <DKDContent>
@@ -54,15 +55,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-/*
- *  Application Customized message: {
- *      type : 0xCC,
- *      sn   : 123,
+/**
+ *  Application Customized content: {
  *
- *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
- *      mod   : "{MODULE}",  // module name (e.g.: "drift_bottle")
- *      act   : "{ACTION}",  // action name (e.g.: "throw")
- *      extra : info         // action parameters
+ *      "type" : 0xCC,
+ *      "sn"   : 123,
+ *
+ *      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      "mod"   : "{MODULE}",  // module name (e.g.: "drift_bottle")
+ *      "act"   : "{ACTION}",  // action name (e.g.: "throw")
+ *      "extra" : info         // action parameters
  *  }
  */
 @protocol DKDCustomizedContent <DKDAppContent>
@@ -89,7 +91,8 @@ NS_ASSUME_NONNULL_BEGIN
 extern "C" {
 #endif
 
-DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
+DIMCustomizedContent *DIMCustomizedContentCreate(NSString * _Nullable type,
+                                                 NSString *app,
                                                  NSString *mod,
                                                  NSString *act);
 

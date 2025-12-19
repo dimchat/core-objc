@@ -62,10 +62,6 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did {
-    return [self initWithID:did meta:nil];
-}
-
 - (instancetype)initWithID:(id<MKMID>)did
                       meta:(nullable id<MKMMeta>)meta
                        cmd:(NSString *)name {
@@ -84,6 +80,10 @@
 
 - (instancetype)initWithID:(id<MKMID>)did meta:(id<MKMMeta>)meta {
     return [self initWithID:did meta:meta cmd:DKDCommand_Meta];
+}
+
+- (instancetype)initWithID:(id<MKMID>)did {
+    return [self initWithID:did meta:nil cmd:DKDCommand_Meta];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
@@ -119,5 +119,5 @@ DIMMetaCommand *DIMMetaCommandResponse(id<MKMID> did,
 }
 
 DIMMetaCommand *DIMMetaCommandQuery(id<MKMID> did) {
-    return [[DIMMetaCommand alloc] initWithID:did meta:nil];
+    return [[DIMMetaCommand alloc] initWithID:did];
 }

@@ -41,14 +41,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 123,
+/**
+ *  Meta command: {
  *
- *      command : "meta", // command name
- *      did     : "{ID}", // contact's ID
- *      meta    : {...}   // When meta is empty, means query meta for ID
+ *      "type" : i2s(0x88),
+ *      "sn"   : 123,
+ *
+ *      "command" : "meta", // command name
+ *      "did"     : "{ID}", // contact's ID
+ *      "meta"    : {...}   // When meta is empty, means query meta for ID
  *  }
  */
 @protocol DKDMetaCommand <DKDCommand>
@@ -66,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithID:(id<MKMID>)did
                       meta:(nullable id<MKMMeta>)meta;
+
+- (instancetype)initWithID:(id<MKMID>)did;
 
 @end
 

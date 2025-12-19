@@ -58,14 +58,15 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
 } /* end of extern "C" */
 #endif
 
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 123,
+/**
+ *  Handshake command: {
+ *  
+ *      "type" : i2s(0x88),
+ *      "sn"   : 123,
  *
- *      command : "handshake",    // command name
- *      title   : "Hello world!",
- *      session : "{SESSION_KEY}" // session key
+ *      "command" : "handshake",    // command name
+ *      "title"   : "Hello world!",
+ *      "session" : "{SESSION_KEY}" // session key
  *  }
  */
 @protocol DKDHandshakeCommand <DKDCommand>
@@ -204,13 +205,14 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
+/**
  *  Content for Application 0nly: {
- *      type : i2s(0xA0),
- *      sn   : 123,
+ *  
+ *      "type" : i2s(0xA0),
+ *      "sn"   : 123,
  *
- *      app   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
- *      extra : info         // others
+ *      "app"   : "{APP_ID}",  // application (e.g.: "chat.dim.sechat")
+ *      "extra" : info         // others
  *  }
  */
 @interface DIMApplicationContent : DIMContent <DKDAppContent>

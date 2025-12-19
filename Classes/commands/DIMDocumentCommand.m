@@ -62,11 +62,6 @@
     return self;
 }
 
-- (instancetype)initWithID:(id<MKMID>)did {
-    NSArray<id<MKMDocument>> *docs = @[];
-    return [self initWithID:did meta:nil documents:docs];
-}
-
 - (instancetype)initWithID:(id<MKMID>)did
                       meta:(id<MKMMeta>)meta
                  documents:(NSArray<id<MKMDocument>> *)docs {
@@ -82,14 +77,18 @@
 
 - (instancetype)initWithID:(id<MKMID>)did
                   lastTime:(NSDate *)time {
-    NSArray<id<MKMDocument>> *docs = @[];
-    if (self = [self initWithID:did meta:nil documents:docs]) {
+    if (self = [self initWithID:did meta:nil documents:@[]]) {
         // last document time
         if (time) {
             [self setDate:time forKey:@"last_time"];
         }
     }
     return self;
+}
+
+- (instancetype)initWithID:(id<MKMID>)did {
+    NSArray<id<MKMDocument>> *docs = @[];
+    return [self initWithID:did meta:nil documents:docs];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone {
@@ -102,16 +101,18 @@
 
 // Override
 - (NSArray<id<MKMDocument>> *)documents {
-    if (!_documents) {
+    NSArray<id<MKMDocument>> * docs = _documents;
+    if (!docs) {
         id array = [self objectForKey:@"documents"];
         if ([array isKindOfClass:[NSArray class]]) {
-            _documents = MKMDocumentConvert(array);
+            docs = MKMDocumentConvert(array);
         } else {
             NSAssert(array == nil, @"documents error: %@", array);
-            _documents = @[];
+            docs = @[];
         }
+        _documents = docs;
     }
-    return _documents;
+    return docs;
 }
 
 // Override

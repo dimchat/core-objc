@@ -39,9 +39,16 @@
 
 #import "DIMCustomizedContent.h"
 
-DIMCustomizedContent *DIMCustomizedContentCreate(NSString *app,
+DIMCustomizedContent *DIMCustomizedContentCreate(NSString * _Nullable type,
+                                                 NSString *app,
                                                  NSString *mod,
                                                  NSString *act) {
+    if (type) {
+        return [[DIMCustomizedContent alloc] initWithType:type
+                                              application:app
+                                               moduleName:mod
+                                               actionName:act];
+    }
     return [[DIMCustomizedContent alloc] initWithApplication:app
                                                   moduleName:mod
                                                   actionName:act];

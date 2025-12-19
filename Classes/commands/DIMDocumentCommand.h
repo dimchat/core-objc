@@ -41,16 +41,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 123,
+/**
+ *  Document command: {
  *
- *      command   : "documents", // command name
- *      did       : "{ID}",      // entity ID
- *      meta      : {...},       // only for handshaking with new friend
- *      documents : [...],       // when this is null, means to query
- *      last_time : 12345        // old document time for querying
+ *      "type" : i2s(0x88),
+ *      "sn"   : 123,
+ *
+ *      "command"   : "documents", // command name
+ *      "did"       : "{ID}",      // entity ID
+ *      "meta"      : {...},       // only for handshaking with new friend
+ *      "documents" : [...],       // when this is null, means to query
+ *      "last_time" : 12345        // old document time for querying
  *  }
  */
 @protocol DKDDocumentCommand <DKDMetaCommand>
