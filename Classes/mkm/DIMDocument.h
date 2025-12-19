@@ -44,6 +44,18 @@ FOUNDATION_EXPORT NSString * const MKMDocumentType_Visa;     // for user info (c
 FOUNDATION_EXPORT NSString * const MKMDocumentType_Profile;  // for user profile (reserved)
 FOUNDATION_EXPORT NSString * const MKMDocumentType_Bulletin; // for group info (owner, administrators, ...)
 
+/**
+ *  User/Group Profile
+ *  ~~~~~~~~~~~~~~~~~~
+ *  This class is used to generate entity profile
+ *
+ *      data format: {
+ *          "did"       : "EntityID",        // entity ID
+ *          "type"      : "visa",            // "bulletin", ...
+ *          "data"      : "{JSON}",          // data = json_encode(info)
+ *          "signature" : "{BASE64_ENCODE}"  // signature = sign(data, SK);
+ *      }
+ */
 @interface DIMDocument : MKDictionary <MKMDocument>
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict

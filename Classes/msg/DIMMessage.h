@@ -67,10 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
  *  with the envelope fields, such as 'sender', 'receiver', and 'time'
  *
  *  data format: {
+ *
  *      //-- envelope
- *      sender   : "moki@xxx",
- *      receiver : "hulk@yyy",
- *      time     : 123,
+ *      "sender"   : "moki@xxx",
+ *      "receiver" : "hulk@yyy",
+ *      "time"     : 123,
+ *
  *      //-- body
  *      ...
  *  }

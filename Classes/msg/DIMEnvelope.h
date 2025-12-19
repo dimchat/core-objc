@@ -46,9 +46,10 @@ NS_ASSUME_NONNULL_BEGIN
  *  which contains 'sender', 'receiver' and 'time'
  *
  *  data format: {
- *      sender   : "moki@xxx",
- *      receiver : "hulk@yyy",
- *      time     : 123
+ *
+ *      "sender"   : "moki@xxx",
+ *      "receiver" : "hulk@yyy",
+ *      "time"     : 123
  *  }
  */
 @interface DIMEnvelope : MKDictionary <DKDEnvelope>

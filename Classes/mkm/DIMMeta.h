@@ -82,10 +82,10 @@ FOUNDATION_EXPORT NSString * const MKMMetaType_ExETH; // "5": username@eth_addre
  *  This class is used to generate entity ID
  *
  *      data format: {
- *          type        : 1,              // algorithm version
- *          key         : "{public key}", // PK = secp256k1(SK);
- *          seed        : "moKy",         // user/group name
- *          fingerprint : "..."           // CT = sign(seed, SK);
+ *          "type"        : i2s(1),            // algorithm version
+ *          "key"         : {...},             // PK = secp256k1(SK);
+ *          "seed"        : "moKy",            // user/group name
+ *          "fingerprint" : "{BASE64_ENCODE}"  // CT = sign(seed, SK);
  *      }
  *
  *      algorithm:

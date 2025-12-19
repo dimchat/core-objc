@@ -72,9 +72,9 @@
         when = [[NSDate alloc] init];
     }
     NSDictionary *dict = @{
-        @"sender":[from string],
-        @"receiver":[to string],
-        @"time":@([when timeIntervalSince1970])
+        @"sender"   : [from string],
+        @"receiver" : [to string],
+        @"time"     : @([when timeIntervalSince1970])
     };
     if (self = [super initWithDictionary:dict]) {
         _sender = from;
@@ -96,22 +96,26 @@
 
 // Override
 - (id<MKMID>)sender {
-    if (!_sender) {
-        _sender = MKMIDParse([self objectForKey:@"sender"]);
-        NSAssert(_sender, @"message sender not found: %@", self);
+    id<MKMID> did = _sender;
+    if (!did) {
+        did = MKMIDParse([self objectForKey:@"sender"]);
+        NSAssert(did, @"message sender not found: %@", self.dictionary);
+        _sender = did;
     }
-    return _sender;
+    return did;
 }
 
 // Override
 - (id<MKMID>)receiver {
-    if (!_receiver) {
-        _receiver = MKMIDParse([self objectForKey:@"receiver"]);
-        if (!_receiver) {
-            _receiver = MKMAnyone;
+    id<MKMID> did = _receiver;
+    if (!did) {
+        did = MKMIDParse([self objectForKey:@"receiver"]);
+        if (!did) {
+            did = MKMAnyone;
         }
+        _receiver = did;
     }
-    return _receiver;
+    return did;
 }
 
 // Override

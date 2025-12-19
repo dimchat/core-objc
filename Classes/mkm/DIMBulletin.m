@@ -84,7 +84,7 @@
 
 // Override
 - (nullable id<MKMID>)founder {
-    return MKMIDParse([self objectForKey:@"founder"]);
+    return MKMIDParse([self propertyForKey:@"founder"]);
 }
 
 @end

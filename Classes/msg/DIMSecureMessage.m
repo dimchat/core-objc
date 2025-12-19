@@ -45,7 +45,6 @@
 
 @property (strong, nonatomic) NSData *data;
 
-@property (strong, nonatomic, nullable) id<MKTransportableData> encKey;
 @property (strong, nonatomic, nullable) NSDictionary *encryptedKeys;
 
 @end
@@ -62,7 +61,6 @@
     if (self = [super initWithDictionary:dict]) {
         // lazy
         _data = nil;
-        _encKey = nil;
         _encryptedKeys = nil;
     }
     
@@ -73,7 +71,6 @@
     DIMSecureMessage *sMsg = [super copyWithZone:zone];
     if (sMsg) {
         sMsg.data = _data;
-        sMsg.encKey = _encKey;
         sMsg.encryptedKeys = _encryptedKeys;
     }
     return sMsg;
@@ -81,54 +78,41 @@
 
 // Override
 - (NSData *)data {
-    if (!_data) {
+    NSData *bin = _data;
+    if (!bin) {
         id text = [self objectForKey:@"data"];
         if (!text) {
             NSAssert(false, @"content data cannot be empty");
         } else if (![DIMMessage isBroadcast:self]) {
             // message content had been encrypted by a symmetric key,
             // so the data should be encoded here (with algorithm 'base64' as default).
-            _data = MKTransportableDataDecode(text);
+            bin = MKTransportableDataDecode(text);
         } else if ([text isKindOfClass:[NSString class]]) {
             // broadcast message content will not be encrypted (just encoded to JsON),
             // so return the string data directly
-            _data = MKUTF8Encode(text);  // JsON
+            bin = MKUTF8Encode(text);  // JsON
         } else {
             NSAssert(false, @"content data error: %@", text);
         }
+        _data = bin;
     }
-    return _data;
-}
-
-// Override
-- (NSData *)encryptedKey {
-    id<MKTransportableData> ted = _encKey;
-    if (!ted) {
-        id base64 = [self objectForKey:@"key"];
-        if (!base64) {
-            // check 'keys'
-            NSDictionary *keys = self.encryptedKeys;
-            if (keys) {
-                NSString *member = [self.receiver string];
-                base64 = [keys objectForKey:member];
-            }
-        }
-        _encKey = ted = MKTransportableDataParse(base64);
-    }
-    return [ted data];
+    return bin;
 }
 
 // Override
 - (NSDictionary *)encryptedKeys {
-    if (!_encryptedKeys) {
-        id keys = [self objectForKey:@"keys"];
-        if ([keys isKindOfClass:[NSDictionary class]]) {
-            _encryptedKeys = keys;
+    NSDictionary *keys = _encryptedKeys;
+    if (!keys) {
+        id dict = [self objectForKey:@"keys"];
+        if ([dict isKindOfClass:[NSDictionary class]]) {
+            keys = dict;
         } else {
-            NSAssert(keys == nil, @"message keys error: %@", keys);
+            NSAssert(dict == nil, @"message keys error: %@", dict);
+            // TODO: get from 'key'
         }
+        _encryptedKeys = keys;
     }
-    return _encryptedKeys;
+    return keys;
 }
 
 @end
