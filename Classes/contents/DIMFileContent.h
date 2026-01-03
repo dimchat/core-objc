@@ -42,20 +42,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  File message: {
- *      type : i2s(0x10),
- *      sn   : 123,
+/**
+ *  File content: {
  *
- *      data     : "...",        // base64_encode(fileContent)
- *      filename : "photo.png",
+ *      "type" : i2s(0x10),
+ *      "sn"   : 123,
  *
- *      URL      : "http://...", // download from CDN
+ *      "data"     : "...",        // base64_encode(fileContent)
+ *      "filename" : "photo.png",
+ *
+ *      "URL"      : "http://...", // download from CDN
  *      // before fileContent uploaded to a public CDN,
  *      // it should be encrypted by a symmetric key
- *      key      : {             // symmetric key to decrypt file content
- *          algorithm : "AES",   // "DES", ...
- *          data      : "{BASE64_ENCODE}",
+ *      "key"      : {             // symmetric key to decrypt file content
+ *          "algorithm" : "AES",   // "DES", ...
+ *          "data"      : "{BASE64_ENCODE}",
  *          ...
  *      }
  *  }
@@ -93,7 +94,7 @@ NS_DESIGNATED_INITIALIZER;
 extern "C" {
 #endif
 
-DIMFileContent *DIMFileContentFromData(id<MKTransportableData> data,
+DIMFileContent *DIMFileContentFromData(id<MKTransportableData> file,
                                        NSString *filename);
 
 DIMFileContent *DIMFileContentFromURL(NSURL *url,

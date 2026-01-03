@@ -39,24 +39,25 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Image message: {
- *      type : i2s(0x12),
- *      sn   : 123,
+/**
+ *  Image File content: {
  *
- *      data     : "...",        // base64_encode(fileContent)
- *      filename : "photo.png",
+ *      "type" : i2s(0x12),
+ *      "sn"   : 123,
  *
- *      URL      : "http://...", // download from CDN
+ *      "data"     : "...",        // base64_encode(fileContent)
+ *      "filename" : "photo.png",
+ *
+ *      "URL"      : "http://...", // download from CDN
  *      // before fileContent uploaded to a public CDN,
  *      // it should be encrypted by a symmetric key
- *      key      : {             // symmetric key to decrypt file content
- *          algorithm : "AES",   // "DES", ...
- *          data      : "{BASE64_ENCODE}",
+ *      "key"      : {             // symmetric key to decrypt file content
+ *          "algorithm" : "AES",   // "DES", ...
+ *          "data"      : "{BASE64_ENCODE}",
  *          ...
  *      },
  *
- *      thumbnail : "data:image/jpeg;base64,..."
+ *      "thumbnail" : "data:image/jpeg;base64,..."
  *  }
  */
 @protocol DKDImageContent <DKDFileContent>

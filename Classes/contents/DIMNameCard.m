@@ -41,6 +41,7 @@
 
 @interface DIMNameCard () {
     
+    // avatar URL
     id<MKPortableNetworkFile> _image;
 }
 
@@ -90,16 +91,13 @@
 
 // Override
 - (id<MKPortableNetworkFile>)avatar {
-    id<MKPortableNetworkFile> pnf = _image;
-    if (!pnf) {
-        id url = [self objectForKey:@"avatar"];
-        if ([url length] == 0) {
-            // ignore empty URL
-        } else {
-            _image = pnf = MKPortableNetworkFileParse(url);
-        }
+    id<MKPortableNetworkFile> img = _image;
+    if (!img) {
+        id uri = [self objectForKey:@"avatar"];
+        img = MKPortableNetworkFileParse(uri);
+        _image = img;
     }
-    return pnf;
+    return img;
 }
 
 @end

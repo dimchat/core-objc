@@ -42,13 +42,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- *  Name Card: {
- *      type : i2s(0x33),
- *      sn   : 123,
+ *  Name Card content: {
  *
- *      did    : "{ID}",        // contact's ID
- *      name   : "{nickname}",  // contact's name
- *      avatar : "{URL}",       // avatar - PNF(URL)
+ *      "type" : i2s(0x33),
+ *      "sn"   : 123,
+ *
+ *      "did"    : "{ID}",        // contact's ID
+ *      "name"   : "{nickname}",  // contact's name
+ *      "avatar" : "{URL}",       // avatar - PNF(URL)
  *      ...
  *  }
  */

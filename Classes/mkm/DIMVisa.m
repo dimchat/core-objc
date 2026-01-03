@@ -43,7 +43,7 @@
     id<MKEncryptKey> _key;
     
     // avatar URL
-    id<MKPortableNetworkFile> _pnf;
+    id<MKPortableNetworkFile> _image;
 }
 
 @end
@@ -54,7 +54,7 @@
     if (self = [super initWithDictionary:dict]) {
         // lazy
         _key = nil;
-        _pnf = nil;
+        _image = nil;
     }
     return self;
 }
@@ -65,7 +65,7 @@
     if (self = [super initWithType:type data:json signature:CT]) {
         // lazy
         _key = nil;
-        _pnf = nil;
+        _image = nil;
     }
     return self;
 }
@@ -74,7 +74,7 @@
     if (self = [super initWithType:type]) {
         // lazy
         _key = nil;
-        _pnf = nil;
+        _image = nil;
     }
     return self;
 }
@@ -123,23 +123,23 @@
 
 // Override
 - (id<MKPortableNetworkFile>)avatar {
-    id<MKPortableNetworkFile> img = _pnf;
+    id<MKPortableNetworkFile> img = _image;
     if (!img) {
-        id url = [self propertyForKey:@"avatar"];
-        if ([url length] == 0) {
-            // ignore empty URL
-        } else {
-            img = MKPortableNetworkFileParse(url);
-            _pnf = img;
-        }
+        id uri = [self propertyForKey:@"avatar"];
+        img = MKPortableNetworkFileParse(uri);
+        _image = img;
     }
     return img;
 }
 
 // Override
-- (void)setAvatar:(id<MKPortableNetworkFile>)avatar {
-    [self setProperty:avatar.object forKey:@"avatar"];
-    _pnf = avatar;
+- (void)setAvatar:(id<MKPortableNetworkFile>)img {
+    if ([img count] == 0) {
+        [self setProperty:nil forKey:@"avatar"];
+    } else {
+        [self setProperty:img.object forKey:@"avatar"];
+    }
+    _image = img;
 }
 
 @end

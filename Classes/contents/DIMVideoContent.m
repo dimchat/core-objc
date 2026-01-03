@@ -41,7 +41,7 @@
 
 @interface DIMVideoContent () {
     
-    id<MKTransportableData> _snapshot;
+    id<MKPortableNetworkFile> _snapshot;
 }
 
 @end
@@ -59,12 +59,12 @@
 
 /* designated initializer */
 - (instancetype)initWithType:(NSString *)type
-                        data:(nullable id<MKTransportableData>)file
+                        data:(nullable id<MKTransportableData>)video
                     filename:(nullable NSString *)name
                          url:(nullable NSURL *)remote
                     password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type
-                              data:file
+                              data:video
                           filename:name
                                url:remote
                           password:key]) {
@@ -92,26 +92,24 @@
 }
 
 // Override
-- (nullable NSData *)snapshot {
-    id<MKTransportableData> ted = _snapshot;
-    if (!ted) {
-        id base64 = [self objectForKey:@"snapshot"];
-        _snapshot = ted = MKTransportableDataParse(base64);
+- (nullable id<MKPortableNetworkFile>)snapshot {
+    id<MKPortableNetworkFile> img = _snapshot;
+    if (!img) {
+        id uri = [self objectForKey:@"snapshot"];
+        img = MKPortableNetworkFileParse(uri);
+        _snapshot = img;
     }
-    return [ted data];
+    return img;
 }
 
 // Override
-- (void)setSnapshot:(NSData *)snapshot {
-    id<MKTransportableData> ted;
-    if ([snapshot length] == 0) {
-        ted = nil;
+- (void)setSnapshot:(id<MKPortableNetworkFile>)img {
+    if ([img count] == 0) {
         [self removeObjectForKey:@"snapshot"];
     } else {
-        ted = MKTransportableDataCreate(snapshot, nil);
-        [self setObject:ted.object forKey:@"snapshot"];
+        [self setObject:img.object forKey:@"snapshot"];
     }
-    _snapshot = ted;
+    _snapshot = img;
 }
 
 @end

@@ -271,15 +271,9 @@ NSString * const MKMDocumentType_Bulletin = @"bulletin";
         return nil;
     }
     NSString *data = MKJsonEncode(info);
-    if ([data length] == 0) {
-        NSAssert(false, @"should not happen: %@", info);
-        return nil;
-    }
+    NSAssert([data length] > 0, @"should not happen: %@", info);
     sig = [SK sign:MKUTF8Encode(data)];
-    if ([sig length] == 0) {
-        NSAssert(false, @"should not happen");
-        return nil;
-    }
+    NSAssert([sig length] > 0, @"should not happen: %@", info);
     id<MKTransportableData> ted = MKTransportableDataCreate(sig, nil);
     // 3. update 'data' & 'signature' fields
     [self setObject:data forKey:@"data"];

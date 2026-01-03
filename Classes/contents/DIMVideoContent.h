@@ -39,24 +39,25 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Video message: {
- *      type : 0x16,
- *      sn   : 123,
+/**
+ *  Video File content: {
  *
- *      data     : "...",        // base64_encode(fileContent)
- *      filename : "movie.mp4",
+ *      "type" : 0x16,
+ *      "sn"   : 123,
  *
- *      URL      : "http://...", // download from CDN
+ *      "data"     : "...",        // base64_encode(fileContent)
+ *      "filename" : "movie.mp4",
+ *
+ *      "URL"      : "http://...", // download from CDN
  *      // before fileContent uploaded to a public CDN,
  *      // it should be encrypted by a symmetric key
- *      key      : {             // symmetric key to decrypt file content
- *          algorithm : "AES",   // "DES", ...
- *          data      : "{BASE64_ENCODE}",
+ *      "key"      : {             // symmetric key to decrypt file content
+ *          "algorithm" : "AES",   // "DES", ...
+ *          "data"      : "{BASE64_ENCODE}",
  *          ...
  *      },
  *
- *      snapshot : "data:image/jpeg;base64,..."
+ *      "snapshot" : "data:image/jpeg;base64,..."
  *  }
  */
 @protocol DKDVideoContent <DKDFileContent>

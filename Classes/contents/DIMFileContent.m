@@ -134,10 +134,10 @@
 
 #pragma mark - Conveniences
 
-DIMFileContent *DIMFileContentFromData(id<MKTransportableData> data,
+DIMFileContent *DIMFileContentFromData(id<MKTransportableData> file,
                                        NSString *filename) {
     return [[DIMFileContent alloc] initWithType:DKDContentType_File
-                                           data:data
+                                           data:file
                                        filename:filename
                                             url:nil
                                        password:nil];

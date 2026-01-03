@@ -41,7 +41,7 @@
 
 @interface DIMPageContent () {
     
-    id<MKTransportableData> _image;
+    id<MKPortableNetworkFile> _icon;
     NSURL *_url;
 }
 
@@ -52,7 +52,7 @@
 /* designated initializer */
 - (instancetype)initWithType:(NSString *)type {
     if (self = [super initWithType:type]) {
-        _image = nil;
+        _icon = nil;
         _url = nil;
     }
     return self;
@@ -62,7 +62,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
-        _image = nil;
+        _icon = nil;
         _url = nil;
     }
     return self;
@@ -71,7 +71,7 @@
 - (instancetype)initWithURL:(NSURL *)url
                       title:(NSString *)title
                 description:(nullable NSString *)desc
-                       icon:(nullable id<MKTransportableData>)icon {
+                       icon:(nullable id<MKPortableNetworkFile>)icon {
     if (self = [self initWithType:DKDContentType_Page]) {
         self.URL = url;
         self.title = title;
@@ -79,7 +79,7 @@
             self.desc = desc;
         }
         if (icon) {
-            [self _setImage:icon];
+            self.icon = icon;
         }
     }
     return self;
@@ -88,7 +88,7 @@
 - (instancetype)initWithHTML:(NSString *)html
                        title:(NSString *)title
                  description:(nullable NSString *)desc
-                        icon:(nullable id<MKTransportableData>)icon {
+                        icon:(nullable id<MKPortableNetworkFile>)icon {
     if (self = [self initWithType:DKDContentType_Page]) {
         self.HTML = html;
         self.title = title;
@@ -96,7 +96,7 @@
             self.desc = desc;
         }
         if (icon) {
-            [self _setImage:icon];
+            self.icon = icon;
         }
     }
     return self;
@@ -117,33 +117,24 @@
 #pragma mark favicon.ico
 
 // Override
-- (NSData *)icon {
-    id<MKTransportableData> ted = _image;
-    if (!ted) {
-        id base64 = [self objectForKey:@"icon"];
-        _image = ted = MKTransportableDataParse(base64);
+- (id<MKPortableNetworkFile>)icon {
+    id<MKPortableNetworkFile> img = _icon;
+    if (!img) {
+        id uri = [self objectForKey:@"icon"];
+        img = MKPortableNetworkFileParse(uri);
+        _icon = img;
     }
-    return [ted data];
+    return img;
 }
 
 // Override
-- (void)setIcon:(NSData *)icon {
-    id<MKTransportableData> ted;
-    if ([icon length] == 0) {
-        ted = nil;
-    } else {
-        ted = MKTransportableDataCreate(icon, nil);
-    }
-    [self _setImage:ted];
-}
-
-- (void)_setImage:(id<MKTransportableData>)ted {
-    if (!ted) {
+- (void)setIcon:(id<MKPortableNetworkFile>)img {
+    if ([img count] == 0) {
         [self removeObjectForKey:@"icon"];
     } else {
-        [self setObject:ted.object forKey:@"icon"];
+        [self setObject:img.object forKey:@"icon"];
     }
-    _image = ted;
+    _icon = img;
 }
 
 #pragma mark keyword /description
@@ -196,7 +187,7 @@
 DIMPageContent *DIMPageContentFromURL(NSURL *url,
                                       NSString *title,
                                       NSString *desc,
-                                      id<MKTransportableData> icon) {
+                                      id<MKPortableNetworkFile> icon) {
     return [[DIMPageContent alloc] initWithURL:url
                                          title:title
                                    description:desc
@@ -206,7 +197,7 @@ DIMPageContent *DIMPageContentFromURL(NSURL *url,
 DIMPageContent *DIMPageContentFromHTML(NSString *html,
                                        NSString *title,
                                        NSString * _Nullable desc,
-                                       _Nullable id<MKTransportableData> icon) {
+                                       _Nullable id<MKPortableNetworkFile> icon) {
     return [[DIMPageContent alloc] initWithHTML:html
                                           title:title
                                     description:desc

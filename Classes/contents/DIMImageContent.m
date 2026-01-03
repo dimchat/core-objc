@@ -41,7 +41,7 @@
 
 @interface DIMImageContent () {
     
-    id<MKTransportableData> _thumbnail;
+    id<MKPortableNetworkFile> _thumbnail;
 }
 
 @end
@@ -59,12 +59,12 @@
 
 /* designated initializer */
 - (instancetype)initWithType:(NSString *)type
-                        data:(nullable id<MKTransportableData>)file
+                        data:(nullable id<MKTransportableData>)image
                     filename:(nullable NSString *)name
                          url:(nullable NSURL *)remote
                     password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type
-                              data:file
+                              data:image
                           filename:name
                                url:remote
                           password:key]) {
@@ -92,26 +92,24 @@
 }
 
 // Override
-- (nullable NSData *)thumbnail {
-    id<MKTransportableData> ted = _thumbnail;
-    if (!ted) {
-        id base64 = [self objectForKey:@"thumbnail"];
-        _thumbnail = ted = MKTransportableDataParse(base64);
+- (nullable id<MKPortableNetworkFile>)thumbnail {
+    id<MKPortableNetworkFile> img = _thumbnail;
+    if (!img) {
+        id uri = [self objectForKey:@"thumbnail"];
+        img = MKPortableNetworkFileParse(uri);
+        _thumbnail = img;
     }
-    return [ted data];
+    return img;
 }
 
 // Override
-- (void)setThumbnail:(NSData *)thumbnail {
-    id<MKTransportableData> ted;
-    if ([thumbnail length] == 0) {
-        ted = nil;
+- (void)setThumbnail:(id<MKPortableNetworkFile>)img {
+    if ([img count] == 0) {
         [self removeObjectForKey:@"thumbnail"];
     } else {
-        ted = MKTransportableDataCreate(thumbnail, nil);
-        [self setObject:ted.object forKey:@"thumbnail"];
+        [self setObject:img.object forKey:@"thumbnail"];
     }
-    _thumbnail = ted;
+    _thumbnail = img;
 }
 
 @end
