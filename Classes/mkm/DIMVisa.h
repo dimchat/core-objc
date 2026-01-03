@@ -50,9 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol MKMVisa <MKMDocument>
 
-// Login Point
-@property (readonly, strong, nonatomic, nullable) NSString *terminal;
-
 // Nickname
 @property (strong, nonatomic, nullable) NSString *name;
 

@@ -46,8 +46,6 @@
     id<MKPortableNetworkFile> _pnf;
 }
 
-@property (readonly, strong, nonatomic) id<MKMID> identifier;
-
 @end
 
 @implementation DIMVisa
@@ -88,21 +86,6 @@
 - (instancetype)initWithData:(NSString *)json
                    signature:(id<MKTransportableData>)CT {
     return [self initWithType:MKMDocumentType_Visa data:json signature:CT];
-}
-
-- (id<MKMID>)identifier {
-    return MKMIDParse([self objectForKey:@"did"]);
-}
-
-// Override
-- (NSString *)terminal {
-    NSString *location = [self stringForKey:@"terminal" defaultValue:nil];
-    if (!location) {
-        id<MKMID> did = [self identifier];
-        NSAssert(did, @"visa ID not found: %@", self.dictionary);
-        location = [did terminal];
-    }
-    return location;
 }
 
 // Override
