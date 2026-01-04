@@ -53,7 +53,7 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
 @implementation DIMBaseDataWrapper
 
 /* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
+- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
         _data = nil;
@@ -61,29 +61,30 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
     return self;
 }
 
-/* designated initializer */
-- (instancetype)init {
-    if (self = [super init]) {
-        _data = nil;
+// Override
+- (BOOL)isEmpty {
+    if ([super isEmpty]) {
+        return YES;
     }
-    return self;
+    NSData *binary = _data;
+    if ([binary length] > 0) {
+        return NO;
+    }
+    NSString *text = [self stringForKey:@"data"];
+    return [text length] == 0;
 }
 
-//- (BOOL)isEmpty {
-//    if ([self count] == 0) {
-//        return YES;
-//    }
-//    NSData *binary = [self data];
-//    return [binary length] == 0;
-//}
-
+// Override
 - (NSString *)encode {
-    NSString *text = [self stringForKey:@"data" defaultValue:nil];
+    NSString *text = [self stringForKey:@"data"];
     if ([text length] == 0) {
         return @"";
     }
-    NSString *algo = [self stringForKey:@"algorithm" defaultValue:nil];
+    NSString *algo = [self stringForKey:@"algorithm"];
     if (algo == nil || [algo isEqualToString:MKEncodeAlgorithm_Default]) {
+        algo = @"";
+    }
+    if ([algo length] == 0) {
         // 0. "{BASE64_ENCODE}"
         return text;
     } else {
@@ -92,10 +93,11 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
     }
 }
 
+// Override
 - (NSString *)encode:(NSString *)mimeType {
     NSAssert(![mimeType containsString:@" "], @"content-type error: %@", mimeType);
     // get encoded data
-    NSString *text = [self stringForKey:@"data" defaultValue:nil];
+    NSString *text = [self stringForKey:@"data"];
     if ([text length] == 0) {
         return @"";
     }
@@ -104,14 +106,16 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
     return [[NSString alloc] initWithFormat:@"data:%@;%@,%@", mimeType, algo, text];
 }
 
+// Override
 - (NSString *)algorithm {
-    NSString *algo = [self stringForKey:@"algorithm" defaultValue:nil];
+    NSString *algo = [self stringForKey:@"algorithm"];
     if ([algo length] == 0) {
         algo = MKEncodeAlgorithm_Default;
     }
     return algo;
 }
 
+// Override
 - (void)setAlgorithm:(NSString *)algorithm {
     if ([algorithm length] == 0/* ||
         [algorithm isEqualToString:MKEncodeAlgorithm_Default]*/) {
@@ -121,10 +125,11 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
     }
 }
 
+// Override
 - (NSData *)data {
     NSData *binary = _data;
     if (binary == nil) {
-        NSString *text = [self stringForKey:@"data" defaultValue:nil];
+        NSString *text = [self stringForKey:@"data"];
         if ([text length] == 0) {
             NSAssert(false, @"TED data empty: %@", [self dictionary]);
         } else {

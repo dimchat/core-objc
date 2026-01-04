@@ -35,43 +35,27 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/Format.h>
-#import <MingKeMing/Crypto.h>
+#import <DIMCore/DIMNetworkFormatAccess.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  File Content MixIn: {
  *
- *      data     : "...",        // base64_encode(fileContent)
- *      filename : "photo.png",
+ *      "data"     : "...",        // base64_encode(fileContent)
+ *      "filename" : "photo.png",
  *
- *      URL      : "http://...", // download from CDN
+ *      "URL"      : "http://...", // download from CDN
  *      // before fileContent uploaded to a public CDN,
  *      // it should be encrypted by a symmetric key
- *      key      : {             // symmetric key to decrypt file content
- *          algorithm : "AES",   // "DES", ...
- *          data      : "{BASE64_ENCODE}",
+ *      "key"      : {             // symmetric key to decrypt file content
+ *          "algorithm" : "AES",   // "DES", ...
+ *          "data"      : "{BASE64_ENCODE}",
  *          ...
  *      }
  *  }
  */
-@interface DIMBaseFileWrapper : MKDictionary
-
-// file data
-@property (strong, nonatomic, nullable) id<MKTransportableData> data;
-
-// set binary data
-- (void)setBinary:(NSData *)data;
-
-// file name
-@property (strong, nonatomic, nullable) NSString *filename;
-
-// download URL
-@property (strong, nonatomic, nullable) NSURL *URL;
-
-// decrypt key
-@property (strong, nonatomic, nullable) id<MKDecryptKey> password;
+@interface DIMBaseFileWrapper : DIMBaseNetworkFormatWrapper <DIMPNFWrapper>
 
 @end
 

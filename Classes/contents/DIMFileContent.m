@@ -36,13 +36,13 @@
 //
 
 #import "DKDContentType.h"
-#import "DIMBaseFileWrapper.h"
+#import "DIMNetworkFormatAccess.h"
 
 #import "DIMFileContent.h"
 
 @interface DIMFileContent () {
     
-    DIMBaseFileWrapper *_wrapper;
+    id<DIMPNFWrapper> _wrapper;
 }
 
 @end
@@ -53,7 +53,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         dict = [self dictionary];
-        _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
+        _wrapper = [self createWrapper];
     }
     return self;
 }
@@ -69,8 +69,7 @@
                          url:(nullable NSURL *)remote
                     password:(nullable id<MKDecryptKey>)key {
     if (self = [super initWithType:type]) {
-        NSMutableDictionary *dict = [self dictionary];
-        _wrapper = [[DIMBaseFileWrapper alloc] initWithDictionary:dict];
+        _wrapper = [self createWrapper];
         if (file) {
             [_wrapper setData:file];
         }
@@ -128,6 +127,17 @@
 // Override
 - (void)setPassword:(id<MKDecryptKey>)password {
     [_wrapper setPassword:password];
+}
+
+@end
+
+@implementation DIMFileContent (Wrapper)
+
+// protected
+- (id<DIMPNFWrapper>)createWrapper {
+    DIMSharedNetworkFormatAccess *access = [DIMSharedNetworkFormatAccess sharedInstance];
+    id<DIMPNFWrapperFactory> factory = [access pnfWrapperFactory];
+    return [factory createPNFWrapper:self.dictionary];
 }
 
 @end

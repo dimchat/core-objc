@@ -45,6 +45,7 @@
 #define __CORE_CRYPTO__ 1
 
 // Format
+#import <DIMCore/DIMNetworkFormatAccess.h>
 #import <DIMCore/DIMBaseDataWrapper.h>
 #import <DIMCore/DIMBaseFileWrapper.h>
 

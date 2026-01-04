@@ -54,7 +54,7 @@
 @implementation DIMBaseFileWrapper
 
 /* designated initializer */
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
+- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
         _attachment = nil;
@@ -64,18 +64,9 @@
     return self;
 }
 
-/* designated initializer */
-- (instancetype)init {
-    if (self = [super init]) {
-        _attachment = nil;
-        _remoteURL = nil;
-        _password = nil;
-    }
-    return self;
-}
-
 #pragma mark file data
 
+// Override
 - (id<MKTransportableData>)data {
     id<MKTransportableData> ted = _attachment;
     if (!ted) {
@@ -85,6 +76,7 @@
     return ted;
 }
 
+// Override
 - (void)setData:(id<MKTransportableData>)ted {
     if (!ted) {
         [self removeObjectForKey:@"data"];
@@ -94,6 +86,7 @@
     _attachment = ted;
 }
 
+// Override
 - (void)setBinary:(NSData *)data {
     id<MKTransportableData> ted;
     if ([data length] == 0) {
@@ -108,10 +101,12 @@
 
 #pragma mark file name
 
+// Override
 - (NSString *)filename {
-    return [self stringForKey:@"filename" defaultValue:nil];
+    return [self stringForKey:@"filename"];
 }
 
+// Override
 - (void)setFilename:(NSString *)filename {
     if ([filename length] == 0) {
         [self removeObjectForKey:@"filename"];
@@ -122,10 +117,11 @@
 
 #pragma mark download URL
 
+// Override
 - (NSURL *)URL {
     NSURL *remote = _remoteURL;
     if (!remote) {
-        NSString *locator = [self stringForKey:@"URL" defaultValue:nil];
+        NSString *locator = [self stringForKey:@"URL"];
         if ([locator length] > 0) {
             _remoteURL = remote = [[NSURL alloc] initWithString:locator];
         }
@@ -133,6 +129,7 @@
     return remote;
 }
 
+// Override
 - (void)setURL:(NSURL *)remote {
     if (!remote) {
         [self removeObjectForKey:@"URL"];
@@ -144,6 +141,7 @@
 
 #pragma mark decrypt key
 
+// Override
 - (id<MKDecryptKey>)password {
     id<MKDecryptKey> key = _password;
     if (!key) {
@@ -161,6 +159,7 @@
     return key;
 }
 
+// Override
 - (void)setPassword:(id<MKDecryptKey>)key {
     [self setDictionary:key forKey:@"key"];
     _password = key;

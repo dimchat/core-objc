@@ -88,6 +88,15 @@ NS_DESIGNATED_INITIALIZER;
 
 @end
 
+@protocol DIMPNFWrapper;
+
+// protected
+@interface DIMFileContent (Wrapper)
+
+- (id<DIMPNFWrapper>)createWrapper;
+
+@end
+
 #pragma mark - Conveniences
 
 #ifdef __cplusplus

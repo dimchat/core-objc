@@ -80,6 +80,8 @@
 		E9E194032EB6977800C59A5E /* DaoKeDao.h in Headers */ = {isa = PBXBuildFile; fileRef = E9E194002EB6952B00C59A5E /* DaoKeDao.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9F3AA4621CBD02C009690F6 /* DIMCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F3AA3C21CBD02C009690F6 /* DIMCore.framework */; };
 		E9F3AA4B21CBD02C009690F6 /* DIMCoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */; };
+		E9FA0A5D2F0AE6AF00347B7D /* DIMNetworkFormatAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FA0A5C2F0AE6AF00347B7D /* DIMNetworkFormatAccess.m */; };
+		E9FA0A5E2F0AE6AF00347B7D /* DIMNetworkFormatAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FA0A5B2F0AE6AF00347B7D /* DIMNetworkFormatAccess.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC46AA2E918AFE00D15BBE /* DIMBulletin.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC46A82E918AFE00D15BBE /* DIMBulletin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E9FC46AB2E918AFE00D15BBE /* DIMBulletin.m in Sources */ = {isa = PBXBuildFile; fileRef = E9FC46A92E918AFE00D15BBE /* DIMBulletin.m */; };
 		E9FC46AE2E918C7400D15BBE /* DKDContentType.h in Headers */ = {isa = PBXBuildFile; fileRef = E9FC46AC2E918C7400D15BBE /* DKDContentType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -196,6 +198,8 @@
 		E9F3AA4521CBD02C009690F6 /* DIMCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DIMCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F3AA4A21CBD02C009690F6 /* DIMCoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMCoreTests.m; sourceTree = "<group>"; };
 		E9F3AA4C21CBD02C009690F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E9FA0A5B2F0AE6AF00347B7D /* DIMNetworkFormatAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMNetworkFormatAccess.h; sourceTree = "<group>"; };
+		E9FA0A5C2F0AE6AF00347B7D /* DIMNetworkFormatAccess.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMNetworkFormatAccess.m; sourceTree = "<group>"; };
 		E9FC46A82E918AFE00D15BBE /* DIMBulletin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DIMBulletin.h; sourceTree = "<group>"; };
 		E9FC46A92E918AFE00D15BBE /* DIMBulletin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DIMBulletin.m; sourceTree = "<group>"; };
 		E9FC46AC2E918C7400D15BBE /* DKDContentType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DKDContentType.h; sourceTree = "<group>"; };
@@ -347,6 +351,8 @@
 				E9DE96F82B21EC77009D3FD5 /* DIMBaseDataWrapper.m */,
 				E9DE96FB2B21EC8C009D3FD5 /* DIMBaseFileWrapper.h */,
 				E9DE96FC2B21EC8C009D3FD5 /* DIMBaseFileWrapper.m */,
+				E9FA0A5B2F0AE6AF00347B7D /* DIMNetworkFormatAccess.h */,
+				E9FA0A5C2F0AE6AF00347B7D /* DIMNetworkFormatAccess.m */,
 			);
 			path = format;
 			sourceTree = "<group>";
@@ -452,6 +458,7 @@
 				E9FC8E2522B92EE80013FCD3 /* DIMHistoryCommand.h in Headers */,
 				E966CD9B298AA54500FA9507 /* DIMEnvelope.h in Headers */,
 				E9DE97052B21EEB4009D3FD5 /* DIMReceiptCommand.h in Headers */,
+				E9FA0A5E2F0AE6AF00347B7D /* DIMNetworkFormatAccess.h in Headers */,
 				E9CF981121FF548F0092DD8B /* DIMCommand.h in Headers */,
 				E95D4A0628A034EE00523488 /* DIMArrayContent.h in Headers */,
 				E95A80CB22060142007EA611 /* DIMDocumentCommand.h in Headers */,
@@ -585,6 +592,7 @@
 				E9FC46AB2E918AFE00D15BBE /* DIMBulletin.m in Sources */,
 				E9CF981221FF548F0092DD8B /* DIMCommand.m in Sources */,
 				E9DE96E92B21EBD6009D3FD5 /* DIMAsymmetricKey.m in Sources */,
+				E9FA0A5D2F0AE6AF00347B7D /* DIMNetworkFormatAccess.m in Sources */,
 				E959651B239107C800DAA870 /* DIMImageContent.m in Sources */,
 				E964A16E298C183500AC76F1 /* DIMDocument.m in Sources */,
 				E966CDAF298AA5DD00FA9507 /* DIMReliableMessage.m in Sources */,

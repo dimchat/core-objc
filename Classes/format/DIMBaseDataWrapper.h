@@ -35,7 +35,7 @@
 //  Copyright © 2023 DIM Group. All rights reserved.
 //
 
-#import <MingKeMing/Format.h>
+#import <DIMCore/DIMNetworkFormatAccess.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,8 +52,8 @@ FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_HEX;     // hex
 /**
  *  Transportable Data MixIn: {
  *
- *      algorithm : "base64",
- *      data      : "...",     // base64_encode(data)
+ *      "algorithm" : "base64",
+ *      "data"      : "...",     // base64_encode(data)
  *      ...
  *  }
  *
@@ -62,31 +62,7 @@ FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_HEX;     // hex
  *      1. "base64,{BASE64_ENCODE}"
  *      2. "data:image/png;base64,{BASE64_ENCODE}"
  */
-@interface DIMBaseDataWrapper : MKDictionary
-
-//- (BOOL)isEmpty;
-
-/**
- *  toString()
- */
-- (NSString *)encode;
-
-/**
- *  Encode with 'Content-Type'
- *
- *  toString()
- */
-- (NSString *)encode:(NSString *)mimeType;
-
-/**
- *  encode algorithm
- */
-@property (strong, nonatomic) NSString *algorithm;
-
-/**
- *  binary data
- */
-@property (strong, nonatomic, nullable) NSData *data;
+@interface DIMBaseDataWrapper : DIMBaseNetworkFormatWrapper <DIMTEDWrapper>
 
 @end
 
