@@ -47,15 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMTEDWrapper <NSObject>
 
-// count == 0
-@property (readonly, nonatomic, getter=isEmpty) BOOL empty;
-
-/**
- *  Serialize data
- *
- *  toMap()
- */
-@property (readonly, strong, nonatomic) DIMNetworkFormatDataType *dictionary;
+- (BOOL)isEmpty;
 
 /**
  *  0. "{BASE64_ENCODE}"
@@ -89,9 +81,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol DIMPNFWrapper <NSObject>
 
-// count == 0
-@property (readonly, nonatomic, getter=isEmpty) BOOL empty;
-
 /**
  *  Serialize data
  *
@@ -118,12 +107,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DIMBaseNetworkFormatWrapper : NSObject
 
-// count == 0
-@property (readonly, nonatomic, getter=isEmpty) BOOL empty;
-
 /**
- *  Serialize data
- *
  *  toMap()
  */
 @property (readonly, strong, nonatomic) DIMNetworkFormatDataType *dictionary;
@@ -131,9 +115,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict
 NS_DESIGNATED_INITIALIZER;
 
-- (nullable id)objectForKey:(NSString *)aKey;
-- (void)setObject:(id)anObject forKey:(NSString *)aKey;
-- (void)removeObjectForKey:(NSString *)aKey;
+- (nullable id)objectForKey:(NSString *)key;
+- (void)setObject:(id)value forKey:(NSString *)key;
+- (void)removeObjectForKey:(NSString *)key;
 
 - (nullable NSString *)stringForKey:(NSString *)key;
 

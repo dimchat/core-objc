@@ -64,6 +64,16 @@
     return self;
 }
 
+// Override
+- (NSMutableDictionary *)dictionary {
+    id base64 = [self objectForKey:@"data"];
+    id<MKTransportableData> ted = _attachment;
+    if (!base64 && ted) {
+        [self setObject:ted.object forKey:@"data"];
+    }
+    return [super dictionary];
+}
+
 #pragma mark file data
 
 // Override
@@ -78,11 +88,10 @@
 
 // Override
 - (void)setData:(id<MKTransportableData>)ted {
-    if (!ted) {
-        [self removeObjectForKey:@"data"];
-    } else {
-        [self setObject:ted.object forKey:@"data"];
-    }
+    [self removeObjectForKey:@"data"];
+    //if (ted) {
+    //    [self setObject:ted.object forKey:@"data"];
+    //}
     _attachment = ted;
 }
 
@@ -91,12 +100,10 @@
     id<MKTransportableData> ted;
     if ([data length] == 0) {
         ted = nil;
-        [self removeObjectForKey:@"data"];
     } else {
         ted = MKTransportableDataCreate(data, nil);
-        [self setObject:ted.object forKey:@"data"];
     }
-    _attachment = ted;
+    [self setData:ted];
 }
 
 #pragma mark file name

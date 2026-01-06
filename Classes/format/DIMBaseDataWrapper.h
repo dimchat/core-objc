@@ -66,4 +66,18 @@ FOUNDATION_EXPORT NSString * const MKEncodeAlgorithm_HEX;     // hex
 
 @end
 
+// protected
+@interface DIMBaseDataWrapper (Encoding)
+
+// get encoded data
+- (nullable NSString *)encodedData;
+
+// encode data
+- (nullable NSString *)encodeData:(NSData *)binary withAlgorithm:(NSString *)algorithm;
+
+// decode data
+- (nullable NSData *)decodeData:(NSString *)text withAlgorithm:(NSString *)algorithm;
+
+@end
+
 NS_ASSUME_NONNULL_END

@@ -69,11 +69,6 @@
 }
 
 // Override
-- (BOOL)isEmpty {
-    return [_storeDictionary count] == 0;
-}
-
-// Override
 - (NSMutableDictionary *)dictionary {
     return _storeDictionary;
 }
