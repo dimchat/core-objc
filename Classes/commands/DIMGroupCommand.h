@@ -58,8 +58,9 @@ FOUNDATION_EXPORT NSString * const DKDGroupCommand_Fire;     // "fire"
 FOUNDATION_EXPORT NSString * const DKDGroupCommand_Resign;   // "resign"
 //-------- group command names end --------
 
-/*
+/**
  *  Group history command: {
+ *
  *      "type" : i2s(0x89),
  *      "sn"   : 123,
  *

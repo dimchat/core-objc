@@ -39,13 +39,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Combine Forward message: {
- *      type : i2s(0xCF),
- *      sn   : 123,
+/**
+ *  Combine Forward content: {
  *
- *      title    : "...",  // chat title
- *      messages : [...]   // chat history
+ *      "type" : i2s(0xCF),
+ *      "sn"   : 123,
+ *
+ *      "title"    : "...",  // chat title
+ *      "messages" : [...]   // chat history
  *  }
  */
 @protocol DKDCombineContent <DKDContent>

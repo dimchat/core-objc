@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(UInt8, DKDHandshakeState) {
     DKDHandshake_Init,
-    DKDHandshake_Start,   // C -> S, without session key(or session expired)
+    DKDHandshake_Start,   // C -> S, without session key (or session expired)
     DKDHandshake_Again,   // S -> C, with new session key
     DKDHandshake_Restart, // C -> S, with new session key
     DKDHandshake_Success, // S -> C, handshake accepted
@@ -65,7 +65,7 @@ DKDHandshakeState DKDHandshakeCheckState(NSString *title, NSString *_Nullable se
  *      "sn"   : 123,
  *
  *      "command" : "handshake",    // command name
- *      "title"   : "Hello world!",
+ *      "title"   : "Hello world!", // "DIM?", "DIM!"
  *      "session" : "{SESSION_KEY}" // session key
  *  }
  */
@@ -250,5 +250,5 @@ NS_ASSUME_NONNULL_END
 
 ----
 
-Copyright &copy; 2018-2025 Albert Moky
+Copyright &copy; 2018-2026 Albert Moky
 [![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

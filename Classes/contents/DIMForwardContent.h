@@ -39,13 +39,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Top-Secret message: {
- *      type : i2s(0xFF),
- *      sn   : 456,
+/**
+ *  Top-Secret messages content: {
  *
- *      forward : {...}  // reliable (secure + certified) message
- *      secrets : [...]  // reliable (secure + certified) messages
+ *      "type" : i2s(0xFF),
+ *      "sn"   : 456,
+ *
+ *      "forward" : {...}  // reliable (secure + certified) message
+ *      "secrets" : [...]  // reliable (secure + certified) messages
  *  }
  */
 @protocol DKDForwardContent <DKDContent>

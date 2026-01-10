@@ -39,20 +39,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 456,
+/**
+ *  Receipt command: {
  *
- *      command : "receipt",
- *      text    : "...",  // text message
- *      origin  : {       // original message envelope
- *          sender    : "...",
- *          receiver  : "...",
- *          time      : 0,
+ *      "type" : i2s(0x88),
+ *      "sn"   : 456,
  *
- *          sn        : 123,
- *          signature : "..."
+ *      "command" : "receipt",
+ *      "text"    : "...",  // text message
+ *      "origin"  : {       // original message envelope
+ *          "sender"    : "...",
+ *          "receiver"  : "...",
+ *          "time"      : 0,
+ *
+ *          "sn"        : 123,
+ *          "signature" : "..."
  *      }
  *  }
  */

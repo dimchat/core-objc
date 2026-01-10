@@ -40,7 +40,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define DIMNetworkFormatDataType NSMutableDictionary<NSString *, id>
+#define DIMNetworkFormatDictionary NSMutableDictionary<NSString *, id>
 
 /**
  *  TransportableDataWrapper
@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  toMap()
  */
-@property (readonly, strong, nonatomic) DIMNetworkFormatDataType *dictionary;
+@property (readonly, strong, nonatomic) DIMNetworkFormatDictionary *dictionary;
 
 // file data
 @property (strong, nonatomic, nullable) id<MKTransportableData> data;
@@ -110,9 +110,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  toMap()
  */
-@property (readonly, strong, nonatomic) DIMNetworkFormatDataType *dictionary;
+@property (readonly, strong, nonatomic) DIMNetworkFormatDictionary *dictionary;
 
-- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict
+- (instancetype)initWithDictionary:(DIMNetworkFormatDictionary *)dict
 NS_DESIGNATED_INITIALIZER;
 
 - (nullable id)objectForKey:(NSString *)key;
@@ -130,13 +130,13 @@ NS_DESIGNATED_INITIALIZER;
 
 @protocol DIMTEDWrapperFactory <NSObject>
 
-- (id<DIMTEDWrapper>)createTEDWrapper:(NSMutableDictionary<NSString *, id> *)map;
+- (id<DIMTEDWrapper>)createTEDWrapper:(DIMNetworkFormatDictionary *)map;
 
 @end
 
 @protocol DIMPNFWrapperFactory <NSObject>
 
-- (id<DIMPNFWrapper>)createPNFWrapper:(NSMutableDictionary<NSString *, id> *)map;
+- (id<DIMPNFWrapper>)createPNFWrapper:(DIMNetworkFormatDictionary *)content;
 
 @end
 

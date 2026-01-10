@@ -39,18 +39,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Quote message: {
- *      type : i2s(0x37),
- *      sn   : 123,
+/**
+ *  Quote content: {
  *
- *      text    : "...",  // text message
- *      origin  : {       // original message envelope
- *          sender    : "...",
- *          receiver  : "...",
+ *      "type" : i2s(0x37),
+ *      "sn"   : 123,
  *
- *          type      : 0x01,
- *          sn        : 123,
+ *      "text"    : "...",  // text message
+ *      "origin"  : {       // original message envelope
+ *          "sender"    : "...",
+ *          "receiver"  : "...",
+ *
+ *          "type"      : i2s(0x01),
+ *          "sn"        : 123,
  *      }
  *  }
  */

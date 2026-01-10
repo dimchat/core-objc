@@ -44,7 +44,7 @@
 
 @interface DIMBaseNetworkFormatWrapper () {
     
-    DIMNetworkFormatDataType *_storeDictionary;
+    DIMNetworkFormatDictionary *_storeDictionary;
 }
 
 @end
@@ -53,12 +53,12 @@
 
 - (instancetype)init {
     NSAssert(false, @"DON'T call me!");
-    DIMNetworkFormatDataType *dict = nil;
+    DIMNetworkFormatDictionary *dict = nil;
     return [self initWithDictionary:dict];
 }
 
 /* designated initializer */
-- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict {
+- (instancetype)initWithDictionary:(DIMNetworkFormatDictionary *)dict {
     if (self = [super init]) {
         if ([dict conformsToProtocol:@protocol(MKDictionary)]) {
             dict = [(id<MKDictionary>)dict dictionary];
@@ -69,7 +69,7 @@
 }
 
 // Override
-- (NSMutableDictionary *)dictionary {
+- (DIMNetworkFormatDictionary *)dictionary {
     return _storeDictionary;
 }
 
@@ -122,12 +122,14 @@
 
 @implementation DIMNetworkFormatWrapperFactory
 
-- (id<DIMTEDWrapper>)createTEDWrapper:(NSMutableDictionary<NSString *,id> *)map {
+// Override
+- (id<DIMTEDWrapper>)createTEDWrapper:(DIMNetworkFormatDictionary *)map {
     return [[DIMBaseDataWrapper alloc] initWithDictionary:map];
 }
 
-- (id<DIMPNFWrapper>)createPNFWrapper:(NSMutableDictionary<NSString *,id> *)map {
-    return [[DIMBaseFileWrapper alloc] initWithDictionary:map];
+// Override
+- (id<DIMPNFWrapper>)createPNFWrapper:(DIMNetworkFormatDictionary *)content {
+    return [[DIMBaseFileWrapper alloc] initWithDictionary:content];
 }
 
 @end

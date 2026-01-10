@@ -54,7 +54,7 @@
 @implementation DIMBaseFileWrapper
 
 /* designated initializer */
-- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict {
+- (instancetype)initWithDictionary:(DIMNetworkFormatDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
         _attachment = nil;
@@ -65,7 +65,7 @@
 }
 
 // Override
-- (NSMutableDictionary *)dictionary {
+- (DIMNetworkFormatDictionary *)dictionary {
     id base64 = [self objectForKey:@"data"];
     id<MKTransportableData> ted = _attachment;
     if (!base64 && ted) {

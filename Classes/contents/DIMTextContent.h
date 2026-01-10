@@ -39,12 +39,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Text message: {
- *      type : i2s(0x01),
- *      sn   : 123,
+/**
+ *  Text content: {
  *
- *      text : "..."
+ *      "type" : i2s(0x01),
+ *      "sn"   : 123,
+ *
+ *      "text" : "..."
  *  }
  */
 @protocol DKDTextContent <DKDContent>

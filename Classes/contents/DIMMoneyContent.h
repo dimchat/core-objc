@@ -39,13 +39,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Money message: {
- *      type : i2s(0x40),
- *      sn   : 123,
+/**
+ *  Money content: {
  *
- *      currency : "RMB", // USD, USDT, ...
- *      amount   : 100.00
+ *      "type" : i2s(0x40),
+ *      "sn"   : 123,
+ *
+ *      "currency" : "RMB", // USD, USDT, ...
+ *      "amount"   : 100.00
  *  }
  */
 @protocol DKDMoneyContent <DKDContent>

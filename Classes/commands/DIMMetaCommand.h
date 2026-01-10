@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *      "command" : "meta", // command name
  *      "did"     : "{ID}", // contact's ID
- *      "meta"    : {...}   // When meta is empty, means query meta for ID
+ *      "meta"    : {...}   // When meta is nil, means query meta for ID
  *  }
  */
 @protocol DKDMetaCommand <DKDCommand>

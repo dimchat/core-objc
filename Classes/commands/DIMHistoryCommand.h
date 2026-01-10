@@ -43,14 +43,15 @@ NS_ASSUME_NONNULL_BEGIN
 FOUNDATION_EXPORT NSString * const DKDHistoryCommand_Register; // "register"
 FOUNDATION_EXPORT NSString * const DKDHistoryCommand_Suicide;  // "suicide"
 
-/*
+/**
  *  History command: {
- *      type : i2s(0x89),
- *      sn   : 123,
  *
- *      command : "...", // command name
- *      time    : 0,     // timestamp
- *      extra   : info   // command parameters
+ *      "type" : i2s(0x89),
+ *      "sn"   : 123,
+ *
+ *      "command" : "...", // command name
+ *      "time"    : 0,     // timestamp
+ *      "extra"   : info   // command parameters
  *  }
  */
 @protocol DKDHistoryCommand <DKDCommand>

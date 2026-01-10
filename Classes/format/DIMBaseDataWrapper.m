@@ -53,7 +53,7 @@ NSString * const MKEncodeAlgorithm_HEX     = @"hex";
 @implementation DIMBaseDataWrapper
 
 /* designated initializer */
-- (instancetype)initWithDictionary:(DIMNetworkFormatDataType *)dict {
+- (instancetype)initWithDictionary:(DIMNetworkFormatDictionary *)dict {
     if (self = [super initWithDictionary:dict]) {
         // lazy load
         _data = nil;

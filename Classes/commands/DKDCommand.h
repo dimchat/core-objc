@@ -45,13 +45,14 @@ FOUNDATION_EXPORT NSString * const DKDCommand_Documents; // "documents"
 FOUNDATION_EXPORT NSString * const DKDCommand_Receipt;   // "receipt"
 //-------- command names end --------
 
-/*
- *  Command message: {
- *      type : i2s(0x88),
- *      sn   : 123,
+/**
+ *  Command content: {
  *
- *      command : "...", // command name
- *      extra   : info   // command parameters
+ *      "type" : i2s(0x88),
+ *      "sn"   : 123,
+ *
+ *      "command" : "...", // command name
+ *      "extra"   : info   // command parameters
  *  }
  */
 @protocol DKDCommand <DKDContent>

@@ -39,12 +39,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Content Array message: {
- *      type : i2s(0xCA),
- *      sn   : 123,
+/**
+ *  Array content: {
  *
- *      contents : [...]  // content array
+ *      "type" : i2s(0xCA),
+ *      "sn"   : 123,
+ *
+ *      "contents" : [...]  // content array
  *  }
  */
 @protocol DKDArrayContent <DKDContent>

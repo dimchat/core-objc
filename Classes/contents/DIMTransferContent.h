@@ -39,15 +39,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/*
- *  Transfer money message: {
- *      type : i2s(0x41),
- *      sn   : 123,
+/**
+ *  Transfer money content: {
  *
- *      currency : "RMB",    // USD, USDT, ...
- *      amount   : 100.00,
- *      remitter : "{FROM}", // sender ID
- *      remittee : "{TO}"    // receiver ID
+ *      "type" : i2s(0x41),
+ *      "sn"   : 123,
+ *
+ *      "currency" : "RMB",    // USD, USDT, ...
+ *      "amount"   : 100.00,
+ *      "remitter" : "{FROM}", // sender ID
+ *      "remittee" : "{TO}"    // receiver ID
  *  }
  */
 @protocol DKDTransferContent <DKDMoneyContent>
